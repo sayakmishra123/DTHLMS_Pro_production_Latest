@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "366733455085",
+    "project_id": "dthlmspro",
+    "storage_bucket": "dthlmspro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366733455085:android:9654988103e80c63a3a6e4",
+        "android_client_info": {
+          "package_name": "com.dthlmspro.example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3anyzGh3caaboT2XqqH_LIW5zfZpIuMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366733455085:android:8f96fc3ea86b6fc3a3a6e4",
+        "android_client_info": {
+          "package_name": "com.example.abc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3anyzGh3caaboT2XqqH_LIW5zfZpIuMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

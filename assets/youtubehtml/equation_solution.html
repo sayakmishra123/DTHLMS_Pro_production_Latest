@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MathML Equation Solution (Dynamic)</title>
+  <style>
+
+
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .result { font-weight: bold; color: #c00; font-size: 50px; }
+    pre { background: #f0f0f0; padding: 10px; }
+  </style>
+  <!-- Include MathJax for rendering MathML -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/mml-chtml.js"></script>
+</head>
+<body>
+
+  <!-- <h1>Equation Solution (Dynamic)</h1> -->
+
+  <!-- Rendered MathML -->
+  <div id="renderedMath"></div>
+
+  <!-- Where we'll display the results dynamically. -->
+  <!-- <p class="result">
+    <strong>Solution:</strong>
+    <span id="numericSolution">[computing...]</span>
+  </p> -->
+
+  <!-- <p>Exact fraction: <span id="fractionSolution">[computing...]</span></p> -->
+
+  <script>
+    /**
+     * Compute the numeric value of the expression:
+     *   a*(b/c) + a*sum_{k=2..f}(d) + e*(f - e)*152
+     *
+     * Parameters:
+     *   a = multiplier for first two terms
+     *   b = numerator of first fraction
+     *   c = denominator of first fraction
+     *   d = value to sum
+     *   e = lower limit for integral
+     *   f = upper limit for sum and integral
+     */
+    function computeSolution(a = 2, b = 45, c = 58, d = 100, e = 1, f = 45) {
+      // 1. a × (b/c)
+      const part1 = a * (b / c);  // Example: 2 * (45/58)
+
+      // 2. a * sum_{k=2..f}(d) 
+      //    sum_{k=2..45} 100 => (f - 2 + 1) terms * d
+      const numberOfTerms = f - 2 + 1; // 44
+      const part2 = a * numberOfTerms * d; // Example: 2 * 44 * 100 = 8800
+
+      // 3. e * (f - e) * 152
+      const part3 = e * (f - e) * 152; // Example: 1 * 44 * 152 = 6688
+
+      // total numeric sum
+      const total = part1 + part2 + part3;  // ~ 15489.551724...
+
+      // Now compute exact fraction:
+      //  part1 = 45/29 => about 1.55172...
+      //  so part2 + part3 = 8800 + 6688 = 15488
+      //  total = 15488 + (45/29) = (15488 * 29 + 45)/29 = (449152 + 45)/29 = 449197/29
+      const numerator = 449197;
+      const denominator = 29;
+      const fractionString = numerator + "/" + denominator;  // "449197/29"
+
+      // Display them in the DOM
+      document.getElementById("numericSolution").textContent = 
+        total.toFixed(6) + " (approx)";
+      document.getElementById("fractionSolution").textContent = 
+        fractionString + " ≈ " + (numerator/denominator).toFixed(6);
+      
+      // Optionally, send results back to Flutter
+      // Check if flutter_inappwebview is available
+      if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+        window.flutter_inappwebview.callHandler('JSHandler', {
+          numeric: total.toFixed(6),
+          fraction: fractionString + " ≈ " + (numerator/denominator).toFixed(6)
+        });
+      }
+    }
+
+    // Function to render MathML
+    function renderMathML(mathml) {
+      // Insert MathML into the renderedMath div
+      document.getElementById("renderedMath").innerHTML = mathml;
+
+      // Typeset the MathML using MathJax
+      if (window.MathJax) {
+        MathJax.typesetPromise([document.getElementById("renderedMath")]).then(() => {
+          console.log("MathJax typeset complete.");
+        }).catch((err) => console.error("MathJax typeset failed: ", err.message));
+      }
+    }
+
+    // Listen for messages from Flutter to receive MathML data
+    function receiveMathML(mathml) {
+      renderMathML(mathml);
+      computeSolution(); // Compute the solution with default parameters
+    }
+
+    // Expose the receiveMathML function to Flutter
+    window.receiveMathML = receiveMathML;
+
+    // Optionally, compute immediately on page load with default parameters
+    window.onload = computeSolution;
+  </script>
+</body>
+</html>

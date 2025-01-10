@@ -1,0 +1,331 @@
+
+
+<!-- <!doctype html>
+<html lang="ja" style="width:100%;height:100%;overflow:hidden">
+<head>
+    <meta charset="utf-8"/>
+    <title>Live</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.3/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.3/plyr.js"></script>
+    <script>
+        let player;
+
+        function reset_order() {
+            document.title = "Youtube"
+        }
+
+        function set_source(source_id, watermark_str, font_size) {
+            if (watermark_str) {
+                var thisMark = document.getElementById('plyr_watermark');
+                thisMark.innerHTML = watermark_str;
+                if (font_size) {
+                    thisMark.style.fontSize = font_size + "px";
+                }       
+            }
+
+            const iframe = document.querySelector('#player iframe');
+            iframe.src = "https://www.youtube.com/embed/" + source_id + "?iv_load_policy=3&amp;modestbranding=0&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+            player = new Plyr('#player', {
+                autoplay: true,
+                resetOnEnd: true,
+                ratio: '16:9'
+            });
+            player.on('ready', (event) => {
+                const fullscreenButton = document.querySelector('[data-plyr="fullscreen"]');
+                fullscreenButton.onclick = (e) => {
+                    document.title = "fullscreen"
+                }
+            });
+        }
+
+        window.addEventListener("load", (event) => {
+            set_source('{SOURCE_ID}', 'DTH LMS', 25);  // The {SOURCE_ID} will be replaced dynamically
+            document.title = "load";
+        });
+    </script>
+</head>                                                                                                                                                                                                                                 
+<body style="width:100%;height:50%;margin:0">
+    <div class="plyr__video-embed" id="player" style="width:100%;height:50%;margin:0">
+        <iframe style="width:100%;height:50%;margin:0"
+            allowtransparency
+            allowfullscreen="0"
+            allow="autoplay"
+        ></iframe>
+        <div class="YTPOverlay" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 50%;">
+            <div id="plyr_watermark" style="position: absolute; color: white; -webkit-text-stroke: 1px #111111; font-size: 25px; font-weight: bold; opacity: 0.5;">Your Watermark</div>
+        </div>
+    </div>
+    <script>
+        function getRandomNumber(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function moveWatermark() {
+            var winWidth = window.innerWidth;
+            var winHeight = window.innerHeight;
+
+            var thisMark = document.getElementById('plyr_watermark');
+            // get random numbers for each element
+            var randomTop = getRandomNumber(0, winHeight - 50);
+            var randomLeft = getRandomNumber(0, winWidth - 130);
+
+            // update top and left position
+            thisMark.style.top = randomTop +"px";
+            thisMark.style.left = randomLeft +"px";
+        }
+
+        setInterval(moveWatermark, 5000);
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+<!-- 
+<!doctype html>
+<html lang="ja" style="width:100%; height:100%; overflow:hidden;">
+<head>
+    <meta charset="utf-8"/>
+    <title>Live</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <style>
+        /* Ensure the player container fills the viewport */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background-color: black;
+        }
+
+        #player {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Watermark styling */
+        #plyr_watermark {
+            position: absolute;
+            color: white;
+            -webkit-text-stroke: 1px #111111;
+            font-size: 25px;
+            font-weight: bold;
+            opacity: 0.5;
+            pointer-events: none; /* Ensure watermark doesn't block player interactions */
+            transition: top 0.5s, left 0.5s; /* Smooth movement */
+        }
+    </style>
+    <script>
+        let player;
+
+        function set_source(source_id, watermark_str, font_size) {
+            if (watermark_str) {
+                const thisMark = document.getElementById('plyr_watermark');
+                thisMark.innerHTML = watermark_str;
+                if (font_size) {
+                    thisMark.style.fontSize = font_size + "px";
+                }
+            }
+
+            const iframe = document.querySelector('#player iframe');
+            iframe.src = `https://www.youtube.com/embed/${source_id}?iv_load_policy=3&modestbranding=0&playsinline=1&rel=0&enablejsapi=1&autoplay=1&mute=1`;
+
+            iframe.onload = () => {
+                player = new Plyr('#player', {
+                    autoplay: false,
+                    muted: false, // Mute to allow autoplay
+                    resetOnEnd: false,
+                    ratio: '16:9',
+                    fullscreen: { enabled: true },
+                    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
+                });
+
+                player.on('ready', (event) => {
+                    const fullscreenButton = document.querySelector('[data-plyr="fullscreen"]');
+                    if (fullscreenButton) {
+                        fullscreenButton.onclick = (e) => {
+                            document.title = "fullscreen";
+                        };
+                    }
+                });
+            };
+        }
+
+        window.addEventListener("load", (event) => {
+            set_source('{SOURCE_ID}', 'DTH LMS', 25);  // Replace {SOURCE_ID} dynamically
+            document.title = "load";
+        });
+    </script>
+</head>
+<body>
+    <div class="plyr__video-embed" id="player" style="width:100%; height:100%; margin:0;">
+        <iframe style="width:100%; height:100%; margin:0;"
+            allowtransparency
+            allowfullscreen
+            allow="autoplay; fullscreen"
+        ></iframe>
+        <div class="YTPOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+            <div id="plyr_watermark">Your Watermark</div>
+        </div>
+    </div>
+    <script>
+        function getRandomNumber(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function moveWatermark() {
+            const playerContainer = document.getElementById('player');
+            const watermark = document.getElementById('plyr_watermark');
+            const playerRect = playerContainer.getBoundingClientRect();
+
+            // Calculate available space within the player
+            const maxLeft = playerRect.width - watermark.offsetWidth;
+            const maxTop = playerRect.height - watermark.offsetHeight;
+
+            // Generate random positions
+            const randomLeft = getRandomNumber(0, maxLeft);
+            const randomTop = getRandomNumber(0, maxTop);
+
+            // Apply positions relative to the player container
+            watermark.style.left = `${randomLeft}px`;
+            watermark.style.top = `${randomTop}px`;
+        }
+
+        // Move watermark every 5 seconds
+        setInterval(moveWatermark, 5000);
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="ja" style="width:100%; height:100%; overflow:hidden;">
+<head>
+    <meta charset="utf-8"/>
+    <title>Live</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <style>
+        /* Ensure the player container fills the viewport */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background-color: black;
+        }
+
+        #player {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Watermark styling */
+        #plyr_watermark {
+            position: absolute;
+            color: white;
+            -webkit-text-stroke: 1px #111111;
+            font-size: 25px;
+            font-weight: bold;
+            opacity: 0.5;
+            pointer-events: none; /* Ensure watermark doesn't block player interactions */
+            transition: top 0.5s, left 0.5s; /* Smooth movement */
+        }
+    </style>
+    <script>
+        let player;
+
+        function set_source(source_id, watermark_str, font_size) {
+            if (watermark_str) {
+                const thisMark = document.getElementById('plyr_watermark');
+                thisMark.innerHTML = watermark_str;
+                if (font_size) {
+                    thisMark.style.fontSize = font_size + "px";
+                }
+            }
+
+            const iframe = document.querySelector('#player iframe');
+            iframe.src = `https://www.youtube.com/embed/${source_id}?iv_load_policy=3&modestbranding=0&playsinline=1&rel=0&enablejsapi=1&autoplay=1&mute=1`;
+
+            iframe.onload = () => {
+                player = new Plyr('#player', {
+                    autoplay: false,
+                    muted: false, // Mute to allow autoplay
+                    resetOnEnd: false,
+                    ratio: '16:9',
+                    fullscreen: { enabled: true },
+                    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
+                });
+
+                player.on('ready', (event) => {
+                    const fullscreenButton = document.querySelector('[data-plyr="fullscreen"]');
+                    if (fullscreenButton) {
+                        fullscreenButton.onclick = (e) => {
+                            document.title = "fullscreen";
+                        };
+                    }
+                });
+            };
+        }
+
+        window.addEventListener("load", (event) => {
+            const username = '{USERNAME}'; // Placeholder for username
+            set_source('{SOURCE_ID}', '', 25);  // Replace {SOURCE_ID} dynamically
+            document.title = "load";
+        });
+    </script>
+</head>
+<body>
+    <div class="plyr__video-embed" id="player" style="width:100%; height:100%; margin:0;">
+        <iframe style="width:100%; height:100%; margin:0;"
+            allowtransparency
+            allowfullscreen
+            allow="autoplay; fullscreen"
+            frameborder="0"
+        ></iframe>
+        <div class="YTPOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+            <div id="plyr_watermark"></div>
+        </div>
+    </div>
+    <script>
+        function getRandomNumber(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function moveWatermark() {
+            const playerContainer = document.getElementById('player');
+            const watermark = document.getElementById('plyr_watermark');
+            const playerRect = playerContainer.getBoundingClientRect();
+
+            // Calculate available space within the player
+            const maxLeft = playerRect.width - watermark.offsetWidth;
+            const maxTop = playerRect.height - watermark.offsetHeight;
+
+            // Generate random positions
+            const randomLeft = getRandomNumber(0, maxLeft);
+            const randomTop = getRandomNumber(0, maxTop);
+
+            // Apply positions relative to the player container
+            watermark.style.left = `${randomLeft}px`;
+            watermark.style.top = `${randomTop}px`;
+        }
+
+        // Move watermark every 5 seconds
+        setInterval(moveWatermark, 5000);
+    </script>
+</body>
+</html>

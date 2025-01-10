@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "DTHLMSpro-Production",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "DTHLMSpro-Production (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "DTHLMSpro-Production (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "inapi_core_sdk",
+            "cwd": "local_sdk\\inapi_core_sdk",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "inapi_core_sdk (profile mode)",
+            "cwd": "local_sdk\\inapi_core_sdk",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "inapi_core_sdk (release mode)",
+            "cwd": "local_sdk\\inapi_core_sdk",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

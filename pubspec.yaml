@@ -1,0 +1,261 @@
+name: dthlms
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using flutter pub publish. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.3 <4.0.0'
+
+dependencies:
+
+  flutter:
+    sdk: flutter
+  get: ^4.6.6
+  inapi_core_sdk:
+    path: local_sdk/inapi_core_sdk
+  flutter_webrtc: ^0.9.47  
+  http:
+  flutter_platform_alert: ^0.5.1 
+  animated_button_bar: ^1.0.0
+  google_fonts: ^6.2.1
+  icons_launcher: ^2.1.7
+  whatsapp_unilink: ^2.1.0
+  url_launcher:
+  windows_system_info: ^0.0.4
+  syncfusion_flutter_pdfviewer: ^24.2.8
+  flutter_otp_text_field: ^1.1.3+2
+  window_size:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding
+      path: plugins/window_size
+
+  path_provider: ^2.1.3
+  permission_handler: ^11.3.1
+  encrypt: ^5.0.3
+  device_info_plus: ^9.0.2
+  intl:
+
+  # sqflite_common: ^2.5.4
+  path: 
+  # sqflite_common_ffi:
+  advertising_id: ^2.6.0
+  auto_size_text: ^3.0.0
+  # sqflite: ^2.3.3+1
+  simnumber: ^0.0.12
+  carousel_slider: ^5.0.0
+  flutter_spinkit: ^5.2.1
+  flutter_rounded_progress_bar: ^0.3.2
+  connectivity_plus: ^6.0.3
+  typewritertext: ^3.0.5
+  motion_tab_bar: ^2.0.4
+  # pdfrx: ^1.0.67
+  showcaseview: ^3.0.0
+  cool_stepper_custom: ^1.2.1 
+ 
+  chat_bubbles: 1.5.0
+  rflutter_alert: ^2.0.7
+  windows_single_instance: ^1.0.1
+  skeletonizer: ^1.3.0
+
+  firebase_core: ^3.0.0
+  # firebase_auth: ^5.0.0
+  firebase_storage: ^12.0.0
+  cloud_firestore: ^5.0.0
+  media_kit_video: ^1.2.4
+  media_kit: ^1.1.10 
+  media_kit_libs_video: ^1.0.4
+  media_kit_libs_android_video: ^1.3.6 
+  win32: ^5.5.4
+  image_picker: ^1.1.2
+
+  # youtube_video_player: ^0.0.3
+  file_picker: ^8.0.5
+  flutter_spinbox: ^0.13.1
+  popup_menu_plus: ^0.0.6 
+  animated_progress_bar: ^0.0.3
+  desktop_multi_window: ^0.2.0
+  flutter_secure_storage: ^9.2.2
+  bitsdojo_window:
+
+  intl_phone_field: ^3.1.0
+  open_mail_app: ^0.4.5
+
+  cupertino_icons: ^1.0.6
+  shared_preferences: ^2.3.3
+  # webview_universal: ^0.0.5
+  workmanager: ^0.5.2
+  camera: ^0.11.0+1
+  local_notifier: ^0.1.6
+  sqlcipher_library_windows: ^1.0.2
+  sqlite3: 2.5.0
+  sqlite3_flutter_libs: ^0.5.24
+  # printing: ^5.12.0
+  lottie: ^3.2.0
+  fluid_dialog: ^2.0.0
+  # awesome_snackbar_content: 0.1.1
+  syncfusion_flutter_calendar: 24.2.9
+  percent_indicator: ^4.2.3
+  # curved_navigation_bar: ^1.0.6
+  # dynamic_curved_navigation_bar: ^0.0.2
+  duration_time_picker: ^1.0.1
+  dart_jsonwebtoken: ^2.14.0
+  process: ^5.0.2
+  archive: ^3.6.1
+  dio: ^5.7.0
+  battery_plus: ^6.0.2
+  package_info_plus: ^8.1.1
+  flutter_rating_bar: ^4.0.1
+  media_kit_libs_windows_video: ^1.0.10
+  filesystem_picker: ^4.1.0
+  file_selector: ^1.0.3
+  fos: ^0.0.8
+  mime: ^1.0.6
+  http_parser: ^4.0.2
+  no_screenshot: ^0.3.1
+  # latext: ^0.4.1
+  # flutter_math_fork: ^0.7.2
+  flutter_widget_from_html: 0.15.3
+  # flutter_windowmanager: ^0.2.0
+  flutter_android_developer_mode: ^1.0.0
+  # animated_text_kit: ^4.2.2
+  flutter_toastr: ^1.0.3
+  # atompaynetznonaes: ^1.0.3
+ 
+  onesignal_flutter: ^5.2.6
+  # hive:
+  # hive_flutter:
+  # flutter_bloc: ^8.1.6
+  crypto: ^3.0.6
+
+  pdfx: 2.6.0
+  pdf:
+  syncfusion_flutter_pdf:
+  flutter_image: ^4.1.11
+  rename_app: ^1.6.1
+  flutter_vector_icons: ^2.0.0
+  fl_chart: ^0.69.2
+  flutter_native_splash: ^2.4.3
+  text_scroll: ^0.2.0
+  scroll_loop_auto_scroll: ^0.0.5
+  flutter_infinite_marquee: ^1.0.0
+  flutter_animate: ^4.5.2
+  flutter_svg: ^2.0.0+1
+  cached_network_image: ^3.4.0
+  # sidebarx: ^0.17.1
+  page_view_dot_indicator: ^2.3.0
+  smooth_page_indicator: ^1.2.0+3
+  art_sweetalert: ^0.0.5
+  # audioplayers: ^6.1.0
+  # webview_all: ^0.4.5
+
+  image_editor_plus: ^1.0.6
+  # last_flutter_flex_player: ^0.0.3
+  youtube_quality_player: ^0.0.2
+  audioplayers: ^6.1.0
+  # webview_windows: ^0.4.0
+  flutter_inappwebview: ^6.1.5
+  youtube_player_flutter: ^9.1.1
+  
+  # pdf: ^3.11.1
+
+
+ 
+  # sqflite_sqlcipher: ^3.1.0+1
+  # sqflite_sqlcipher:
+  # sqlcipher_flutter_libs:
+
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # hive_generator:
+  build_runner:
+  flutter_launcher_icons: "^0.13.1"
+
+
+
+# flutter_native_splash:
+#   color: "#FFFFFF"
+#   image: assets/splash_screen/the-valuation-school-1152px.png
+#   branding: assets/splash_screen/the-valuation-school-1152px.png
+#   color_dark: "#FFFFFF"
+#   image_dark: assets/splash_screen/the-valuation-school-1152px.png
+#   branding_dark: assets/splash_screen/the-valuation-school-1152px.png
+
+#   android_12:
+#     image: assets/splash_screen/the-valuation-school-1152px.png
+#     icon_background_color: "#FFFFFF"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/icons/Dth-lms-1152_org.png
+  branding: assets/icons/Dth-lms-1152_org.png
+  color_dark: "#FFFFFF"
+  image_dark: assets/icons/Dth-lms-1152_org.png
+  branding_dark: assets/icons/Dth-lms-1152_org.png
+
+  android_12:
+    image: assets/icons/Dth-lms-1152_org.png
+    icon_background_color: "#FFFFFF"
+
+
+ 
+  web: false
+
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  # web:
+  #   generate: true
+  #   image_path: "path/to/image.png"
+  #   background_color: "#hexcode"
+  #   theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/icons/logo.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  # macos:
+  #   generate: true
+  #   image_path: "path/to/image.png"
+  
+
+
+  flutter_lints: ^3.0.0
+
+
+flutter:
+
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/
+    - assets/android/
+    - assets/copydb/databases/DTHLMSProDB.sqlite
+    - assets/animations/
+    - assets/icons/
+    - assets/banner/
+    - assets/payment_asset/
+    - assets/splash_screen/
+    - assets/youtubehtml/equation_solution.html
+    - assets/youtubehtml/video_player.html
+  fonts:
+    - family: AltoneBold
+      fonts:
+        - asset: fonts/Altone Semi Bold.ttf
+    - family: AltoneRegular
+      fonts:
+        - asset: fonts/Altone Trial-Regular.ttf
+    - family: AmazonEmber
+      fonts:
+        - asset: assets/fonts/AmazonEmber_Rg.ttf
+
+
+  
