@@ -1349,6 +1349,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                           as Map<String, dynamic>)['FileId']
                                       .toString();
 
+                              Get.to(() => MobileVideoPlayer(
+                                    videoLink: getx.playLink.value,
+                                    Videoindex: 0,
+                                    packageId: (appointment.resourceIds![0]
+                                                as Map<String, dynamic>)[
+                                            'PackageId']
+                                        .toString(),
+                                    fileId: (appointment.resourceIds![0]
+                                            as Map<String, dynamic>)['FileId']
+                                        .toString(),
+                                  ));
+
                               // if (await isProcessRunning(
                               //         "dthlmspro_video_player") ==
                               //     false) {
@@ -1361,20 +1373,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               //           .toString());
                               // }
                             } else {
-                              _onDownloadVideo(
-                                  context,
-                                  (appointment.resourceIds![0] as Map<String,
-                                          dynamic>)['DocumentPath']
-                                      .toString(),
-                                  (appointment.resourceIds![0]
-                                          as Map<String, dynamic>)['FileIdName']
-                                      .toString(),
-                                  (appointment.resourceIds![0]
-                                          as Map<String, dynamic>)['PackageId']
-                                      .toString(),
-                                  (appointment.resourceIds![0]
-                                          as Map<String, dynamic>)['FileId']
-                                      .toString());
+                              if (getx.isInternet.value) {
+                                _onDownloadVideo(
+                                    context,
+                                    (appointment.resourceIds![0] as Map<String,
+                                            dynamic>)['DocumentPath']
+                                        .toString(),
+                                    (appointment.resourceIds![0] as Map<String,
+                                            dynamic>)['FileIdName']
+                                        .toString(),
+                                    (appointment.resourceIds![0] as Map<String,
+                                            dynamic>)['PackageId']
+                                        .toString(),
+                                    (appointment.resourceIds![0]
+                                            as Map<String, dynamic>)['FileId']
+                                        .toString(),
+                                    index);
+                              } else {
+                                onNoInternetConnection(context, () {
+                                  Get.back();
+                                });
+                              }
                             }
 
                             // run_Video_Player_exe(
@@ -1410,26 +1429,34 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                   backgroundColor: WidgetStatePropertyAll(
                                       Color.fromARGB(255, 255, 106, 95))),
                               onPressed: () {
-                                var meeting = findLiveDtails(
-                                    (appointment.resourceIds![0] as Map<String,
-                                            dynamic>)['SessionId']
-                                        .toString(),
-                                    getx.todaymeeting);
-                                if (appointment.startTime
-                                        .isBefore(DateTime.now()) &&
-                                    meeting != null) {
-                                  Get.to(
-                                      transition: Transition.cupertino,
-                                      () => MobileMeetingPage(
-                                            meeting!.projectId.toString(),
-                                            meeting.sessionId.toString(),
-                                            getx.loginuserdata[0].nameId,
-                                            "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
-                                            meeting.topicName,
-                                            meeting.liveUrl,
-                                            videoCategory:
-                                                meeting.videoCategory,
-                                          ));
+                                if (getx.isInternet.value) {
+                                  getMeetingList(context).whenComplete(() {
+                                    var meeting = findLiveDtails(
+                                        (appointment.resourceIds![0] as Map<
+                                                String, dynamic>)['SessionId']
+                                            .toString(),
+                                        getx.todaymeeting);
+                                    if (appointment.startTime
+                                            .isBefore(DateTime.now()) &&
+                                        meeting != null) {
+                                      Get.to(
+                                          transition: Transition.cupertino,
+                                          () => MobileMeetingPage(
+                                                meeting!.projectId.toString(),
+                                                meeting.sessionId.toString(),
+                                                getx.loginuserdata[0].nameId,
+                                                "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
+                                                meeting.topicName,
+                                                meeting.liveUrl,
+                                                videoCategory:
+                                                    meeting.videoCategory,
+                                              ));
+                                    }
+                                  });
+                                } else {
+                                  onNoInternetConnection(context, () {
+                                    Get.back();
+                                  });
                                 }
                               },
                               child: Text(
@@ -1534,8 +1561,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return videosDirPath;
   }
 
-  Future<void> startDownload2(int index, String Link, String title,
-      String packageId, String fileid) async {
+  Future<void> startDownloadvideoOnCalender(int index, String Link,
+      String title, String packageId, String fileid) async {
     if (Link == "0") {
       print("Video link is $Link");
       return;
@@ -1550,19 +1577,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         appDocDir = await getVideosDirectoryPath();
       }
       getx.defaultPathForDownloadVideo.value =
-          appDocDir + '\\$origin' + '\\Downloaded_videos';
+          appDocDir + '/$origin' + '/Downloaded_videos';
       prefs.setString("DefaultDownloadpathOfVieo",
-          appDocDir + '\\$origin' + '\\Downloaded_videos');
+          appDocDir + '/$origin' + '/Downloaded_videos');
       print(getx.userSelectedPathForDownloadVideo.value +
           " it is user selected path");
 
       String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
-          ? appDocDir + '\\$origin' + '\\Downloaded_videos' + '\\$title'
+          ? appDocDir + '/$origin' + '/Downloaded_videos' + '/$title'
           : getx.userSelectedPathForDownloadVideo.value + '\\$title';
 
-      String tempPath = appDocDir + '\\temp' + '\\$title';
+      String tempPath = appDocDir + '/temp' + '\\$title';
 
-      await Directory(appDocDir + '\\temp').create(recursive: true);
+      await Directory(appDocDir + '/temp').create(recursive: true);
 
       await dio.download(
         Link,
@@ -1611,8 +1638,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     }
   }
 
-  _onDownloadVideo(
-      context, String link, String title, String packageId, String fileId) {
+  _onDownloadVideo(context, String link, String title, String packageId,
+      String fileId, int index) {
     RxBool isDownloading = false.obs;
     Alert(
       context: context,
@@ -1625,18 +1652,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       image: Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Obx(() {
-          if (downloadProgress[1] < 100 && downloadProgress[1] > 0) {
+          if (downloadProgress[index] < 100 && downloadProgress[index] > 0) {
             return CircularPercentIndicator(
               radius: 40.0,
               lineWidth: 12.0,
-              percent: downloadProgress[1] / 100,
+              percent: downloadProgress[index] / 100,
               center: Text(
                 "${downloadProgress[1].toInt()}%",
                 style: TextStyle(fontSize: 10.0),
               ),
               progressColor: ColorPage.colorbutton,
             );
-          } else if (downloadProgress[1] == 100) {
+          } else if (downloadProgress[index] == 100) {
             return Icon(
               Icons.download_done,
               size: 100,
@@ -1669,14 +1696,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         ),
         DialogButton(
           child: Obx(
-            () => Text(downloadProgress[1] == 100 ? "Play" : "Download",
+            () => Text(downloadProgress[index] == 100 ? "Play" : "Download",
                 style: TextStyle(color: Colors.white, fontSize: 18)),
           ),
           highlightColor: ColorPage.appbarcolor,
           onPressed: () async {
-            if (downloadProgress[1] == 100) {
+            if (downloadProgress[index] == 100) {
               print("hello");
               Get.back();
+
+              Get.to(() => MobileVideoPlayer(
+                    videoLink: getx.playLink.value,
+                    Videoindex: 0,
+                    packageId: packageId,
+                    fileId: fileId,
+                  ));
 
               // if (await isProcessRunning("dthlmspro_video_player") == false) {
               //   run_Video_Player_exe(
@@ -1686,7 +1720,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               //       packageId);
               // }
             } else {
-              startDownload2(1, link, title, packageId, fileId);
+              startDownloadvideoOnCalender(
+                  index, link, title, packageId, fileId);
             }
           },
           color: ColorPage.blue,

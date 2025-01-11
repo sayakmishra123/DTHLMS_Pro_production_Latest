@@ -1109,8 +1109,7 @@ Future<void> getChapterFiles(String fileType, String packageId,
       }
     }
 
-
- if (fileType == "Podcast") {
+    if (fileType == "Podcast") {
       getx.podcastFileList.clear();
       if (resultSet.length != 0) {}
       resultSet.forEach((row) {
@@ -1140,7 +1139,6 @@ Future<void> getChapterFiles(String fileType, String packageId,
         // : Get.to(() =>);
       }
     }
-
 
     if (fileType == "Live" || fileType == "YouTube") {
       if (getx.liveList.isNotEmpty) {
@@ -2903,7 +2901,7 @@ Future<void> updateTblMCQhistory(String examId, String attemptDate,
       UPDATE TblMCQHistory
       SET SubmitDate = ?,ObtainMarks=?,UploadFlag=?
       WHERE PaperId = ? AND AttemptDate = ? ;
-    ''', [submitdate, obtainMarks, "0",examId, attemptDate]);
+    ''', [submitdate, obtainMarks, "0", examId, attemptDate]);
 
     print("save on list");
   } catch (e) {
@@ -3170,7 +3168,9 @@ Future infoTetch(packageId, type) async {
       switch (row['FileIdType']) {
         case 'Live':
           // if (await dateCheck(details['ScheduleOn'].toString())) {
-          // log(details.toString());
+          log(details['ScheduleOn'].toString().toString());
+          log(details.toString());
+
           getx.infoFetch.add(details);
           // }
           break;
@@ -3366,6 +3366,7 @@ String getOneWordAnswerFromQuestionId(String questionId) {
   //   // throw Exception('TotalPassMarks not found: $paperID');
   // }
 }
+
 String getOneWordUserAnswerFromQuestionId(String questionId) {
   // Execute the SQL query
   try {
@@ -3411,9 +3412,9 @@ Future<void> updateOneWordAnswerofStudent(
   String questionId,
   String userAnswer,
 ) async {
-  try { 
+  try {
     // Perform the update
-     _db.execute('''
+    _db.execute('''
       UPDATE TblMCQOption
       SET OptionName = ?
       WHERE OptionId = ? AND QuestionId = ?;
@@ -3450,12 +3451,12 @@ void createTblImages() {
      BannerImagePosition TEXT,
      ImageText TEXT
    ); 
-  '''); 
+  ''');
 }
 
 Future<void> insertOrUpdateTblImages(
   String imageId,
-  String imagePath, 
+  String imagePath,
   String documentId,
   String imageUrl,
   String imageType,
@@ -3472,7 +3473,7 @@ Future<void> insertOrUpdateTblImages(
 
     if (result.isNotEmpty && result.first['count'] > 0) {
       // If the imageId exists, update the row
-     _db.execute('''
+      _db.execute('''
         UPDATE TblImages
         SET ImagePath = ?,
             DocumentId = ?,
@@ -3494,7 +3495,7 @@ Future<void> insertOrUpdateTblImages(
       ]);
     } else {
       // If the imageId does not exist, insert a new row
-       _db.execute('''
+      _db.execute('''
         INSERT INTO TblImages (
           ImageId, ImagePath, DocumentId, ImageUrl, ImageType, DisplayPage, BannerImagePosition, ImageText
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
@@ -3514,7 +3515,6 @@ Future<void> insertOrUpdateTblImages(
     // print('Error inserting or updating data in TblImages: $e');
   }
 }
-
 
 Future<List<Map<String, dynamic>>> getAllTblImages() async {
   try {
@@ -3544,7 +3544,7 @@ void createTblNotifications() {
      Type TEXT
    );
   ''');
-} 
+}
 
 Future<void> insertOrUpdateTblNotifications(
     String DisplayDate,
@@ -3552,10 +3552,9 @@ Future<void> insertOrUpdateTblNotifications(
     String NotificationTitle,
     String NotificationBody,
     String NotificationUpdatedOn,
-    String NotificationImageUrl
-    ) async {
+    String NotificationImageUrl) async {
   // Check if the NotificationId exists
-  final result =  _db.select('''
+  final result = _db.select('''
       SELECT COUNT(*) as count FROM TblNotifications WHERE NotificationId = ?
   ''', [NotificationId]);
 
@@ -3563,7 +3562,7 @@ Future<void> insertOrUpdateTblNotifications(
 
   if (count > 0) {
     // If it exists, update the row
-     _db.execute('''
+    _db.execute('''
         UPDATE TblNotifications
         SET 
           DisplayDate = ?,
@@ -3572,10 +3571,17 @@ Future<void> insertOrUpdateTblNotifications(
           NotificationUpdatedOn = ?,
           NotificationImageUrl = ?
         WHERE NotificationId = ?;
-    ''', [DisplayDate, NotificationTitle, NotificationBody, NotificationUpdatedOn,NotificationImageUrl, NotificationId]);
+    ''', [
+      DisplayDate,
+      NotificationTitle,
+      NotificationBody,
+      NotificationUpdatedOn,
+      NotificationImageUrl,
+      NotificationId
+    ]);
   } else {
     // If it does not exist, insert a new row
-     _db.execute('''
+    _db.execute('''
         INSERT INTO TblNotifications (
           DisplayDate, 
           NotificationId, 
@@ -3584,11 +3590,16 @@ Future<void> insertOrUpdateTblNotifications(
           NotificationUpdatedOn,
           NotificationImageUrl
         ) VALUES (?, ?, ?, ?, ?, ?);
-    ''', [DisplayDate, NotificationId, NotificationTitle, NotificationBody, NotificationUpdatedOn,NotificationImageUrl]);
+    ''', [
+      DisplayDate,
+      NotificationId,
+      NotificationTitle,
+      NotificationBody,
+      NotificationUpdatedOn,
+      NotificationImageUrl
+    ]);
   }
 }
-
- 
 
 Future<List<Map<String, dynamic>>> getAllTblNotifications() async {
   try {
@@ -3596,7 +3607,7 @@ Future<List<Map<String, dynamic>>> getAllTblNotifications() async {
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblNotifications
       ORDER BY ROWID DESC''');
-      // print("shubha getAllTblNotifications");
+    // print("shubha getAllTblNotifications");
 // log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {
