@@ -16,6 +16,7 @@ import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/Live/details.dart';
 import 'package:dthlms/Live/mobile_vcScreen.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/bannerInfoPage.dart';
+import 'package:dthlms/MOBILE/HOMEPAGE/chat/chat_page.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/fab_visibility.dart';
 import 'package:dthlms/MOBILE/LOGIN/loginpage_mobile.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_List.dart';
@@ -2225,6 +2226,22 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     leading: Icon(Icons.ads_click_sharp,
                         color: ColorPage.colorblack),
                     trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 15,
+                      color: Colors.grey,
+                    )),
+                     drawerItem(
+                    title: "Help Chat",
+                    onTap: () {
+                     
+                      Get.to(() => ChatPage(
+                            // meeting!.sessionId.toString(),
+                            getx.loginuserdata[0].nameId,
+                            "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
+                          ));
+                    },
+                    leading: const Icon(Icons.chat, color: ColorPage.colorblack),
+                    trailing: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 15,
                       color: Colors.grey,

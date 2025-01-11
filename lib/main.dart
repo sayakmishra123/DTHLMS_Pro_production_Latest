@@ -260,10 +260,10 @@ class _MyAppState extends State<MyApp> {
                                     .every((element) => element.length < 10);
 
                                 if (isDataLengthValid) {
-                                  return NoSim();
-                                  // return getx.loginuserdata.isNotEmpty
-                                  //     ? HomePageMobile()
-                                  //     : Mobilelogin();
+                                  // return NoSim();
+                                  return getx.loginuserdata.isNotEmpty
+                                      ? HomePageMobile()
+                                      : Mobilelogin();
                                   // : IntroductionDashBoard();
                                 } else {
                                   return getx.loginuserdata.isNotEmpty
