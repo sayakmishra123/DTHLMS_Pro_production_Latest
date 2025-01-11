@@ -1,7 +1,6 @@
 import 'dart:async';
 // import 'dart:js_interop';
 
-
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
@@ -21,7 +20,7 @@ import 'package:image/image.dart' as img;
 import 'dart:io';
 
 class TheoryExamPage extends StatefulWidget {
-  final String documentPath; 
+  final String documentPath;
   final String title;
   final String duration;
   final String paperId;
@@ -33,7 +32,8 @@ class TheoryExamPage extends StatefulWidget {
       required this.title,
       required this.duration,
       required this.paperId,
-      required this.issubmit, required this.isEncrypted});
+      required this.issubmit,
+      required this.isEncrypted});
 
   @override
   State<TheoryExamPage> createState() => _TheoryExamPageState();
@@ -50,7 +50,7 @@ class _TheoryExamPageState extends State<TheoryExamPage> {
   String? _localPdfPath;
   bool _isFilePickerOpen = false; // Add this variable
   RxInt _start = 0.obs;
-late BuildContext golablContext;
+  late BuildContext golablContext;
   TextEditingController sheetController = TextEditingController();
   final GlobalKey<FormState> sheetkey = GlobalKey();
 
@@ -114,34 +114,22 @@ late BuildContext golablContext;
             dialogTitle: "Press & Hold CTRL to Select Multiple Sheet!");
 
         if (result != null) {
-         
-            if(sheetNumber<result.paths.length)
-            {
-              _onSelectedSheetOverFlow(golablContext,result.paths);
-
-            }
-            else{
-               for (var path in result.paths) {
+          if (sheetNumber < result.paths.length) {
+            _onSelectedSheetOverFlow(golablContext, result.paths);
+          } else {
+            for (var path in result.paths) {
               if (path != null) {
                 File file = File(path);
                 if (!_isDuplicateImage(file)) {
-                  
-                  _images.add( await resizeImage(file));
-                  setState(() {
-                    
-                  });
-
+                  _images.add(await resizeImage(file));
+                  setState(() {});
                 } else {
                   _showDuplicateImageAlert(file.absolute.path.split('\\').last);
-                   setState(() {
-                    
-                  });
+                  setState(() {});
                 }
               }
             }
-            }
-           
-          
+          }
         }
       } finally {
         _isFilePickerOpen = false; // Reset the variable after picker is closed
@@ -151,51 +139,53 @@ late BuildContext golablContext;
     }
   }
 
+  Future<File> resizeImage(File inputFile) async {
+    // Make a copy of the input file
+    final tempDir = Directory.systemTemp;
+    final copiedFile = File(
+        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_${inputFile.uri.pathSegments.last}');
+    inputFile.copySync(copiedFile.path);
 
-Future<File> resizeImage(File inputFile) async {
-  // Make a copy of the input file
-  final tempDir = Directory.systemTemp;
-  final copiedFile = File('${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_${inputFile.uri.pathSegments.last}');
-  inputFile.copySync(copiedFile.path);
+    // Read and decode the image
+    final imageBytes = copiedFile.readAsBytesSync();
+    final img.Image? image = img.decodeImage(imageBytes);
 
-  // Read and decode the image
-  final imageBytes = copiedFile.readAsBytesSync();
-  final img.Image? image = img.decodeImage(imageBytes);
+    if (image == null) {
+      throw Exception('Error: Unable to decode the image.');
+    }
 
-  if (image == null) {
-    throw Exception('Error: Unable to decode the image.');
+    // Dimensions of A4 in pixels at 300 DPI
+    const a4Width = 1240; // pixels
+    const a4Height = 1754; // pixels
+
+    // Temporary file for resized image
+    final tempFile = File(
+        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_resized_${inputFile.uri.pathSegments.last}');
+
+    // Check if the original image size exceeds A4 dimensions
+    if (image.width > a4Width || image.height > a4Height) {
+      print(
+          'Original image size: ${image.width}x${image.height}. Resizing to A4 dimensions.');
+
+      // Resize the image to A4 dimensions while maintaining aspect ratio
+      final img.Image thumbnail =
+          img.copyResize(image, width: a4Width, height: a4Height);
+
+      // Save the resized image in memory
+      final resizedBytes = img.encodePng(thumbnail);
+
+      // Create and return resized file
+      return tempFile..writeAsBytesSync(resizedBytes);
+    } else {
+      print(
+          'Original image size: ${image.width}x${image.height}. No resizing needed.');
+
+      // Return copied file without resizing
+      return copiedFile;
+    }
   }
 
-  // Dimensions of A4 in pixels at 300 DPI
-  const a4Width = 1240; // pixels
-  const a4Height = 1754; // pixels 
-
-  // Temporary file for resized image
-  final tempFile = File('${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_resized_${inputFile.uri.pathSegments.last}');
-
-  // Check if the original image size exceeds A4 dimensions
-  if (image.width > a4Width || image.height > a4Height) {
-    print('Original image size: ${image.width}x${image.height}. Resizing to A4 dimensions.');
-
-    // Resize the image to A4 dimensions while maintaining aspect ratio
-    final img.Image thumbnail = img.copyResize(image, width: a4Width, height: a4Height);
-
-    // Save the resized image in memory
-    final resizedBytes = img.encodePng(thumbnail);
-
-    // Create and return resized file
-    return tempFile..writeAsBytesSync(resizedBytes);
-  } else {
-    print('Original image size: ${image.width}x${image.height}. No resizing needed.');
-
-    // Return copied file without resizing
-    return copiedFile;
-  }
-}
-
-
-
-_onSelectedSheetOverFlow(context,List images) {
+  _onSelectedSheetOverFlow(context, List images) {
     Alert(
       context: context,
       type: AlertType.error,
@@ -228,7 +218,6 @@ _onSelectedSheetOverFlow(context,List images) {
       ],
     ).show();
   }
-  
 
   bool _isDuplicateImage(File file) {
     for (var image in _images) {
@@ -300,58 +289,55 @@ _onSelectedSheetOverFlow(context,List images) {
 //   }
 // }
 
- _uploadImages(BuildContext context) async {
+  _uploadImages(BuildContext context) async {
+    String key = await getUploadAccessKey(context, getx.loginuserdata[0].token);
 
-String key= await getUploadAccessKey(context,getx.loginuserdata[0].token);
+    if (key != "") {
+      if (_images.length == sheetNumber) {
+        // Show progress indicator
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => Center(child: CircularProgressIndicator()),
+        );
 
-if(key!=""){
-   if (_images.length == sheetNumber) {
-      // Show progress indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(child: CircularProgressIndicator()),
-      );
+        try {
+          // Map each image to an uploadImage Future
+          List<Future<String>> uploadFutures = _images
+              .map((image) => uploadSheet(
+                  image, getx.loginuserdata[0].token, key, "AnswerSheet"))
+              .toList();
 
-      try {
-        // Map each image to an uploadImage Future
-        List<Future<String>> uploadFutures = _images
-            .map((image) => uploadSheet(image, getx.loginuserdata[0].token,key))
-            .toList();
+          // Wait for all uploads to complete and collect the IDs
+          List<String> imageIds = await Future.wait(uploadFutures);
+          print(imageIds);
+          String documentId =
+              imageIds.toString().replaceAll("[", "").replaceAll("]", "");
+          print(documentId);
+          sendDocumentIdOfanswerSheets(context, getx.loginuserdata[0].token,
+              int.parse(widget.paperId), documentId);
+          // Hide progress indicator
+          Navigator.of(context).pop();
 
-        // Wait for all uploads to complete and collect the IDs
-        List<String> imageIds = await Future.wait(uploadFutures);
-        print(imageIds);
-        String documentId =
-            imageIds.toString().replaceAll("[", "").replaceAll("]", "");
-        print(documentId);
-        sendDocumentIdOfanswerSheets(context, getx.loginuserdata[0].token,
-            int.parse(widget.paperId), documentId);
-        // Hide progress indicator
-        Navigator.of(context).pop();
-
-        // Now you have a list of IDs
-        print('Uploaded image IDs: $imageIds');
-        // Get.to(TestResultPage());
-        _onUploadSuccessFull(context);
-        print("Images uploaded: ${_images.length} images");
-      } catch (e) {
-        writeToFile(e, "_uploadImages");
-        // Handle errors here
-        Navigator.of(context).pop();
-        print('Error uploading images: $e');
+          // Now you have a list of IDs
+          print('Uploaded image IDs: $imageIds');
+          // Get.to(TestResultPage());
+          _onUploadSuccessFull(context);
+          print("Images uploaded: ${_images.length} images");
+        } catch (e) {
+          writeToFile(e, "_uploadImages");
+          // Handle errors here
+          Navigator.of(context).pop();
+          print('Error uploading images: $e');
+        }
+      } else if (_images.length > sheetNumber) {
+        _onSheetOverFlow(context);
+      } else if (_images.length < sheetNumber) {
+        _onSheetUnderFlow(context);
       }
-    } else if (_images.length > sheetNumber) {
-      _onSheetOverFlow(context);
-    } else if (_images.length < sheetNumber) {
-      _onSheetUnderFlow(context);
+    } else {
+      Get.snackbar("Error", "Access Key is not available");
     }
-}
-else{
-  Get.snackbar("Error", "Access Key is not available");
-}
-
-   
   }
 
   Future<void> _downloadPdf() async {
@@ -391,7 +377,7 @@ else{
           ),
           body: ShowQuestionPaper(
             pdfUrl: widget.documentPath,
-            title: widget.title, 
+            title: widget.title,
             isEncrypted: widget.isEncrypted,
           ),
           // body: SfPdfViewer.file(
@@ -487,8 +473,7 @@ else{
 //  ProfessionalUI()
   @override
   Widget build(BuildContext context) {
-  
-    golablContext=context;
+    golablContext = context;
     return Obx(
       () => SafeArea(
           child:
@@ -545,24 +530,23 @@ else{
                   Expanded(
                     child: Row(
                       children: [
-                        widget.issubmit? 
-                            Expanded(
+                        widget.issubmit
+                            ? Expanded(
                                 flex: 2,
                                 child: Stack(
                                   children: [
                                     Container(
-                                      child: 
+                                      child:
                                           //  _localPdfPath == null
                                           //     ? Center(
                                           //         child: CircularProgressIndicator(),
                                           //       )
                                           //     :
                                           //  widget.documentPath.endsWith(".pdf")?SfPdfViewer.network( widget.documentPath):
-                                          ShowQuestionPaper( 
-                                        pdfUrl: widget.documentPath, 
+                                          ShowQuestionPaper(
+                                        pdfUrl: widget.documentPath,
                                         title: widget.title,
-            isEncrypted: widget.isEncrypted,
-
+                                        isEncrypted: widget.isEncrypted,
                                       ),
                                     ),
                                     // Positioned(
@@ -691,7 +675,7 @@ else{
                                                   color: Colors.grey.shade100,
                                                   child: Center(
                                                     child: GestureDetector(
-                                                      onTap: _pickImage, 
+                                                      onTap: _pickImage,
                                                       child: Container(
                                                         width: 150,
                                                         height: 150,
@@ -775,10 +759,10 @@ else{
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     ElevatedButton(
-                                                      onPressed: (){
+                                                      onPressed: () {
                                                         _uploadImages(context);
-                                                      }, 
-                                                      child: Text( 
+                                                      },
+                                                      child: Text(
                                                           "Upload Images",
                                                           style: TextStyle(
                                                               fontSize: 14,

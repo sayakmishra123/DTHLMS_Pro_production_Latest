@@ -2125,6 +2125,12 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                         backgroundColor: ColorPage.white,
                         child: CircleAvatar(
                           radius: 30,
+                          child: Text(
+                            '${getx.loginuserdata[0].firstName[0]}${getx.loginuserdata[0].lastName[0]}'
+                                .toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 26, fontWeight: FontWeight.bold),
+                          ),
                           // backgroundImage: AssetImage('assets/sorojda.png'),
                         ),
                       ),
@@ -2230,17 +2236,17 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                       size: 15,
                       color: Colors.grey,
                     )),
-                     drawerItem(
+                drawerItem(
                     title: "Help Chat",
                     onTap: () {
-                     
                       Get.to(() => ChatPage(
                             // meeting!.sessionId.toString(),
                             getx.loginuserdata[0].nameId,
                             "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
                           ));
                     },
-                    leading: const Icon(Icons.chat, color: ColorPage.colorblack),
+                    leading:
+                        const Icon(Icons.chat, color: ColorPage.colorblack),
                     trailing: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 15,
