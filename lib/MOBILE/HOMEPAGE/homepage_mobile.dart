@@ -80,20 +80,20 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
         animationType: AnimationType.fromTop,
         isCloseButton: false,
         isOverlayTapDismiss: true,
-        alertPadding: EdgeInsets.only(top: 300),
-        descStyle: TextStyle(fontWeight: FontWeight.bold),
-        animationDuration: Duration(milliseconds: 400),
+        alertPadding: const EdgeInsets.only(top: 300),
+        descStyle: const TextStyle(fontWeight: FontWeight.bold),
+        animationDuration: const Duration(milliseconds: 400),
         alertBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
-          side: BorderSide(
+          side: const BorderSide(
             color: Colors.grey,
           ),
         ),
         titleStyle:
-            TextStyle(color: ColorPage.blue, fontWeight: FontWeight.bold),
-        constraints: BoxConstraints.expand(width: 600),
+            const TextStyle(color: ColorPage.blue, fontWeight: FontWeight.bold),
+        constraints: const BoxConstraints.expand(width: 600),
         //First to chars "55" represents transparency of color
-        overlayColor: Color(0x55000000),
+        overlayColor: const Color(0x55000000),
         alertElevation: 0,
         alertAlignment: Alignment.center);
 
@@ -107,13 +107,13 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
-          Row(
+          const Row(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 13),
+                padding: EdgeInsets.only(left: 13),
                 child: Text(
                   'Please fill field *',
                   style: TextStyle(color: ColorPage.red, fontSize: 12),
@@ -134,7 +134,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                 },
                 obscureText: getx.passvisibility.value,
                 obscuringCharacter: '*',
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Enter Activation Code',
                     // hintText: 'Enter Activation Code',
@@ -149,7 +149,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
       buttons: [
         DialogButton(
           width: MediaQuery.of(context).size.width / 1.3,
-          child: Text(
+          child: const Text(
             "OK",
             style: TextStyle(color: Colors.white, fontSize: 15),
           ),
@@ -168,7 +168,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
     Alert(
       context: context,
       type: AlertType.info,
-      style: AlertStyle(
+      style: const AlertStyle(
         isOverlayTapDismiss: false,
         animationType: AnimationType.fromTop,
         titleStyle: TextStyle(
@@ -183,15 +183,15 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
           "Developer mode is on in your device! Please turn it off and try again!",
       buttons: [
         DialogButton(
-          child: Text(
+          child: const Text(
             "OK",
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
           onPressed: () {
             exit(0); // Close the dialog
           },
-          color: Color.fromRGBO(9, 89, 158, 1), // Set button color
-          highlightColor: Color.fromRGBO(3, 77, 59, 1), // Set highlight color
+          color: const Color.fromRGBO(9, 89, 158, 1), // Set button color
+          highlightColor: const Color.fromRGBO(3, 77, 59, 1), // Set highlight color
         ),
       ],
     ).show();
@@ -264,7 +264,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
       // Decode and get the expiration time from the token
       final parts = jwtToken.split('.');
       if (parts.length != 3) {
-        throw FormatException('Invalid JWT token format');
+        throw const FormatException('Invalid JWT token format');
       }
 
       final payload = base64Url.decode(base64Url.normalize(parts[1]));
@@ -438,7 +438,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
 
   int lastTapVideoIndex = -1; // Track the last tapped item index
   DateTime lastTapvideoTime = DateTime.now();
-  var color = Color.fromARGB(255, 102, 112, 133);
+  var color = const Color.fromARGB(255, 102, 112, 133);
   // Getx getx = Get.put(Getx());
 
   int flag = 2;
@@ -449,7 +449,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
   void handleTap(int index) {
     DateTime now = DateTime.now();
     if (index == lastTapVideoIndex &&
-        now.difference(lastTapvideoTime) < Duration(seconds: 1)) {
+        now.difference(lastTapvideoTime) < const Duration(seconds: 1)) {
       print('Double tapped on folder: $index');
     }
     lastTapVideoIndex = index;
@@ -488,7 +488,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
 
       extendBody: true,
       appBar: AppBar(
-        actionsIconTheme: IconThemeData(color: Colors.black),
+        actionsIconTheme: const IconThemeData(color: Colors.black),
         automaticallyImplyLeading: false,
         flexibleSpace: ClipRect(
           child: BackdropFilter(
@@ -498,27 +498,27 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
             ),
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         // backgroundColor: Colors.blue.withAlpha(200),
-        backgroundColor: Color(0xffF5F5DC),
+        backgroundColor: const Color(0xffF5F5DC),
         title: Text(
-          franchaiseName,
+          franchaiseName !=  ""? franchaiseName : 'Dash Board',
           style: GoogleFonts.josefinSans()
               .copyWith(color: const Color.fromARGB(255, 33, 77, 153)),
         ),
         actions: [
           getx.isActivationKeySet.value
               ? IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () {
                     enterActivationKey(context, getx.loginuserdata[0].token);
                   })
-              : SizedBox(),
+              : const SizedBox(),
           IconButton(
             onPressed: () {
               Get.to(() => NotificationsPage());
             },
-            icon: Badge(
+            icon: const Badge(
               label: Text('2'),
               child: Icon(
                 Icons.notifications_none_outlined,
@@ -530,7 +530,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: Image(
+              icon: const Image(
                 image: AssetImage(
                   logopath,
                 ),
@@ -555,7 +555,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
           padding: const EdgeInsets.symmetric(horizontal: 0),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               FutureBuilder(
@@ -583,13 +583,13 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                         );
                       } else {
                         // Handle the case where snapshot.data is not a list
-                        return Text("Data is not a list");
+                        return const Text("Data is not a list");
                       }
                     } else {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
                   }),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               FutureBuilder(
@@ -698,20 +698,20 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
 
                     lastVideoDetails.isNotEmpty &&
                             lastVideoDetailsAllPackage.isNotEmpty
                         ? Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(8)),
                             child: Column(
                               children: [
-                                Row(
+                                const Row(
                                   children: [
                                     SizedBox(
                                       width: 10,
@@ -779,7 +779,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                       },
                                       leading: ClipRRect(
                                         borderRadius: BorderRadius.circular(2),
-                                        child: Image(
+                                        child: const Image(
                                           height: 80,
                                           width: 60,
                                           image: AssetImage(
@@ -790,7 +790,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                       title: Text(
                                         lastVideoDetailsAllPackage['FileIdName']
                                             .toString(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 18, color: Colors.blue),
                                       ),
                                       subtitle: RichText(
@@ -798,14 +798,14 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                           style: DefaultTextStyle.of(context)
                                               .style,
                                           children: <TextSpan>[
-                                            TextSpan(
+                                            const TextSpan(
                                                 text: "Last played: ",
                                                 style: TextStyle(
                                                     color: Colors.green,
                                                     fontSize: 12)),
                                             TextSpan(
                                                 text: formattedDate.toString(),
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: Colors.amber,
                                                     fontSize: 12)),
                                           ],
@@ -834,7 +834,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                                     lastVideoDetailsAllPackage[
                                                         'FileIdName']);
                                               },
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons.download,
                                                 color: ColorPage.grey,
                                               ),
@@ -848,7 +848,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                                       downloadProgress / 100,
                                                   center: Text(
                                                     "${downloadProgress.toInt()}%",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 10.0),
                                                   ),
                                                   progressColor:
@@ -859,13 +859,13 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                               ],
                             ),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     // Text('data')
-                    CalendarWidget(),
+                    const CalendarWidget(),
                     // NewsNotifications()
                   ],
                 ),
@@ -913,7 +913,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       isLoading.value = true; // Set loading to true when fetching data
 
       // Simulate a delay to load data
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       if (getx.calenderEvents.isNotEmpty) {
         appointments.clear(); // Clear the previous appointments
@@ -978,7 +978,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     if (_showTooltip.value) {
       _tooltipTimer?.cancel(); // Cancel any existing timer
-      _tooltipTimer = Timer(Duration(seconds: 5), () {
+      _tooltipTimer = Timer(const Duration(seconds: 5), () {
         _showTooltip.value = false;
       });
     }
@@ -1031,9 +1031,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       height: !_selectedAppointments.isEmpty
           ? screenHeight + 200
           : screenHeight - 400,
-      margin: EdgeInsets.symmetric(vertical: 0),
-      padding: EdgeInsets.only(left: 5, right: 5, top: 0),
-      decoration: BoxDecoration(
+      margin: const EdgeInsets.symmetric(vertical: 0),
+      padding: const EdgeInsets.only(left: 5, right: 5, top: 0),
+      decoration: const BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.all(
           Radius.circular(10),
@@ -1047,8 +1047,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: Stack(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 10, right: 10, top: 20),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
@@ -1109,7 +1109,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       : isSelectedDate
                                           ? const Color.fromARGB(255, 219, 196,
                                               248) // Highlight color for the selected date
-                                          : Color.fromARGB(255, 255, 255, 255),
+                                          : const Color.fromARGB(255, 255, 255, 255),
                                   border: isSelectedDate
                                       ? Border.all(
                                           color: const Color.fromARGB(
@@ -1146,7 +1146,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                     double iconSize = isSmallScreen ? 8 : 15;
                                     return Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 3),
+                                          const EdgeInsets.symmetric(horizontal: 3),
                                       child: location == "Video"
                                           ? Icon(
                                               Icons.circle,
@@ -1179,11 +1179,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           ],
                         );
                       },
-                      monthViewSettings: MonthViewSettings(
+                      monthViewSettings: const MonthViewSettings(
                         dayFormat: 'EEE',
                         monthCellStyle: MonthCellStyle(
                             todayBackgroundColor:
-                                const Color.fromARGB(255, 148, 147, 147)),
+                                Color.fromARGB(255, 148, 147, 147)),
                         agendaViewHeight: 60,
                         showTrailingAndLeadingDates: false,
                         showAgenda: false,
@@ -1193,11 +1193,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
                         _updateSelectedAppointments();
                         !_selectedAppointments.isEmpty
-                            ? Future.delayed(Duration(milliseconds: 300), () {
+                            ? Future.delayed(const Duration(milliseconds: 300), () {
                                 _scrollController.animateTo(
                                   screenHeight /
                                       2.6, // Scroll to the event section
-                                  duration: Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
                                 );
                               })
@@ -1209,8 +1209,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     top: 15,
                     right: 10,
                     child: IconButton(
-                      icon: Icon(Icons.info_outline,
-                          color: const Color.fromARGB(255, 255, 255, 255)),
+                      icon: const Icon(Icons.info_outline,
+                          color: Color.fromARGB(255, 255, 255, 255)),
                       onPressed: _toggleTooltip,
                     ),
                   ),
@@ -1220,7 +1220,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           right: 10,
                           child: TooltipWidgetMobile(),
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                 ],
               ),
             ),
@@ -1230,9 +1230,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         ? 100
                         : 40, // Adjust proportion based on screen size
                     child: Container(
-                      margin: EdgeInsets.only(top: 20, bottom: 50),
-                      padding: EdgeInsets.only(left: 5, right: 5, top: 10),
-                      decoration: BoxDecoration(
+                      margin: const EdgeInsets.only(top: 20, bottom: 50),
+                      padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(
                           Radius.circular(10),
@@ -1241,8 +1241,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       child: _buildEventDetails(),
                     ),
                   )
-                : SizedBox(),
-            SizedBox(
+                : const SizedBox(),
+            const SizedBox(
               height: 80,
             ),
           ],
@@ -1254,7 +1254,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   Widget _buildEventDetails() {
     return Obx(() {
       if (_selectedAppointments.isEmpty) {
-        return Center(
+        return const Center(
           child: Text(
             'No events for this day.',
             style: TextStyle(fontSize: 18, color: Colors.grey),
@@ -1266,7 +1266,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           thumbVisibility: true,
           interactive: true,
           thickness: 0.0,
-          radius: Radius.circular(10),
+          radius: const Radius.circular(10),
           child: ListView.builder(
             // physics: NeverScrollableScrollPhysics(),
             itemCount: _selectedAppointments.length,
@@ -1427,7 +1427,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(12))),
-                                  backgroundColor: WidgetStatePropertyAll(
+                                  backgroundColor: const WidgetStatePropertyAll(
                                       Color.fromARGB(255, 255, 106, 95))),
                               onPressed: () {
                                 if (getx.isInternet.value) {
@@ -1490,7 +1490,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                   style: FontFamily.style.copyWith(
                                       fontSize: 12, color: ColorPage.grey),
                                 )
-                              : SizedBox()),
+                              : const SizedBox()),
                 ),
               );
             },
@@ -1758,7 +1758,7 @@ void cancelDownload(CancelToken cancelToken) {
       context: context,
       // type: AlertType.info,
       style: AlertStyle(
-        titleStyle: TextStyle(color: const Color.fromARGB(255, 54, 105, 244)),
+        titleStyle: const TextStyle(color: Color.fromARGB(255, 54, 105, 244)),
         descStyle: FontFamily.font6,
         isCloseButton: false,
       ),
@@ -1772,9 +1772,9 @@ void cancelDownload(CancelToken cancelToken) {
               percent: downloadProgress.value / 100,
               center: Text(
                 "${downloadProgress.value.toInt()}%",
-                style: TextStyle(fontSize: 10.0),
+                style: const TextStyle(fontSize: 10.0),
               ),
-              progressColor: ColorPage.colorbutton,
+              progressColor: ColorPage.colorbutton, 
             );
           } else if (downloadProgress.value == 100) {
             return Icon(
@@ -1784,8 +1784,8 @@ void cancelDownload(CancelToken cancelToken) {
             );
           } else {
             return Icon(
-              Icons.download,
-              size: 100,
+              Icons.download, 
+              size: 100, 
               color: ColorPage.colorbutton,
             );
           }
@@ -1797,7 +1797,7 @@ void cancelDownload(CancelToken cancelToken) {
           "This Video is not Download yet!\n Click Download button & Play it.",
       buttons: [
         DialogButton(
-          child: Text("Cancel",
+          child: const Text("Cancel",
               style: TextStyle(color: Colors.white, fontSize: 18)),
           highlightColor: ColorPage.appbarcolor,
           onPressed: () {
@@ -1810,7 +1810,7 @@ void cancelDownload(CancelToken cancelToken) {
         DialogButton(
           child: Obx(
             () => Text(downloadProgress.value == 100 ? "Play" : "Download",
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: const TextStyle(color: Colors.white, fontSize: 18)),
           ),
           highlightColor: ColorPage.appbarcolor,
           onPressed: () async {
@@ -1851,12 +1851,12 @@ class TooltipWidgetMobile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(5),
           boxShadow: [
-            BoxShadow(
+            const BoxShadow(
               blurRadius: 10,
               color: Colors.black26,
             ),
@@ -1872,11 +1872,11 @@ class TooltipWidgetMobile extends StatelessWidget {
                   size: iconSize,
                   color: ColorPage.live,
                 ),
-                SizedBox(width: 8),
-                Text('Live Class'),
+                const SizedBox(width: 8),
+                const Text('Live Class'),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Icon(
@@ -1884,11 +1884,11 @@ class TooltipWidgetMobile extends StatelessWidget {
                   size: iconSize,
                   color: ColorPage.youtube,
                 ),
-                SizedBox(width: 8),
-                Text('YouTube Live Class'),
+                const SizedBox(width: 8),
+                const Text('YouTube Live Class'),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Icon(
@@ -1896,11 +1896,11 @@ class TooltipWidgetMobile extends StatelessWidget {
                   size: iconSize,
                   color: ColorPage.testSeries,
                 ),
-                SizedBox(width: 8),
-                Text('Test Series'),
+                const SizedBox(width: 8),
+                const Text('Test Series'),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Icon(
@@ -1908,11 +1908,11 @@ class TooltipWidgetMobile extends StatelessWidget {
                   size: iconSize,
                   color: ColorPage.recordedVideo,
                 ),
-                SizedBox(width: 8),
-                Text('Recorded Video'),
+                const SizedBox(width: 8),
+                const Text('Recorded Video'),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Icon(
@@ -1920,8 +1920,8 @@ class TooltipWidgetMobile extends StatelessWidget {
                   size: iconSize,
                   color: ColorPage.history,
                 ),
-                SizedBox(width: 8),
-                Text('History'),
+                const SizedBox(width: 8),
+                const Text('History'),
               ],
             ),
           ],
@@ -1945,8 +1945,8 @@ class _NewsNotificationsState extends State<NewsNotifications> {
       height: MediaQuery.sizeOf(context).height / 1.9,
       // width: double.infinity,
       // margin: EdgeInsets.only(left: 20),
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(12),
+      decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(
           Radius.circular(10),
@@ -1961,19 +1961,19 @@ class _NewsNotificationsState extends State<NewsNotifications> {
                       FontFamily.style.copyWith(fontWeight: FontWeight.w800)),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
               itemCount: 10,
               itemBuilder: (context, index) {
                 return ListTile(
                   leading:
-                      Icon(Icons.newspaper), // or any other icon you prefer
+                      const Icon(Icons.newspaper), // or any other icon you prefer
                   title: Text('News Title',
                       style: FontFamily.style.copyWith(fontSize: 18)),
-                  subtitle: Text('News Description'), // optional
+                  subtitle: const Text('News Description'), // optional
                   trailing: IconButton(
-                    icon: Icon(Icons.notifications),
+                    icon: const Icon(Icons.notifications),
                     onPressed: () {}, // handle notification press
                   ),
                 );
@@ -1992,7 +1992,7 @@ learningGoals(context) {
     type: AlertType.none,
     buttons: [],
     style: AlertStyle(
-      titleStyle: TextStyle(color: ColorPage.red),
+      titleStyle: const TextStyle(color: ColorPage.red),
       descStyle: FontFamily.font6,
       isButtonVisible: false,
       isCloseButton: false,
@@ -2008,12 +2008,12 @@ learningGoals(context) {
             Container(
               decoration: BoxDecoration(
                 color: ColorPage.colorbutton,
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(7),
                 ),
               ),
-              padding: EdgeInsets.all(15),
-              child: Row(
+              padding: const EdgeInsets.all(15),
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
@@ -2038,7 +2038,7 @@ learningGoals(context) {
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -2047,10 +2047,10 @@ learningGoals(context) {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.video_library,
+                        const Icon(Icons.video_library,
                             size: 30, color: Colors.blueAccent),
-                        SizedBox(width: 10),
-                        Text('10 ',
+                        const SizedBox(width: 10),
+                        const Text('10 ',
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.bold)),
                         Text('Videos',
@@ -2068,16 +2068,16 @@ learningGoals(context) {
                     ),
                   ],
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.picture_as_pdf,
+                        const Icon(Icons.picture_as_pdf,
                             size: 30, color: Colors.blueAccent),
-                        SizedBox(width: 10),
-                        Text('5 ',
+                        const SizedBox(width: 10),
+                        const Text('5 ',
                             style: TextStyle(
                                 fontSize: 10, fontWeight: FontWeight.bold)),
                         Text('PDFs',
@@ -2095,16 +2095,16 @@ learningGoals(context) {
                     ),
                   ],
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.question_answer,
+                        const Icon(Icons.question_answer,
                             size: 30, color: Colors.blueAccent),
-                        SizedBox(width: 10),
-                        Text('50 ',
+                        const SizedBox(width: 10),
+                        const Text('50 ',
                             style: TextStyle(
                                 fontSize: 10, fontWeight: FontWeight.bold)),
                         Text('MCQs',
@@ -2126,24 +2126,24 @@ learningGoals(context) {
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'Total Study Time: 30 hours',
               style: TextStyle(
                 fontSize: 10,
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'Total Remaining Day: 15',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'Avg Time/Day: 2 hours',
               style: TextStyle(
                 fontSize: 16,
@@ -2232,7 +2232,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                 Expanded(
                   child: Row(
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 33,
                         backgroundColor: ColorPage.white,
                         child: CircleAvatar(
@@ -2240,7 +2240,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                           // backgroundImage: AssetImage('assets/sorojda.png'),
                         ),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2253,7 +2253,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                                     onPressed: () {
                                       Get.back();
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.arrow_back_ios_rounded,
                                       color: Colors.white,
                                     ))
@@ -2292,11 +2292,11 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     onTap: () {
                       Get.to(MyAccountScreen());
                     },
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.account_circle_outlined,
                       color: ColorPage.colorblack,
                     ),
-                    trailing: Icon(
+                    trailing: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 15,
                       color: Colors.grey,
@@ -2305,12 +2305,12 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     title: "Packages",
                     onTap: () {
                       Get.to(
-                        Mobile_Package_List(),
+                        const Mobile_Package_List(),
                       );
                     },
-                    leading: Icon(Icons.work_outline_rounded,
+                    leading: const Icon(Icons.work_outline_rounded,
                         color: ColorPage.colorblack),
-                    trailing: Icon(
+                    trailing: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 15,
                       color: Colors.grey,
@@ -2322,9 +2322,9 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                         ListviewPackage(),
                       );
                     },
-                    leading: Icon(Icons.add_shopping_cart_rounded,
+                    leading: const Icon(Icons.add_shopping_cart_rounded,
                         color: ColorPage.colorblack),
-                    trailing: Icon(
+                    trailing: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 15,
                       color: Colors.grey,
@@ -2335,9 +2335,9 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                       // enterActivationKey(context, getx.loginuserdata[0].token);
                       widget.ontapActivation();
                     },
-                    leading: Icon(Icons.ads_click_sharp,
+                    leading: const Icon(Icons.ads_click_sharp,
                         color: ColorPage.colorblack),
-                    trailing: Icon(
+                    trailing: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 15,
                       color: Colors.grey,
@@ -2367,11 +2367,11 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                       shape: ContinuousRectangleBorder(
                           borderRadius: BorderRadius.circular(27)),
                       tileColor: const Color.fromARGB(255, 255, 212, 199),
-                      leading: Icon(
+                      leading: const Icon(
                         Icons.logout_rounded,
                         color: Colors.red,
                       ),
-                      title: Text(
+                      title: const Text(
                         'Logout',
                         style: TextStyle(
                           color: ColorPage.colorblack,
@@ -2379,7 +2379,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                       dense: true,
                     ),
                   ),
@@ -2399,7 +2399,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                         fontWeight: FontWeight.bold,
                         color: Colors.grey.shade400),
                   ),
-                  SizedBox(
+                  const SizedBox(
                       height:
                           4), // Add some spacing between the text and the line
                   Divider(
@@ -2407,7 +2407,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     color: Colors.grey
                         .shade200, // Change the color of the line if needed
                   ),
-                  SizedBox(height: 8), // Add spacing before the content below
+                  const SizedBox(height: 8), // Add spacing before the content below
 
                   FutureBuilder(
                       future: getSocialMediaIcons(
@@ -2434,14 +2434,14 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                        height:
+                                        height:  
                                             snapshot.data!.length > 4 ? 20 : 25,
                                         width:
                                             snapshot.data!.length > 4 ? 20 : 25,
-                                        child: SvgPicture.string(
+                                        child: SvgPicture.string(       
                                             snapshot.data![index].icon),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 5,
                                       ),
                                       Text(
@@ -2457,7 +2457,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                             ),
                           );
                         } else {
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
                       }),
 
@@ -2538,7 +2538,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
           Obx(
             () => Column(
               children: [
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Opacity(
@@ -2550,7 +2550,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Row(
@@ -2566,7 +2566,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 60,
           )
         ],
@@ -2585,18 +2585,18 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
       animationType: AnimationType.fromTop,
       isCloseButton: false,
       isOverlayTapDismiss: true,
-      alertPadding: EdgeInsets.only(top: 200),
-      descStyle: TextStyle(),
-      animationDuration: Duration(milliseconds: 400),
+      alertPadding: const EdgeInsets.only(top: 200),
+      descStyle: const TextStyle(),
+      animationDuration: const Duration(milliseconds: 400),
       alertBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: Colors.grey),
+        side: const BorderSide(color: Colors.grey),
       ),
-      titleStyle: TextStyle(
-          color: const Color.fromARGB(255, 243, 33, 33),
+      titleStyle: const TextStyle(
+          color: Color.fromARGB(255, 243, 33, 33),
           fontWeight: FontWeight.bold),
-      constraints: BoxConstraints.expand(width: 350),
-      overlayColor: Color(0x55000000),
+      constraints: const BoxConstraints.expand(width: 350),
+      overlayColor: const Color(0x55000000),
       alertElevation: 0,
       alertAlignment: Alignment.center,
     );
@@ -2610,19 +2610,19 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
       buttons: [
         DialogButton(
           width: 150,
-          child: Text("Cancel",
+          child: const Text("Cancel",
               style: TextStyle(color: Colors.white, fontSize: 18)),
-          highlightColor: Color.fromARGB(255, 203, 46, 46),
+          highlightColor: const Color.fromARGB(255, 203, 46, 46),
           onPressed: () {
             Navigator.pop(context);
           },
-          color: Color.fromARGB(255, 139, 19, 19),
+          color: const Color.fromARGB(255, 139, 19, 19),
         ),
         DialogButton(
           width: 150,
-          highlightColor: Color.fromARGB(255, 2, 2, 60),
+          highlightColor: const Color.fromARGB(255, 2, 2, 60),
           child:
-              Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
+              const Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
           onPressed: () async {
             await logoutFunction(context, getx.loginuserdata[0].token);
             Navigator.pop(context);
@@ -2636,7 +2636,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
 
             getx.loginuserdata.clear();
 
-            Get.offAll(() => Mobilelogin());
+            Get.offAll(() => const Mobilelogin());
           },
           color: const Color.fromARGB(255, 1, 12, 31),
         ),
@@ -2725,7 +2725,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                 width: MediaQuery.of(context).size.width,
                 child: InkWell(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
+                    padding: const EdgeInsets.symmetric(vertical: 0),
                     child: CarouselSlider(
                       items: widget.imageUrl.map((item) {
                         return InkWell(
@@ -2738,7 +2738,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Container(
                                 // padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     // borderRadius: BorderRadius.circular(20),
                                     // gradient: LinearGradient(
                                     //   begin: Alignment.centerLeft,
@@ -2769,7 +2769,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                                               },
                                             ),
                                           )
-                                        : Center(
+                                        : const Center(
                                             child: Text('Image not found'),
                                           )
                                     : HeadingBoxContent(
@@ -2801,7 +2801,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                 width: MediaQuery.of(context).size.width,
                 child: InkWell(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
+                    padding: const EdgeInsets.symmetric(vertical: 0),
                     child: CarouselSlider(
                       items: widget.package.map((item) {
                         print(item.documentUrl);
@@ -2809,7 +2809,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                           padding: const EdgeInsets.all(0.0),
                           child: Container(
                               // padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   // borderRadius: BorderRadius.circular(20),
                                   // gradient: LinearGradient(
                                   //   begin: Alignment.centerLeft,
@@ -2888,7 +2888,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                           }).toList(),
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
         ),
       ],
     );
@@ -2916,8 +2916,8 @@ class HeadingBoxContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle style = TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
-    TextStyle styleb = TextStyle(fontFamily: 'AltoneBold', fontSize: 20);
+    TextStyle style = const TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
+    TextStyle styleb = const TextStyle(fontFamily: 'AltoneBold', fontSize: 20);
     return LayoutBuilder(builder: (context, constraints) {
       return isImage && imagePosition == 'right'
           ? Row(
@@ -2959,7 +2959,7 @@ class HeadingBoxContent extends StatelessWidget {
                     child: Container(
                       child: HtmlWidget(
                         title ?? "",
-                        textStyle: TextStyle(color: Colors.white),
+                        textStyle: const TextStyle(color: Colors.white),
                       ),
                     )),
 
@@ -2989,7 +2989,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
 //bottombar list
     _children = [
       DashBoardMobile(),
-      Mobile_Package_List(),
+      const Mobile_Package_List(),
       ListviewPackage(),
       MyAccountScreen(),
     ];
@@ -3006,7 +3006,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
       if (notificationCounter <= 2) {
         var status = await Permission.notification.status;
         if (status.isDenied) {
-          Future.delayed(Duration(seconds: 5)).then((v) {
+          Future.delayed(const Duration(seconds: 5)).then((v) {
             notificationPermissionRequest(context);
           });
           await prefs.setInt('notificationCounter', notificationCounter + 1);
@@ -3015,7 +3015,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
     } else {
       var status = await Permission.notification.status;
       if (status.isDenied) {
-        Future.delayed(Duration(seconds: 5)).then((v) {
+        Future.delayed(const Duration(seconds: 5)).then((v) {
           notificationPermissionRequest(context);
         });
         await prefs.setInt('notificationCounter', 1);
@@ -3026,7 +3026,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
   notificationPermissionRequest(context) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 15),
+      duration: const Duration(seconds: 15),
       showCloseIcon: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -3066,7 +3066,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
                   "Your notification permission is restricted, turn on in app setings");
             }
           }),
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
     ));
   }
 
@@ -3087,7 +3087,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
 
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -3095,7 +3095,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
 
                 openAppSettings();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -3122,11 +3122,11 @@ class _HomePageMobileState extends State<HomePageMobile> {
                   onPressed: () {
                     _scrollController.animateTo(
                       -500, // Scroll to the event section
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
                   },
-                  child: Icon(Icons.keyboard_arrow_up_rounded),
+                  child: const Icon(Icons.keyboard_arrow_up_rounded),
                 ),
               )
             : null,
@@ -3143,42 +3143,46 @@ class _HomePageMobileState extends State<HomePageMobile> {
         //   ],
         // ),
 
-        bottomNavigationBar: g.GlassBox(
+        bottomNavigationBar:
+        Container(
+          // decoration: const BoxDecoration(border: Border(top: BorderSide(width: 1,color: Colors.black45))),
           child: Obx(
-            () => NavigationBar(
-              backgroundColor: Colors.transparent,
-              onDestinationSelected: (int index) {
-                // setState(() {
-                _currentIndex.value = index;
-                // });
-              },
-              indicatorColor: Colors.transparent,
-              selectedIndex: _currentIndex.value,
-              destinations: const <Widget>[
-                NavigationDestination(
-                  selectedIcon: Icon(Icons.home_rounded),
-                  icon: Icon(Icons.home_outlined),
-                  label: 'Home',
-                ),
-                NavigationDestination(
-                  selectedIcon: Icon(Icons.work),
-                  icon: Icon(Icons.work_outline),
-                  label: 'Packages',
-                ),
-                NavigationDestination(
-                  selectedIcon: Icon(Icons.shopping_cart),
-                  icon: Icon(Icons.shopping_cart_outlined),
-                  label: 'Store',
-                ),
-                NavigationDestination(
-                  selectedIcon: Icon(Icons.person),
-                  icon: Icon(Icons.person_outline_outlined),
-                  label: 'Profile',
-                ),
-              ],
+              () => NavigationBar(
+                elevation: 5,
+                backgroundColor: const Color.fromARGB(255, 255, 254, 252),
+                onDestinationSelected: (int index) {
+                  // setState(() {
+                  _currentIndex.value = index;
+                  // });
+                },
+                indicatorColor: Colors.amberAccent.withAlpha(200),
+                selectedIndex: _currentIndex.value,
+                destinations: const <Widget>[
+                  NavigationDestination(
+                    selectedIcon: Icon(Icons.home_rounded),
+                    icon: Icon(Icons.home_outlined),
+                    label: 'Home',
+                  ),
+                  NavigationDestination(
+                    selectedIcon: Icon(Icons.work),
+                    icon: Icon(Icons.work_outline),
+                    label: 'Packages',
+                  ),
+                  NavigationDestination(
+                    selectedIcon: Icon(Icons.shopping_cart),
+                    icon: Icon(Icons.shopping_cart_outlined),
+                    label: 'Store',
+                  ),
+                  NavigationDestination(
+                    selectedIcon: Icon(Icons.person),
+                    icon: Icon(Icons.person_outline_outlined),
+                    label: 'Profile',
+                  ),
+                ],
+              ),
             ),
-          ),
         ),
+        
       ),
     );
   }
