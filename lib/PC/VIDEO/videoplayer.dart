@@ -2406,8 +2406,8 @@ class _AskDoubtState extends State<AskDoubt> {
             "VideoId": answer['VideoId'].toString(),
             "IsApprove": answer['IsApprove'].toString(),
             "AnswerByFacultyName": answer['AnswerByFacultyName'].toString(),
-            "AnswerDocumentUrl": answer['AnswerDocumentId'].toString(),
-            "QuestionDocumentUrl": answer["QuestionDocumentId"]
+            "AnswerDocumentUrl": answer['AnswerDocumentUrl'].toString(),
+            "QuestionDocumentUrl": answer["QuestionDocumentUrl"].toString()
           };
           getx.askDoubtanswermessages.add(data);
         });
@@ -2519,13 +2519,16 @@ class _AskDoubtState extends State<AskDoubt> {
 
             if (_selectedImage != null)
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Image.file(
                     _selectedImage!,
-                    width: 150,
-                    height: 150,
+                    width: Platform.isAndroid ? 150 : 500,
+                    height: Platform.isAndroid ? 150 : 300,
                     fit: BoxFit.contain,
+                  ),
+                  SizedBox(
+                    width: 20,
                   ),
                   ElevatedButton(
                     onPressed: () async {

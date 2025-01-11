@@ -63,7 +63,7 @@ class _DthDashboardState extends State<DthDashboard> {
   @override
   void initState() {
     Future.microtask(() {
-      getNotificationDetails(context, getx.loginuserdata[0].token); 
+      getNotificationDetails(context, getx.loginuserdata[0].token);
       getHomePageBannerImage(context, getx.loginuserdata[0].token);
       isTokenValid(getx.loginuserdata[0].token);
       if (getx.isInternet.value) {
@@ -410,13 +410,15 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                             ),
                         ],
                         if (freePackages.isNotEmpty) ...[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: Text(
-                              'Free',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                          Container(
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Text(
+                                'Free',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           for (int i = 0; i < freePackages.length; i++)
@@ -581,8 +583,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                             const SizedBox(height: 5),
                             Text(
                               "Version ${version.value}",
-                              style:
-                                  const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -675,8 +677,7 @@ class _DashBoardRightState extends State<DashBoardRight> {
     "Welcome to ${getFranchiseNameFromTblSetting()}",
     "Powered by our Creativity"
   ];
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextStyle style = const TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
 
@@ -688,102 +689,136 @@ class _DashBoardRightState extends State<DashBoardRight> {
     franchaiseName = getFranchiseNameFromTblSetting();
     super.initState();
   }
+
   String franchaiseName = "";
   @override
   Widget build(BuildContext context) {
     String username =
         getx.loginuserdata[0].firstName + "" + getx.loginuserdata[0].lastName;
-  // String dropdownValue = list.first;
-bool _customTileExpanded = false;
+    // String dropdownValue = list.first;
+    bool _customTileExpanded = false;
 
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(
-child: Column(
-  children: [
-    Row(children: [
-      const SizedBox(width: 20,),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text('Notifications',style: FontFamily.styleb,),
-      )],),
-    FutureBuilder(
-      future: getAllTblNotifications(),
-      builder: (context,snapshot) {
-        if(snapshot.hasData){
-         return snapshot.data!.isNotEmpty ? 
-         Expanded(
-          child: ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: 
-          (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Material(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blueAccent.shade100,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                const SizedBox(
+                  width: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Notifications',
+                    style: FontFamily.styleb,
+                  ),
+                )
+              ],
+            ),
+            FutureBuilder(
+                future: getAllTblNotifications(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return snapshot.data!.isNotEmpty
+                        ? Expanded(
+                            child: ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.blueAccent.shade100,
 
-                child: ExpansionTile(
-                  shape: Border.all(color: Colors.transparent),
-                  leading: const Image(image: AssetImage(logopath),), 
-          title: Text(snapshot.data![index]['NotificationTitle'],style: FontFamily.styleb.copyWith(fontSize: 16),),
-          subtitle: HtmlWidget(snapshot.data![index]['NotificationBody']),
-          trailing: Icon(
-            _customTileExpanded
-                ? Icons.arrow_drop_down_circle
-                : Icons.arrow_drop_down,
-          ),
-          children: <Widget>[
-  SizedBox(
-    // height: 200, 
-    // width: 200,
-    child:
-    snapshot.data![index]['NotificationImageUrl'] == "" ? ListTile(title: HtmlWidget(snapshot.data![index]['NotificationBody'],)
-    ) :
-     File(snapshot.data![index]['NotificationImageUrl']).existsSync() ? 
-     Image.file(
-      
-      File(snapshot.data![index]['NotificationImageUrl']),
-      height: 300,
-      ) 
-     : ListTile(title: HtmlWidget(snapshot.data![index]['NotificationBody'],)
-    )
-  ),
-],
-          onExpansionChanged: (bool expanded) {
-            setState(() {
-              _customTileExpanded = expanded;  
-            });
-          },
+                                    child: ExpansionTile(
+                                      shape:
+                                          Border.all(color: Colors.transparent),
+                                      leading: const Image(
+                                        image: AssetImage(logopath),
+                                      ),
+                                      title: Text(
+                                        snapshot.data![index]
+                                            ['NotificationTitle'],
+                                        style: FontFamily.styleb
+                                            .copyWith(fontSize: 16),
+                                      ),
+                                      subtitle: HtmlWidget(snapshot.data![index]
+                                          ['NotificationBody']),
+                                      trailing: Icon(
+                                        _customTileExpanded
+                                            ? Icons.arrow_drop_down_circle
+                                            : Icons.arrow_drop_down,
+                                      ),
+                                      children: <Widget>[
+                                        SizedBox(
+                                            // height: 200,
+                                            // width: 200,
+                                            child: snapshot.data![index][
+                                                        'NotificationImageUrl'] ==
+                                                    ""
+                                                ? ListTile(
+                                                    title: HtmlWidget(
+                                                    snapshot.data![index]
+                                                        ['NotificationBody'],
+                                                  ))
+                                                : File(snapshot.data![index][
+                                                            'NotificationImageUrl'])
+                                                        .existsSync()
+                                                    ? Image.file(
+                                                        File(snapshot
+                                                                .data![index][
+                                                            'NotificationImageUrl']),
+                                                        height: 300,
+                                                      )
+                                                    : ListTile(
+                                                        title: HtmlWidget(
+                                                        snapshot.data![index][
+                                                            'NotificationBody'],
+                                                      ))),
+                                      ],
+                                      onExpansionChanged: (bool expanded) {
+                                        setState(() {
+                                          _customTileExpanded = expanded;
+                                        });
+                                      },
+                                    ),
+
+                                    // child: ListTile(
+                                    //   onTap: (){},
+                                    //   title: Text(snapshot.data![index]['NotificationTitle'],style: FontFamily.styleb.copyWith(fontSize: 16),),
+                                    // // subtitle: Text(snapshot.data![index]['NotificationBody'],style: FontFamily.style.copyWith(fontSize: 12),),
+                                    // subtitle: HtmlWidget(snapshot.data![index]['NotificationTitle']),
+                                    // leading: const Image(image: AssetImage(logopath),),
+                                    // trailing: const Icon(Icons.arrow_forward_ios_rounded,size: 15,),
+                                    // ),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : Expanded(
+                            child: Center(
+                                child: Text(
+                            'You don’t have any notifications at the moment.',
+                            textAlign: TextAlign.center,
+                            style: FontFamily.styleb
+                                .copyWith(fontSize: 10, color: Colors.grey),
+                          )));
+                  } else {
+                    return Expanded(
+                        child: Center(
+                            child: Text(
+                      'You don’t have any notifications at the moment.',
+                      textAlign: TextAlign.center,
+                      style: FontFamily.styleb
+                          .copyWith(fontSize: 10, color: Colors.grey),
+                    )));
+                  }
+                })
+          ],
         ),
-
-                // child: ListTile(
-                //   onTap: (){},
-                //   title: Text(snapshot.data![index]['NotificationTitle'],style: FontFamily.styleb.copyWith(fontSize: 16),),
-                // // subtitle: Text(snapshot.data![index]['NotificationBody'],style: FontFamily.style.copyWith(fontSize: 12),),
-                // subtitle: HtmlWidget(snapshot.data![index]['NotificationTitle']),
-                // leading: const Image(image: AssetImage(logopath),), 
-                // trailing: const Icon(Icons.arrow_forward_ios_rounded,size: 15,),
-                // ),
-              ),
-            );
-          },
-          ),
-        ) : Expanded(child: Center(child: Text('You don’t have any notifications at the moment.',
-        textAlign: TextAlign.center,
-        style: FontFamily.styleb.copyWith(fontSize: 10,color: Colors.grey),)));
-        }
-        else{
-          return Expanded(child: Center(child: Text('You don’t have any notifications at the moment.',
-        textAlign: TextAlign.center,
-        style: FontFamily.styleb.copyWith(fontSize: 10,color: Colors.grey),)));
-        }
-
-      }
-    )
-    
-  ],
-),
       ),
       body: Stack(
         children: [
@@ -808,7 +843,7 @@ child: Column(
                           // title: Container(
                           //   width: 400,
                           //   child: TextFormField(
-                          //     decoration: InputDecoration( 
+                          //     decoration: InputDecoration(
                           //       hintText: 'Search',
                           //       hintStyle: TextStyle(color: ColorPage.grey),
                           //       fillColor: ColorPage.white,
@@ -829,9 +864,8 @@ child: Column(
                                 children: [
                                   IconButton(
                                     onPressed: () {
-                                        
-    _scaffoldKey.currentState!.openEndDrawer();
-
+                                      _scaffoldKey.currentState!
+                                          .openEndDrawer();
                                     },
                                     icon: const Icon(
                                       Icons.notifications_none_rounded,
@@ -901,7 +935,7 @@ child: Column(
                     ],
                   ),
                 ),
-                HeadingBox(), 
+                HeadingBox(),
                 FutureBuilder(
                   future: getAllTblImages(),
                   builder: (context, snapshot) {
@@ -1034,8 +1068,7 @@ child: Column(
         side: const BorderSide(color: Colors.grey),
       ),
       titleStyle: const TextStyle(
-          color: Color.fromARGB(255, 243, 33, 33),
-          fontWeight: FontWeight.bold),
+          color: Color.fromARGB(255, 243, 33, 33), fontWeight: FontWeight.bold),
       constraints: const BoxConstraints.expand(width: 350),
       overlayColor: const Color(0x55000000),
       alertElevation: 0,
@@ -1062,8 +1095,8 @@ child: Column(
         DialogButton(
           width: 150,
           highlightColor: const Color.fromARGB(255, 2, 2, 60),
-          child:
-              const Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
+          child: const Text("Yes",
+              style: TextStyle(color: Colors.white, fontSize: 18)),
           onPressed: () async {
             Navigator.pop(context);
             await logoutFunction(
@@ -1562,7 +1595,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: Stack(
                 children: [
                   Container(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 20),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(
@@ -1727,8 +1761,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                   children: eventType.map((location) {
                                     double iconSize = 15;
                                     return Padding(
-                                      padding:
-                                          const EdgeInsets.symmetric(horizontal: 5),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
                                       child: location == "Video"
                                           ? Icon(
                                               Icons.video_library,
@@ -1888,7 +1922,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               backgroundColor: WidgetStatePropertyAll(
                                   appointment.location == "Live"
                                       ? const Color.fromARGB(255, 21, 130, 29)
-                                      : const Color.fromARGB(255, 255, 106, 95))),
+                                      : const Color.fromARGB(
+                                          255, 255, 106, 95))),
                           onPressed: () {
                             if (appointment.location == "Live" ||
                                 appointment.location == "YouTube") {
@@ -1898,7 +1933,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       (appointment.resourceIds![0] as Map<
                                               String, dynamic>)['SessionId']
                                           .toString(),
-                                      getx.todaymeeting); 
+                                      getx.todaymeeting);
                                   print(meeting!.topicName.toString() +
                                       "meeting");
                                   if (meeting != null) {
@@ -2114,8 +2149,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       desc: "Make sure you have a proper internet Connection.  ",
       buttons: [
         DialogButton(
-          child:
-              const Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
+          child: const Text("OK",
+              style: TextStyle(color: Colors.white, fontSize: 18)),
           highlightColor: const Color.fromRGBO(3, 77, 59, 1),
           onPressed: () {
             Navigator.pop(context);
@@ -2571,89 +2606,99 @@ class _HeadingBoxState extends State<HeadingBox> {
           width: MediaQuery.of(context).size.width,
           child: InkWell(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-              child: FutureBuilder(
-  future: getAllTblImages(),
-  builder: (context, snapshot) {
-    if (snapshot.hasData) {
-      // Filter the items before mapping
-      final filteredItems = snapshot.data!
-          .where((item) =>
-              item['ImageType'] != null &&
-              item['ImageType'].toString().toLowerCase().contains('banner'))
-          .toList();
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+                child: FutureBuilder(
+                  future: getAllTblImages(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // Filter the items before mapping
+                      final filteredItems = snapshot.data!
+                          .where((item) =>
+                              item['ImageType'] != null &&
+                              item['ImageType']
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains('banner'))
+                          .toList();
 
-      // Check if filtered items are empty
-      if (filteredItems.isEmpty) {
-        return const Center(
-          child: Text(
-            'No banners available',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        );
-      }
+                      // Check if filtered items are empty
+                      if (filteredItems.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'No banners available',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      }
 
-      return CarouselSlider(
-        items: filteredItems.map((item) {
-          return InkWell(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: item["BannerImagePosition"] == "middle"
-                    ? item["BannerImagePosition"] != null
-                        ? File(item['ImageUrl']).existsSync() ?
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10), 
-                            child: Image.file(
-                              File(item['ImageUrl']!),
-                              fit: BoxFit.fill,
-                              width: double.infinity,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Center(
-                                  child: Text(
-                                    'Image failed',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold, 
-                                        fontSize: 16),
-                                  ),
-                                );
-                              },
+                      return CarouselSlider(
+                        items: filteredItems.map((item) {
+                          return InkWell(
+                            onTap: () {},
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: item["BannerImagePosition"] == "middle"
+                                    ? item["BannerImagePosition"] != null
+                                        ? File(item['ImageUrl']).existsSync()
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Image.file(
+                                                  File(item['ImageUrl']!),
+                                                  fit: BoxFit.fill,
+                                                  width: double.infinity,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return const Center(
+                                                      child: Text(
+                                                        'Image failed',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 16),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              )
+                                            : const Center(
+                                                child: Text('Image not found'),
+                                              )
+                                        : const Center(
+                                            child: CircularProgressIndicator())
+                                    : HeadingBoxContent(
+                                        imagePath: item['ImageUrl'],
+                                        imagePosition:
+                                            item["BannerImagePosition"],
+                                        isImage: true,
+                                        title: item["BannerContent"],
+                                      ),
+                              ),
                             ),
-                          )
-                          : const Center(child: Text('Image not found'),)
-                        : const Center(child: CircularProgressIndicator())
-                    : HeadingBoxContent(
-                        imagePath: item['ImageUrl'],
-                        imagePosition: item["BannerImagePosition"],
-                        isImage: true,
-                        title: item["BannerContent"],
-                      ),
-              ),
-            ),
-          );
-        }).toList(),
-        carouselController: carouselController,
-        options: CarouselOptions(
-          scrollPhysics: const BouncingScrollPhysics(),
-          autoPlay: true,
-          aspectRatio: 2,
-          viewportFraction: 0.98,
-          onPageChanged: (index, reason) {
-            currentIndex.value = index;
-          },
-        ),
-      );
-    } else {
-      return const Center(child: CircularProgressIndicator());
-    }
-  },
-)
-
-            ),
+                          );
+                        }).toList(),
+                        carouselController: carouselController,
+                        options: CarouselOptions(
+                          scrollPhysics: const BouncingScrollPhysics(),
+                          autoPlay: true,
+                          aspectRatio: 2,
+                          viewportFraction: 0.98,
+                          onPageChanged: (index, reason) {
+                            currentIndex.value = index;
+                          },
+                        ),
+                      );
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )),
           ),
         ),
         // : SizedBox(
@@ -2721,7 +2766,8 @@ class HeadingBoxContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle style = const TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
+    TextStyle style =
+        const TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
     TextStyle styleb = const TextStyle(fontFamily: 'AltoneBold', fontSize: 20);
     return SizedBox(
       height: 300,
@@ -2784,7 +2830,7 @@ class HeadingBoxContent extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 50),
                       child: Container(
                         child: HtmlWidget(
-                          title??"",
+                          title ?? "",
                           textStyle: const TextStyle(color: Colors.white),
                         ),
                       )),
@@ -2793,8 +2839,6 @@ class HeadingBoxContent extends StatelessWidget {
                 ],
               );
       }),
-
-      
     );
   }
 }

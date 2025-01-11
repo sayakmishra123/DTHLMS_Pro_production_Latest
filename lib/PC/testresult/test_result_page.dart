@@ -1,10 +1,13 @@
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/PC/testresult/indicator.dart';
+import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../CUSTOMDIALOG/customdialog.dart';
 
 class TestResultPage extends StatefulWidget {
@@ -16,6 +19,7 @@ class TestResultPage extends StatefulWidget {
   final double obtain;
   final double totalMarksRequired;
   final String theoryExamAnswerId;
+  final String examId;
 
   const TestResultPage({
     super.key,
@@ -27,6 +31,7 @@ class TestResultPage extends StatefulWidget {
     required this.obtain,
     required this.totalMarksRequired,
     required this.theoryExamAnswerId,
+    required this.examId,
   });
 
   @override
@@ -55,8 +60,24 @@ class _TestResultPageState extends State<TestResultPage> {
             Navigator.of(context).pop();
           },
           OnConfirm: () {
+            // Navigator.of(context).pop();
+            requestForRecheckAnswerSheet(
+                    context, getx.loginuserdata[0].token + "gg", widget.examId)
+                .then((value) {
+              if (value) {
+                onActionDialogBox("Requested", "Request send Successfully!",
+                    () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }, context, true);
+              } else {
+                onActionDialogBox("Request Failed!!", "", () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }, context, false);
+              }
+            });
             // recheckAnswerSheetRequest(context,getx.loginuserdata[0].token,widget.theoryExamAnswerId);
-            Navigator.of(context).pop();
           },
           btn1: 'Cancel',
           btn2: 'Submit',
@@ -178,10 +199,9 @@ class _TestResultPageState extends State<TestResultPage> {
                             children: [
                               Expanded(
                                   child: Column(
-                                                          
                                 children: [
                                   //  SizedBox(
-                                  //    height: 80, 
+                                  //    height: 80,
                                   //    width: 80,
                                   //    child: Image(image: AssetImage('assets/person.png')),
                                   //  ),
@@ -688,4 +708,27 @@ class AppColors {
   static const Color contentColorPink = Color(0xFFFF3AF2);
   static const Color contentColorRed = Color(0xFFE80054);
   static const Color contentColorCyan = Color(0xFF50E4FF);
+}
+
+onActionDialogBox(
+    String title, String subtitle, VoidCallback ontap, context, bool type) {
+  Alert(
+    context: context,
+    type: type ? AlertType.success : AlertType.warning,
+    style: AlertStyle(
+      titleStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      descStyle: FontFamily.font6,
+      isCloseButton: false,
+    ),
+    title: title,
+    desc: subtitle,
+    buttons: [
+      DialogButton(
+        child: Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
+        highlightColor: ColorPage.blue,
+        onPressed: ontap,
+        color: type ? Colors.green : const Color.fromARGB(255, 207, 43, 43),
+      ),
+    ],
+  ).show();
 }

@@ -2274,8 +2274,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 }
 
 logoutConfirmationBox(context) async {
-
-
   await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
@@ -2287,14 +2285,12 @@ logoutConfirmationBox(context) async {
           // confirmButtonColor: Colors.b,
           // dialogDecoration: BoxDecoration(c),
 
-          onConfirm: () async { 
-            await handleLogoutProcess(context).then((v){
-          if(Platform.isAndroid){
-              Navigator.pop(context); 
-          }
-
+          onConfirm: () async {
+            await handleLogoutProcess(context).then((v) {
+              if (Platform.isAndroid) {
+                Navigator.pop(context);
+              }
             });
-
           },
           type: ArtSweetAlertType.warning));
 
@@ -2340,25 +2336,24 @@ cantLaunchUrlAlert(BuildContext context) async {
         Navigator.pop(context);
       },
       type: ArtSweetAlertType.info,
-    ), 
+    ),
   );
 }
+
 Future<void> handleLogoutProcess(BuildContext context) async {
   if (getx.isInternet.value) {
     bool uploadSuccess = await _uploadRemainingData(context);
 
     if (uploadSuccess) {
-      await _performLogout(context); 
-
-    } else { 
+      await _performLogout(context);
+    } else {
       ClsErrorMsg.fnErrorDialog(
           context, 'Upload Error', "Failed to upload data!", "");
-          
     }
   } else {
     onNoInternetConnection(context, () {
       Get.back();
-    }); 
+    });
   }
 }
 
@@ -3734,6 +3729,9 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                                 .toString()),
                                                         theoryExamAnswerId:
                                                             "theoryExamAnswerId not done yeat",
+                                                        examId: snapshot
+                                                                .data![index]
+                                                            ['TheoryExamId'],
                                                       ));
                                             })
                                         : Text("Result not publish ")))

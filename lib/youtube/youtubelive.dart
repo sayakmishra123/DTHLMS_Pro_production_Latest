@@ -4,8 +4,10 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class YoutubeLive extends StatefulWidget {
   final String? link;
   final String? username;
+  final bool isLive;
 
-  const YoutubeLive(this.link, this.username, {Key? key}) : super(key: key);
+  const YoutubeLive(this.link, this.username, this.isLive, {Key? key})
+      : super(key: key);
 
   @override
   _YoutubeLiveState createState() => _YoutubeLiveState();
@@ -19,14 +21,14 @@ class _YoutubeLiveState extends State<YoutubeLive> {
 
     // Extract YouTube Video ID from the provided link
     final videoId = YoutubePlayer.convertUrlToId(widget.link ?? '') ?? '';
-    _controller = YoutubePlayerController( 
+    _controller = YoutubePlayerController(
       initialVideoId: videoId,
       flags: YoutubePlayerFlags(
         showLiveFullscreenButton: true,
 
         autoPlay: true,
         mute: false,
-        isLive: true, // Set this to true if playing a live video
+        isLive: widget.isLive, // Set this to true if playing a live video
         disableDragSeek: false,
         enableCaption: false,
         useHybridComposition: true,
@@ -48,7 +50,7 @@ class _YoutubeLiveState extends State<YoutubeLive> {
       player: YoutubePlayer(
         // aspectRatio: 50,
 
-        width: MediaQuery.of(context).size.width-40,
+        width: MediaQuery.of(context).size.width - 40,
         controller: _controller,
 
         showVideoProgressIndicator: true,
@@ -65,7 +67,9 @@ class _YoutubeLiveState extends State<YoutubeLive> {
       ),
       builder: (context, player) {
         return Container(
-          height:orientation==Orientation.portrait? MediaQuery.of(context).size.height / 1.7:MediaQuery.of(context).size.height / 1.7,
+          height: orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.height / 1.7
+              : MediaQuery.of(context).size.height / 1.7,
           child: player,
         );
       },

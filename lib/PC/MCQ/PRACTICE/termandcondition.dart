@@ -23,7 +23,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
   final String duration;
   final String sheduletime;
   final String documnetPath;
-  final String paperId; 
+  final String paperId;
   final bool isEncrypted;
 
   bool windowsddevice = Platform.isWindows ? true : false;
@@ -35,11 +35,12 @@ class TheoryExamTermAndCondition extends StatelessWidget {
       required this.paperName,
       required this.duration,
       required this.sheduletime,
-      required this.paperId, required this.isEncrypted});
+      required this.paperId,
+      required this.isEncrypted});
   RxBool checkbox = false.obs;
 
   String formatDateString(String dateString, String type) {
-    print(dateString+"//"+type);
+    print(dateString + "//" + type);
     // Parse the input string into a DateTime object
     try {
       DateTime dateTime = DateTime.parse(dateString);
@@ -232,7 +233,8 @@ class TheoryExamTermAndCondition extends StatelessWidget {
                                     title: paperName,
                                     duration: duration,
                                     paperId: paperId,
-                                    issubmit: true, isEncrypted: isEncrypted,
+                                    issubmit: true,
+                                    isEncrypted: isEncrypted,
                                   ));
                         }
                         if (examcode == 250) {
@@ -292,6 +294,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
                                             totalMarksRequired: double.parse(
                                                 value['PassMarks'].toString()),
                                             theoryExamAnswerId: '12',
+                                            examId: paperId,
                                           ));
                                 }
                               });

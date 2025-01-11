@@ -434,8 +434,8 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
   }
 
   late final Dio dio;
-
   double downloadProgress = 0.0;
+
   int lastTapVideoIndex = -1; // Track the last tapped item index
   DateTime lastTapvideoTime = DateTime.now();
   var color = Color.fromARGB(255, 102, 112, 133);
@@ -986,7 +986,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   late final Dio dio;
   // String? _videoFilePath;
-  RxList<double> downloadProgress = List<double>.filled(20, 0.0).obs;
+  RxList<double> downloadProgressList = List<double>.filled(20, 0.0).obs;
 
   @override
   void dispose() {
@@ -1562,10 +1562,89 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return videosDirPath;
   }
 
-  Future<void> startDownloadvideoOnCalender(int index, String Link,
+  // Future<void> startDownloadvideoOnCalender(int index, String Link,
+  //     String title, String packageId, String fileid) async {
+  //   if (Link == "0") {
+  //     print("Video link is $Link");
+  //     return;
+  //   }
+  //   final appDocDir;
+  //   try {
+  //     var prefs = await SharedPreferences.getInstance();
+  //     if (Platform.isAndroid) {
+  //       final path = await getApplicationDocumentsDirectory();
+  //       appDocDir = path.path;
+  //     } else {
+  //       appDocDir = await getVideosDirectoryPath();
+  //     }
+  //     getx.defaultPathForDownloadVideo.value =
+  //         appDocDir + '/$origin' + '/Downloaded_videos';
+  //     prefs.setString("DefaultDownloadpathOfVieo",
+  //         appDocDir + '/$origin' + '/Downloaded_videos');
+  //     print(getx.userSelectedPathForDownloadVideo.value +
+  //         " it is user selected path");
+
+  //     String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
+  //         ? appDocDir + '/$origin' + '/Downloaded_videos' + '/$title'
+  //         : getx.userSelectedPathForDownloadVideo.value + '\\$title';
+
+  //     String tempPath = appDocDir + '/temp' + '\\$title';
+
+  //     await Directory(appDocDir + '/temp').create(recursive: true);
+
+  //     await dio.download(
+  //       Link,
+  //       tempPath,
+  //       onReceiveProgress: (received, total) {
+  //         if (total != -1) {
+  //           double progress = (received / total * 100);
+  //           downloadProgress[index] = progress;
+  //           // No need for setState here since downloadProgress is an RxList
+  //         }
+  //       },
+  //     );
+
+  //     // After download is complete, copy the file to the final location
+  //     final tempFile = File(tempPath);
+  //     final finalFile = File(savePath);
+
+  //     // Ensure the final directory exists
+  //     await finalFile.parent.create(recursive: true);
+
+  //     // Copy the file to the final path
+  //     await tempFile.copy(savePath);
+
+  //     // Delete the temporary file
+  //     await tempFile.delete();
+
+  //     // Update reactive variables directly
+  //     getx.playingVideoId.value = fileid;
+  //     getx.playLink.value = savePath;
+
+  //     print('$savePath video saved to this location');
+
+  //     // Insert the downloaded file data into the database
+  //     await insertDownloadedFileData(
+  //         packageId, fileid, savePath, 'Video', title);
+
+  //     insertVideoDownloadPath(
+  //       fileid,
+  //       packageId,
+  //       savePath,
+  //       context,
+  //     );
+  //   } catch (e) {
+  //     writeToFile(e, "startDownload2");
+  //     print(e.toString() + " error on download");
+  //   }
+  // }
+  CancelToken cancelToken = CancelToken();
+  RxDouble downloadProgress = 0.0.obs;
+
+  Future<void> startDownloadvideoOnCalender(int index, String link,
       String title, String packageId, String fileid) async {
-    if (Link == "0") {
-      print("Video link is $Link");
+    if (link == "0") {
+      print("Video link is $link");
       return;
     }
     final appDocDir;
@@ -1592,17 +1671,23 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
       await Directory(appDocDir + '/temp').create(recursive: true);
 
+      cancelToken = CancelToken();
+      downloadProgress.value = 0.0;
+
       await dio.download(
-        Link,
+        link,
         tempPath,
+        cancelToken: cancelToken, // Pass the CancelToken here
         onReceiveProgress: (received, total) {
           if (total != -1) {
             double progress = (received / total * 100);
-            downloadProgress[index] = progress;
-            // No need for setState here since downloadProgress is an RxList
+            downloadProgress.value = progress;
           }
         },
       );
+
+      // Remove the CancelToken after completion
+      // cancelTokens.remove(index);
 
       // After download is complete, copy the file to the final location
       final tempFile = File(tempPath);
@@ -1633,9 +1718,33 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         savePath,
         context,
       );
+    } on DioException catch (e) {
+      if (CancelToken.isCancel(e)) {
+        print("Download canceled!");
+      } else {
+        writeToFile(e, "startDownload2");
+        print(e.toString() + " error on download");
+      }
     } catch (e) {
-      writeToFile(e, "startDownload2");
-      print(e.toString() + " error on download");
+      // Handle any other exceptions that are not DioException
+      print(e.toString() + " unexpected error on download");
+    }
+  }
+
+  void cancelDownload(CancelToken cancelToken) {
+    if (!cancelToken.isCancelled) {
+      cancelToken.cancel("Download canceled by user.");
+      print("Download canceled.");
+      setState(() {
+        downloadProgress.value = 0.0;
+      });
+      Get.back();
+    } else {
+      print("Download was already canceled.");
+      setState(() {
+        downloadProgress.value = 0.0;
+      });
+      Get.back();
     }
   }
 
@@ -1653,18 +1762,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       image: Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Obx(() {
-          if (downloadProgress[index] < 100 && downloadProgress[index] > 0) {
+          if (downloadProgress.value < 100 && downloadProgress.value > 0) {
             return CircularPercentIndicator(
               radius: 40.0,
               lineWidth: 12.0,
-              percent: downloadProgress[index] / 100,
+              percent: downloadProgress.value / 100,
               center: Text(
-                "${downloadProgress[1].toInt()}%",
+                "${downloadProgress.value.toInt()}%",
                 style: TextStyle(fontSize: 10.0),
               ),
               progressColor: ColorPage.colorbutton,
             );
-          } else if (downloadProgress[index] == 100) {
+          } else if (downloadProgress.value == 100) {
             return Icon(
               Icons.download_done,
               size: 100,
@@ -1690,19 +1799,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           highlightColor: ColorPage.appbarcolor,
           onPressed: () {
             // Navigator.pop(context);
-            Get.back();
+            cancelDownload(cancelToken);
             // _pickImage();
           },
           color: const Color.fromARGB(255, 243, 33, 33),
         ),
         DialogButton(
           child: Obx(
-            () => Text(downloadProgress[index] == 100 ? "Play" : "Download",
+            () => Text(downloadProgress.value == 100 ? "Play" : "Download",
                 style: TextStyle(color: Colors.white, fontSize: 18)),
           ),
           highlightColor: ColorPage.appbarcolor,
           onPressed: () async {
-            if (downloadProgress[index] == 100) {
+            if (downloadProgress.value == 100) {
               print("hello");
               Get.back();
 

@@ -285,7 +285,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void checkIfEmulator(BuildContext context) async {
+  void checkIfEmulator(BuildContext context) async {  
     getx.isEmulator.value = await isEmulator();
     if (getx.isEmulator.value) {
       print('Running on a Virtule Device');

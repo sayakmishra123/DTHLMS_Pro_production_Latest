@@ -3481,3 +3481,43 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
     rethrow;
   }
 }
+
+Future<bool> requestForRecheckAnswerSheet(
+  BuildContext context,
+  String token,
+  String examid,
+) async {
+  Map<String, dynamic> data = {"ExamId": examid};
+  bool returnValue = false;
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.answerSheetRecheckRequestForTest),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+      returnValue = true;
+
+      return true;
+    } else if (res.statusCode == 401) {
+      onTokenExpire(context);
+    } else {
+      print('Error: ${res.body} ////////////////// recheckAnswerSheet');
+    }
+  } catch (e) {
+    print("Error: $e ////////// get recheckAnswerSheet");
+    writeToFile(e, 'recheckAnswerSheet');
+  }
+  return returnValue;
+}
