@@ -22,6 +22,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart' as img;
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
@@ -2338,6 +2339,27 @@ class _AskDoubtState extends State<AskDoubt> {
   // Declare a list to store the result
   List<Map<String, dynamic>> answersList = [];
 
+  final img.ImagePicker _picker = img.ImagePicker(); // Initialize image picker
+  File? _selectedImage; // Variable to store the selected image
+
+  // Method to pick an image
+  Future<void> pickImage() async {
+    try {
+      final img.XFile? image = await _picker.pickImage(
+        source: img.ImageSource.gallery,
+      ); // Open image picker
+
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+      Get.snackbar("Error", "Could not select image");
+    }
+  }
+
   // Declare a list to store the parsed result
 
   Future<void> sendMessage(int videoId, String msg) async {
@@ -2491,8 +2513,26 @@ class _AskDoubtState extends State<AskDoubt> {
                 },
               ),
             ),
-            if (isLoading.value)
-              CircularProgressIndicator(), // Show loading indicator
+            if (isLoading.value) CircularProgressIndicator(),
+
+            if (_selectedImage != null)
+              Column(
+                children: [
+                  Image.file(
+                    _selectedImage!,
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: const Text("Upload Image"),
+                  ),
+                ],
+              ),
+            // if (isLoading.value) const CircularProgressIndicator(),
+
+            // Show loading indicator
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -2505,12 +2545,27 @@ class _AskDoubtState extends State<AskDoubt> {
                       },
                       controller: msgController,
                       decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              sendMessage(int.parse(getx.playingVideoId.value),
-                                  msgController.text);
-                            },
-                            icon: Icon(Icons.send)),
+                        suffixIcon: Container(
+                          width: 100,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    pickImage();
+                                  },
+                                  icon:
+                                      Icon(Icons.add_photo_alternate_rounded)),
+                              IconButton(
+                                  onPressed: () {
+                                    sendMessage(
+                                        int.parse(getx.playingVideoId.value),
+                                        msgController.text);
+                                  },
+                                  icon: Icon(Icons.send)),
+                            ],
+                          ),
+                        ),
                         alignLabelWithHint: true,
                         hintText: 'Type a message...',
                         border: OutlineInputBorder(

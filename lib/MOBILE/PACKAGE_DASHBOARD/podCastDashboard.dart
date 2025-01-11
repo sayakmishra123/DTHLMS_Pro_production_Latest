@@ -31,12 +31,10 @@ class MobilePodCastDashBoard extends StatefulWidget {
   const MobilePodCastDashBoard({super.key});
 
   @override
-  State<MobilePodCastDashBoard> createState() =>
-      _MobilePodCastDashBoardState();
+  State<MobilePodCastDashBoard> createState() => _MobilePodCastDashBoardState();
 }
 
-class _MobilePodCastDashBoardState
-    extends State<MobilePodCastDashBoard> {
+class _MobilePodCastDashBoardState extends State<MobilePodCastDashBoard> {
   late ScrollController _scrollController;
   bool _showLeftButton = false;
   bool _showRightButton = true;
@@ -46,7 +44,6 @@ class _MobilePodCastDashBoardState
   void initState() {
     filteredChapterDetails = [
       ...getx.alwaysShowChapterDetailsOfVideo,
-   
     ];
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
@@ -287,12 +284,7 @@ class _MobilePodCastDashBoardState
                                             .alwaysShowChapterDetailsOfVideo
                                             .length);
                                       },
-
-
-                                      child:
-                                    
-
-                                          Padding(
+                                      child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
                                         child: Row(children: [
@@ -313,7 +305,6 @@ class _MobilePodCastDashBoardState
                                                     horizontal: 50),
                                               ),
                                             ),
-
                                             ClipPath(
                                               child: Container(
                                                 width: (() {
@@ -371,7 +362,6 @@ class _MobilePodCastDashBoardState
                                                 ),
                                               ),
                                             ),
-
                                             ClipPath(
                                               clipper: NavigationClipper(),
                                               child: Container(
@@ -388,8 +378,6 @@ class _MobilePodCastDashBoardState
                                                     horizontal: 50),
                                               ),
                                             ),
-
-                                       
                                           ],
                                         ]),
                                       ),
@@ -479,7 +467,7 @@ class _MobilePodCastDashBoardState
                                     padding: EdgeInsets.all(10),
                                     child: Obx(() {
                                       if (getx.alwaysShowChapterDetailsOfVideo
-                                              .isEmpty) {
+                                          .isEmpty) {
                                         return Center(
                                           child: Column(
                                             mainAxisAlignment:
@@ -504,8 +492,8 @@ class _MobilePodCastDashBoardState
 
                                       return GridView.builder(
                                         itemCount: getx
-                                                .alwaysShowChapterDetailsOfVideo
-                                                .length,
+                                            .alwaysShowChapterDetailsOfVideo
+                                            .length,
                                         scrollDirection: Axis.vertical,
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
@@ -516,8 +504,9 @@ class _MobilePodCastDashBoardState
                                           crossAxisSpacing: 10,
                                         ),
                                         itemBuilder: (context, index) {
-                                           return buildGridViewItem(
-                                                index, );
+                                          return buildGridViewItem(
+                                            index,
+                                          );
                                         },
                                       );
                                     }),
@@ -526,7 +515,7 @@ class _MobilePodCastDashBoardState
                                     padding: EdgeInsets.all(10),
                                     child: Obx(() {
                                       if (getx.alwaysShowChapterDetailsOfVideo
-                                              .isEmpty ) {
+                                          .isEmpty) {
                                         return Center(
                                           child: Column(
                                             mainAxisAlignment:
@@ -551,12 +540,11 @@ class _MobilePodCastDashBoardState
 
                                       return ListView.builder(
                                         itemCount: getx
-                                                .alwaysShowChapterDetailsOfVideo
-                                                .length,
+                                            .alwaysShowChapterDetailsOfVideo
+                                            .length,
                                         scrollDirection: Axis.vertical,
                                         itemBuilder: (context, index) {
-                                          return buildListViewItem(
-                                                index);
+                                          return buildListViewItem(index);
                                           //updated
                                         },
                                       );
@@ -687,7 +675,9 @@ class _MobilePodCastDashBoardState
     );
   }
 
-  Widget buildListViewItem(int index,) {
+  Widget buildListViewItem(
+    int index,
+  ) {
     return Container(
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -704,69 +694,7 @@ class _MobilePodCastDashBoardState
         color: selectedIndex == index ? ColorPage.colorbutton : ColorPage.white,
       ),
       child: MaterialButton(
-        onPressed: () 
-        {
-            cancelAllDownloads();
-
-            insertTblLocalNavigation(
-                    "ParentId",
-                    getx.alwaysShowChapterDetailsOfVideo[index]
-                        ['SectionChapterId'],
-                    getx.alwaysShowChapterDetailsOfVideo[index]
-                        ['SectionChapterName'])
-                .whenComplete(
-              () {
-                getLocalNavigationDetails();
-              },
-            );
-
-            // getx.isVideoDashBoard.value=false;
-            getChapterContents(int.parse(getx
-                .alwaysShowChapterDetailsOfVideo[index]['SectionChapterId']));
-            getChapterFiles(
-                parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
-                    ['SectionChapterId']),
-                'Podcast',
-                getx.selectedPackageId.value.toString());
-         
-
-            selectedIndex = index;
-
-            setState(() {});
-          
-        },
-        child: ListTile(
-          leading: Image.asset(
-                  "assets/folder8.png",
-                  width: 30,
-                ),
-          trailing: Icon(
-            Icons.arrow_forward_ios_sharp,
-            size: 16,
-            color:
-                selectedIndex == index ? ColorPage.white : ColorPage.colorblack,
-          ),
-          title: Text(
-           getx.alwaysShowChapterDetailsOfVideo[index]
-                    ['SectionChapterName'],
-            style: FontFamily.font9.copyWith(
-              fontWeight: FontWeight.bold,
-              color: selectedIndex == index
-                  ? ColorPage.white
-                  : ColorPage.colorblack,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildGridViewItem(int index) {
-    return InkWell(
-      enableFeedback: true,
-      overlayColor: WidgetStatePropertyAll(Colors.red),
-      onTap: () {
-         
+        onPressed: () {
           cancelAllDownloads();
 
           insertTblLocalNavigation(
@@ -789,12 +717,66 @@ class _MobilePodCastDashBoardState
                   ['SectionChapterId']),
               'Podcast',
               getx.selectedPackageId.value.toString());
-         
 
           selectedIndex = index;
 
           setState(() {});
-        
+        },
+        child: ListTile(
+          leading: Image.asset(
+            "assets/folder8.png",
+            width: 30,
+          ),
+          trailing: Icon(
+            Icons.arrow_forward_ios_sharp,
+            size: 16,
+            color:
+                selectedIndex == index ? ColorPage.white : ColorPage.colorblack,
+          ),
+          title: Text(
+            getx.alwaysShowChapterDetailsOfVideo[index]['SectionChapterName'],
+            style: FontFamily.font9.copyWith(
+              fontWeight: FontWeight.bold,
+              color: selectedIndex == index
+                  ? ColorPage.white
+                  : ColorPage.colorblack,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildGridViewItem(int index) {
+    return InkWell(
+      enableFeedback: true,
+      overlayColor: WidgetStatePropertyAll(Colors.red),
+      onTap: () {
+        cancelAllDownloads();
+
+        insertTblLocalNavigation(
+                "ParentId",
+                getx.alwaysShowChapterDetailsOfVideo[index]['SectionChapterId'],
+                getx.alwaysShowChapterDetailsOfVideo[index]
+                    ['SectionChapterName'])
+            .whenComplete(
+          () {
+            getLocalNavigationDetails();
+          },
+        );
+
+        // getx.isVideoDashBoard.value=false;
+        getChapterContents(int.parse(
+            getx.alwaysShowChapterDetailsOfVideo[index]['SectionChapterId']));
+        getChapterFiles(
+            parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
+                ['SectionChapterId']),
+            'Podcast',
+            getx.selectedPackageId.value.toString());
+
+        selectedIndex = index;
+
+        setState(() {});
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -810,16 +792,13 @@ class _MobilePodCastDashBoardState
           ),
           child: Column(
             children: [
-             
-                   Image.asset(
-                      "assets/folder5.png",
-                      scale: 16,
-                    ),
-              
+              Image.asset(
+                "assets/folder5.png",
+                scale: 16,
+              ),
               AutoSizeText(
-            
-                     getx.alwaysShowChapterDetailsOfVideo[index]
-                        ['SectionChapterName'],
+                getx.alwaysShowChapterDetailsOfVideo[index]
+                    ['SectionChapterName'],
                 overflow: TextOverflow.ellipsis,
                 style: FontFamily.font9.copyWith(color: ColorPage.colorblack),
               ),
@@ -852,10 +831,10 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
   int selectedVideoIndex = -1;
   int selectedvideoListIndex = -1;
 
-   RxMap<int, double> downloadProgress = <int, double>{}.obs;
+  RxMap<int, double> downloadProgress = <int, double>{}.obs;
   RxSet<int> downloadingIndexes = <int>{}.obs;
-   String? playingPodcastPath;
-      Player? audioPlayer;
+  String? playingPodcastPath;
+  Player? audioPlayer;
 
   @override
   void initState() {
@@ -867,9 +846,9 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
   @override
   void dispose() {
     cancelAllDownloads();
-  if(audioPlayer!=null){
-    audioPlayer!.dispose();
-  }
+    if (audioPlayer != null) {
+      audioPlayer!.dispose();
+    }
     super.dispose();
   }
 
@@ -900,18 +879,33 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
           ),
         ],
       ),
-      child:  Container(
-        height: MediaQuery.of(context).size.height/3,
+      child: Container(
+        height: MediaQuery.of(context).size.height / 3,
         child: Obx(
           () => ListView.builder(
             itemCount: getx.podcastFileList.length,
             itemBuilder: (context, index) {
               final podcast = getx.podcastFileList[index];
-              final isDownloaded = File(getx.userSelectedPathForDownloadFile.isEmpty
-                      ? getx.defaultPathForDownloadFile + '/Podcast/${podcast['FileIdName']}'
-                      : getx.userSelectedPathForDownloadFile.value + '/Podcast/${podcast['FileIdName']}')
+              final isDownloaded = File(
+                      getx.userSelectedPathForDownloadFile.isEmpty
+                          ? getx.defaultPathForDownloadFile +
+                              '/Podcast/${podcast['FileIdName']}'
+                          : getx.userSelectedPathForDownloadFile.value +
+                              '/Podcast/${podcast['FileIdName']}')
                   .existsSync();
-        
+
+              print(getx.userSelectedPathForDownloadFile.isEmpty
+                  ? getx.defaultPathForDownloadFile +
+                      '/Podcast/${podcast['FileIdName']}'
+                  : getx.userSelectedPathForDownloadFile.value +
+                      '/Podcast/${podcast['FileIdName']}');
+              print(getx.userSelectedPathForDownloadFile.isEmpty
+                  ? getx.defaultPathForDownloadFile +
+                      '/Podcast/${podcast['FileIdName']}'
+                  : getx.userSelectedPathForDownloadFile.value +
+                      '/Podcast/${podcast['FileIdName']}');
+              // print(isDownloaded.toString());
+
               return Card(
                 child: ListTile(
                   leading: Icon(Icons.audiotrack),
@@ -927,22 +921,34 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
                           radius: 20.0,
                           lineWidth: 4.0,
                           percent: (downloadProgress[index] ?? 0.0) / 100,
-                          center: Text('${(downloadProgress[index] ?? 0.0).toInt()}%'),
+                          center: Text(
+                              '${(downloadProgress[index] ?? 0.0).toInt()}%'),
                         )
-                      : isDownloaded || downloadProgress[index]==100
+                      : File(getx.userSelectedPathForDownloadFile.isEmpty
+                                  ? getx.defaultPathForDownloadFile +
+                                      '/Podcast/${podcast['FileIdName']}'
+                                  : getx.userSelectedPathForDownloadFile.value +
+                                      '/Podcast/${podcast['FileIdName']}')
+                              .existsSync()
                           ? IconButton(
                               icon: Icon(Icons.play_arrow),
                               onPressed: () {
                                 setState(() {
-                       
-        
-        
-                                  playingPodcastPath = getx.userSelectedPathForDownloadFile.isEmpty
-                                      ? getx.defaultPathForDownloadFile + '/Podcast/${podcast['FileIdName']}'
-                                      : getx.userSelectedPathForDownloadFile.value + '/Podcast/${podcast['FileIdName']}';
-        
-        
-                                     Get.to(()=> PodCastPlayerMobile(  musicPaths:makeDownloadPodCastList(),initialIndex: findCurrentPodcastIndex(makeDownloadPodCastList(),playingPodcastPath!), ));
+                                  playingPodcastPath = getx
+                                          .userSelectedPathForDownloadFile
+                                          .isEmpty
+                                      ? getx.defaultPathForDownloadFile +
+                                          '/Podcast/${podcast['FileIdName']}'
+                                      : getx.userSelectedPathForDownloadFile
+                                              .value +
+                                          '/Podcast/${podcast['FileIdName']}';
+
+                                  Get.to(() => PodCastPlayerMobile(
+                                        musicPaths: makeDownloadPodCastList(),
+                                        initialIndex: findCurrentPodcastIndex(
+                                            makeDownloadPodCastList(),
+                                            playingPodcastPath!),
+                                      ));
                                   // _playPodcast(playingPodcastPath!);
                                 });
                               },
@@ -950,15 +956,21 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
                           : IconButton(
                               icon: Icon(Icons.download),
                               onPressed: () {
-                             if(podcast['DocumentPath']!="0" && getx.isInternet.value){
-                                 _downloadPodcast(
-                                  podcast['DocumentPath'],
-                                  '${podcast['FileIdName']}',
-                                  index,
-                                );
-                             }else{
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(behavior:  SnackBarBehavior.floating,  duration: Duration(seconds: 2), content: Text('Something Went Wrong !!')));
-                             }
+                                if (podcast['DocumentPath'] != "0" &&
+                                    getx.isInternet.value) {
+                                  _downloadPodcast(
+                                    podcast['DocumentPath'],
+                                    '${podcast['FileIdName']}',
+                                    index,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          duration: Duration(seconds: 2),
+                                          content:
+                                              Text('Something Went Wrong !!')));
+                                }
                               },
                             ),
                 ),
@@ -969,81 +981,74 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
       ),
     );
   }
-List<String> makeDownloadPodCastList(){
-  List<String> downloadedPodcastPath=[];
 
-if(getx.podcastFileList.length!=0){
-  for (var item in getx.podcastFileList){
-  if(File(getx.userSelectedPathForDownloadFile.isEmpty
-                                          ? getx.defaultPathForDownloadFile + '/Podcast/${item['FileIdName']}'
-                                          : getx.userSelectedPathForDownloadFile.value + '/Podcast/${item['FileIdName']}').existsSync()){
-                                            downloadedPodcastPath.add(getx.userSelectedPathForDownloadFile.isEmpty
-                                          ? getx.defaultPathForDownloadFile + '/Podcast/${item['FileIdName']}'
-                                          : getx.userSelectedPathForDownloadFile.value + '/Podcast/${item['FileIdName']}');
+  List<String> makeDownloadPodCastList() {
+    List<String> downloadedPodcastPath = [];
 
-
-
-                                          }
-
-}
-return downloadedPodcastPath;
-} else{
-  return [];
-}
-
-
-
-
-  
-}
-int findCurrentPodcastIndex(List pathList, String path){
-
-if(pathList.length!=0){
-  for (int i=0;i<pathList.length;i++){
-  if(pathList[i]==path){
-    return i;
-
+    if (getx.podcastFileList.length != 0) {
+      for (var item in getx.podcastFileList) {
+        if (File(getx.userSelectedPathForDownloadFile.isEmpty
+                ? getx.defaultPathForDownloadFile +
+                    '/Podcast/${item['FileIdName']}'
+                : getx.userSelectedPathForDownloadFile.value +
+                    '/Podcast/${item['FileIdName']}')
+            .existsSync()) {
+          downloadedPodcastPath.add(getx.userSelectedPathForDownloadFile.isEmpty
+              ? getx.defaultPathForDownloadFile +
+                  '/Podcast/${item['FileIdName']}'
+              : getx.userSelectedPathForDownloadFile.value +
+                  '/Podcast/${item['FileIdName']}');
+        }
+      }
+      return downloadedPodcastPath;
+    } else {
+      return [];
+    }
   }
- }
 
-}
-return 0;
-
-
-}
-
-
- 
+  int findCurrentPodcastIndex(List pathList, String path) {
+    if (pathList.length != 0) {
+      for (int i = 0; i < pathList.length; i++) {
+        if (pathList[i] == path) {
+          return i;
+        }
+      }
+    }
+    return 0;
+  }
 
   Future<void> _downloadPodcast(String url, String fileName, int index) async {
     final appDocDir = await getApplicationDocumentsDirectory();
     var prefs = await SharedPreferences.getInstance();
-       Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
+    Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
 
     getx.defaultPathForDownloadFile.value = dthLmsDir.path;
     prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
 
     String savePath = getx.userSelectedPathForDownloadFile.isEmpty
-        ? appDocDir.path + '/Podcast/$fileName'
+        ? dthLmsDir.path + '/Podcast/$fileName'
         : getx.userSelectedPathForDownloadFile.value + '/Podcast/$fileName';
 
     try {
-  setState(() {
+      setState(() {
         downloadingIndexes.add(index);
-      downloadProgress[index] = 0.0;
-  });
+        downloadProgress[index] = 0.0;
+      });
 
       await dio.download(
         url,
         savePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
-         setState(() {
+            setState(() {
               downloadProgress[index] = (received / total * 100);
-         });
+            });
           }
         },
       );
+      print(savePath);
+      print(savePath + "it is save path");
+      print(File(savePath).existsSync());
 
       getx.podcastFileList[index]['DownloadedPath'] = savePath;
     } catch (e) {
@@ -1053,6 +1058,7 @@ return 0;
       downloadProgress.remove(index);
     }
   }
+
   void _playPodcast(String filePath) {
     if (File(filePath).existsSync()) {
       audioPlayer!.open(Media(filePath));
@@ -1324,5 +1330,3 @@ class NavigationClipper1 extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
-
-

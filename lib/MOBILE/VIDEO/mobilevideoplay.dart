@@ -9,6 +9,7 @@ import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 // import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
 // import 'package:dthlms/PC/MCQ/modelclass.dart';
 import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
+import 'package:dthlms/PC/VIDEO/videoplayer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/constants/constants.dart';
@@ -226,7 +227,7 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
     super.dispose();
   }
 
-  List<String> tabfield = const ["PDF", "MCQ", "TAG", "Review"];
+  List<String> tabfield = const ["PDF", "MCQ", "TAG", "Ask doubt"];
   // Getx getx = Get.put(Getx());
 
   // List pdf = [];
@@ -679,7 +680,7 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
                         // Text('data'),
                         Mcq(),
                         Tags(),
-                        Container(),
+                        AskDoubt(),
                       ],
                     ),
                   ),
@@ -692,101 +693,67 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
     );
   }
 
-  String filename = "encrypt_video.mp4";
-  late Directory appDocDir;
-  Future<Directory> get getExternalvisibledir async {
-    if (Platform.isAndroid) {
-      if (await Directory('/storage/emulated/0/Solution_infotech_video')
-          .exists()) {
-        final externalDir =
-            Directory('/storage/emulated/0/Solution_infotech_video');
-        return externalDir;
-      } else {
-        await Directory('/storage/emulated/0/Solution_infotech_video')
-            .create(recursive: true);
-        final externalDir =
-            Directory('/storage/emulated/0/Solution_infotech_video');
-        return externalDir;
-      }
-    } else {
-      final Directory _appDocDir = await getApplicationDocumentsDirectory();
-      //App Document Directory + folder name
-      final Directory _appDocDirFolder =
-          Directory('${_appDocDir.path}/Solution_infotech_video');
+  // String ur2 =
+  //     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+  // Future downloadcretevideo(url, Directory d, filename, bool check) async {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return const Material(
+  //           child: Center(
+  //               child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   CircularProgressIndicator(),
+  //                 ],
+  //               ),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [Text('Video Downloading..')],
+  //               )
+  //             ],
+  //           )),
+  //         );
+  //       });
 
-      if (await _appDocDirFolder.exists()) {
-        //if folder already exists return path
-        return _appDocDirFolder;
-      } else {
-        //if folder not exists create folder and then return its path
-        final Directory _appDocDirNewFolder =
-            await _appDocDirFolder.create(recursive: true);
-        return _appDocDirNewFolder;
-      }
-    }
-  }
+  //   if (check == true) {
+  //     print('Data downloading......');
+  //     var res = await http.get(Uri.parse(url));
+  //     List<int> encResult = await encryptPdf(res.bodyBytes);
+  //     String p = await writedata(encResult, "${d.path}/$filename.aes");
+  //     print('file encryption successfully $p');
+  //   } else {
+  //     final File file = File(url);
+  //     final List<int> bytes = await file.readAsBytes();
+  //     final List<int> encryptedBytes = await decryptPdf(bytes);
+  //     // final File encryptedFile = File();
+  //     String p = await writedata(encryptedBytes, "${d.path}/$filename.aes");
+  //     print('File encrypted successfully: $p');
+  //   }
+  //   Navigator.pop(context);
+  //   print('${d.path}/$filename.aes');
+  // }
 
-  String ur2 =
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-  Future downloadcretevideo(url, Directory d, filename, bool check) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Material(
-            child: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text('Video Downloading..')],
-                )
-              ],
-            )),
-          );
-        });
+  // Uint8List decryptedvideoData = Uint8List(0);
+  // convertdecryptfile(Directory d, filename) async {
+  //   loader(context);
+  //   // showDialog(
+  //   //     context: context,
+  //   //     builder: (context) {
+  //   //       return const Center(child: CircularProgressIndicator());
+  //   //     });
+  //   Uint8List encdata = await readData("${d.path}/$filename.aes");
+  //   decryptedvideoData = await decryptPdf(encdata);
+  //   // String p = await _writeData(plaindata, "${d.path}/$filename");
 
-    if (check == true) {
-      print('Data downloading......');
-      var res = await http.get(Uri.parse(url));
-      List<int> encResult = await encryptPdf(res.bodyBytes);
-      String p = await writedata(encResult, "${d.path}/$filename.aes");
-      print('file encryption successfully $p');
-    } else {
-      final File file = File(url);
-      final List<int> bytes = await file.readAsBytes();
-      final List<int> encryptedBytes = await decryptPdf(bytes);
-      // final File encryptedFile = File();
-      String p = await writedata(encryptedBytes, "${d.path}/$filename.aes");
-      print('File encrypted successfully: $p');
-    }
-    Navigator.pop(context);
-    print('${d.path}/$filename.aes');
-  }
-
-  Uint8List decryptedvideoData = Uint8List(0);
-  convertdecryptfile(Directory d, filename) async {
-    loader(context);
-    // showDialog(
-    //     context: context,
-    //     builder: (context) {
-    //       return const Center(child: CircularProgressIndicator());
-    //     });
-    Uint8List encdata = await readData("${d.path}/$filename.aes");
-    decryptedvideoData = await decryptPdf(encdata);
-    // String p = await _writeData(plaindata, "${d.path}/$filename");
-
-    print('file decrypted successfully.......$decryptedvideoData ');
-    setState(() {});
-    Navigator.pop(context);
-    //  getx.videoplayer.value = false;
-  }
+  //   print('file decrypted successfully.......$decryptedvideoData ');
+  //   setState(() {});
+  //   Navigator.pop(context);
+  //   //  getx.videoplayer.value = false;
+  // }
 
   bool x = false;
   @override

@@ -10,11 +10,10 @@ import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import 'package:image_picker/image_picker.dart';
-
-
+// import 'package:image_picker/image_picker.dart';
 
 class SelectExamPapers extends StatefulWidget {
   final String paperId;
@@ -27,7 +26,7 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
   final List<File> _images = [];
 
   File? _selectedImage;
-  RxBool isUploaded=false.obs;
+  RxBool isUploaded = false.obs;
 
   double sheetNumber = 1.0;
 
@@ -49,21 +48,18 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
 
         if (selectedFiles != null) {
           setState(() {
-             if(sheetNumber<selectedFiles.length){
-              _onSheetOverFlow(globalContext,selectedFiles);
-              
-             }
-             else{
-               for (var xFile in selectedFiles) {
-              File file = File(xFile.path);
-              if (!_isDuplicateImage(file)) {
-              
-                _images.add(file);
-              } else {
-                _showDuplicateImageAlert(file.absolute.path.split('/').last);
+            if (sheetNumber < selectedFiles.length) {
+              _onSheetOverFlow(globalContext, selectedFiles);
+            } else {
+              for (var xFile in selectedFiles) {
+                File file = File(xFile.path);
+                if (!_isDuplicateImage(file)) {
+                  _images.add(file);
+                } else {
+                  _showDuplicateImageAlert(file.absolute.path.split('/').last);
+                }
               }
             }
-             }
           });
         }
       } finally {
@@ -93,7 +89,8 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
       _selectedImage = image;
     });
   }
-BuildContext? globalContext;
+
+  BuildContext? globalContext;
   void _deleteImage(File image) {
     setState(() {
       _images.remove(image);
@@ -105,66 +102,68 @@ BuildContext? globalContext;
 
   void _uploadImages(BuildContext context) {
     if (_images.length == sheetNumber) {
-      _uploadImageList(_images,context);
+      _uploadImageList(_images, context);
       // _onUploadSuccessFull(globalContext);
       print("Images uploaded: ${_images.length} images");
     } else if (_images.length > sheetNumber) {
-      _onSheetOverFlow(globalContext,_images);
+      _onSheetOverFlow(globalContext, _images);
     } else if (_images.length < sheetNumber) {
       _onSheetUnderFlow(globalContext);
     }
   }
 
-  
-  
   @override
   void initState() {
-   
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    globalContext=context;
+    globalContext = context;
     return WillPopScope(
-      onWillPop: ()async{
-
-        if(isUploaded.value){
+      onWillPop: () async {
+        if (isUploaded.value) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.pop(context);
+        } else {
+          _exitConfirmetionBox(context, () {
             Navigator.pop(context);
-              Navigator.pop(context);
-                Navigator.pop(context);
-        }
-        else{
-          _exitConfirmetionBox(context,(){  Navigator.pop(context);
-           Navigator.pop(context);
             Navigator.pop(context);
-              Navigator.pop(context);});
+            Navigator.pop(context);
+            Navigator.pop(context);
+          });
         }
         return false;
       },
       child: Scaffold(
-        floatingActionButton: Column(mainAxisAlignment: MainAxisAlignment.end,   children: [
-          FloatingActionButton(
-            heroTag: "editebutton",
-          backgroundColor: Colors.white,
-          onPressed:(){
-             editSheetNumber(context);
-          },
-          child: Icon(Icons.edit, color: ColorPage.appbarcolor),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: "editebutton",
+              backgroundColor: Colors.white,
+              onPressed: () {
+                editSheetNumber(context);
+              },
+              child: Icon(Icons.edit, color: ColorPage.appbarcolor),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            FloatingActionButton(
+              heroTag: "uploadbutton",
+              backgroundColor: Colors.white,
+              onPressed: () {
+                _uploadConfirmetionBox(context, () {
+                  Navigator.pop(context);
+                  _uploadImages(context);
+                });
+              },
+              child: Icon(Icons.upload_rounded, color: ColorPage.appbarcolor),
+            ),
+          ],
         ),
-        SizedBox(height: 20,),
-          FloatingActionButton(
-            heroTag: "uploadbutton",
-          backgroundColor: Colors.white,
-          onPressed: (){
-            _uploadConfirmetionBox(context,(){
-          Navigator.pop(context);
-              _uploadImages(context);
-            });
-          },
-          child: Icon(Icons.upload_rounded, color: ColorPage.appbarcolor),
-        ),
-        ],),
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.white),
           backgroundColor: ColorPage.appbarcolor,
@@ -239,8 +238,8 @@ BuildContext? globalContext;
                                               child: IconButton(
                                                 icon: Icon(Icons.close_rounded,
                                                     color: Color(0xFF008080)),
-                                                onPressed: () =>
-                                                    _deleteImage(_images[index]),
+                                                onPressed: () => _deleteImage(
+                                                    _images[index]),
                                               ),
                                             ),
                                           ],
@@ -349,7 +348,7 @@ BuildContext? globalContext;
                 Text('Enter How Many Sheets\n You Want To Upload',
                     style: TextStyle(fontSize: 14)),
               ],
-            ), 
+            ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: SpinBox(
@@ -382,18 +381,13 @@ BuildContext? globalContext;
                 Navigator.pop(context);
                 _pickImage();
               });
-            } else if(sheetNumber < _images.length){
-
-               setState(() {
-                 getxController.isPaperSubmit.value = true;
-               _images.removeRange(sheetNumber.toInt(), _images.length);
-                 Navigator.pop(context);
-               });
-
-            }
-            
-            
-            else {
+            } else if (sheetNumber < _images.length) {
+              setState(() {
+                getxController.isPaperSubmit.value = true;
+                _images.removeRange(sheetNumber.toInt(), _images.length);
+                Navigator.pop(context);
+              });
+            } else {
               setState(() {
                 print("elsepart+$sheetNumber");
                 getxController.isPaperSubmit.value = true;
@@ -408,11 +402,7 @@ BuildContext? globalContext;
     ).show();
   }
 
- 
- 
- 
- 
-  _onSheetOverFlow(context,List images) {
+  _onSheetOverFlow(context, List images) {
     Alert(
       context: context,
       type: AlertType.error,
@@ -546,13 +536,12 @@ BuildContext? globalContext;
               Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
           highlightColor: ColorPage.blue,
           onPressed: () {
-            if(isUploaded.value){
-                Navigator.pop(context);
-                  Navigator.pop(context);
-                    Navigator.pop(context);
-                      Navigator.pop(context);
+            if (isUploaded.value) {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
             }
-          
           },
           color: ColorPage.green,
         ),
@@ -569,7 +558,7 @@ BuildContext? globalContext;
     //                   title: 'UPLOAD SUCCESSFUL!!',
     //                   message:
     //                       'Your answer sheets are uploaded successfully!',
-                    
+
     //                   /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
     //                   contentType: ContentType.success,
     //                 ),
@@ -581,160 +570,154 @@ BuildContext? globalContext;
     //               ..showSnackBar(snackBar);
   }
 
-
   void _uploadImageList(List images, BuildContext context) async {
-    String key= await getUploadAccessKey(context,getx.loginuserdata[0].token);
-    if(key!=""){
+    String key = await getUploadAccessKey(context, getx.loginuserdata[0].token);
+    if (key != "") {
       if (images.length == sheetNumber) {
-    // Show progress indicator
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Center(child: CircularProgressIndicator()),
-    );
+        // Show progress indicator
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => Center(child: CircularProgressIndicator()),
+        );
 
-    try {
-      // Map each image to an uploadImage Future
-      List<Future<String>> uploadFutures = images.map((image) => uploadSheet(image,getx.loginuserdata[0].token,key)).toList();
+        try {
+          // Map each image to an uploadImage Future
+          List<Future<String>> uploadFutures = images
+              .map((image) =>
+                  uploadSheet(image, getx.loginuserdata[0].token, key))
+              .toList();
 
-      // Wait for all uploads to complete and collect the IDs
-      List<String> imageIds = await Future.wait(uploadFutures);
-      print(imageIds);
-      String documentId=imageIds.toString().replaceAll("[", "").replaceAll("]", "");
-      print(documentId);
-sendDocumentIdOfanswerSheets(context,getxController.loginuserdata[0].token,int.parse(widget.paperId),documentId);
-      // Hide progress indicator
-      Navigator.of(context).pop();
+          // Wait for all uploads to complete and collect the IDs
+          List<String> imageIds = await Future.wait(uploadFutures);
+          print(imageIds);
+          String documentId =
+              imageIds.toString().replaceAll("[", "").replaceAll("]", "");
+          print(documentId);
+          sendDocumentIdOfanswerSheets(
+              context,
+              getxController.loginuserdata[0].token,
+              int.parse(widget.paperId),
+              documentId);
+          // Hide progress indicator
+          Navigator.of(context).pop();
 
-      // Now you have a list of IDs
-      print('Uploaded image IDs: $imageIds');
-      isUploaded.value=true;
+          // Now you have a list of IDs
+          print('Uploaded image IDs: $imageIds');
+          isUploaded.value = true;
 
-      _onUploadSuccessFull(context);
-      print("Images uploaded: ${_images.length} images");
-    } catch (e) {
-      writeToFile(e, "_uploadImageList");
-      // Handle errors here
-      Navigator.of(context).pop();
-      ClsErrorMsg.fnErrorDialog(context,"Uploadfailed", "Something went wrong", e.toString());
-      print('Error uploading images: $e');
+          _onUploadSuccessFull(context);
+          print("Images uploaded: ${_images.length} images");
+        } catch (e) {
+          writeToFile(e, "_uploadImageList");
+          // Handle errors here
+          Navigator.of(context).pop();
+          ClsErrorMsg.fnErrorDialog(
+              context, "Uploadfailed", "Something went wrong", e.toString());
+          print('Error uploading images: $e');
+        }
+      }
+    } else {
+      ClsErrorMsg.fnErrorDialog(context, "Uploadfailed", "Something went wrong",
+          "Access Key not found");
     }
-  } 
-    }
-    else{
-      ClsErrorMsg.fnErrorDialog(context,"Uploadfailed", "Something went wrong", "Access Key not found");
-    }
-  
+  }
 }
 
-
-
-
+_exitConfirmetionBox(context, VoidCallback ontap) {
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: false,
+    isOverlayTapDismiss: true,
+    alertPadding: EdgeInsets.only(top: 200),
+    descStyle: TextStyle(),
+    animationDuration: Duration(milliseconds: 400),
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20.0),
+      side: BorderSide(color: Colors.grey),
+    ),
+    titleStyle: TextStyle(
+        color: const Color.fromARGB(255, 243, 33, 33),
+        fontWeight: FontWeight.bold),
+    constraints: BoxConstraints.expand(width: 350),
+    overlayColor: Color(0x55000000),
+    alertElevation: 0,
+    alertAlignment: Alignment.center,
+  );
+  Alert(
+    context: context,
+    type: AlertType.warning,
+    style: alertStyle,
+    title: "Are you sure you want to exit ?",
+    // desc:
+    //     "",
+    buttons: [
+      DialogButton(
+        width: 150,
+        child:
+            Text("Cancel", style: TextStyle(color: Colors.white, fontSize: 18)),
+        highlightColor: Color.fromARGB(255, 203, 46, 46),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        color: Color.fromARGB(255, 139, 19, 19),
+      ),
+      DialogButton(
+        width: 150,
+        highlightColor: Color.fromARGB(255, 2, 2, 60),
+        child: Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
+        onPressed: ontap,
+        color: const Color.fromARGB(255, 1, 12, 31),
+      ),
+    ],
+  ).show();
 }
 
-
-
-_exitConfirmetionBox(context,VoidCallback ontap) {
-    var alertStyle = AlertStyle(
-      animationType: AnimationType.fromTop,
-      isCloseButton: false,
-      isOverlayTapDismiss: true,
-      alertPadding: EdgeInsets.only(top: 200),
-      descStyle: TextStyle(),
-      animationDuration: Duration(milliseconds: 400),
-      alertBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: Colors.grey),
+void _uploadConfirmetionBox(context, VoidCallback ontap) {
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: false,
+    isOverlayTapDismiss: true,
+    alertPadding: EdgeInsets.only(top: 200),
+    descStyle: TextStyle(),
+    animationDuration: Duration(milliseconds: 400),
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20.0),
+      side: BorderSide(color: Colors.grey),
+    ),
+    titleStyle: TextStyle(
+        color: const Color.fromARGB(255, 243, 33, 33),
+        fontWeight: FontWeight.bold),
+    constraints: BoxConstraints.expand(width: 350),
+    overlayColor: Color(0x55000000),
+    alertElevation: 0,
+    alertAlignment: Alignment.center,
+  );
+  Alert(
+    context: context,
+    type: AlertType.warning,
+    style: alertStyle,
+    title: "Are you sure you want to Upload ?",
+    // desc:
+    //     "",
+    buttons: [
+      DialogButton(
+        width: 150,
+        child:
+            Text("Cancel", style: TextStyle(color: Colors.white, fontSize: 18)),
+        highlightColor: Color.fromARGB(255, 203, 46, 46),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        color: Color.fromARGB(255, 139, 19, 19),
       ),
-      titleStyle: TextStyle(
-          color: const Color.fromARGB(255, 243, 33, 33),
-          fontWeight: FontWeight.bold),
-      constraints: BoxConstraints.expand(width: 350),
-      overlayColor: Color(0x55000000),
-      alertElevation: 0,
-      alertAlignment: Alignment.center,
-    );
-    Alert(
-      context: context,
-      type: AlertType.warning,
-      style: alertStyle,
-      title: "Are you sure you want to exit ?",
-      // desc:
-      //     "",
-      buttons: [
-        DialogButton(
-          width: 150,
-          child: Text("Cancel",
-              style: TextStyle(color: Colors.white, fontSize: 18)),
-          highlightColor: Color.fromARGB(255, 203, 46, 46),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Color.fromARGB(255, 139, 19, 19),
-        ),
-        DialogButton(
-          width: 150,
-          highlightColor: Color.fromARGB(255, 2, 2, 60),
-          child:
-              Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
-          onPressed: ontap,
-          color: const Color.fromARGB(255, 1, 12, 31),
-        ),
-      ],
-    ).show();
-  }
-  
-void _uploadConfirmetionBox(context,VoidCallback ontap) {
-    var alertStyle = AlertStyle(
-      animationType: AnimationType.fromTop,
-      isCloseButton: false,
-      isOverlayTapDismiss: true,
-      alertPadding: EdgeInsets.only(top: 200),
-      descStyle: TextStyle(),
-      animationDuration: Duration(milliseconds: 400),
-      alertBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: Colors.grey),
+      DialogButton(
+        width: 150,
+        highlightColor: Color.fromARGB(255, 2, 2, 60),
+        child: Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
+        onPressed: ontap,
+        color: const Color.fromARGB(255, 1, 12, 31),
       ),
-      titleStyle: TextStyle(
-          color: const Color.fromARGB(255, 243, 33, 33),
-          fontWeight: FontWeight.bold),
-      constraints: BoxConstraints.expand(width: 350),
-      overlayColor: Color(0x55000000),
-      alertElevation: 0,
-      alertAlignment: Alignment.center,
-    );
-    Alert(
-      context: context,
-      type: AlertType.warning,
-      style: alertStyle,
-      title: "Are you sure you want to Upload ?",
-      // desc:
-      //     "",
-      buttons: [
-        DialogButton(
-          width: 150,
-          child: Text("Cancel",
-              style: TextStyle(color: Colors.white, fontSize: 18)),
-          highlightColor: Color.fromARGB(255, 203, 46, 46),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Color.fromARGB(255, 139, 19, 19),
-        ),
-        DialogButton(
-          width: 150,
-          highlightColor: Color.fromARGB(255, 2, 2, 60),
-          child:
-              Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
-          onPressed: ontap,
-          color: const Color.fromARGB(255, 1, 12, 31),
-        ),
-      ],
-    ).show();
-  }
-
-
- 
- 
- 
+    ],
+  ).show();
+}
