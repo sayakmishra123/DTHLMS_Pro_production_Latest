@@ -3167,12 +3167,12 @@ Future infoTetch(packageId, type) async {
 
       switch (row['FileIdType']) {
         case 'Live':
-          // if (await dateCheck(details['ScheduleOn'].toString())) {
-          log(details['ScheduleOn'].toString().toString());
-          log(details.toString());
+          if (await dateCheck(details['ScheduleOn'].toString())) {
+            log(details['ScheduleOn'].toString().toString());
+            log(details.toString());
 
-          getx.infoFetch.add(details);
-          // }
+            getx.infoFetch.add(details);
+          }
           break;
         case 'Video':
           getx.infoFetch.add(details);
