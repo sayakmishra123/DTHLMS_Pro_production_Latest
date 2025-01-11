@@ -1362,7 +1362,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               //           .toString());
                               // }
                             } else {
-                              _onDownloadVideo(
+                              _onDownloadVideo( 
                                   context,
                                   (appointment.resourceIds![0] as Map<String,
                                           dynamic>)['DocumentPath']
@@ -2199,7 +2199,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     title: "Help Chat",
                     onTap: () {
                      
-                      Get.to(() => ChatPage(
+                      Get.to(() => ChatPage( 
                             // meeting!.sessionId.toString(),
                             getx.loginuserdata[0].nameId,
                             "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
