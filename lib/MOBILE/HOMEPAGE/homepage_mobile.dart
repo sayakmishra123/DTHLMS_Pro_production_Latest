@@ -1442,8 +1442,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                 String, dynamic>)['SessionId']
                                             .toString(),
                                         getx.todaymeeting);
-                                    if (appointment.startTime
-                                            .isBefore(DateTime.now()) &&
+                                    if (
+                                      // appointment.startTime
+                                      //       .isBefore(DateTime.now())
+                                      //        &&
                                         meeting != null) {
                                       Get.to(
                                           transition: Transition.cupertino,
