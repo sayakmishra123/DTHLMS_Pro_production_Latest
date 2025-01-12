@@ -192,14 +192,14 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"                                                                                
-  image: assets/icons/AVJ_splahs_screen.png
-  branding: assets/icons/AVJ_splahs_screen.png
+  image: assets/icons/vg_study_splash_scren.png
+  branding: assets/icons/vg_study_splash_scren.png
   color_dark: "#FFFFFF"
-  image_dark: assets/icons/AVJ_splahs_screen.png
-  branding_dark: assets/icons/AVJ_splahs_screen.png
+  image_dark: assets/icons/vg_study_splash_scren.png
+  branding_dark: assets/icons/vg_study_splash_scren.png
 
   android_12:
-    image: assets/icons/AVJ_splahs_screen.png
+    image: assets/icons/vg_study_splash_scren.png
     icon_background_color: "#FFFFFF"
 
 
@@ -210,7 +210,7 @@ flutter_native_splash:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icons/AVJ_academy.png"
+  image_path: "assets/icons/vevak_gaba.jpeg"
   min_sdk_android: 21 # android min sdk min:16, default 21
   # web:
   #   generate: true
@@ -219,7 +219,7 @@ flutter_launcher_icons:
   #   theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: "assets/icons/AVJ_academy.png"
+    image_path: "assets/icons/vevak_gaba.jpeg"
     icon_size: 48 # min:48, max:256, default: 48
   # macos:
   #   generate: true
