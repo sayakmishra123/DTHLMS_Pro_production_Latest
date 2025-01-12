@@ -191,7 +191,8 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
             exit(0); // Close the dialog
           },
           color: const Color.fromRGBO(9, 89, 158, 1), // Set button color
-          highlightColor: const Color.fromRGBO(3, 77, 59, 1), // Set highlight color
+          highlightColor:
+              const Color.fromRGBO(3, 77, 59, 1), // Set highlight color
         ),
       ],
     ).show();
@@ -502,7 +503,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
         // backgroundColor: Colors.blue.withAlpha(200),
         backgroundColor: const Color(0xffF5F5DC),
         title: Text(
-          franchaiseName !=  ""? franchaiseName : 'Dash Board',
+          franchaiseName != "" ? franchaiseName : 'Dash Board',
           style: GoogleFonts.josefinSans()
               .copyWith(color: const Color.fromARGB(255, 33, 77, 153)),
         ),
@@ -1047,7 +1048,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: Stack(
                 children: [
                   Container(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 20),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(
@@ -1109,7 +1111,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       : isSelectedDate
                                           ? const Color.fromARGB(255, 219, 196,
                                               248) // Highlight color for the selected date
-                                          : const Color.fromARGB(255, 255, 255, 255),
+                                          : const Color.fromARGB(
+                                              255, 255, 255, 255),
                                   border: isSelectedDate
                                       ? Border.all(
                                           color: const Color.fromARGB(
@@ -1145,8 +1148,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                   children: eventType.map((location) {
                                     double iconSize = isSmallScreen ? 8 : 15;
                                     return Padding(
-                                      padding:
-                                          const EdgeInsets.symmetric(horizontal: 3),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 3),
                                       child: location == "Video"
                                           ? Icon(
                                               Icons.circle,
@@ -1193,7 +1196,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
                         _updateSelectedAppointments();
                         !_selectedAppointments.isEmpty
-                            ? Future.delayed(const Duration(milliseconds: 300), () {
+                            ? Future.delayed(const Duration(milliseconds: 300),
+                                () {
                                 _scrollController.animateTo(
                                   screenHeight /
                                       2.6, // Scroll to the event section
@@ -1231,7 +1235,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         : 40, // Adjust proportion based on screen size
                     child: Container(
                       margin: const EdgeInsets.only(top: 20, bottom: 50),
-                      padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+                      padding:
+                          const EdgeInsets.only(left: 5, right: 5, top: 10),
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(
@@ -1771,7 +1776,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 "${downloadProgress.value.toInt()}%",
                 style: const TextStyle(fontSize: 10.0),
               ),
-              progressColor: ColorPage.colorbutton, 
+              progressColor: ColorPage.colorbutton,
             );
           } else if (downloadProgress.value == 100) {
             return Icon(
@@ -1781,8 +1786,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             );
           } else {
             return Icon(
-              Icons.download, 
-              size: 100, 
+              Icons.download,
+              size: 100,
               color: ColorPage.colorbutton,
             );
           }
@@ -1964,8 +1969,8 @@ class _NewsNotificationsState extends State<NewsNotifications> {
               itemCount: 10,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading:
-                      const Icon(Icons.newspaper), // or any other icon you prefer
+                  leading: const Icon(
+                      Icons.newspaper), // or any other icon you prefer
                   title: Text('News Title',
                       style: FontFamily.style.copyWith(fontSize: 18)),
                   subtitle: const Text('News Description'), // optional
@@ -2229,7 +2234,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                 Expanded(
                   child: Row(
                     children: [
-                       CircleAvatar(
+                      CircleAvatar(
                         radius: 33,
                         backgroundColor: ColorPage.white,
                         child: CircleAvatar(
@@ -2382,7 +2387,8 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16),
                       dense: true,
                     ),
                   ),
@@ -2410,7 +2416,8 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     color: Colors.grey
                         .shade200, // Change the color of the line if needed
                   ),
-                  const SizedBox(height: 8), // Add spacing before the content below
+                  const SizedBox(
+                      height: 8), // Add spacing before the content below
 
                   FutureBuilder(
                       future: getSocialMediaIcons(
@@ -2437,11 +2444,11 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                        height:  
+                                        height:
                                             snapshot.data!.length > 4 ? 20 : 25,
                                         width:
                                             snapshot.data!.length > 4 ? 20 : 25,
-                                        child: SvgPicture.string(       
+                                        child: SvgPicture.string(
                                             snapshot.data![index].icon),
                                       ),
                                       const SizedBox(
@@ -2596,8 +2603,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
         side: const BorderSide(color: Colors.grey),
       ),
       titleStyle: const TextStyle(
-          color: Color.fromARGB(255, 243, 33, 33),
-          fontWeight: FontWeight.bold),
+          color: Color.fromARGB(255, 243, 33, 33), fontWeight: FontWeight.bold),
       constraints: const BoxConstraints.expand(width: 350),
       overlayColor: const Color(0x55000000),
       alertElevation: 0,
@@ -2624,8 +2630,8 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
         DialogButton(
           width: 150,
           highlightColor: const Color.fromARGB(255, 2, 2, 60),
-          child:
-              const Text("Yes", style: TextStyle(color: Colors.white, fontSize: 18)),
+          child: const Text("Yes",
+              style: TextStyle(color: Colors.white, fontSize: 18)),
           onPressed: () async {
             await logoutFunction(context, getx.loginuserdata[0].token);
             Navigator.pop(context);
@@ -2919,7 +2925,8 @@ class HeadingBoxContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle style = const TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
+    TextStyle style =
+        const TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
     TextStyle styleb = const TextStyle(fontFamily: 'AltoneBold', fontSize: 20);
     return LayoutBuilder(builder: (context, constraints) {
       return isImage && imagePosition == 'right'
@@ -3146,46 +3153,44 @@ class _HomePageMobileState extends State<HomePageMobile> {
         //   ],
         // ),
 
-        bottomNavigationBar:
-        Container(
+        bottomNavigationBar: Container(
           // decoration: const BoxDecoration(border: Border(top: BorderSide(width: 1,color: Colors.black45))),
           child: Obx(
-              () => NavigationBar(
-                elevation: 5,
-                backgroundColor: const Color.fromARGB(255, 255, 254, 252),
-                onDestinationSelected: (int index) {
-                  // setState(() {
-                  _currentIndex.value = index;
-                  // });
-                },
-                indicatorColor: Colors.amberAccent.withAlpha(200),
-                selectedIndex: _currentIndex.value,
-                destinations: const <Widget>[
-                  NavigationDestination(
-                    selectedIcon: Icon(Icons.home_rounded),
-                    icon: Icon(Icons.home_outlined),
-                    label: 'Home',
-                  ),
-                  NavigationDestination(
-                    selectedIcon: Icon(Icons.work),
-                    icon: Icon(Icons.work_outline),
-                    label: 'Packages',
-                  ),
-                  NavigationDestination(
-                    selectedIcon: Icon(Icons.shopping_cart),
-                    icon: Icon(Icons.shopping_cart_outlined),
-                    label: 'Store',
-                  ),
-                  NavigationDestination(
-                    selectedIcon: Icon(Icons.person),
-                    icon: Icon(Icons.person_outline_outlined),
-                    label: 'Profile',
-                  ),
-                ],
-              ),
+            () => NavigationBar(
+              elevation: 5,
+              backgroundColor: const Color.fromARGB(255, 255, 254, 252),
+              onDestinationSelected: (int index) {
+                // setState(() {
+                _currentIndex.value = index;
+                // });
+              },
+              indicatorColor: Colors.amberAccent.withAlpha(200),
+              selectedIndex: _currentIndex.value,
+              destinations: const <Widget>[
+                NavigationDestination(
+                  selectedIcon: Icon(Icons.home_rounded),
+                  icon: Icon(Icons.home_outlined),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  selectedIcon: Icon(Icons.work),
+                  icon: Icon(Icons.work_outline),
+                  label: 'Packages',
+                ),
+                NavigationDestination(
+                  selectedIcon: Icon(Icons.shopping_cart),
+                  icon: Icon(Icons.shopping_cart_outlined),
+                  label: 'Store',
+                ),
+                NavigationDestination(
+                  selectedIcon: Icon(Icons.person),
+                  icon: Icon(Icons.person_outline_outlined),
+                  label: 'Profile',
+                ),
+              ],
             ),
+          ),
         ),
-        
       ),
     );
   }

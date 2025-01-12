@@ -2387,13 +2387,7 @@ Future<bool> _uploadRemainingData(BuildContext context) async {
 
 Future<void> _performLogout(BuildContext context) async {
   try {
-    await clearSharedPreferencesExcept([
-      'SelectedDownloadPathOfVieo',
-      'SelectedDownloadPathOfFile',
-      'DefaultDownloadpathOfFile',
-      'DefaultDownloadpathOfVieo',
-      'LoginId',
-    ], getx.loginuserdata[0].loginId.toString());
+  
 
     // var prefs = await SharedPreferences.getInstance();
     // prefs.setString("LoginId", getx.loginuserdata[0].loginId);
@@ -2402,6 +2396,14 @@ Future<void> _performLogout(BuildContext context) async {
       context,
       getx.loginuserdata[0].token,
     )) {
+
+        await clearSharedPreferencesExcept([
+      'SelectedDownloadPathOfVieo',
+      'SelectedDownloadPathOfFile',
+      'DefaultDownloadpathOfFile',
+      'DefaultDownloadpathOfVieo',
+      'LoginId',
+    ], getx.loginuserdata[0].loginId.toString());
       Platform.isAndroid
           ? Get.offAll(() => Mobilelogin())
           : Get.offAll(() => DthLmsLogin());
