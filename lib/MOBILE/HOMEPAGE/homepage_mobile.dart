@@ -2229,7 +2229,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                 Expanded(
                   child: Row(
                     children: [
-                      const CircleAvatar(
+                       CircleAvatar(
                         radius: 33,
                         backgroundColor: ColorPage.white,
                         child: CircleAvatar(
