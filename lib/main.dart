@@ -92,8 +92,7 @@ void main(List<String> args) async {
   runApp(
     MyApp(args),
   );
-  // disableScreenshot();
-  // disableCapture();
+  disableScreenshot();
 }
 
 class MyApp extends StatefulWidget {
@@ -196,7 +195,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     checkIfEmulator(context);
-    // checkDeveloperMode();
+    checkDeveloperMode();
   }
 
   ClsSimInfo ob = ClsSimInfo();
@@ -260,10 +259,10 @@ class _MyAppState extends State<MyApp> {
                                     .every((element) => element.length < 10);
 
                                 if (isDataLengthValid) {
-                                  // return NoSim();
-                                  return getx.loginuserdata.isNotEmpty
-                                      ? HomePageMobile()
-                                      : Mobilelogin();
+                                  return NoSim();
+                                  // return getx.loginuserdata.isNotEmpty
+                                  //     ? HomePageMobile()
+                                  //     : Mobilelogin();
                                   // : IntroductionDashBoard();
                                 } else {
                                   return getx.loginuserdata.isNotEmpty
@@ -285,7 +284,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void checkIfEmulator(BuildContext context) async {  
+  void checkIfEmulator(BuildContext context) async {
     getx.isEmulator.value = await isEmulator();
     if (getx.isEmulator.value) {
       print('Running on a Virtule Device');
