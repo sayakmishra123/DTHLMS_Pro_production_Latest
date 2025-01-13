@@ -195,7 +195,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     checkIfEmulator(context);
-    checkDeveloperMode();
+    // checkDeveloperMode();
   }
 
   ClsSimInfo ob = ClsSimInfo();
@@ -387,8 +387,12 @@ void _showEmulatorDialog(BuildContext context) {
 
 final _noScreenshot = NoScreenshot.instance;
 void disableScreenshot() async {
-  bool result = await _noScreenshot.screenshotOff();
-  debugPrint('Screenshot Off: $result');
+  try {
+    bool result = await _noScreenshot.screenshotOff();
+    debugPrint('Screenshot Off: $result');
+  } catch (e) {
+    debugPrint('Error: $e');
+  }
 }
 
 class DevelopermodeOnPage extends StatefulWidget {

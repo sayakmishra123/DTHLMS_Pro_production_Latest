@@ -2524,7 +2524,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
         );
 
         if (!isPackage) {
-          if (!await getexamDataExistence()) {
+          if (!await getexamDataExistence(packageId)) {
             getx.mcqdataList.value = await getMcqDataForTest(
                 context, getx.loginuserdata[0].token, packageId);
             getx.theoryExamvalue.value = await gettheoryExamDataForTest2(
