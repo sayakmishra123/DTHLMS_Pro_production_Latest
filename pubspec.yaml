@@ -202,7 +202,7 @@ flutter_native_splash:
     image: assets/icons/AVJ_splahs_screen.png
     icon_background_color: "#FFFFFF" 
 
-
+ 
  
   web: false
 
