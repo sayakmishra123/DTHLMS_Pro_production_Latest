@@ -424,7 +424,7 @@ class _DevelopermodeOnPageState extends State<DevelopermodeOnPage> {
           onPressed: () {
             Get.back();
 
-            // exit(0); // Close the dialog
+            exit(0); // Close the dialog
           },
           color: const Color.fromRGBO(9, 89, 158, 1), // Set button color
           highlightColor:
