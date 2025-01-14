@@ -104,7 +104,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  pageRouter router = pageRouter(); 
+  pageRouter router = pageRouter();
   // late Future<void> userDetailsFuture;
 
   @override
@@ -195,7 +195,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     checkIfEmulator(context);
-    // checkDeveloperMode();
+    checkDeveloperMode();
   }
 
   ClsSimInfo ob = ClsSimInfo();
