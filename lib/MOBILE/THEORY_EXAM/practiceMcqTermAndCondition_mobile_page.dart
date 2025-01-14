@@ -3,6 +3,8 @@ import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/MOBILE/THEORY_EXAM/TheoryExamPageMobile.dart';
 import 'package:dthlms/MOBILE/THEORY_EXAM/theory_exam_page_mobile.dart';
+import 'package:dthlms/MOBILE/resultpage/test_result_mobile.dart';
+import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/log.dart';
@@ -24,7 +26,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
 
   bool windowsddevice = Platform.isWindows ? true : false;
 
- TheoryExamTermAndConditionMobile(
+  TheoryExamTermAndConditionMobile(
       {super.key,
       required this.documnetPath,
       required this.termAndCondition,
@@ -35,7 +37,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
   RxBool checkbox = false.obs;
 
   String formatDateString(String dateString, String type) {
-    print(dateString+"////"+type);
+    print(dateString + "////" + type);
     // Parse the input string into a DateTime object
     try {
       DateTime dateTime = DateTime.parse(dateString);
@@ -58,7 +60,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
 
       return formattedOutput;
     } catch (e) {
-      writeToFile(e,"formatDateString" );
+      writeToFile(e, "formatDateString");
       print("${e.toString()}");
       return "no date found";
     }
@@ -245,32 +247,88 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                       onPressed: () async {
                         if (checkbox.value) {
                           var examcode = await getExamStatus(
-                              context, getx.loginuserdata[0].token, paperId); 
+                              context, getx.loginuserdata[0].token, paperId);
                           if (examcode == 200) {
-                            Get.to( transition: Transition.cupertino,() => TheoryExamPageMobile(
-                                  documentPath: documnetPath,
-                                  title: paperName,
-                                  duration: duration,
-                                  paperId: paperId,
-                                  issubmit: true,
-                                ));
+                            Get.to(
+                                transition: Transition.cupertino,
+                                () => TheoryExamPageMobile(
+                                      documentPath: documnetPath,
+                                      title: paperName,
+                                      duration: duration,
+                                      paperId: paperId,
+                                      issubmit: true,
+                                    ));
                           }
                           if (examcode == 250) {
-                            Get.to( transition: Transition.cupertino,() => TheoryExamPageMobile(
-                                  documentPath: documnetPath,
-                                  title: paperName,
-                                  duration: duration,
-                                  paperId: paperId,
-                                  issubmit: true,
-                                ));
+                            Get.to(
+                                transition: Transition.cupertino,
+                                () => TheoryExamPageMobile(
+                                      documentPath: documnetPath,
+                                      title: paperName,
+                                      duration: duration,
+                                      paperId: paperId,
+                                      issubmit: true,
+                                    ));
                           }
                           if (examcode == 300) {
                             _showDialogoferror(context, "Already Submited!",
                                 "your exam is already submited.", () {
-                              Navigator.pop(context);
+                              if (getx.isInternet.value) {
+                                // Navigator.pop(context);
+                                getTheryExamResultForIndividual(context,
+                                        getx.loginuserdata[0].token, paperId)
+                                    .then((value) {
+                                  print(value);
+
+                                  if (value.isEmpty) {
+                                    _showDialogoferror(context, "Not publish!!",
+                                        "The result is not published yet.", () {
+                                      Navigator.pop(context);
+                                    }, false);
+                                  } else {
+                                    Get.to(
+                                        transition: Transition.cupertino,
+                                        () => TestResultPageMobile(
+                                              examName: value["TheoryExamName"],
+                                              obtain: value[
+                                                          'TotalReCheckedMarks'] !=
+                                                      null
+                                                  ? double.parse(value[
+                                                          'TotalReCheckedMarks']
+                                                      .toString())
+                                                  : double.parse(
+                                                      value['TotalCheckedMarks']
+                                                          .toString()),
+                                              resultPublishedOn: formatDateTime(
+                                                  value['ReportPublishDate']),
+                                              studentName: getx.loginuserdata[0]
+                                                      .firstName +
+                                                  " " +
+                                                  getx.loginuserdata[0]
+                                                      .lastName,
+                                              submitedOn: formatDateTime(
+                                                  value["SubmitedOn"]),
+                                              totalMarks: double.parse(
+                                                  value['TotalMarks']
+                                                      .toString()),
+                                              totalMarksRequired: double.parse(
+                                                  value['PassMarks']
+                                                      .toString()),
+                                              // theoryExamAnswerId: '12',
+                                              // examId: paperId,
+                                            ));
+                                  }
+                                });
+                              } else {
+                                _showDialogoferror(context, "Not internet!!",
+                                    "No internet Connected.", () {
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                }, false);
+                              }
                             }, false);
                           }
-                          if (examcode == 400) { 
+                          if (examcode == 400) {
                             _showDialogoferror(context, "Time is Over!",
                                 "your exam is already ended.", () {
                               Navigator.pop(context);
@@ -285,9 +343,8 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ButtonStyle(
-                          padding: WidgetStatePropertyAll(
-                              EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 40)),
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 40)),
                           shape: WidgetStatePropertyAll(
                               ContinuousRectangleBorder(
                                   borderRadius: BorderRadius.circular(10))),
@@ -306,9 +363,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
 
   _showDialogoferror(context, String title, String desc, VoidCallback ontap,
       bool iscancelbutton) async {
-
-  
-  ArtDialogResponse? response = await ArtSweetAlert.show(
+    ArtDialogResponse? response = await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
       artDialogArgs: ArtDialogArgs(
@@ -316,21 +371,18 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
         text: desc,
         confirmButtonText: "ok",
         type: ArtSweetAlertType.info,
-
       ),
-
     );
 
-    if (response == null) { 
+    if (response == null) {
       return;
     }
- 
+
     if (response.isTapConfirmButton) {
-ontap();
-     
+      ontap();
+
       return;
     }
-  
   }
 
   _onTermDeniey(context) {
