@@ -1012,19 +1012,27 @@ Future getMainChapter(int packageId) async {
   }
 }
 
-Future<bool> getexamDataExistence() async {
-  final resultSetOfMcq = await _db.select(
-    'SELECT * FROM TblMCQPaper',
-  );
+Future<bool> getexamDataExistence(String packageId) async {
+  try {
+    final resultSetOfMcq = await _db.select(
+      'SELECT * FROM TblMCQSet WHERE PackageId=?',
+      [packageId],
+    );
 
-  final resultSetofTheory = await _db.select(
-    'SELECT * FROM TblTheoryPaper ',
-  );
+    final resultSetofTheory = await _db.select(
+      'SELECT * FROM TblTheorySet WHERE PackageId=? ',
+      [packageId],
+    );
 
-  bool mcqdata = resultSetOfMcq.isNotEmpty;
-  bool theorydata = resultSetofTheory.isNotEmpty;
+    bool mcqdata = resultSetOfMcq.isNotEmpty;
+    bool theorydata = resultSetofTheory.isNotEmpty;
 
-  return mcqdata && theorydata; // Return true if data exists, otherwise false
+    return mcqdata && theorydata;
+  } // Return true if data exists, otherwise false
+  catch (e) {
+    writeToFile(e, getexamDataExistence);
+    return false;
+  }
 }
 
 Future<void> getChapterContents(

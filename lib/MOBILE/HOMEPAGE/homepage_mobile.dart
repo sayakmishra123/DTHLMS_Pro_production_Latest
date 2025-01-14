@@ -1443,9 +1443,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                             .toString(),
                                         getx.todaymeeting);
                                     if (
-                                      // appointment.startTime
-                                      //       .isBefore(DateTime.now())
-                                      //        &&
+                                        // appointment.startTime
+                                        //       .isBefore(DateTime.now())
+                                        //        &&
                                         meeting != null) {
                                       Get.to(
                                           transition: Transition.cupertino,

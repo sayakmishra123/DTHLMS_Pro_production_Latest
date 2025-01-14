@@ -251,7 +251,7 @@ class _MyAppState extends State<MyApp> {
                         : FutureBuilder(
                             future: getSimCardsData(context),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
+                              if (snapshot.connectionState == 
                                   ConnectionState.waiting) {
                                 return Center(
                                     child: CircularProgressIndicator());
@@ -388,8 +388,12 @@ void _showEmulatorDialog(BuildContext context) {
 
 final _noScreenshot = NoScreenshot.instance;
 void disableScreenshot() async {
-  bool result = await _noScreenshot.screenshotOff();
-  debugPrint('Screenshot Off: $result');
+  try {
+    bool result = await _noScreenshot.screenshotOff();
+    debugPrint('Screenshot Off: $result');
+  } catch (e) {
+    debugPrint('Error: $e');
+  }
 }
 
 class DevelopermodeOnPage extends StatefulWidget {
@@ -425,7 +429,7 @@ class _DevelopermodeOnPageState extends State<DevelopermodeOnPage> {
           onPressed: () {
             Get.back();
 
-            // exit(0); // Close the dialog
+            exit(0); // Close the dialog
           },
           color: const Color.fromRGBO(9, 89, 158, 1), // Set button color
           highlightColor:

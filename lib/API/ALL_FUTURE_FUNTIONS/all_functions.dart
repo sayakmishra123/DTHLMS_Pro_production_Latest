@@ -313,19 +313,19 @@ Future<String> getEncryptionKey(String token, BuildContext context) async {
       Map<String, dynamic> result = jsonDecode(jsonMap['result']);
 
       // Extract the encryption key
-      String encryptionKey = result['PDfEncryptionKey'];
-      String secretKey = result['EncryptionSecretKey'];
-      String franchiseName = result['FranchiseName'];
+      String encryptionKey = result['PDfEncryptionKey'] ?? "";
+      String secretKey = result['EncryptionSecretKey'] ?? "";
+      String franchiseName = result['FranchiseName'] ?? "";
       print('PDF Encryption Key: $encryptionKey');
 
       print('PDF secret key Key: $secretKey');
       print('PDF secret key Key: $franchiseName');
-      if (encryptionKey.isNotEmpty && secretKey.isNotEmpty) {
-        deleteDataFromTblSettings();
-        insertTblSetting("OldSKey", secretKey);
-        insertTblSetting("EncryptionKey", encryptionKey);
-        insertTblSetting("FranchiseName", franchiseName);
-      }
+
+      deleteDataFromTblSettings();
+      insertTblSetting("OldSKey", secretKey);
+      insertTblSetting("EncryptionKey", encryptionKey);
+      insertTblSetting("FranchiseName", franchiseName);
+      insertTblSetting("Origin", origin);
 
       // Return the encryption key
       return encryptionKey;
@@ -2524,7 +2524,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
         );
 
         if (!isPackage) {
-          if (!await getexamDataExistence()) {
+          if (!await getexamDataExistence(packageId)) {
             getx.mcqdataList.value = await getMcqDataForTest(
                 context, getx.loginuserdata[0].token, packageId);
             getx.theoryExamvalue.value = await gettheoryExamDataForTest2(
