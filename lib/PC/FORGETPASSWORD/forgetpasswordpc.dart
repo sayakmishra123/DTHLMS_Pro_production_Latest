@@ -197,7 +197,7 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
 
   @override
   void dispose() {
-        if (_timer != null) {
+    if (_timer != null) {
       if (_timer!.isActive) {
         _timer!.cancel();
       }
@@ -209,16 +209,12 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
     // TODO: implement dispose
     super.dispose();
   }
-      
+
   Timer? _timer;
   RxBool _isOTPresendEnable = true.obs;
   Rx _start = 60.obs; // 30 seconds
 
-
-
-
-
-    void startTimer() {
+  void startTimer() {
     _isOTPresendEnable.value = false;
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -231,72 +227,76 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
       }
     });
   }
-  resendOtpLogic()async{
-                        try {
-                                                   await forgetPasswordGeneratecode(
-                                    context,
-                                    selectedCountryCode ?? 0,
-                                    phno.text ?? "",
-                                    emailid.text ?? "",
-                                    selectedCountryCode ?? 0,
-                                    phno.text ?? "")
-                                .then((value) {
-                              getx.forgetPasswordfieldEntryValue.value = false;
-                              getx.forgetPasswordOTPEntryValue.value = true;
-                              getx.forgetPasswordNewPasswordEntryValue.value =
-                                  false;
 
-                              forgetkey = value;
-                              log(forgetkey);
-                            });
-                                                        
-                                                  } catch (e) {
-                                                    print(
-                                                        e.toString() + "hello");
-                                                    Get.back();
-                                                  }
-                                                  startTimer(); // Disable the button and start the timer
-}
-  
-void resendOtp() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Resend OTP?',style: FontFamily.styleb,),
-        content: Text('Are you sure you want to resend the OTP?',style: FontFamily.style.copyWith(color: Colors.grey[600],fontSize: 14),),
-        actions: <Widget>[
-          TextButton(
-            style: ButtonStyle(
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(width: 2, color: Colors.blueAccent),
+  resendOtpLogic() async {
+    try {
+      await forgetPasswordGeneratecode(
+              context,
+              selectedCountryCode ?? 0,
+              phno.text ?? "",
+              emailid.text ?? "",
+              selectedCountryCode ?? 0,
+              phno.text ?? "")
+          .then((value) {
+        getx.forgetPasswordfieldEntryValue.value = false;
+        getx.forgetPasswordOTPEntryValue.value = true;
+        getx.forgetPasswordNewPasswordEntryValue.value = false;
+
+        forgetkey = value;
+        log(forgetkey);
+      });
+    } catch (e) {
+      print(e.toString() + "hello");
+      Get.back();
+    }
+    startTimer(); // Disable the button and start the timer
+  }
+
+  void resendOtp() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Resend OTP?',
+            style: FontFamily.styleb,
+          ),
+          content: Text(
+            'Are you sure you want to resend the OTP?',
+            style: FontFamily.style
+                .copyWith(color: Colors.grey[600], fontSize: 14),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(width: 2, color: Colors.blueAccent),
+                  ),
                 ),
               ),
+              onPressed: () {
+                resendOtpLogic();
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Colors.blueGrey),
+              ),
             ),
-            onPressed: () {
-              resendOtpLogic();
-              Navigator.of(context).pop(); // Close the dialog
-            },
-            child: Text(
-              'Yes',
-              style: TextStyle(color: Colors.blueGrey),
+            TextButton(
+              onPressed: () {
+                // Close the dialog without resending
+                Navigator.of(context).pop();
+              },
+              child: Text('No'),
             ),
-          ),
-          TextButton(
-            onPressed: () {
-              // Close the dialog without resending
-              Navigator.of(context).pop();
-            },
-            child: Text('No'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -440,11 +440,10 @@ void resendOtp() {
                                         children: [
                                           OutlinedButton.icon(
                                             style: const ButtonStyle(
-                                                padding:
-                                                    WidgetStatePropertyAll(
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 20,
-                                                            horizontal: 95))),
+                                                padding: WidgetStatePropertyAll(
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 20,
+                                                        horizontal: 95))),
                                             onPressed: () async {
                                               final Uri gmailUrl = Uri(
                                                 scheme: 'https',
@@ -558,7 +557,7 @@ void resendOtp() {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: ColorPage.white, 
+              color: ColorPage.white,
             ),
             padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
             child: Form(
@@ -573,7 +572,6 @@ void resendOtp() {
                         child: Text(
                           'Forgot password',
                           style: FontFamily.font.copyWith(fontSize: 20),
-                        
                         ),
                       ),
                     ],
@@ -586,7 +584,6 @@ void resendOtp() {
                         child: Text(
                           'Send OTP on -',
                           style: FontFamily.font4.copyWith(fontSize: 16),
-                        
                         ),
                       ),
                     ],
@@ -653,7 +650,7 @@ void resendOtp() {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox( 
+                          SizedBox(
                             width: 100,
                             child: DropdownButton<int>(
                               menuWidth: 200,
@@ -739,11 +736,12 @@ void resendOtp() {
                       onPressed: () async {
                         if (key.currentState!.validate()) {
                           print(selectedCountryCode);
- await forgetPasswordEmailVerify(
-                          context,
-                          emailid.text,
-                        ).then((v) async {
-                          if (v) {
+//  await forgetPasswordEmailVerify(
+//                           context,
+//                           emailid.text,
+//                         ).then((v) async {
+//                           if (v) {
+
                           forgetPasswordGeneratecode(
                                   context,
                                   selectedCountryCode ?? 0,
@@ -761,12 +759,11 @@ void resendOtp() {
                             log(forgetkey);
                           });
 
+                          //   }
+                          //   else{
 
-                          }
-                          else{
-
-                          }
-                        });
+                          //   }
+                          // });
                         }
                       },
                       child: Text(
@@ -784,11 +781,7 @@ void resendOtp() {
     );
   }
 
-
   Widget otpEnterField() {
-
-
-  
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -816,19 +809,21 @@ void resendOtp() {
                       ],
                     ),
                   ),
-                   Row(
-                      children: [
-                        Text(
-                  'You will get OTP via your selected \n option ${selectedOption}',
-                  
-                  style: FontFamily.font4.copyWith(fontSize: 14,color: Colors.grey),
-                  // textScaler: const TextScaler.linear(1.4),
-                  textAlign: TextAlign.center,
-                ),
-                      ],
-                    ),
-                    SizedBox(height: 40,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        'You will get OTP via your selected \n option ${selectedOption}',
+
+                        style: FontFamily.font4
+                            .copyWith(fontSize: 14, color: Colors.grey),
+                        // textScaler: const TextScaler.linear(1.4),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
                   // Radio buttons for selecting Email or Phone
 
                   // Conditionally show the email input field with validation
@@ -871,13 +866,18 @@ void resendOtp() {
                       onPressed: () async {
                         // Validate form fields before proceeding
                         if (otpkey.currentState!.validate()) {
-                          forgetPassword(context, emailid.text, forgetkey,
+                          forgetPassword(
+                                  context,
+                                  selectedOption == "email"
+                                      ? emailid.text
+                                      : phno.text,
+                                  forgetkey,
                                   otpCode.text)
                               .then((value) {
                             resetcode = value['token'].toString();
                             phonefromApi = value['phone'].toString();
                             emailfromApi = value['email'].toString();
-                            print("///////////////////");
+                            // print("///////////////////");
                             print(resetcode);
                             print(phonefromApi);
                             print(emailfromApi);
@@ -898,99 +898,96 @@ void resendOtp() {
                   ),
 
                   Obx(
-                                  () => Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        AutoSizeText(
-                                          _isOTPresendEnable.value
-                                              ? "Didn't you receive the OTP? "
-                                              : "Resend OTP in ${_start} seconds",
-                                          maxLines: 1,
-                                          style: GoogleFonts.outfit(
-                                              textStyle: const TextStyle()),
-                                        ),
+                    () => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AutoSizeText(
+                            _isOTPresendEnable.value
+                                ? "Didn't you receive the OTP? "
+                                : "Resend OTP in ${_start} seconds",
+                            maxLines: 1,
+                            style: GoogleFonts.outfit(
+                                textStyle: const TextStyle()),
+                          ),
 
-                                        TextButton(
-                                          style: ButtonStyle(),
-                                          onPressed: _isOTPresendEnable.value
-                                              ? () {
-                                                  try {
-                                                   forgetPasswordGeneratecode( 
-                                  context,
-                                  selectedCountryCode ?? 0,
-                                  phno.text ?? "",
-                                  emailid.text ?? "",
-                                  selectedCountryCode ?? 0,
-                                  phno.text ?? "")
-                              .then((value) {
-                            getx.forgetPasswordfieldEntryValue.value = false;
-                            getx.forgetPasswordOTPEntryValue.value = true;
-                            getx.forgetPasswordNewPasswordEntryValue.value =
-                                false;
+                          TextButton(
+                            style: ButtonStyle(),
+                            onPressed: _isOTPresendEnable.value
+                                ? () {
+                                    try {
+                                      forgetPasswordGeneratecode(
+                                              context,
+                                              selectedCountryCode ?? 0,
+                                              phno.text ?? "",
+                                              emailid.text ?? "",
+                                              selectedCountryCode ?? 0,
+                                              phno.text ?? "")
+                                          .then((value) {
+                                        getx.forgetPasswordfieldEntryValue
+                                            .value = false;
+                                        getx.forgetPasswordOTPEntryValue.value =
+                                            true;
+                                        getx.forgetPasswordNewPasswordEntryValue
+                                            .value = false;
 
-                            forgetkey = value;
-                            log(forgetkey);
- 
-                          });
-                                                  } catch (e) {
-                                                    print(
-                                                        e.toString() + "hello");
-                                                    Get.back();
-                                                  }
-                                                  startTimer(); // Disable the button and start the timer
-                                                }
-                                              : null,
-                                          child: Text(
-                                            'Resend OTP',
-                                            style: _isOTPresendEnable.value
-                                                ? FontFamily.ResendOtpfont
-                                                : FontFamily.ResendOtpfont
-                                                    .copyWith(
-                                                        color: Colors.grey),
-                                          ),
-                                        ),
+                                        forgetkey = value;
+                                        log(forgetkey);
+                                      });
+                                    } catch (e) {
+                                      print(e.toString() + "hello");
+                                      Get.back();
+                                    }
+                                    startTimer(); // Disable the button and start the timer
+                                  }
+                                : null,
+                            child: Text(
+                              'Resend OTP',
+                              style: _isOTPresendEnable.value
+                                  ? FontFamily.ResendOtpfont
+                                  : FontFamily.ResendOtpfont.copyWith(
+                                      color: Colors.grey),
+                            ),
+                          ),
 
-                                        // TextButton(
-                                        //   style: ButtonStyle(
+                          // TextButton(
+                          //   style: ButtonStyle(
 
-                                        //   ),
+                          //   ),
 
-                                        //   onPressed: _isOTPresendEnable? (){
-                                        //     try {
-                                        //       signupcodegenerate(
-                                        //               phonenumbercountryid,
-                                        //               signupphno,
-                                        //               signupemail,
-                                        //               activationkey,
-                                        //               whatsappnumbercountryid,
-                                        //               signupwaphno,
-                                        //               context)
-                                        //           .then((value) {
-                                        //         print(value + "key");
-                                        //         key = value;
-                                        //         if (key == 'error') {
-                                        //           Get.back();
-                                        //         }
-                                        //       });
-                                        //     } catch (e) {
-                                        //       print(e.toString() + "hello");
-                                        //       Get.back();
-                                        //     }
+                          //   onPressed: _isOTPresendEnable? (){
+                          //     try {
+                          //       signupcodegenerate(
+                          //               phonenumbercountryid,
+                          //               signupphno,
+                          //               signupemail,
+                          //               activationkey,
+                          //               whatsappnumbercountryid,
+                          //               signupwaphno,
+                          //               context)
+                          //           .then((value) {
+                          //         print(value + "key");
+                          //         key = value;
+                          //         if (key == 'error') {
+                          //           Get.back();
+                          //         }
+                          //       });
+                          //     } catch (e) {
+                          //       print(e.toString() + "hello");
+                          //       Get.back();
+                          //     }
 
-                                        // } : null,
+                          // } : null,
 
-                                        //  child: Text(
-                                        //     'Resend OTP',
-                                        //     style: _isOTPresendEnable ? FontFamily.ResendOtpfont : FontFamily.ResendOtpfont.copyWith(color: Colors.grey) ,
-                                        //   ),)
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                          //  child: Text(
+                          //     'Resend OTP',
+                          //     style: _isOTPresendEnable ? FontFamily.ResendOtpfont : FontFamily.ResendOtpfont.copyWith(color: Colors.grey) ,
+                          //   ),)
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -87,19 +87,15 @@ class ClsMap {
   //     "userEnteredCaptchaCode": "9JXtyal"
   //   };
   // }
-    Map objForgetPasswordValidEmail(String email) {
-    return {
-     
-      "UserName": email
-     
-    };
+  Map objForgetPasswordValidEmail(String email) {
+    return {"UserName": email};
   }
 
   Map objForgetPasswordGanarete(int phoneCountryId, String phoneNumber,
       String email, int whatsappCountryId, String whatsappNumber) {
     return {
-      "phoneNumberCountryId": phoneCountryId,
-      "phoneNumber": phoneNumber,
+      "phoneNumberCountryId": phoneCountryId ?? 0,
+      "phoneNumber": "",
       "email": email,
       "whatsAppNumberCountryId": whatsappCountryId,
       "whatsAppNumber": whatsappNumber,
@@ -146,12 +142,6 @@ class ClsMap {
       "phoneNumber": phoneNumber,
       "email": email,
       "activationkey": activationKey,
-
-
-
-
-      
-     
     };
   }
 }

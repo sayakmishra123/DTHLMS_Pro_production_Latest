@@ -112,6 +112,8 @@ Future resetPassword(BuildContext context, String email, String ph, String pass,
     final request = await client.postUrl(
         Uri.https(ClsUrlApi.mainurl, '${ClsUrlApi.resetPassword}$code'));
     request.followRedirects = false;
+    request.headers.set('Origin', origin);
+
     request.headers.set(
       HttpHeaders.contentTypeHeader,
       'application/json',
@@ -1959,6 +1961,7 @@ Future forgetPasswordGeneratecode(
         },
         body: jsonEncode(body));
     var jsondata = jsonDecode(res.body);
+    print(jsondata.toString());
 
     Get.back();
     if (jsondata['isSuccess'] == true) {

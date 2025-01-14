@@ -28,8 +28,9 @@ void testSQLCipherOnWindows() async {
   // final String password = "test";
   //Local DB file path
   Directory appDocDir = await getApplicationSupportDirectory();
-  String appDocPath = appDocDir.path;
+  String appDocPath = appDocDir.path + '${Platform.pathSeparator}$origin';
   String filename = "$appDocPath${Platform.pathSeparator}DTHLMSProDB.sqlite";
+  Directory("$appDocPath${Platform.pathSeparator}").createSync(recursive: true);
   getx.dbPath.value = filename;
   print(filename);
 
