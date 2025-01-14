@@ -275,16 +275,9 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
       getx.mcqdataList.value = true;
       getx.theoryExamvalue.value = true;
     }
+    
 
-    // getx.mcqdataList.value = getx.isInternet.value
-    //     ? await getMcqDataForTest(
-    //         context, getx.loginuserdata[0].token, packageid)
-    //     : true;
-    // getx.theoryExamvalue.value = getx.isInternet.value
-    //     ? await gettheoryExamDataForTest2(
-    //         context, getx.loginuserdata[0].token, packageid)
-    //     : true;
-    // getx.theoryexamList.value=await fetchTheorySetList(packageid);
+
   }
 
   RxString version = "".obs;
