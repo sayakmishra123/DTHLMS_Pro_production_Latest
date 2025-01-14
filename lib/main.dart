@@ -114,6 +114,7 @@ class _MyAppState extends State<MyApp> {
 // A
 // lue.toString() +
 //         "");
+
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setWindowDisplayAffinity();
