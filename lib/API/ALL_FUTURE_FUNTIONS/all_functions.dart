@@ -1910,6 +1910,7 @@ Future<List<Map<String, dynamic>>> getCountryId() async {
     var jsondata = jsonDecode(res.body);
     if (jsondata["isSuccess"] == true) {
       var resultdata = jsonDecode(jsondata["result"]);
+      // print(resultdata);
       // Store result values in the list
       countryList = List<Map<String, dynamic>>.from(resultdata.map(
           (country) => {"value": country["value"], "label": country["label"]}));
@@ -3057,7 +3058,7 @@ Future<Map> checkMCQRankStatus(
       // Print or process the resultSetList as needed
     } else if (response['statusCode'] == 220) {
       // Initialize variables
-      double spentimeInminutes = 0.0; 
+      double spentimeInminutes = 0.0;
       print("Response status code is 220, processing the result...");
 
       // Decode the 'result' field which is a string containing a JSON array
@@ -3186,9 +3187,22 @@ Future<List<SocialMediaIconModel>> getSocialMediaIcons(
       Map<String, dynamic> response = jsonDecode(res.body);
 
       List<dynamic> result = jsonDecode(response['result']);
+      print("${result} ////////////////// get social media links");
 
       resultSetList =
           result.map((item) => SocialMediaIconModel.fromJson(item)).toList();
+      for (var i in resultSetList) {
+        await insertOrUpdateTblImages(
+            i.servicesTypeName.toString(),
+            i.link.toString(),
+            'ImageDocumentId',
+            i.icon.toString(),
+            'socialmediaicons',
+            'homepage',
+            'bannerImagePosition',
+            "");
+      }
+
       return resultSetList;
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
@@ -3351,7 +3365,7 @@ Future<bool> downloadAndSaveAppIcon(String url, String fileName) async {
   }
 }
 
-Future<List> getNotificationDetails( 
+Future<List> getNotificationDetails(
   BuildContext context,
   String token,
 ) async {
@@ -3377,31 +3391,28 @@ Future<List> getNotificationDetails(
 
       // resultSetList = result.map((item) => IconModel.fromJson(item)).toList();
       // log("${resultSetList} ////////////////// get infinite marquee details");
-for (var notification in result) {
-  // Check for null values before using them
-  String imgPath = await downloadNotificationImageAndSave(
-    notification['NotificationImageUrl'] ?? ''
-  );
-          imgPath = 
-             imgPath.replaceAll('/', '\\');
-            
+      for (var notification in result) {
+        // Check for null values before using them
+        String imgPath = await downloadNotificationImageAndSave(
+            notification['NotificationImageUrl'] ?? '');
+        imgPath = imgPath.replaceAll('/', '\\');
 
-  insertOrUpdateTblNotifications(  
-    notification['StartTime']?.toString() ?? '',
-    notification['id']?.toString() ?? '',
-    notification['Title']?.toString() ?? '',
-    notification['Description']?.toString() ?? '',
-    notification['EndTime']?.toString() ?? '',
-    imgPath,
-  );
-}
-
+        insertOrUpdateTblNotifications(
+          notification['StartTime']?.toString() ?? '',
+          notification['id']?.toString() ?? '',
+          notification['Title']?.toString() ?? '',
+          notification['Description']?.toString() ?? '',
+          notification['EndTime']?.toString() ?? '',
+          imgPath,
+        );
+      }
 
       return resultSetList;
-    } else if (res.statusCode == 401) { 
+    } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print('Error: ${res.body} ////////////////// get Notifications details 401');
+      print(
+          'Error: ${res.body} ////////////////// get Notifications details 401');
     }
   } catch (e) {
     print("Error: $e ////////// get Notifications details exception");
@@ -3410,7 +3421,6 @@ for (var notification in result) {
 
   return resultSetList;
 }
-
 
 Future<String> downloadNotificationImageAndSave(String documentUrl) async {
   try {
@@ -3427,17 +3437,20 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
 
     // Create the folder structure: com.si.dthLive/BannerImages
     Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
-    Directory notificationImagesDir = Directory('${dthLmsDir.path}/NotificationImages');
+    Directory notificationImagesDir =
+        Directory('${dthLmsDir.path}/NotificationImages');
 
     if (!await notificationImagesDir.exists()) {
       await notificationImagesDir.create(recursive: true);
-      print('NotificationImages directory created at ${notificationImagesDir.path}');
+      print(
+          'NotificationImages directory created at ${notificationImagesDir.path}');
     }
 
     // Save the path in SharedPreferences
     var prefs = await SharedPreferences.getInstance();
     getx.defaultPathForDownloadFile.value = dthLmsDir.path;
-    prefs.setString("downloadNotificationImageAndSave", notificationImagesDir.path);
+    prefs.setString(
+        "downloadNotificationImageAndSave", notificationImagesDir.path);
 
     // Construct the file path
     String filePath = '${notificationImagesDir.path}/$fileName';

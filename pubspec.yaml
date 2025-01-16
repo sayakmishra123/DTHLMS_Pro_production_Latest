@@ -193,10 +193,8 @@ dev_dependencies:
 flutter_native_splash:
   color: "#FFFFFF"
   image: assets/icons/Dth-lms-1152_org.png
-  branding: assets/icons/Dth-lms-1152_org.png
   color_dark: "#FFFFFF"
   image_dark: assets/icons/Dth-lms-1152_org.png
-  branding_dark: assets/icons/Dth-lms-1152_org.png
 
   android_12:
     image: assets/icons/Dth-lms-1152_org.png

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dthlms/API/LOGIN/login_api.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
-// import 'package:dthlms/LOCAL_DATABASE/copydbfun.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
 import 'package:dthlms/MOBILE/LOGIN/loginpage_mobile.dart';
@@ -14,30 +13,20 @@ import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
 import 'package:dthlms/constants/constants.dart';
-// import 'package:dthlms/PC/OTP/otpscreen.dart';
 import 'package:dthlms/firebase_options.dart';
-// import 'package:dthlms/introduction_dashboard.dart';
 import 'package:dthlms/no_sim.dart';
-// import 'package:dthlms/notification_model.g.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
 import 'package:dthlms/security.dart';
-// import 'package:dthlms/utctime.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_android_developer_mode/flutter_android_developer_mode.dart';
-// import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-// import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
-// import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,12 +62,12 @@ void main(List<String> args) async {
         () {
           final win = appWindow;
           win.minSize =
-              const Size(1300, 600); // Set the minimum window size here
+              const Size(1300, 600);
           win.alignment = Alignment.topLeft;
           win.show();
         },
       );
-    } else if (Platform.isAndroid) {
+    } else if (Platform.isAndroid) {  
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
     }
@@ -195,7 +184,7 @@ class _MyAppState extends State<MyApp> {
       print("data not found of login");
     }
 
-    checkIfEmulator(context);
+    // checkIfEmulator(context);
     // checkDeveloperMode();
   }
 
@@ -519,7 +508,7 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
         child: const Scaffold(
           body: Center(
             child: Text('Virtual Device Detected!'),
-          ),
+          ), 
         ),
       ),
     );
