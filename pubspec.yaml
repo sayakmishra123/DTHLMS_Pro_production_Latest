@@ -192,14 +192,14 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"                                                                                
-  image: assets\icons\vg_study_splash_scren.png
-  branding: assets\icons\vg_study_splash_scren.png
+  image: assets/icons/vg_study_splash_scren.png
+  branding: assets/icons/vg_study_splash_scren.png
   color_dark: "#FFFFFF"
-  image_dark: assets\icons\vg_study_splash_scren.png
-  branding_dark: assets\icons\vg_study_splash_scren.png
+  image_dark: assets/icons/vg_study_splash_scren.png
+  branding_dark: assets/icons/vg_study_splash_scren.png
 
   android_12:
-    image: assets\icons\vg_study_splash_scren.png
+    image: assets/icons/vg_study_splash_scren.png
     icon_background_color: "#FFFFFF" 
 
  

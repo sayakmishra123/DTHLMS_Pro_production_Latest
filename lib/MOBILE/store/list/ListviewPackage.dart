@@ -224,7 +224,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                       for (int i = 0; i < getx.style[0].result.length; i++) ...[
                         // Full Banner Section
                         if (getx.style[0].result[i].imageType == 'Full Banner')
-                          Padding(
+                          Padding( 
                             padding: const EdgeInsets.only(bottom: 10),
                             child: HeadingBox(
                               mode: 1,
@@ -261,7 +261,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                   ),
                 )
               : Center(
-                  child: Expanded(child: CircularProgressIndicator()),
+                  child: CircularProgressIndicator(),
                 ),
         ));
   }

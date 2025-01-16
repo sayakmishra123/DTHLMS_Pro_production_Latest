@@ -196,8 +196,9 @@ class _MyAppState extends State<MyApp> {
     }
 
     checkIfEmulator(context);
-    checkDeveloperMode();
+    // checkDeveloperMode();
   }
+
 
   ClsSimInfo ob = ClsSimInfo();
 
@@ -256,8 +257,22 @@ class _MyAppState extends State<MyApp> {
                                 return Center(
                                     child: CircularProgressIndicator());
                               } else if (snapshot.data!.isNotEmpty) {
-                                bool isDataLengthValid = snapshot.data!
-                                    .every((element) => element.length < 10);
+                                // bool isDataLengthValid = snapshot.data!
+                                //     .every((element) => element.length < 10);
+
+                                bool isDataLengthValid = false;
+
+if (snapshot.hasData && snapshot.data != null && snapshot.data is List) {
+ 
+  final List dataList = snapshot.data!;
+  isDataLengthValid = dataList.every((element) {
+    if (element is String || element is Iterable) {
+      return element.length < 10;
+    }
+    return false; 
+  });
+}
+
 
                                 if (isDataLengthValid) {
                                   return NoSim();

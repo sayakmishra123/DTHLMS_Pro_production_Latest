@@ -211,7 +211,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
   void initState() {
     getHomePageBannerImage(context, getx.loginuserdata[0].token);
     // if (getx.isAndroidDeveloperModeEnabled.value) {
-    //   // _showDeveloperDialog(context);
+      //  _showDeveloperDialog(context);
 
     // }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -2300,7 +2300,8 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                 drawerItem(
                     title: "Profile",
                     onTap: () {
-                      Get.to(MyAccountScreen());
+                      // Get.to(MyAccountScreen());
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MyAccountScreen()));
                     },
                     leading: const Icon(
                       Icons.account_circle_outlined,
