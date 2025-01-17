@@ -112,6 +112,8 @@ Future resetPassword(BuildContext context, String email, String ph, String pass,
     final request = await client.postUrl(
         Uri.https(ClsUrlApi.mainurl, '${ClsUrlApi.resetPassword}$code'));
     request.followRedirects = false;
+    request.headers.set('Origin', origin);
+
     request.headers.set(
       HttpHeaders.contentTypeHeader,
       'application/json',
@@ -555,8 +557,7 @@ Future<void> getPackageData(BuildContext context, String token) async {
       List<PackageData> packageList = packageJsonList
           .map((packageJson) => PackageData.fromJson(packageJson))
           .toList();
-      // log(jsonResponse.toString());
-      // Now you have a list of PackageData objects
+  
       packageList.forEach((package) {
         insertOrUpdateTblPackageData(
             package.packageId,
@@ -1959,6 +1960,7 @@ Future forgetPasswordGeneratecode(
         },
         body: jsonEncode(body));
     var jsondata = jsonDecode(res.body);
+    print(jsondata.toString());
 
     Get.back();
     if (jsondata['isSuccess'] == true) {
@@ -2258,7 +2260,7 @@ Future<bool> gettheoryExamDataForTest2(
                       examSet['DefaultExamInstructions'].toString(),
                       theoryExam['ExamDuration'].toString(),
                       theoryExam['QuestionDocumentUrl'].toString(),
-                      theoryExam['StartTime'].toString(),
+                      theoryExam['TheoryExamDate'].toString(),
 
                       theoryExam['PassMarks'].toString(),
                       examSet['SetUptoDate'].toString(),

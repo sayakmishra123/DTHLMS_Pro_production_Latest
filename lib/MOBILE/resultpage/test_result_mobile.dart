@@ -118,7 +118,7 @@ bool isPass = false;
   }
 
   checkIfPass(){
-    if(widget.obtain > widget.totalMarksRequired || widget.obtain > widget.totalMarksRequired ){
+    if(widget.obtain >= widget.totalMarksRequired){
       pass = "Pass";
       isPass = true;
     }else{
@@ -169,10 +169,10 @@ bool isPass = false;
                                child: Image(image: AssetImage('assets/person.png')),
                              ),
                              SizedBox(height: 5,),
-                             SizedBox(
-                              height: 80,
-                               child: Image(image: AssetImage('assets/signature.png')),
-                             )
+                            //  SizedBox(
+                            //   height: 80,
+                            //    child: Image(image: AssetImage('assets/signature.png')),
+                            //  )
                            ],
                           )),
                           SizedBox(width: 10,),

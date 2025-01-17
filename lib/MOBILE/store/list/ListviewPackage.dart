@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/bannerInfoPage.dart';
+import 'package:dthlms/MOBILE/THEORY_EXAM/store_dashboard.dart';
 import 'package:dthlms/MOBILE/store/list/searchlist.dart';
 import 'package:dthlms/MOBILE/store/list/verticalcourselist.dart';
 
-import 'package:dthlms/MOBILE/store/store_dashboard.dart';
+// import 'package:dthlms/MOBILE/store/store_dashboard.dart';
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:flutter/material.dart';

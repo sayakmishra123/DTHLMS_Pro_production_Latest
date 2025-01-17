@@ -196,7 +196,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     checkIfEmulator(context);
-    // checkDeveloperMode();
+    checkDeveloperMode();
   }
 
 
@@ -263,7 +263,7 @@ class _MyAppState extends State<MyApp> {
                                 bool isDataLengthValid = false;
 
 if (snapshot.hasData && snapshot.data != null && snapshot.data is List) {
- 
+  // Safely cast snapshot.data to a List and check the condition
   final List dataList = snapshot.data!;
   isDataLengthValid = dataList.every((element) {
     if (element is String || element is Iterable) {

@@ -1,13 +1,18 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../CUSTOMDIALOG/customdialog.dart';
 
 class TestResultPage extends StatefulWidget {
@@ -40,6 +45,11 @@ class TestResultPage extends StatefulWidget {
 
 class _TestResultPageState extends State<TestResultPage> {
   int touchedIndex = -1;
+  RxBool    isDownloading = false.obs;
+   CancelToken cancelToken = CancelToken();
+    String downloadedFilePath = '';
+     double downloadProgress = 0.0;
+
 
 //  TextStyle _textStyle = TextStyle(fontSize: 25);
   TextStyle headerStyle = TextStyle(color: Colors.blue, fontSize: 20);
@@ -47,6 +57,128 @@ class _TestResultPageState extends State<TestResultPage> {
   TextStyle studentNameStyle = TextStyle(fontSize: 20, color: Colors.blue);
 
   Getx getx = Get.find<Getx>();
+
+
+   Future<String?> getSavePath() async {
+    // Open a file picker dialog
+    String? result = await FilePicker.platform.saveFile(
+      dialogTitle: "Save Answer Sheet",
+      fileName: "answer_sheet.pdf", // default file name
+    );
+
+    if (result != null) { 
+      return result; // Return the file path selected by the user
+    }
+    return null; // Return null if the user cancels the file picker
+  }
+
+    Future<void> downloadAnswerSheet(String url) async {
+    Dio dio = Dio();
+
+    String? filePath = await getSavePath();
+    if (filePath == null) {
+      return; // If user cancels file selection, stop the process
+    }
+
+    try {
+      
+        isDownloading.value = true;
+     
+
+      // Start downloading the file
+      await dio.download(
+        url,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            setState(() {
+              downloadProgress = (received / total);
+            });
+          }
+        },
+        cancelToken: cancelToken,
+      );
+
+      setState(() {
+        isDownloading.value = false;
+        downloadedFilePath = filePath;
+      });
+
+      // Show dialog to inform the user that download is complete
+      showDownloadCompleteDialog();
+    } catch (e) {
+    
+        isDownloading.value = false;
+    
+
+      // Show error dialog if the download fails
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text("Download Failed"),
+          content: Text("There was an error downloading the file."),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+
+    void cancelDownload() {
+    cancelToken.cancel();
+    setState(() {
+      isDownloading.value = false;
+    });
+  }
+
+ void showDownloadCompleteDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Download Complete"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("The answer sheet has been downloaded."),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                showPdfDialog(downloadedFilePath);
+              },
+              child: Text("Show PDF"),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Close"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Show the PDF in a dialog using spfpdfviewer
+  void showPdfDialog(String filePath) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        child: Container(
+          width: MediaQuery.of(context).size.width*0.7,
+          height: MediaQuery.of(context).size.height*0.9,
+          child: SfPdfViewer.file(File(filePath)), // Using spfpdfviewer to display PDF
+        ),
+      ),
+    );
+  }
+
 
   void recheckAnswerSheetAlert() {
     showDialog(
@@ -62,7 +194,7 @@ class _TestResultPageState extends State<TestResultPage> {
           OnConfirm: () {
             // Navigator.of(context).pop();
             requestForRecheckAnswerSheet(
-                    context, getx.loginuserdata[0].token + "gg", widget.examId)
+                    context, getx.loginuserdata[0].token, widget.examId)
                 .then((value) {
               if (value) {
                 onActionDialogBox("Requested", "Request send Successfully!",
@@ -149,8 +281,8 @@ class _TestResultPageState extends State<TestResultPage> {
   }
 
   checkIfPass() {
-    if (widget.obtain > widget.totalMarksRequired ||
-        widget.obtain > widget.totalMarksRequired) {
+    if (widget.obtain >= widget.totalMarksRequired 
+       ) {
       pass = "Pass";
       isPass = true;
     } else {
@@ -570,15 +702,33 @@ class _TestResultPageState extends State<TestResultPage> {
                                         vertical: 15, horizontal: 15)),
                                 backgroundColor:
                                     WidgetStatePropertyAll(Colors.blue)),
-                            onPressed: () {
-                              DownloadAnswerSheetAlert();
-                            },
+                            onPressed:
+                              isDownloading.value
+                      ? null
+                      : () {
+                          downloadAnswerSheet("https://www.nutrient.io/downloads/pspdfkit-web-demo.pdf");
+                        },
+                              // DownloadAnswerSheetAlert();
+                            
                             child: Text(
                               'Download Answer Sheet',
                               style: TextStyle(color: Colors.white),
                             )),
                       ],
                     ),
+
+
+                     if (isDownloading.value)
+                  Column(
+                    children: [
+                      LinearProgressIndicator(value: downloadProgress),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: cancelDownload,
+                        child: Text("Cancel Download"),
+                      ),
+                    ],
+                  ),
                     SizedBox(
                       height: 20,
                     ),
