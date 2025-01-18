@@ -46,12 +46,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ),
         body: notifications.isEmpty
             ? Center(
-                child: Image.network(
-                  'http://istor1.cloudinfinit.com/solutioninfo1/tvs/Uploads/9/mcq_image/24-12-2024/bfaed0a2acb04eeaa3627aa94276f33b.jpg',
-                  errorBuilder: (context, error, stackTrace) {
-                    return Text(error.toString());
-                  },
-                ),
+                child: Text("No Notification Found")
               )
             : ListView.builder(
                 itemCount: notifications.length,

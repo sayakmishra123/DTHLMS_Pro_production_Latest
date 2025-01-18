@@ -210,10 +210,10 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
   @override
   void initState() {
     getHomePageBannerImage(context, getx.loginuserdata[0].token);
-    // if (getx.isAndroidDeveloperModeEnabled.value) {
-    //   // _showDeveloperDialog(context);
+    if (getx.isAndroidDeveloperModeEnabled.value) {
+       _showDeveloperDialog(context);
 
-    // }
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (getx.isInternet.value) {
         updatePackage(globalContext, getx.loginuserdata[0].token, true, "");
@@ -2300,7 +2300,8 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                 drawerItem(
                     title: "Profile",
                     onTap: () {
-                      Get.to(MyAccountScreen());
+                      // Get.to(MyAccountScreen());
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MyAccountScreen(fromDrawer: true,)));
                     },
                     leading: const Icon(
                       Icons.account_circle_outlined,
@@ -3003,7 +3004,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
       DashBoardMobile(),
       const Mobile_Package_List(),
       ListviewPackage(),
-      MyAccountScreen(),
+      MyAccountScreen(fromDrawer: false,),
     ];
     // getIconData(context, getx.loginuserdata[0].token);
     notificationsCall();

@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/bannerInfoPage.dart';
+import 'package:dthlms/MOBILE/THEORY_EXAM/store_dashboard.dart';
 import 'package:dthlms/MOBILE/store/list/searchlist.dart';
 import 'package:dthlms/MOBILE/store/list/verticalcourselist.dart';
 
-import 'package:dthlms/MOBILE/store/store_dashboard.dart';
+// import 'package:dthlms/MOBILE/store/store_dashboard.dart';
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:flutter/material.dart';
@@ -224,7 +225,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                       for (int i = 0; i < getx.style[0].result.length; i++) ...[
                         // Full Banner Section
                         if (getx.style[0].result[i].imageType == 'Full Banner')
-                          Padding(
+                          Padding( 
                             padding: const EdgeInsets.only(bottom: 10),
                             child: HeadingBox(
                               mode: 1,
@@ -261,7 +262,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                   ),
                 )
               : Center(
-                  child: Expanded(child: CircularProgressIndicator()),
+                  child: CircularProgressIndicator(),
                 ),
         ));
   }
