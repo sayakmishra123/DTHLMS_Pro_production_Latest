@@ -263,6 +263,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
     // getAllPackageListOfStudent().whenComplete(() {
 
     // });
+    getSocialMediaIcons(
+                            context, getx.loginuserdata[0].token);
     super.initState();
   }
 
@@ -496,70 +498,78 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                     const SizedBox(height: 20),
 
                     // Social Media Links
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Follow Us',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: ColorPage.red),
-                      ),
-                    ),
+                    
 
                     const SizedBox(height: 8),
                     FutureBuilder(
-                        future: getSocialMediaIcons(
-                            context, getx.loginuserdata[0].token),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return SizedBox(
-                              height: 80,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: List.generate(
-                                  snapshot.data!.length,
-                                  (index) => InkWell(
-                                    onTap: () async {
-                                      final Uri url =
-                                          Uri.parse(snapshot.data![index].link);
-
-                                      if (await canLaunchUrl(url)) {
-                                        await launchUrl(url);
-                                      } else {
-                                        cantLaunchUrlAlert(context);
-                                      }
-                                    },
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: snapshot.data!.length > 4
-                                              ? 20
-                                              : 35,
-                                          width: snapshot.data!.length > 4
-                                              ? 20
-                                              : 35,
-                                          child: SvgPicture.string(
-                                            snapshot.data![index].icon,
-                                          ),
-                                        ),
-                                        Text(
-                                          snapshot
-                                              .data![index].servicesTypeName,
-                                          style: FontFamily.style.copyWith(
-                                              fontSize: 14, color: Colors.grey),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return const CircularProgressIndicator();
-                          }
-                        }),
+  future: getAllTblImages(), 
+  builder: (context, snapshot) {
+    if (snapshot.hasData) {
+      // Filter the data for ImageType = socialmediaicons
+      final socialMediaIcons = snapshot.data!
+          .where((item) => item['ImageType'] == 'socialmediaicons')
+          .toList();
+      if (
+        socialMediaIcons.isEmpty) {
+        return const SizedBox();
+      }
+      return Column(
+        children: [
+          Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Follow Us',
+                            style: TextStyle(
+                                fontSize: 16, 
+                                fontWeight: FontWeight.bold,
+                                color: ColorPage.red),
+                          ),
+                                             ),
+          SizedBox(
+            height: 80,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(
+                socialMediaIcons.length,
+                (index) => InkWell(
+                  onTap: () async {
+                    final Uri url = Uri.parse(socialMediaIcons[index]['ImagePath']);
+          
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      cantLaunchUrlAlert(context);
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: socialMediaIcons.length > 4 ? 20 : 35,
+                        width: socialMediaIcons.length > 4 ? 20 : 35,
+                        child: SvgPicture.string(
+                          socialMediaIcons[index]['ImageUrl'],
+                        ),
+                      ),
+                      Text(
+                        socialMediaIcons[index]['ImageId'],
+                        style: FontFamily.style.copyWith(
+                            fontSize: 14, color: Colors.grey),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else if (snapshot.hasError) {
+      return const Text("Error loading images.");
+    } else {
+      return const CircularProgressIndicator();
+    }
+  },
+),
 
                     const SizedBox(height: 20),
 

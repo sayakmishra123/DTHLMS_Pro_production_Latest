@@ -88,7 +88,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
     loginemail.text = prefs.getString("LoginId") ?? '';
   }
 
-  Future getCountrycodeListFunction() async {
+  Future getCountrycodeListFunction() async { 
     countryCode.value = await getCountryId();
   }
 
@@ -1171,7 +1171,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                           if (desktop_key1.currentState!.validate() &&
                                                                               GetUtils.isEmail(signupemail.text)) {
                                                                             print("section 1 shubha");
-                                                                            print(activationkey.text);
+                                                                            print(activationkey.text); 
                                                                             await checkUserBeforeRegister(context, signupemail.text, signupphno.text, activationkey.text.toString()).then((activationKey) {
                                                                               if (activationKey != '') {
                                                                                 print("section 2 shubha");

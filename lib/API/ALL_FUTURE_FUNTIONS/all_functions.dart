@@ -1921,6 +1921,7 @@ Future<List<Map<String, dynamic>>> getCountryId() async {
     var jsondata = jsonDecode(res.body);
     if (jsondata["isSuccess"] == true) {
       var resultdata = jsonDecode(jsondata["result"]);
+      // print(resultdata);
       // Store result values in the list
       countryList = List<Map<String, dynamic>>.from(resultdata.map(
           (country) => {"value": country["value"], "label": country["label"]}));
@@ -3198,9 +3199,22 @@ Future<List<SocialMediaIconModel>> getSocialMediaIcons(
       Map<String, dynamic> response = jsonDecode(res.body);
 
       List<dynamic> result = jsonDecode(response['result']);
+      print("${result} ////////////////// get social media links");
 
       resultSetList =
           result.map((item) => SocialMediaIconModel.fromJson(item)).toList();
+      for (var i in resultSetList) {
+        await insertOrUpdateTblImages(
+            i.servicesTypeName.toString(),
+            i.link.toString(),
+            'ImageDocumentId',
+            i.icon.toString(),
+            'socialmediaicons',
+            'homepage',
+            'bannerImagePosition',
+            "");
+      }
+
       return resultSetList;
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
