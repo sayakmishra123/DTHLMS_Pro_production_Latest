@@ -93,4 +93,6 @@ class ClsUrlApi {
       "/api/AuthDataGet/ExecuteJson/spAppApi/46";
   static const answerSheetRecheckRequestForTest =
       "/api/AuthDataGet/ExecuteJson/spAppApi/50";
+        static const getanswerSheetUrlOfStudent =
+      "/api/AuthDataGet/ExecuteJson/spAppApi/55";
 }

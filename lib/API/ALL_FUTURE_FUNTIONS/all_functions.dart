@@ -1146,8 +1146,8 @@ Future<String> checkUserBeforeRegister(BuildContext context, String loginemail,
       activationkey = "";
     }
 // log(jsondata['result'].toString().contains('signup').toString());
-    if (responce.statusCode == 200 &&
-        jsondata['result'].toString().contains('signup')) {
+    if (responce.statusCode == 200 
+       ) {
       // log('true');
       Get.back();
       return activationkey;
@@ -3522,6 +3522,53 @@ Future<bool> requestForRecheckAnswerSheet(
   } catch (e) {
     print("Error: $e ////////// get recheckAnswerSheet");
     writeToFile(e, 'recheckAnswerSheet');
+  }
+  return returnValue;
+}
+
+
+Future<String> getAnswerSheetURLforStudent(
+  BuildContext context,
+  String token,
+  String examid,
+) async {
+  loader(context);
+  Map<String, dynamic> data = {"ExamId": examid};
+  String returnValue = "";
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getanswerSheetUrlOfStudent),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+      returnValue = result.toString();
+      Get.back();
+
+      return result.toString();
+      
+    } else if (res.statusCode == 401) {
+          Get.back();
+      onTokenExpire(context);
+    } else {
+          Get.back();
+      print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+    }
+  } catch (e) {
+        Get.back();
+    print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    writeToFile(e, 'getAnswerSheetURLforStudent');
   }
   return returnValue;
 }
