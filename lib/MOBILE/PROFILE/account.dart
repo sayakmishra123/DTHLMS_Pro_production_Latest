@@ -16,6 +16,10 @@ import 'package:get/get.dart';
 import '../HOMEPAGE/homepage_mobile.dart';
 
 class MyAccountScreen extends StatefulWidget {
+
+  final bool fromDrawer;
+  MyAccountScreen({ required this.fromDrawer});
+
   @override
   State<MyAccountScreen> createState() => _MyAccountScreenState();
 }
@@ -56,7 +60,8 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: widget.fromDrawer,
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'My Account',
           style: FontFamily.styleb.copyWith(color: Colors.white),

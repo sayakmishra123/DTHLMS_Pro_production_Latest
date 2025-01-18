@@ -557,8 +557,7 @@ Future<void> getPackageData(BuildContext context, String token) async {
       List<PackageData> packageList = packageJsonList
           .map((packageJson) => PackageData.fromJson(packageJson))
           .toList();
-      // log(jsonResponse.toString());
-      // Now you have a list of PackageData objects
+  
       packageList.forEach((package) {
         insertOrUpdateTblPackageData(
             package.packageId,
@@ -2262,7 +2261,7 @@ Future<bool> gettheoryExamDataForTest2(
                       examSet['DefaultExamInstructions'].toString(),
                       theoryExam['ExamDuration'].toString(),
                       theoryExam['QuestionDocumentUrl'].toString(),
-                      theoryExam['StartTime'].toString(),
+                      theoryExam['TheoryExamDate'].toString(),
 
                       theoryExam['PassMarks'].toString(),
                       examSet['SetUptoDate'].toString(),

@@ -509,7 +509,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
       final socialMediaIcons = snapshot.data!
           .where((item) => item['ImageType'] == 'socialmediaicons')
           .toList();
-      if (socialMediaIcons.isEmpty) {
+      if (
+        socialMediaIcons.isEmpty) {
         return const SizedBox();
       }
       return Column(
@@ -519,7 +520,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                           child: Text(
                             'Follow Us',
                             style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16, 
                                 fontWeight: FontWeight.bold,
                                 color: ColorPage.red),
                           ),

@@ -103,6 +103,7 @@ class _MyAppState extends State<MyApp> {
 // A
 // lue.toString() +
 //         "");
+
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setWindowDisplayAffinity();
@@ -187,6 +188,7 @@ class _MyAppState extends State<MyApp> {
     // checkDeveloperMode();
   }
 
+
   ClsSimInfo ob = ClsSimInfo();
 
   @override
@@ -239,13 +241,27 @@ class _MyAppState extends State<MyApp> {
                         : FutureBuilder(
                             future: getSimCardsData(context),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
+                              if (snapshot.connectionState == 
                                   ConnectionState.waiting) {
                                 return Center(
                                     child: CircularProgressIndicator());
                               } else if (snapshot.data!.isNotEmpty) {
-                                bool isDataLengthValid = snapshot.data!
-                                    .every((element) => element.length < 10);
+                                // bool isDataLengthValid = snapshot.data!
+                                //     .every((element) => element.length < 10);
+
+                                bool isDataLengthValid = false;
+
+if (snapshot.hasData && snapshot.data != null && snapshot.data is List) {
+  // Safely cast snapshot.data to a List and check the condition
+  final List dataList = snapshot.data!;
+  isDataLengthValid = dataList.every((element) {
+    if (element is String || element is Iterable) {
+      return element.length < 10;
+    }
+    return false; 
+  });
+}
+
 
                                 if (isDataLengthValid) {
                                   // return NoSim();

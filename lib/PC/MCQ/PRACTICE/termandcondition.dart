@@ -68,6 +68,52 @@ class TheoryExamTermAndCondition extends StatelessWidget {
     }
   }
 
+
+  String formatDateStringforStartTime(String dateString, String type) {
+  print(dateString + "//" + type);
+  try {
+    DateTime dateTime;
+    
+    // Check if the input is just time (e.g., "22:33" or "00:00:00")
+    if (dateString.contains(":")) {
+      // Ensure that the input string is formatted correctly
+      if (dateString.split(':').length == 2) {
+        // Time in format "HH:mm" (e.g., "22:33")
+        dateTime = DateFormat("HH:mm").parse(dateString);
+      } else if (dateString.split(':').length == 3) {
+        // Time in format "HH:mm:ss" (e.g., "00:00:00")
+        dateTime = DateFormat("HH:mm:ss").parse(dateString);
+      } else {
+        throw ArgumentError('Invalid time format.');
+      }
+    } else {
+      // Assume the input is a full datetime string (e.g., "2025-01-17T22:33:00")
+      dateTime = DateTime.parse(dateString);
+    }
+
+    String formattedOutput;
+
+    if (type == 'time') {
+      // Format time only in 12-hour format with AM/PM
+      formattedOutput = DateFormat('hh:mm a').format(dateTime);
+    } else if (type == 'date') {
+      // Format date only
+      formattedOutput = DateFormat('dd MMM, yyyy').format(dateTime);
+    } else if (type == 'datetime') {
+      // Format both date and time
+      formattedOutput = DateFormat('hh:mm a, dd MMM, yyyy').format(dateTime);
+    } else {
+      throw ArgumentError(
+          'Invalid type. Expected "time", "date", or "datetime".');
+    }
+
+    return formattedOutput;
+  } catch (e) {
+    print("${e.toString()}");
+    return "no date mentioned";
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
