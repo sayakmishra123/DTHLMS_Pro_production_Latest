@@ -612,7 +612,7 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
                             });
                           },
                         ),
-                        const Text('Phone'),
+                        const Text('Whatsapp'),
                       ],
                     ),
                   ),
@@ -709,17 +709,15 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
                                     hintStyle: const TextStyle(
                                         color: ColorPage.colorgrey),
                                     labelStyle: GoogleFonts.outfit(),
-                                    labelText: 'Phone no',
+                                    labelText: 'WhatsApp no',
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Phone number is required';
+                                      return ' number is required';
                                     }
-                                    if (value.length != 10) {
-                                      return 'Phone number must be 10 digits';
-                                    }
+
                                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                                      return 'Phone number must contain only digits';
+                                      return ' number must contain only digits';
                                     }
                                     return null;
                                   },
@@ -906,14 +904,13 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
                           AutoSizeText(
                             _isOTPresendEnable.value
                                 ? "Didn't you receive the OTP? "
-                                : "Resend OTP in ${_start} seconds",
+                                : "Resend OTP in $_start seconds",
                             maxLines: 1,
                             style: GoogleFonts.outfit(
                                 textStyle: const TextStyle()),
                           ),
 
                           TextButton(
-                            style: ButtonStyle(),
                             onPressed: _isOTPresendEnable.value
                                 ? () {
                                     try {

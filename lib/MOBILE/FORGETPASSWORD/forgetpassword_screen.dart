@@ -344,7 +344,7 @@ class _ForgotScreenMobileState extends State<ForgotScreenMobile> {
                           });
                         },
                       ),
-                      const Text('Phone'),
+                      const Text('Whatsapp'),
                     ],
                   ),
                 ),
@@ -447,13 +447,11 @@ class _ForgotScreenMobileState extends State<ForgotScreenMobile> {
                                       AutovalidateMode.onUserInteraction,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Phone number is required';
+                                      return ' number is required';
                                     }
-                                    if (value.length != 10) {
-                                      return 'Phone number must be 10 digits';
-                                    }
+
                                     if (RegExp(r'^[0-9]+\$').hasMatch(value)) {
-                                      return 'Phone number must contain only digits';
+                                      return ' number must contain only digits';
                                     }
                                     return null;
                                   },
@@ -463,8 +461,8 @@ class _ForgotScreenMobileState extends State<ForgotScreenMobile> {
 
                                   keyboardType: TextInputType.phone,
                                   decoration: InputDecoration(
-                                    labelText: 'Phone no',
-                                    hintText: 'Enter your phone number',
+                                    labelText: 'Whatsapp no',
+                                    hintText: 'Enter your Whatsapp number',
                                     fillColor:
                                         Color.fromARGB(255, 247, 246, 246),
                                     filled: true,

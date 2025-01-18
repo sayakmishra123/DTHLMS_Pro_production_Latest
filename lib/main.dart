@@ -194,8 +194,8 @@ class _MyAppState extends State<MyApp> {
       print("data not found of login");
     }
 
-    checkIfEmulator(context);
-    checkDeveloperMode();
+    // checkIfEmulator(context);
+    // checkDeveloperMode();
   }
 
   ClsSimInfo ob = ClsSimInfo();
