@@ -677,7 +677,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
                       controller: _motionTabBarController,
                       children: [
                         Pdf(),
-                        // Text('data'),
                         Mcq(),
                         Tags(),
                         AskDoubt(),

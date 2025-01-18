@@ -584,8 +584,8 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
         try {
           // Map each image to an uploadImage Future
           List<Future<String>> uploadFutures = images
-              .map((image) =>
-                  uploadSheet(image, getx.loginuserdata[0].token, key))
+              .map((image) => uploadSheet(
+                  image, getx.loginuserdata[0].token, key, "AnswerSheet"))
               .toList();
 
           // Wait for all uploads to complete and collect the IDs

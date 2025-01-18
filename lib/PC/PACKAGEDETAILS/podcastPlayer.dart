@@ -176,7 +176,31 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
 
                   return Obx(
                     () => Card(
+                      color: playingPodcastPath.value ==
+                              (getx.userSelectedPathForDownloadFile.isEmpty
+                                  ? getx.defaultPathForDownloadFile +
+                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+                                  : getx.userSelectedPathForDownloadFile.value +
+                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+                          ? Colors.blue[100]
+                          : Colors.white,
                       child: ListTile(
+                        onTap: () {
+                          if (File(getx.userSelectedPathForDownloadFile.isEmpty
+                                  ? getx.defaultPathForDownloadFile +
+                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+                                  : getx.userSelectedPathForDownloadFile.value +
+                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+                              .existsSync()) {
+                            playingPodcastPath.value = getx
+                                    .userSelectedPathForDownloadFile.isEmpty
+                                ? getx.defaultPathForDownloadFile +
+                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+                                : getx.userSelectedPathForDownloadFile.value +
+                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}';
+                            _playPodcast(playingPodcastPath.value);
+                          }
+                        },
                         leading: Icon(Icons.audiotrack),
                         title: Text(getx.podcastFileList[index]['FileIdName']),
                         subtitle: isDownloaded
@@ -201,7 +225,16 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
                                             '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
                                     .existsSync()
                                 ? IconButton(
-                                    icon: Icon(Icons.play_arrow),
+                                    icon: playingPodcastPath.value ==
+                                            (getx.userSelectedPathForDownloadFile
+                                                    .isEmpty
+                                                ? getx.defaultPathForDownloadFile +
+                                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+                                                : getx.userSelectedPathForDownloadFile
+                                                        .value +
+                                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+                                        ? Icon(Icons.pause)
+                                        : Icon(Icons.play_arrow),
                                     onPressed: () {
                                       playingPodcastPath.value = getx
                                               .userSelectedPathForDownloadFile
@@ -298,8 +331,8 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                playingPodcastPath.value,
-                                // playingPodcastPath.value.split('\\').last,
+                                // playingPodcastPath.value,
+                                playingPodcastPath.value.split('\\').last,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 20,

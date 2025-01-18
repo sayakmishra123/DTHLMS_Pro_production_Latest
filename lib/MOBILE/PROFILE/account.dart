@@ -22,7 +22,7 @@ class MyAccountScreen extends StatefulWidget {
 
 class _MyAccountScreenState extends State<MyAccountScreen> {
   Getx getx = Get.put(Getx());
-     logOut() async {
+  logOut() async {
     ArtDialogResponse? response = await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
@@ -52,7 +52,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
     }
   }
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -76,8 +76,13 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
               ),
               child: ListTile(
                 leading: CircleAvatar(
-                    // backgroundImage: AssetImage("assets/sorojda.png"),
-                    ),
+                  child: Text(
+                    '${getx.loginuserdata[0].firstName[0]}${getx.loginuserdata[0].lastName[0]}'
+                        .toUpperCase(),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  // backgroundImage: AssetImage("assets/sorojda.png"),
+                ),
                 title: Text(getx.loginuserdata[0].firstName +
                     " " +
                     getx.loginuserdata[0].lastName),
@@ -114,16 +119,20 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     icon: Icons.devices,
                     title: 'Device History',
                     onTap: () {
-                      Get.to( transition: Transition.cupertino,()=>DeviceHistoryMobile());
+                      Get.to(
+                          transition: Transition.cupertino,
+                          () => DeviceHistoryMobile());
                     },
                   ),
-                  MenuItem(
-                    icon: Icons.assignment,
-                    title: 'Exam History',
-                    onTap: () {
-                      Get.to( transition: Transition.cupertino,()=>ExamHistoryMobile());
-                    },
-                  ),
+                  // MenuItem(
+                  //   icon: Icons.assignment,
+                  //   title: 'Exam History',
+                  //   onTap: () {
+                  //     Get.to(
+                  //         transition: Transition.cupertino,
+                  //         () => ExamHistoryMobile());
+                  //   },
+                  // ),
                 ],
               ),
             ),
@@ -150,29 +159,29 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     icon: FontAwesome.comment,
                     title: 'Contact Us',
                     onTap: () {
-                      Get.to( transition: Transition.cupertino,()=>ContactUs());
+                      Get.to(
+                          transition: Transition.cupertino, () => ContactUs());
                     },
                   ),
                   MenuItem(
                     icon: Icons.privacy_tip,
-                    title: 'Privacy Policy', 
+                    title: 'Privacy Policy',
                     onTap: () {},
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20),      
+            SizedBox(height: 20),
             Card(
               color: ColorPage.white,
               child: ListTile(
-                leading: Icon(Icons.logout, color: Colors.red),
-                title: Text(
-                  'Log Out',
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                onTap: logOut
-              ),
+                  leading: Icon(Icons.logout, color: Colors.red),
+                  title: Text(
+                    'Log Out',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                  onTap: logOut),
             ),
           ],
         ),

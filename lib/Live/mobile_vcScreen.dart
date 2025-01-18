@@ -323,7 +323,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                             child: Row(
                           children: [
                             // Left main screen content
-      
+
                             Expanded(
                               child: Column(
                                 // mainAxisAlignment: MainAxisAlignment.center,
@@ -339,8 +339,8 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           widget.videoCategory == "YouTube"
-                                              ? YoutubeLive(
-                                                  widget.link, widget.username)
+                                              ? YoutubeLive(widget.link,
+                                                  widget.username, true)
                                               : Expanded(
                                                   child: Row(
                                                     mainAxisAlignment:
@@ -350,7 +350,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                       Expanded(
                                                         // Adjust the flex value as needed
                                                         child: Container(
-      
+
                                                             // ),
                                                             child: Center(
                                                           child: Stack(
@@ -373,7 +373,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                         List<Peer>
                                                                             allPeers =
                                                                             [];
-      
+
                                                                         // Add peers who are not screen-sharing
                                                                         allPeers.addAll(vcController
                                                                             .peersList
@@ -383,11 +383,11 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                               .screenShareList
                                                                               .contains(peer));
                                                                         }));
-      
+
                                                                         // Add screen-sharing peers
                                                                         allPeers
                                                                             .addAll(vcController.screenShareList);
-      
+
                                                                         if (allPeers
                                                                             .isEmpty) {
                                                                           // No peers to display
@@ -402,7 +402,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                             ),
                                                                           );
                                                                         }
-      
+
                                                                         // Build the list of RemoteStreamWidgets
                                                                         return ListView
                                                                             .builder(
@@ -415,7 +415,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                                 allPeers[index];
                                                                             final isScreenShare =
                                                                                 vcController.screenShareList.contains(peer);
-      
+
                                                                             return RemoteStreamWidget(
                                                                               peer: peer,
                                                                               isScreenShare: isScreenShare,
@@ -487,7 +487,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                             color: Colors.white,
                                                           ),
                                                         ),
-      
+
                                                         // CupertinoButton(
                                                         //   color: CupertinoColors.systemRed,
                                                         //   padding: EdgeInsets.symmetric(horizontal: 3),
@@ -517,7 +517,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                         //     child: Icon(CupertinoIcons.phone)),
                                                         //
                                                       ),
-      
+
                                                 Row(
                                                   children: [
                                                     widget.videoCategory ==
@@ -550,7 +550,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                   List<PopupMenuEntry<String>>
                                                                       menuItems =
                                                                       [];
-      
+
                                                                   // Add the audio output items
                                                                   menuItems.addAll(
                                                                       vcController
@@ -573,13 +573,13 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                       ),
                                                                     );
                                                                   }).toList());
-      
+
                                                                   return menuItems;
                                                                 },
                                                               ),
                                                             ],
                                                           ),
-      
+
                                                     widget.videoCategory ==
                                                             "YouTube"
                                                         ? SizedBox()
@@ -832,7 +832,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                               weight: 5,
                                                             ),
                                                           ),
-      
+
                                                     //                   if (vcController
                                                     //                       .screenShareStatus !=
                                                     //                       ButtonStatus.off)
@@ -901,7 +901,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                     //                   const SizedBox(
                                                     //                     width: 15,
                                                     //                   ),
-      
+
                                                     widget.videoCategory ==
                                                             "YouTube"
                                                         ? FloatingActionButton
@@ -925,11 +925,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                           .userid,
                                                                       widget
                                                                           .username
-      
+
                                                                       // username
-      
-      
-                                                                      
+
                                                                       ),
                                                                 ));
                                                               }));
@@ -972,9 +970,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                             ),
                           ],
                         )),
-      
+
                         // Expanded(child: TitleBar()),
-      
+
                         const Positioned(
                           top: 0,
                           left: 0,
@@ -996,7 +994,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
               ),
             );
           }
-      
+
               // SizedBox(
               //   height: 80,
               //   child: Row(
@@ -1113,7 +1111,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
               //                 },
               //               ),
               //             ),
-      
+
               //           // FloatingActionButton.small(
               //           //   shape: ContinuousRectangleBorder(
               //           //       borderRadius: BorderRadius.circular(12)),
@@ -1231,7 +1229,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
               //     ],
               //   );
               // }),
-      
+
               )),
     );
   }

@@ -917,12 +917,14 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
                         )
                       : null,
                   trailing: downloadingIndexes.contains(index)
-                      ? CircularPercentIndicator(
-                          radius: 20.0,
-                          lineWidth: 4.0,
-                          percent: (downloadProgress[index] ?? 0.0) / 100,
-                          center: Text(
-                              '${(downloadProgress[index] ?? 0.0).toInt()}%'),
+                      ? Obx(
+                          () => CircularPercentIndicator(
+                            radius: 20.0,
+                            lineWidth: 4.0,
+                            percent: (downloadProgress[index] ?? 0.0) / 100,
+                            center: Text(
+                                '${(downloadProgress[index] ?? 0.0).toInt()}%'),
+                          ),
                         )
                       : File(getx.userSelectedPathForDownloadFile.isEmpty
                                   ? getx.defaultPathForDownloadFile +

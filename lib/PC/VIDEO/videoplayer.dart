@@ -2406,6 +2406,8 @@ class _AskDoubtState extends State<AskDoubt> {
             "VideoId": answer['VideoId'].toString(),
             "IsApprove": answer['IsApprove'].toString(),
             "AnswerByFacultyName": answer['AnswerByFacultyName'].toString(),
+            "AnswerDocumentUrl": answer['AnswerDocumentUrl'].toString(),
+            "QuestionDocumentUrl": answer["QuestionDocumentUrl"].toString()
           };
           getx.askDoubtanswermessages.add(data);
         });
@@ -2516,17 +2518,43 @@ class _AskDoubtState extends State<AskDoubt> {
             if (isLoading.value) CircularProgressIndicator(),
 
             if (_selectedImage != null)
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Image.file(
                     _selectedImage!,
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover,
+                    width: Platform.isAndroid ? 150 : 500,
+                    height: Platform.isAndroid ? 150 : 300,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(
+                    width: 20,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Upload Image"),
+                    onPressed: () async {
+                      isLoading.value = true;
+                      String key = await getUploadAccessKey(
+                          context, getx.loginuserdata[0].token);
+                      if (key != "") {
+                        uploadSheet(_selectedImage!,
+                                getx.loginuserdata[0].token, key, "AskDoubt")
+                            .then((documentId) {
+                          if (documentId == "") {
+                            setState(() {
+                              isLoading.value = false;
+                            });
+                          } else {
+                            setState(() {
+                              isLoading.value = false;
+                              _selectedImage = null;
+                              sendMessage(int.parse(getx.playingVideoId.value),
+                                  documentId.toString());
+                            });
+                          }
+                        });
+                      }
+                    },
+                    child: const Icon(Icons.send),
                   ),
                 ],
               ),

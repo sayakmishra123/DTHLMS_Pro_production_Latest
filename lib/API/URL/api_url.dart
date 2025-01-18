@@ -91,4 +91,6 @@ class ClsUrlApi {
 
   static const checkRankedCompetitionStatus =
       "/api/AuthDataGet/ExecuteJson/spAppApi/46";
+  static const answerSheetRecheckRequestForTest =
+      "/api/AuthDataGet/ExecuteJson/spAppApi/50";
 }

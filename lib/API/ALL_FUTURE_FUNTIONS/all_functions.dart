@@ -112,6 +112,8 @@ Future resetPassword(BuildContext context, String email, String ph, String pass,
     final request = await client.postUrl(
         Uri.https(ClsUrlApi.mainurl, '${ClsUrlApi.resetPassword}$code'));
     request.followRedirects = false;
+    request.headers.set('Origin', origin);
+
     request.headers.set(
       HttpHeaders.contentTypeHeader,
       'application/json',
@@ -313,19 +315,19 @@ Future<String> getEncryptionKey(String token, BuildContext context) async {
       Map<String, dynamic> result = jsonDecode(jsonMap['result']);
 
       // Extract the encryption key
-      String encryptionKey = result['PDfEncryptionKey'];
-      String secretKey = result['EncryptionSecretKey'];
-      String franchiseName = result['FranchiseName'];
+      String encryptionKey = result['PDfEncryptionKey'] ?? "";
+      String secretKey = result['EncryptionSecretKey'] ?? "";
+      String franchiseName = result['FranchiseName'] ?? "";
       print('PDF Encryption Key: $encryptionKey');
 
       print('PDF secret key Key: $secretKey');
       print('PDF secret key Key: $franchiseName');
-      if (encryptionKey.isNotEmpty && secretKey.isNotEmpty) {
-        deleteDataFromTblSettings();
-        insertTblSetting("OldSKey", secretKey);
-        insertTblSetting("EncryptionKey", encryptionKey);
-        insertTblSetting("FranchiseName", franchiseName);
-      }
+
+      deleteDataFromTblSettings();
+      insertTblSetting("OldSKey", secretKey);
+      insertTblSetting("EncryptionKey", encryptionKey);
+      insertTblSetting("FranchiseName", franchiseName);
+      insertTblSetting("Origin", origin);
 
       // Return the encryption key
       return encryptionKey;
@@ -1423,6 +1425,8 @@ Future<List> getRankDataOfMockTest(
       //   }
       // }
 
+      //hello
+
       // log(resultList.toString());
 
       // getx.rankerList.value = resultList;
@@ -1602,7 +1606,8 @@ _onUploadSuccessFull(context, VoidCallback ontap) {
   ).show();
 }
 
-Future<String> uploadSheet(File file, String token, String key) async {
+Future<String> uploadSheet(
+    File file, String token, String key, String folderPath) async {
   try {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -1643,7 +1648,7 @@ Future<String> uploadSheet(File file, String token, String key) async {
     );
 
     // Add other form fields
-    request.fields['folderPath'] = "AnswerSheet";
+    request.fields['folderPath'] = "folderPath";
     request.fields['DocumentTitle'] = fileName;
     request.fields['key'] = key;
 
@@ -1677,6 +1682,13 @@ Future<String> uploadSheet(File file, String token, String key) async {
       // return
       // Ensure progress is set to 100% on success
     } else {
+      // ClsErrorMsg.fnErrorDialog(
+      // context,
+      // 'Failed',
+      // "Failed to upload video. Status code: ${response.statusCode}".toString()
+      //       .replaceAll("[", "")
+      //       .replaceAll("]", ""),
+      // "");
       print('Failed to upload video. Status code: ${response.statusCode}');
       return "";
     }
@@ -1950,6 +1962,7 @@ Future forgetPasswordGeneratecode(
         },
         body: jsonEncode(body));
     var jsondata = jsonDecode(res.body);
+    print(jsondata.toString());
 
     Get.back();
     if (jsondata['isSuccess'] == true) {
@@ -2517,7 +2530,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
         );
 
         if (!isPackage) {
-          if (!await getexamDataExistence()) {
+          if (!await getexamDataExistence(packageId)) {
             getx.mcqdataList.value = await getMcqDataForTest(
                 context, getx.loginuserdata[0].token, packageId);
             getx.theoryExamvalue.value = await gettheoryExamDataForTest2(
@@ -3486,4 +3499,44 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
     print('Error downloading banner: $e');
     rethrow;
   }
+}
+
+Future<bool> requestForRecheckAnswerSheet(
+  BuildContext context,
+  String token,
+  String examid,
+) async {
+  Map<String, dynamic> data = {"ExamId": examid};
+  bool returnValue = false;
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.answerSheetRecheckRequestForTest),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+      returnValue = true;
+
+      return true;
+    } else if (res.statusCode == 401) {
+      onTokenExpire(context);
+    } else {
+      print('Error: ${res.body} ////////////////// recheckAnswerSheet');
+    }
+  } catch (e) {
+    print("Error: $e ////////// get recheckAnswerSheet");
+    writeToFile(e, 'recheckAnswerSheet');
+  }
+  return returnValue;
 }

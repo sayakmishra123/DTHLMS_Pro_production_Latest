@@ -183,7 +183,7 @@ dev_dependencies:
 #   image: assets/splash_screen/the-valuation-school-1152px.png
 #   branding: assets/splash_screen/the-valuation-school-1152px.png
 #   color_dark: "#FFFFFF"
-#   image_dark: assets/splash_screen/the-valuation-school-1152px.png
+#   image_dark: assets/splash_screen/the-valuation-school-1152px.png 
 #   branding_dark: assets/splash_screen/the-valuation-school-1152px.png
 
 #   android_12:
@@ -191,16 +191,18 @@ dev_dependencies:
 #     icon_background_color: "#FFFFFF"
 
 flutter_native_splash:
-  color: "#FFFFFF"
-  image: assets/icons/Dth-lms-1152_org.png
+  color: "#FFFFFF"                                                                                
+  image: assets/icons/vg_study.png
+  # branding: assets/icons/vg_study.png
   color_dark: "#FFFFFF"
-  image_dark: assets/icons/Dth-lms-1152_org.png
+  image_dark: assets/icons/vg_study.png
+  # branding_dark: assets/icons/vg_study.png
 
   android_12:
-    image: assets/icons/Dth-lms-1152_org.png
-    icon_background_color: "#FFFFFF"
+    image: assets/icons/vg_study.png
+    icon_background_color: "#FFFFFF" 
 
-
+ 
  
   web: false
 
@@ -208,7 +210,7 @@ flutter_native_splash:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icons/logo.png"
+  image_path: "assets/icons/vg_study.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   # web:
   #   generate: true
@@ -217,7 +219,7 @@ flutter_launcher_icons:
   #   theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: "assets/icons/logo.png"
+    image_path: "assets/icons/vg_study.png"
     icon_size: 48 # min:48, max:256, default: 48
   # macos:
   #   generate: true

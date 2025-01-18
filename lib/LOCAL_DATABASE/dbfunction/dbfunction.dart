@@ -28,8 +28,9 @@ void testSQLCipherOnWindows() async {
   // final String password = "test";
   //Local DB file path
   Directory appDocDir = await getApplicationSupportDirectory();
-  String appDocPath = appDocDir.path;
+  String appDocPath = appDocDir.path + '${Platform.pathSeparator}$origin';
   String filename = "$appDocPath${Platform.pathSeparator}DTHLMSProDB.sqlite";
+  Directory("$appDocPath${Platform.pathSeparator}").createSync(recursive: true);
   getx.dbPath.value = filename;
   print(filename);
 
@@ -1012,19 +1013,27 @@ Future getMainChapter(int packageId) async {
   }
 }
 
-Future<bool> getexamDataExistence() async {
-  final resultSetOfMcq = await _db.select(
-    'SELECT * FROM TblMCQPaper',
-  );
+Future<bool> getexamDataExistence(String packageId) async {
+  try {
+    final resultSetOfMcq = await _db.select(
+      'SELECT * FROM TblMCQSet WHERE PackageId=?',
+      [packageId],
+    );
 
-  final resultSetofTheory = await _db.select(
-    'SELECT * FROM TblTheoryPaper ',
-  );
+    final resultSetofTheory = await _db.select(
+      'SELECT * FROM TblTheorySet WHERE PackageId=? ',
+      [packageId],
+    );
 
-  bool mcqdata = resultSetOfMcq.isNotEmpty;
-  bool theorydata = resultSetofTheory.isNotEmpty;
+    bool mcqdata = resultSetOfMcq.isNotEmpty;
+    bool theorydata = resultSetofTheory.isNotEmpty;
 
-  return mcqdata && theorydata; // Return true if data exists, otherwise false
+    return mcqdata && theorydata;
+  } // Return true if data exists, otherwise false
+  catch (e) {
+    writeToFile(e, getexamDataExistence);
+    return false;
+  }
 }
 
 Future<void> getChapterContents(
@@ -1393,7 +1402,8 @@ Future<void> getPDFlistOfVideo(String packageId, String videoId) async {
   WHERE PackageId = ? AND VideoId = ? AND Category = ?
   ''', [packageId, videoId, "PDF"]);
 
-  if (getx.pdfListOfVideo.isNotEmpty) {
+  if (getx.pdfListOfVideo.length != 0) {
+    print(getx.pdfListOfVideo.length);
     getx.pdfListOfVideo.clear();
   }
   resultSet.forEach((item) {
@@ -1408,7 +1418,15 @@ Future<void> getPDFlistOfVideo(String packageId, String videoId) async {
     };
 
     // log(resultSet.toString()+"\n packageId: $packageId\n video id:$videoId");
-    getx.pdfListOfVideo.add(details);
+    bool isDuplicate = getx.pdfListOfVideo
+        .any((doc) => doc['DocumentId'] == details['DocumentId']);
+
+    if (!isDuplicate) {
+      getx.pdfListOfVideo.add(details);
+      print("Document added successfully!");
+    } else {
+      print("Duplicate document found. Skipping addition.");
+    }
   });
   // print(resultSet.length.toString()+  "   bbhsdjhvdshvvfhjjjjjjjjjjjjjjjjjjjjjjzzzdfvfv");
 }
@@ -3167,12 +3185,10 @@ Future infoTetch(packageId, type) async {
 
       switch (row['FileIdType']) {
         case 'Live':
-          if (await dateCheck(details['ScheduleOn'].toString())) {
-            log(details['ScheduleOn'].toString().toString());
-            log(details.toString());
+          // if (await dateCheck(details['ScheduleOn'].toString())) {
 
-            getx.infoFetch.add(details);
-          }
+          getx.infoFetch.add(details);
+          // }
           break;
         case 'Video':
           getx.infoFetch.add(details);
