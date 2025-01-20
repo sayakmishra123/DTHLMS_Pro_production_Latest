@@ -1,12 +1,12 @@
 class ClsUrlApi {
-  // static const mainurl =
-  //     String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
+  static const mainurl =
+      String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
 
-  static const mainurl = "apipro20240709.dthlms.com";
+  // static const mainurl = "apipro20240709.dthlms.com";
 
   static const loginEndpoint = '/api/auth/login';
   static const checkUserExitenceBeforeregister =
-      '/api/AnonymousDataGet/ExecuteJson/spValidateexistingUser/1';
+      '/api/AnonymousDataGet/ExecuteJson/spValidateexistingUser/1'; ////////////
   static const socialMediaIconsApi =
       '/api/AuthDataGet/ExecuteJson/sptblSocialMediaLinks/14';
   static const getInfiniteMarqueeDetailsApi =
@@ -67,7 +67,7 @@ class ClsUrlApi {
   static const getExamStatus = "/api/AuthDataGet/ExecuteJson/spAppApi/32";
 
   static const getCountryCode =
-      "/api/AnonymousDataGet/ExecuteJson/SPMasterAdminAnonymous/1";
+      "/api/AnonymousDataGet/ExecuteJson/SPMasterAdminAnonymous/1"; ///////////////
   static const generateCodeForgetPassword = "/api/auth/generateFPCode";
 
   static const getEmailValidation =

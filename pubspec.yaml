@@ -183,7 +183,7 @@ dev_dependencies:
 #   image: assets/splash_screen/the-valuation-school-1152px.png
 #   branding: assets/splash_screen/the-valuation-school-1152px.png
 #   color_dark: "#FFFFFF"
-#   image_dark: assets/splash_screen/the-valuation-school-1152px.png
+#   image_dark: assets/splash_screen/the-valuation-school-1152px.png 
 #   branding_dark: assets/splash_screen/the-valuation-school-1152px.png
 
 #   android_12:

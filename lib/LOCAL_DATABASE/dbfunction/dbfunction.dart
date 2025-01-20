@@ -3537,8 +3537,8 @@ Future<List<Map<String, dynamic>>> getAllTblImages() async {
     // Ensure '_db' is your initialized database instance
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblImages''');
-//       print("shubha getAllTblImages");
-// log(result.toString());
+      print("shubha getAllTblImages");
+log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {
     writeToFile(e, "getAllTblImages");
@@ -3652,3 +3652,5 @@ String getVideoPlayModeFromPackageId(String packageId) {
   //   // throw Exception('TotalPassMarks not found: $paperID');
   // }
 }
+
+
