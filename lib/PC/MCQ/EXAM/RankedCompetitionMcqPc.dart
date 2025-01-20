@@ -25,7 +25,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:youtube_quality_player/youtube_quality_player.dart';
+// import 'package:youtube_quality_player/youtube_quality_player.dart';
 
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 

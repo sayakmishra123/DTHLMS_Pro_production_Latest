@@ -697,7 +697,7 @@ class _DashBoardRightState extends State<DashBoardRight> {
   @override
   Widget build(BuildContext context) {
     String username =
-        getx.loginuserdata[0].firstName + "" + getx.loginuserdata[0].lastName;
+        getx.loginuserdata[0].firstName + " " + getx.loginuserdata[0].lastName;
     // String dropdownValue = list.first;
     bool _customTileExpanded = false;
 

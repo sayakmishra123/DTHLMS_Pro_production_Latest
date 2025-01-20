@@ -92,7 +92,7 @@ class ClsUrlApi {
   static const checkRankedCompetitionStatus =
       "/api/AuthDataGet/ExecuteJson/spAppApi/46";
   static const answerSheetRecheckRequestForTest =
-      "/api/AuthDataGet/ExecuteJson/spAppApi/50";
+      "/api/AuthDataGet/ExecuteJson/spAppApi/39";
         static const getanswerSheetUrlOfStudent =
       "/api/AuthDataGet/ExecuteJson/spAppApi/55";
 }

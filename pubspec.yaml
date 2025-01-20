@@ -154,7 +154,7 @@ dependencies:
 
   image_editor_plus: ^1.0.6
   # last_flutter_flex_player: ^0.0.3
-  youtube_quality_player: ^0.0.2
+  # youtube_quality_player: ^0.0.2
   audioplayers: ^6.1.0
   # webview_windows: ^0.4.0
   flutter_inappwebview: ^6.1.5
