@@ -620,73 +620,7 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
                         children: [
                           Expanded(
                             flex: 3,
-                            child: getx.isFolderview.value
-                                ? Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: Obx(() {
-                                      if (getx.alwaysShowChapterDetailsOfVideo
-                                              .isEmpty &&
-                                          getx.alwaysShowFileDetailsOfpdf.isEmpty &&  getx.alwaysShowChapterfilesOfVideo.isEmpty
-                                               ) {
-                                        return Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.folder_open_outlined,
-                                                size: 30,
-                                                color: Colors.grey[600],
-                                              ),
-                                              Text(
-                                                'Empty',
-                                                style: FontFamily.style
-                                                    .copyWith(
-                                                        color: Colors.grey,
-                                                        fontSize: 15),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }
-
-                                      return GridView.builder(
-                                        itemCount: getx
-                                                .alwaysShowChapterDetailsOfVideo
-                                                .length +
-                                            getx.alwaysShowFileDetailsOfpdf
-                                                .length+getx.alwaysShowChapterfilesOfVideo.length,
-                                        scrollDirection: Axis.vertical,
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount:
-                                              getx.isCollapsed.value ? 5 : 4,
-                                          childAspectRatio: 1.0,
-                                          mainAxisSpacing: 10,
-                                          crossAxisSpacing: 10,
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          if (getx.alwaysShowChapterDetailsOfVideo
-                                                  .length >
-                                              index)
-                                            return buildGridViewItem(
-                                                index, false,false);
-
-
-                                                else if((getx.alwaysShowChapterDetailsOfVideo
-                                                  .length+getx.alwaysShowFileDetailsOfpdf.length )>
-                                              index)
-                                              return  buildGridViewItem(
-                                                index, true,false);
-                                          else
-                                            return buildGridViewItem(
-                                                index-(getx.alwaysShowChapterDetailsOfVideo
-                                                  .length+getx.alwaysShowFileDetailsOfpdf.length ), false,true);
-                                        },
-                                      );
-                                    }),
-                                  )
-                                : Container(
+                            child:  Container(
                                     padding: EdgeInsets.all(10),
                                     child: Obx(() {
                                       if (getx.alwaysShowChapterDetailsOfVideo
