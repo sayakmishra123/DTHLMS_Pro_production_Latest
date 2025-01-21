@@ -48,12 +48,15 @@ class _MobilePackageVideoDashboardState
   int selectedVideoIndex = -1;
   int selectedvideoListIndex = -1;
 
+  TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     dio = Dio();
     filteredChapterDetails = [
       ...getx.alwaysShowChapterDetailsOfVideo,
-      ...getx.alwaysShowFileDetailsOfpdf
+      ...getx.alwaysShowFileDetailsOfpdf,
+      ...getx.alwaysShowChapterfilesOfVideo
     ];
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
@@ -505,7 +508,7 @@ class _MobilePackageVideoDashboardState
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 15),
+                padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -515,57 +518,109 @@ class _MobilePackageVideoDashboardState
                             getx.alwaysShowChapterDetailsOfVideo.length,
                             "assets/folder5.png"),
                         filecountWidget(getx.alwaysShowFileDetailsOfpdf.length,
-                            "assets/pdf5.png"),
+                            "assets/pdf.png"),
                         filecountWidget(
                             getx.alwaysShowChapterfilesOfVideo.length,
                             "assets/video2.png"),
                       ],
                     ),
-                    Row(
-                      children: [
-                        Tooltip(
-                          message: "Folder View",
-                          child: IconButton(
-                              onPressed: () async {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setBool("folderview", true);
-                                getx.isFolderview.value = true;
-                              },
-                              icon: Icon(
-                                Icons.grid_view_rounded,
-                                color: getx.isFolderview.value
-                                    ? ColorPage.colorbutton
-                                    : ColorPage.colorblack,
-                              )),
-                        ),
-                        Tooltip(
-                          message: "List View",
-                          child: IconButton(
-                              onPressed: () async {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setBool("folderview", false);
-                                getx.isFolderview.value = false;
-                              },
-                              icon: Icon(
-                                Icons.view_list,
-                                color: !getx.isFolderview.value
-                                    ? ColorPage.colorbutton
-                                    : ColorPage.colorblack,
-                              )),
-                        ),
-                      ],
-                    ),
+
+                    // Row(
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(right: 20),
+                    //       child: Container(
+                    //         margin: EdgeInsets.symmetric(vertical: 5),
+                    //         width: 200,
+                    //         child: TextFormField(
+                    //           // controller: _searchController,
+                    //           decoration: InputDecoration(
+                    //               suffixIcon: Icon(
+                    //                 Icons.search,
+                    //               ),
+                    //               suffixIconColor:
+                    //                   Color.fromARGB(255, 197, 195, 195),
+                    //               hintText: 'Search',
+                    //               hintStyle: FontFamily.font9
+                    //                   .copyWith(color: ColorPage.brownshade),
+                    //               fillColor: Color.fromARGB(255, 255, 255, 255),
+                    //               filled: true,
+                    //               border: OutlineInputBorder(
+                    //                   borderSide: BorderSide.none,
+                    //                   borderRadius: BorderRadius.circular(40))),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // )
+                    // Row(
+                    //   children: [
+                    //     Tooltip(
+                    //       message: "Folder View",
+                    //       child: IconButton(
+                    //           onPressed: () async {
+                    //             final SharedPreferences prefs =
+                    //                 await SharedPreferences.getInstance();
+                    //             await prefs.setBool("folderview", true);
+                    //             getx.isFolderview.value = true;
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.grid_view_rounded,
+                    //             color: getx.isFolderview.value
+                    //                 ? ColorPage.colorbutton
+                    //                 : ColorPage.colorblack,
+                    //           )),
+                    //     ),
+                    //     Tooltip(
+                    //       message: "List View",
+                    //       child: IconButton(
+                    //           onPressed: () async {
+                    //             final SharedPreferences prefs =
+                    //                 await SharedPreferences.getInstance();
+                    //             await prefs.setBool("folderview", false);
+                    //             getx.isFolderview.value = false;
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.view_list,
+                    //             color: !getx.isFolderview.value
+                    //                 ? ColorPage.colorbutton
+                    //                 : ColorPage.colorblack,
+                    //           )),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
-
+              Padding(
+                padding: const EdgeInsets.only(right: 20, left: 20),
+                child: Container(
+                  // alignment: ,
+                  margin: EdgeInsets.symmetric(vertical: 5),
+                  // width: 200,
+                  child: TextFormField(
+                    // controller: _searchController,
+                    decoration: InputDecoration(
+                        suffixIcon: Icon(
+                          Icons.search,
+                        ),
+                        suffixIconColor: Color.fromARGB(255, 197, 195, 195),
+                        hintText: 'Search',
+                        hintStyle: FontFamily.font9
+                            .copyWith(color: ColorPage.brownshade),
+                        fillColor: Color.fromARGB(255, 255, 255, 255),
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(10))),
+                  ),
+                ),
+              ),
               Expanded(
                 flex: 9,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+                      const EdgeInsets.symmetric(vertical: 7, horizontal: 0),
                   child: Container(
                     // decoration: BoxDecoration(
                     //   boxShadow: [
@@ -580,159 +635,73 @@ class _MobilePackageVideoDashboardState
                     //     Radius.circular(10),
                     //   ),
                     // ),
-                    child: Obx(
-                      () => Column(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: getx.isFolderview.value
-                                ? Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: Obx(() {
-                                      if (getx.alwaysShowChapterDetailsOfVideo
-                                              .isEmpty &&
-                                          getx.alwaysShowFileDetailsOfpdf
-                                              .isEmpty &&
-                                          getx.alwaysShowChapterfilesOfVideo
-                                              .isEmpty) {
-                                        return Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.folder_open_outlined,
-                                                size: 30,
-                                                color: Colors.grey[600],
-                                              ),
-                                              Text(
-                                                'Empty',
-                                                style: FontFamily.style
-                                                    .copyWith(
-                                                        color: Colors.grey,
-                                                        fontSize: 15),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }
-
-                                      return GridView.builder(
-                                        itemCount: getx
-                                                .alwaysShowChapterDetailsOfVideo
-                                                .length +
-                                            getx.alwaysShowFileDetailsOfpdf
-                                                .length +
-                                            getx.alwaysShowChapterfilesOfVideo
-                                                .length,
-                                        scrollDirection: Axis.vertical,
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount:
-                                              getx.isCollapsed.value ? 5 : 4,
-                                          childAspectRatio: 1.0,
-                                          mainAxisSpacing: 10,
-                                          crossAxisSpacing: 10,
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          if (getx.alwaysShowChapterDetailsOfVideo
-                                                  .length >
-                                              index)
-                                            return buildGridViewItem(
-                                                index, false, false);
-                                          else if ((getx
-                                                      .alwaysShowChapterDetailsOfVideo
-                                                      .length +
-                                                  getx.alwaysShowFileDetailsOfpdf
-                                                      .length) >
-                                              index)
-                                            return buildGridViewItem(
-                                                index, true, false);
-                                          else
-                                            return buildGridViewItem(
-                                                index -
-                                                    (getx.alwaysShowChapterDetailsOfVideo
-                                                            .length +
-                                                        getx.alwaysShowFileDetailsOfpdf
-                                                            .length),
-                                                false,
-                                                true);
-                                        },
-                                      );
-                                    }),
-                                  )
-                                : Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: Obx(() {
-                                      if (getx.alwaysShowChapterDetailsOfVideo
-                                              .isEmpty &&
-                                          getx.alwaysShowFileDetailsOfpdf
-                                              .isEmpty &&
-                                          getx.alwaysShowChapterfilesOfVideo
-                                              .isEmpty) {
-                                        return Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.folder_open_outlined,
-                                                size: 30,
-                                                color: Colors.grey[600],
-                                              ),
-                                              Text(
-                                                'Empty',
-                                                style: FontFamily.style
-                                                    .copyWith(
-                                                        color: Colors.grey,
-                                                        fontSize: 15),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }
-
-                                      return ListView.builder(
-                                        itemCount: getx
-                                                .alwaysShowChapterDetailsOfVideo
-                                                .length +
-                                            getx.alwaysShowFileDetailsOfpdf
-                                                .length +
-                                            getx.alwaysShowChapterfilesOfVideo
-                                                .length,
-                                        scrollDirection: Axis.vertical,
-                                        itemBuilder: (context, index) {
-                                          if (getx.alwaysShowChapterDetailsOfVideo
-                                                  .length >
-                                              index)
-                                            return buildListViewItem(
-                                                index, false, false);
-                                          else if (index <
-                                                  (getx.alwaysShowChapterDetailsOfVideo
-                                                          .length +
-                                                      getx.alwaysShowFileDetailsOfpdf
-                                                          .length) &&
-                                              getx.alwaysShowFileDetailsOfpdf
-                                                  .isNotEmpty)
-                                            return buildListViewItem(
-                                                index, true, false);
-                                          else
-                                            return buildListViewItem(
-                                                index -
-                                                    (getx.alwaysShowChapterDetailsOfVideo
-                                                            .length +
-                                                        getx.alwaysShowFileDetailsOfpdf
-                                                            .length),
-                                                false,
-                                                true);
-                                          //updated
-                                        },
-                                      );
-                                    }),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Obx(() {
+                              if (getx.alwaysShowChapterDetailsOfVideo
+                                      .isEmpty &&
+                                  getx.alwaysShowFileDetailsOfpdf.isEmpty &&
+                                  getx.alwaysShowChapterfilesOfVideo.isEmpty) {
+                                return Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.folder_open_outlined,
+                                        size: 30,
+                                        color: Colors.grey[600],
+                                      ),
+                                      Text(
+                                        'Empty',
+                                        style: FontFamily.style.copyWith(
+                                            color: Colors.grey, fontSize: 15),
+                                      ),
+                                    ],
                                   ),
+                                );
+                              }
+
+                              return ListView.builder(
+                                itemCount: getx.alwaysShowChapterDetailsOfVideo
+                                        .length +
+                                    getx.alwaysShowFileDetailsOfpdf.length +
+                                    getx.alwaysShowChapterfilesOfVideo.length,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  if (getx.alwaysShowChapterDetailsOfVideo
+                                          .length >
+                                      index)
+                                    return buildListViewItem(
+                                        index, false, false);
+                                  else if (index <
+                                          (getx.alwaysShowChapterDetailsOfVideo
+                                                  .length +
+                                              getx.alwaysShowFileDetailsOfpdf
+                                                  .length) &&
+                                      getx.alwaysShowFileDetailsOfpdf
+                                          .isNotEmpty)
+                                    return buildListViewItem(
+                                        index, true, false);
+                                  else
+                                    return buildListViewItem(
+                                        index -
+                                            (getx.alwaysShowChapterDetailsOfVideo
+                                                    .length +
+                                                getx.alwaysShowFileDetailsOfpdf
+                                                    .length),
+                                        false,
+                                        true);
+                                  //updated
+                                },
+                              );
+                            }),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -1250,7 +1219,6 @@ class _MobilePackageVideoDashboardState
               onPressed: () {
                 if (ispdf) {
                   cancelAllDownloads();
-
                   Get.to(
                       transition: Transition.cupertino,
                       () => ShowChapterPDFMobile(
@@ -1314,7 +1282,7 @@ class _MobilePackageVideoDashboardState
               child: ListTile(
                 leading: ispdf
                     ? Image.asset(
-                        "assets/pdf5.png",
+                        "assets/pdf.png",
                         width: 30,
                       )
                     : Image.asset(
@@ -1350,108 +1318,141 @@ class _MobilePackageVideoDashboardState
   }
 
   Widget buildGridViewItem(int index, bool isPdf, bool isVideo) {
-    return InkWell(
-      enableFeedback: true,
-      overlayColor: WidgetStatePropertyAll(Colors.red),
-      onTap: () {
-        if (isPdf) {
-          cancelAllDownloads();
-
-          Get.to(
-              transition: Transition.cupertino,
-              () => ShowChapterPDFMobile(
-                    pdfUrl: getx.alwaysShowFileDetailsOfpdf[
-                            index - getx.alwaysShowChapterDetailsOfVideo.length]
-                        ["DocumentPath"],
-                    title: getx.alwaysShowFileDetailsOfpdf[
-                            index - getx.alwaysShowChapterDetailsOfVideo.length]
-                        ["FileIdName"],
-                    folderName: getPackagNameById(
-                      getx.alwaysShowFileDetailsOfpdf[index -
-                                  getx.alwaysShowChapterDetailsOfVideo.length]
-                              ["PackageId"]
-                          .toString(),
-                    ),
-                    isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
-                                    getx.alwaysShowChapterDetailsOfVideo.length]
-                                ["IsEncrypted"] ==
-                            "1"
-                        ? true
-                        : false,
-                  ));
-          selectedIndex = index;
-        } else {
-          cancelAllDownloads();
-
-          insertTblLocalNavigation(
-                  "ParentId",
-                  getx.alwaysShowChapterDetailsOfVideo[index]
-                      ['SectionChapterId'],
-                  getx.alwaysShowChapterDetailsOfVideo[index]
-                      ['SectionChapterName'])
-              .whenComplete(
-            () {
-              getLocalNavigationDetails();
-            },
-          );
-
-          // getx.isVideoDashBoard.value=false;
-          getChapterContents(int.parse(
-              getx.alwaysShowChapterDetailsOfVideo[index]['SectionChapterId']));
-          getChapterFiles(
-              parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
-                  ['SectionChapterId']),
-              'Video',
-              getx.selectedPackageId.value.toString());
-          getChapterFiles(
-              parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
-                  ['SectionChapterId']),
-              'PDF',
-              getx.selectedPackageId.value.toString());
-
-          selectedIndex = index;
-
-          setState(() {});
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Container(
-          padding: EdgeInsets.only(top: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(5),
-            ),
-            color: selectedIndex == index
-                ? ColorPage.blue.withOpacity(0.3)
-                : Colors.transparent,
-          ),
-          child: Column(
-            children: [
-              !isPdf
-                  ? Image.asset(
-                      "assets/folder5.png",
-                      scale: 16,
-                    )
-                  : Image.asset(
-                      "assets/pdf5.png",
-                      scale: 16,
-                    ),
-              AutoSizeText(
-                isPdf
-                    ? getx.alwaysShowFileDetailsOfpdf[
-                            index - getx.alwaysShowChapterDetailsOfVideo.length]
-                        ["FileIdName"]
-                    : getx.alwaysShowChapterDetailsOfVideo[index]
-                        ['SectionChapterName'],
-                overflow: TextOverflow.ellipsis,
-                style: FontFamily.font9.copyWith(color: ColorPage.colorblack),
+    return isVideo
+        ? Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+              padding: EdgeInsets.only(top: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                color: selectedIndex == index
+                    ? ColorPage.blue.withOpacity(0.3)
+                    : Colors.transparent,
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+              child: Column(
+                children: [
+                  Image.asset(
+                    "assets/video2.png",
+                    scale: 16,
+                  ),
+                  AutoSizeText(
+                    getx.alwaysShowChapterfilesOfVideo[index]['FileIdName'],
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        FontFamily.font9.copyWith(color: ColorPage.colorblack),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : InkWell(
+            enableFeedback: true,
+            overlayColor: WidgetStatePropertyAll(Colors.red),
+            onTap: () {
+              if (isPdf) {
+                cancelAllDownloads();
+
+                Get.to(
+                    transition: Transition.cupertino,
+                    () => ShowChapterPDFMobile(
+                          pdfUrl: getx.alwaysShowFileDetailsOfpdf[index -
+                                  getx.alwaysShowChapterDetailsOfVideo.length]
+                              ["DocumentPath"],
+                          title: getx.alwaysShowFileDetailsOfpdf[index -
+                                  getx.alwaysShowChapterDetailsOfVideo.length]
+                              ["FileIdName"],
+                          folderName: getPackagNameById(
+                            getx.alwaysShowFileDetailsOfpdf[index -
+                                    getx.alwaysShowChapterDetailsOfVideo
+                                        .length]["PackageId"]
+                                .toString(),
+                          ),
+                          isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
+                                      getx.alwaysShowChapterDetailsOfVideo
+                                          .length]["IsEncrypted"] ==
+                                  "1"
+                              ? true
+                              : false,
+                        ));
+                selectedIndex = index;
+              } else {
+                cancelAllDownloads();
+
+                insertTblLocalNavigation(
+                        "ParentId",
+                        getx.alwaysShowChapterDetailsOfVideo[index]
+                            ['SectionChapterId'],
+                        getx.alwaysShowChapterDetailsOfVideo[index]
+                            ['SectionChapterName'])
+                    .whenComplete(
+                  () {
+                    getLocalNavigationDetails();
+                  },
+                );
+
+                // getx.isVideoDashBoard.value=false;
+                getChapterContents(int.parse(
+                    getx.alwaysShowChapterDetailsOfVideo[index]
+                        ['SectionChapterId']));
+                getChapterFiles(
+                    parentId: int.parse(
+                        getx.alwaysShowChapterDetailsOfVideo[index]
+                            ['SectionChapterId']),
+                    'Video',
+                    getx.selectedPackageId.value.toString());
+                getChapterFiles(
+                    parentId: int.parse(
+                        getx.alwaysShowChapterDetailsOfVideo[index]
+                            ['SectionChapterId']),
+                    'PDF',
+                    getx.selectedPackageId.value.toString());
+
+                selectedIndex = index;
+
+                setState(() {});
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                padding: EdgeInsets.only(top: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                  color: selectedIndex == index
+                      ? ColorPage.blue.withOpacity(0.3)
+                      : Colors.transparent,
+                ),
+                child: Column(
+                  children: [
+                    !isPdf
+                        ? Image.asset(
+                            "assets/folder5.png",
+                            scale: 16,
+                          )
+                        : Image.asset(
+                            "assets/pdf5.png",
+                            scale: 16,
+                          ),
+                    AutoSizeText(
+                      isPdf
+                          ? getx.alwaysShowFileDetailsOfpdf[index -
+                                  getx.alwaysShowChapterDetailsOfVideo.length]
+                              ["FileIdName"]
+                          : getx.alwaysShowChapterDetailsOfVideo[index]
+                              ['SectionChapterName'],
+                      overflow: TextOverflow.ellipsis,
+                      style: FontFamily.font9
+                          .copyWith(color: ColorPage.colorblack),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 }
 
