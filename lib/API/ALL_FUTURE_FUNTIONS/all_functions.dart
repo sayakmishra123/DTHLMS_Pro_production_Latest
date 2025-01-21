@@ -437,7 +437,8 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
             sessionId: file.sessionId,
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
-            isEncrypted: file.isEncrypted);
+            isEncrypted: file.isEncrypted,
+            sortedOrder: file.sortedOrder);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -458,7 +459,9 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
                   file.fileId.toString(),
                   file.fileIdType ?? '',
                 ),
-                file.isEncrypted)
+                file.isEncrypted,
+                file.sortedOrder.toString()
+                )
             .whenComplete(() {
           log('Inserted');
           getx.packageDetailsdata.add(details);

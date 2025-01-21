@@ -2,7 +2,7 @@ class ClsUrlApi {
   static const mainurl =
       String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
 
-  // static const mainurl = "apipro20240709.dthlms.com";
+//   static const mainurl = "apipro20240709.dthlms.com";
 
   static const loginEndpoint = '/api/auth/login';
   static const checkUserExitenceBeforeregister =
@@ -96,3 +96,4 @@ class ClsUrlApi {
         static const getanswerSheetUrlOfStudent =
       "/api/AuthDataGet/ExecuteJson/spAppApi/55";
 }
+ 

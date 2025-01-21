@@ -17,6 +17,7 @@ class AllPackageDetails {
   final int videoDuration;
   final String DownloadedPath;
   final String isEncrypted;
+  final int sortedOrder;
 
   AllPackageDetails(
       {required this.packageId,
@@ -34,7 +35,8 @@ class AllPackageDetails {
       required this.sessionId,
       required this.videoDuration,
       required this.DownloadedPath,
-      required this.isEncrypted});
+      required this.isEncrypted,
+      required this.sortedOrder});
 
   // Factory method to create a FileInfo instance from JSON
   factory AllPackageDetails.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,7 @@ class AllPackageDetails {
       videoDuration: json['VideoDuration'] ?? '0',
       DownloadedPath: json['DownloadedPath'] ?? '0',
       isEncrypted: json['isEncrypted'].toString(),
+      sortedOrder: json['SortedOrder'] ?? 0,
     );
   }
 
@@ -77,6 +80,7 @@ class AllPackageDetails {
       'VideoDuration': videoDuration,
       'DownloadedPath': DownloadedPath,
       'isEncrypted': isEncrypted,
+      'SortedOrder': sortedOrder,
     };
   }
 

@@ -48,12 +48,15 @@ class _MobilePackageVideoDashboardState
   int selectedVideoIndex = -1;
   int selectedvideoListIndex = -1;
 
+  TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     dio = Dio();
     filteredChapterDetails = [
       ...getx.alwaysShowChapterDetailsOfVideo,
-      ...getx.alwaysShowFileDetailsOfpdf
+      ...getx.alwaysShowFileDetailsOfpdf,
+      ...getx.alwaysShowChapterfilesOfVideo
     ];
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
@@ -520,47 +523,75 @@ class _MobilePackageVideoDashboardState
 
                       children: [
 filecountWidget( getx.alwaysShowChapterDetailsOfVideo.length,"assets/folder5.png"),
-filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf5.png"),
+filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf.png"),
 filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
                         
                       ],
                     ),
-                    Row(
-                      children: [
-                        Tooltip(
-                          message: "Folder View",
-                          child: IconButton(
-                              onPressed: () async {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setBool("folderview", true);
-                                getx.isFolderview.value = true;
-                              },
-                              icon: Icon(
-                                Icons.grid_view_rounded,
-                                color: getx.isFolderview.value
-                                    ? ColorPage.colorbutton
-                                    : ColorPage.colorblack,
-                              )),
-                        ),
-                        Tooltip(
-                          message: "List View",
-                          child: IconButton(
-                              onPressed: () async {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setBool("folderview", false);
-                                getx.isFolderview.value = false;
-                              },
-                              icon: Icon(
-                                Icons.view_list,
-                                color: !getx.isFolderview.value
-                                    ? ColorPage.colorbutton
-                                    : ColorPage.colorblack,
-                              )),
-                        ),
-                      ],
+
+
+
+
+                    Row(children: [Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 5),
+              width: 200,
+              
+              child: TextFormField(
+                // controller: _searchController,
+                decoration: InputDecoration(
+                    suffixIcon: Icon(
+                      Icons.search,
                     ),
+                    suffixIconColor: Color.fromARGB(255, 197, 195, 195),
+                    hintText: 'Search',
+                    hintStyle:
+                        FontFamily.font9.copyWith(color: ColorPage.brownshade),
+                    fillColor: Color.fromARGB(255, 255, 255, 255),
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(40))),
+              ),
+            ),
+          ),],)
+                    // Row(
+                    //   children: [
+                    //     Tooltip(
+                    //       message: "Folder View",
+                    //       child: IconButton(
+                    //           onPressed: () async {
+                    //             final SharedPreferences prefs =
+                    //                 await SharedPreferences.getInstance();
+                    //             await prefs.setBool("folderview", true);
+                    //             getx.isFolderview.value = true;
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.grid_view_rounded,
+                    //             color: getx.isFolderview.value
+                    //                 ? ColorPage.colorbutton
+                    //                 : ColorPage.colorblack,
+                    //           )),
+                    //     ),
+                    //     Tooltip(
+                    //       message: "List View",
+                    //       child: IconButton(
+                    //           onPressed: () async {
+                    //             final SharedPreferences prefs =
+                    //                 await SharedPreferences.getInstance();
+                    //             await prefs.setBool("folderview", false);
+                    //             getx.isFolderview.value = false;
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.view_list,
+                    //             color: !getx.isFolderview.value
+                    //                 ? ColorPage.colorbutton
+                    //                 : ColorPage.colorblack,
+                    //           )),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -1301,7 +1332,7 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
         child: ListTile(
           leading: ispdf
               ? Image.asset(
-                  "assets/pdf5.png",
+                  "assets/pdf.png",
                   width: 30,
                 )
               : Image.asset(
@@ -1339,7 +1370,41 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
   }
 
   Widget buildGridViewItem(int index, bool isPdf,bool isVideo) {
-    return InkWell(
+
+
+
+
+    return isVideo? Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Container(
+          padding: EdgeInsets.only(top: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(5),
+            ),
+            color: selectedIndex == index
+                ? ColorPage.blue.withOpacity(0.3)
+                : Colors.transparent,
+          ),
+          child: Column(
+            children: [
+              Image.asset(
+                      "assets/video2.png",
+                      scale: 16,
+                    ),
+              AutoSizeText(
+                 getx.alwaysShowChapterfilesOfVideo[index]
+                        ['FileIdName'],
+                overflow: TextOverflow.ellipsis,
+                style: FontFamily.font9.copyWith(color: ColorPage.colorblack),
+              ),
+            ],
+          ),
+        ),
+      ) : InkWell(
+
+
+
       enableFeedback: true,
       overlayColor: WidgetStatePropertyAll(Colors.red),
       onTap: () {
