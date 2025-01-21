@@ -962,26 +962,26 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                   () => SizedBox(
                                                                       width: formfieldsize,
                                                                       child: TextFormField(
-                                                                          onFieldSubmitted: (value) async {
-                                                                            if (activationkey.text.trim().length >= 10 ||
-                                                                                activationkey.text.trim().length == 0) {
-                                                                              if (desktop_key1.currentState!.validate() && GetUtils.isEmail(signupemail.text)) {
-                                                                                desktop_key1.currentState!.save();
-                                                                                if (await checkUserBeforeRegister(
-                                                                                      context,
-                                                                                      signupemail.text,
-                                                                                      signupphno.text,
-                                                                                      activationkey.text,
-                                                                                    ) !=
-                                                                                    '') {
-                                                                                  desktop_key1.currentState!.save();
-                                                                                  Get.to(() => OTPScreen(signupphno.text, signupfirstname.text, signuplastname.text, signupemail.text, signuppassword.text, signupwaphno.text, signupphno.text, activationkey.text, phoneNumberCountryId.text, whatsAppNumberCountryId.text), transition: Transition.leftToRight);
-                                                                                }
-                                                                              } else {
-                                                                                Get.snackbar("Error", "Please enter valid details", colorText: ColorPage.white);
-                                                                              }
-                                                                            }
-                                                                          },
+                                                                          // onFieldSubmitted: (value) async {
+                                                                          //   if (activationkey.text.trim().length >= 10 ||
+                                                                          //       activationkey.text.trim().length == 0) {
+                                                                          //     if (desktop_key1.currentState!.validate() && GetUtils.isEmail(signupemail.text)) {
+                                                                          //       desktop_key1.currentState!.save();
+                                                                          //       if (await checkUserBeforeRegister(
+                                                                          //             context,
+                                                                          //             signupemail.text,
+                                                                          //             signupphno.text,
+                                                                          //             activationkey.text,
+                                                                          //           ) !=
+                                                                          //           '') {
+                                                                          //         desktop_key1.currentState!.save();
+                                                                          //         Get.to(() => OTPScreen(signupphno.text, signupfirstname.text, signuplastname.text, signupemail.text, signuppassword.text, signupwaphno.text, signupphno.text, activationkey.text, phoneNumberCountryId.text, whatsAppNumberCountryId.text), transition: Transition.leftToRight);
+                                                                          //       }
+                                                                          //     } else {
+                                                                          //       Get.snackbar("Error", "Please enter valid details", colorText: ColorPage.white);
+                                                                          //     }
+                                                                          //   }
+                                                                          // },
                                                                           style: TextStyle(fontSize: 14),
                                                                           obscureText: getx.signuppasswordshow.value,
                                                                           autovalidateMode: AutovalidateMode.onUserInteraction,

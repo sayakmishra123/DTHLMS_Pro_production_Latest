@@ -189,6 +189,7 @@ class Getx extends GetxController {
   RxBool isAndroidDeveloperModeEnabled = false.obs;
   RxBool isEmulator = false.obs;
   RxString isLogout = "".obs;
+  RxBool isFullscreen = true.obs;
   // List<Map<String, dynamic>> infoFetch = <Map<String, dynamic>>[];
 
   RxList<Map<String, dynamic>> booklist = <Map<String, dynamic>>[].obs;

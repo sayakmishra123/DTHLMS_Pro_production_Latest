@@ -56,34 +56,37 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
   Widget build(BuildContext context) {
     updateTabs();
 
-    return DefaultTabController(
-      length: tabs.length,
-      child: Scaffold(
-        appBar: tabs.isNotEmpty
-            ? AppBar(
-                toolbarHeight: 10,
-                automaticallyImplyLeading: false,
-                backgroundColor: ColorPage.mainBlue,
-                bottom: TabBar(
-                  tabAlignment: TabAlignment.fill,
-                  indicatorPadding: EdgeInsets.all(2),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicatorColor: ColorPage.white,
-                  labelPadding: EdgeInsets.all(10),
-                  tabs: tabs,
-                ),
-              )
-            : null,
-        body: tabs.isNotEmpty
-            ? TabBarView(children: tabViews)
-            : Center(
-                child: Text(
-                  'No data available',
-                  style: TextStyle(fontSize: 16),
+    return Navigator(
+        onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => DefaultTabController(
+                length: tabs.length,
+                child: Scaffold(
+                  appBar: tabs.isNotEmpty
+                      ? AppBar(
+                          toolbarHeight: 10,
+                          automaticallyImplyLeading: false,
+                          backgroundColor: ColorPage.mainBlue,
+                          bottom: TabBar(
+                            tabAlignment: TabAlignment.fill,
+                            indicatorPadding: EdgeInsets.all(2),
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            indicatorColor: ColorPage.white,
+                            labelPadding: EdgeInsets.all(10),
+                            tabs: tabs,
+                          ),
+                        )
+                      : null,
+                  body: tabs.isNotEmpty
+                      ? TabBarView(children: tabViews)
+                      : Center(
+                          child: Text(
+                            'No data available',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
                 ),
               ),
-      ),
-    );
+            ));
   }
 
   Widget buildPackageListView(BuildContext context) {
@@ -98,13 +101,21 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () async {
-                  Get.to(
-                      transition: Transition.cupertino,
-                      () => Mobile_Package_content(
-                            packageid:
-                                int.parse(paidPackages[index]['packageId']),
-                            packagename: paidPackages[index]['packageName'],
-                          ));
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return Mobile_Package_content(
+                        packageid: int.parse(paidPackages[index]['packageId']),
+                        packagename: paidPackages[index]['packageName'],
+                      );
+                    },
+                  ));
+                  // Get.to(
+                  //     transition: Transition.cupertino,
+                  // () => Mobile_Package_content(
+                  //       packageid:
+                  //           int.parse(paidPackages[index]['packageId']),
+                  //       packagename: paidPackages[index]['packageName'],
+                  //     ));
                 },
                 child: Container(
                   height: 150,
@@ -226,13 +237,21 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () async {
-                  Get.to(
-                      transition: Transition.cupertino,
-                      () => Mobile_Package_content(
-                            packageid:
-                                int.parse(freePackages[index]['packageId']),
-                            packagename: freePackages[index]['packageName'],
-                          ));
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return Mobile_Package_content(
+                        packageid: int.parse(freePackages[index]['packageId']),
+                        packagename: freePackages[index]['packageName'],
+                      );
+                    },
+                  ));
+                  // Get.to(
+                  //     transition: Transition.cupertino,
+                  //     () => Mobile_Package_content(
+                  //           packageid:
+                  //               int.parse(freePackages[index]['packageId']),
+                  //           packagename: freePackages[index]['packageName'],
+                  //         ));
                 },
                 child: Container(
                   height: 150,
