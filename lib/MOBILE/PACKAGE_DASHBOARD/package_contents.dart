@@ -83,6 +83,8 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
 
   @override
   void initState() {
+    print(
+        'okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
     // setState(() {
     // infoTetch(widget.packageid.toString(), 'Video');
 
@@ -384,100 +386,97 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Obx(() {
-        // var packagecontentlist = getx.packagedetailsfoldername.entries.toList();
-        return Scaffold(
-          appBar: AppBar(
-            iconTheme: IconThemeData(color: ColorPage.white),
-            backgroundColor: ColorPage.mainBlue,
-            title: Text(
-              widget.packagename,
-              style:
-                  FontFamily.style.copyWith(color: Colors.white, fontSize: 15),
-            ),
+    return Obx(() {
+      // var packagecontentlist = getx.packagedetailsfoldername.entries.toList();
+      return Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: ColorPage.white),
+          backgroundColor: ColorPage.mainBlue,
+          title: Text(
+            widget.packagename,
+            style: FontFamily.style.copyWith(color: Colors.white, fontSize: 15),
           ),
-          body: getx.sectionListOfPackage.isNotEmpty
-              ? ListView.builder(
-                  padding: EdgeInsets.all(8),
-                  itemCount: getx.sectionListOfPackage
+        ),
+        body: getx.sectionListOfPackage.isNotEmpty
+            ? ListView.builder(
+                padding: EdgeInsets.all(8),
+                itemCount: getx.sectionListOfPackage
+                    .where((item) =>
+                        item['section'] != 'PDF' &&
+                        item['section'] != 'YouTube')
+                    .length,
+                itemBuilder: (context, index) {
+                  final filteredList = getx.sectionListOfPackage
                       .where((item) =>
                           item['section'] != 'PDF' &&
                           item['section'] != 'YouTube')
-                      .length,
-                  itemBuilder: (context, index) {
-                    final filteredList = getx.sectionListOfPackage
-                        .where((item) =>
-                            item['section'] != 'PDF' &&
-                            item['section'] != 'YouTube')
-                        .toList();
+                      .toList();
 
-                    return InkWell(
-                      onTap: () {
-                        paging(filteredList[index]['section']);
+                  return InkWell(
+                    onTap: () {
+                      paging(filteredList[index]['section']);
 
-                        if (getx.sectionListOfPackage[index]['section'] ==
-                            "Video") {
-                          resetTblLocalNavigationByOrderOnsection(1);
-                          print(filteredList[index]['section'] + "wow mc");
+                      if (getx.sectionListOfPackage[index]['section'] ==
+                          "Video") {
+                        resetTblLocalNavigationByOrderOnsection(1);
+                        print(filteredList[index]['section'] + "wow mc");
 
-                          insertTblLocalNavigation(
-                                  "Section",
-                                  widget.packageid.toString(),
-                                  filteredList[index]["section"])
-                              .whenComplete(() => null);
+                        insertTblLocalNavigation(
+                                "Section",
+                                widget.packageid.toString(),
+                                filteredList[index]["section"])
+                            .whenComplete(() => null);
 
-                          getMainChapter(widget.packageid);
-                          getLocalNavigationDetails();
-                        }
-                        getx.selectedPackageId.value = widget.packageid;
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: _buildOfferCard(
-                            title: filteredList[index]['section'],
-                            subtitle:
-                                getFolderSubtitle(filteredList[index], index),
-                            gradientColors: gradientColorsList[index],
-                            arrowBackground: Colors.orange.shade100,
-                            arrowColor: Colors.orange,
-                            icon: getFolderIcon(filteredList[index], index),
-                            iconcolor:
-                                getFolderIconColor(filteredList[index], index)
-                            // zipText: 'ZIP',
-                            // zipTextColor: Colors.orange,
-                            ),
-                      ),
+                        getMainChapter(widget.packageid);
+                        getLocalNavigationDetails();
+                      }
+                      getx.selectedPackageId.value = widget.packageid;
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _buildOfferCard(
+                          title: filteredList[index]['section'],
+                          subtitle:
+                              getFolderSubtitle(filteredList[index], index),
+                          gradientColors: gradientColorsList[index],
+                          arrowBackground: Colors.orange.shade100,
+                          arrowColor: Colors.orange,
+                          icon: getFolderIcon(filteredList[index], index),
+                          iconcolor:
+                              getFolderIconColor(filteredList[index], index)
+                          // zipText: 'ZIP',
+                          // zipTextColor: Colors.orange,
+                          ),
+                    ),
 
-                      //  Container(
-                      //   margin:
-                      //       EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                      //   decoration: BoxDecoration(
-                      //     color: Colors.white,
-                      //     borderRadius: BorderRadius.circular(10),
-                      //     boxShadow: [
-                      //       BoxShadow(
-                      //         color: Colors.black12,
-                      //         spreadRadius: 4,
-                      //         blurRadius: 10,
-                      //         offset: Offset(2, 2),
-                      //       ),
-                      //     ],
-                      //   ),
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.all(10.0),
-                      // child: getFolderIcon(filteredList[index], index),
-                      //   ),
-                      // ),
-                    );
-                  },
-                )
-              : Center(
-                  child: CircularProgressIndicator(),
-                ),
-        );
-      }),
-    );
+                    //  Container(
+                    //   margin:
+                    //       EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.white,
+                    //     borderRadius: BorderRadius.circular(10),
+                    //     boxShadow: [
+                    //       BoxShadow(
+                    //         color: Colors.black12,
+                    //         spreadRadius: 4,
+                    //         blurRadius: 10,
+                    //         offset: Offset(2, 2),
+                    //       ),
+                    //     ],
+                    //   ),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(10.0),
+                    // child: getFolderIcon(filteredList[index], index),
+                    //   ),
+                    // ),
+                  );
+                },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
+      );
+    });
   }
 
   static Widget _buildOfferCard(
@@ -515,7 +514,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -547,6 +546,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Image.asset(logopath, width: 45),
               // Circular arrow icon
               Container(
                 padding: const EdgeInsets.all(8),
@@ -560,7 +560,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                   size: 20,
                 ),
               ),
-              Image.asset(logopath, width: 45),
+              // Image.asset(logopath, width: 45),
               // ZIP or ZIP EMI text
               // Text(
               //   zipText,
