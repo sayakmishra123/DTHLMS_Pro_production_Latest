@@ -211,8 +211,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
   void initState() {
     getHomePageBannerImage(context, getx.loginuserdata[0].token);
     if (getx.isAndroidDeveloperModeEnabled.value) {
-       _showDeveloperDialog(context);
-
+      _showDeveloperDialog(context);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (getx.isInternet.value) {
@@ -231,11 +230,11 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _scrollController.dispose();
+  //   super.dispose();
+  // }
 
   getLastVideo() async {
     lastVideoDetails = await getLastRow();
@@ -2301,7 +2300,12 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     title: "Profile",
                     onTap: () {
                       // Get.to(MyAccountScreen());
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MyAccountScreen(fromDrawer: true,)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyAccountScreen(
+                                    fromDrawer: true,
+                                  )));
                     },
                     leading: const Icon(
                       Icons.account_circle_outlined,
@@ -3004,7 +3008,9 @@ class _HomePageMobileState extends State<HomePageMobile> {
       DashBoardMobile(),
       const Mobile_Package_List(),
       ListviewPackage(),
-      MyAccountScreen(fromDrawer: false,),
+      MyAccountScreen(
+        fromDrawer: false,
+      ),
     ];
     // getIconData(context, getx.loginuserdata[0].token);
     notificationsCall();
