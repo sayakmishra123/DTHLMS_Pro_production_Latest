@@ -83,8 +83,6 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
 
   @override
   void initState() {
-    print(
-        'okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
     // setState(() {
     // infoTetch(widget.packageid.toString(), 'Video');
 
@@ -353,7 +351,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     final iconData = folderIcons.firstWhere(
       (item) => item['section'] == foldername['section'],
       orElse: () =>
-          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+          {"icon": Icons.folder, "color": Colors.blue, "subtitle": ''},
     );
 
     // Return the showDetails widget with the appropriate icon and foldername
@@ -365,7 +363,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     final iconData = folderIcons.firstWhere(
       (item) => item['section'] == foldername['section'],
       orElse: () =>
-          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+          {"icon": Icons.folder, "color": Colors.blue, "subtitle": ''},
     );
 
     // Return the showDetails widget with the appropriate icon and foldername
@@ -377,7 +375,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     final iconData = folderIcons.firstWhere(
       (item) => item['section'] == foldername['section'],
       orElse: () =>
-          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+          {"icon": Icons.folder, "color": Colors.blue, "subtitle": ''},
     );
 
     // Return the showDetails widget with the appropriate icon and foldername
