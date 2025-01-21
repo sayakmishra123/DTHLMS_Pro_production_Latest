@@ -39,9 +39,18 @@ class _MobilePackageVideoDashboardState
   bool _showLeftButton = false;
   bool _showRightButton = true;
   List<dynamic> filteredChapterDetails = [];
+  int lastTapVideoIndex = -1; // Track the last tapped item index
+  DateTime lastTapvideoTime = DateTime.now();
+  var color = Color.fromARGB(255, 102, 112, 133);
+
+  late final Dio dio;
+  int flag = 2;
+  int selectedVideoIndex = -1;
+  int selectedvideoListIndex = -1;
 
   @override
   void initState() {
+    dio = Dio();
     filteredChapterDetails = [
       ...getx.alwaysShowChapterDetailsOfVideo,
       ...getx.alwaysShowFileDetailsOfpdf
@@ -75,8 +84,21 @@ class _MobilePackageVideoDashboardState
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
+    cancelAllDownloads();
 
     super.dispose();
+  }
+
+  ScrollController scrollControllerofNavigateBar = ScrollController();
+  void _scrollListenerofNavigateBar() {
+    if (scrollControllerofNavigateBar.position.atEdge) {
+      if (scrollControllerofNavigateBar.position.pixels == 0) {
+        // The scroll is at the beginning
+      } else {
+        // The scroll is at the end
+        print("Scrolled to the end");
+      }
+    }
   }
 
   void cancelAllDownloads() {
@@ -202,7 +224,16 @@ class _MobilePackageVideoDashboardState
                 children: [
                   Expanded(
                     child: Obx(
-                      () => SingleChildScrollView(
+
+                      
+                      ()  {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (scrollControllerofNavigateBar.hasClients) {
+            scrollControllerofNavigateBar.jumpTo(scrollControllerofNavigateBar.position.maxScrollExtent);
+          }
+        });
+                          return SingleChildScrollView(
+                            controller: scrollControllerofNavigateBar,
                         scrollDirection:
                             Axis.horizontal, // Enables horizontal scrolling
                         child: Row(
@@ -469,7 +500,10 @@ class _MobilePackageVideoDashboardState
                                     ),
                           ],
                         ),
-                      ),
+                      );
+                    
+  }
+                    
                     ),
                   ),
                 ],
@@ -479,9 +513,17 @@ class _MobilePackageVideoDashboardState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Contents",
-                      style: FontFamily.font,
+                    Row(
+
+
+
+
+                      children: [
+filecountWidget( getx.alwaysShowChapterDetailsOfVideo.length,"assets/folder5.png"),
+filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf5.png"),
+filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
+                        
+                      ],
                     ),
                     Row(
                       children: [
@@ -529,19 +571,19 @@ class _MobilePackageVideoDashboardState
                   padding:
                       const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
                   child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 2,
-                          color: Color.fromARGB(255, 192, 191, 191),
-                          offset: Offset(0, 0),
-                        ),
-                      ],
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
+                    // decoration: BoxDecoration(
+                    //   boxShadow: [
+                    //     BoxShadow(
+                    //       blurRadius: 2,
+                    //       color: Color.fromARGB(255, 192, 191, 191),
+                    //       offset: Offset(0, 0),
+                    //     ),
+                    //   ],
+                    //   color: Colors.white,
+                    //   borderRadius: BorderRadius.all(
+                    //     Radius.circular(10),
+                    //   ),
+                    // ),
                     child: Obx(
                       () => Column(
                         children: [
@@ -553,8 +595,8 @@ class _MobilePackageVideoDashboardState
                                     child: Obx(() {
                                       if (getx.alwaysShowChapterDetailsOfVideo
                                               .isEmpty &&
-                                          getx.alwaysShowFileDetailsOfpdf
-                                              .isEmpty) {
+                                          getx.alwaysShowFileDetailsOfpdf.isEmpty &&  getx.alwaysShowChapterfilesOfVideo.isEmpty
+                                               ) {
                                         return Center(
                                           child: Column(
                                             mainAxisAlignment:
@@ -582,7 +624,7 @@ class _MobilePackageVideoDashboardState
                                                 .alwaysShowChapterDetailsOfVideo
                                                 .length +
                                             getx.alwaysShowFileDetailsOfpdf
-                                                .length,
+                                                .length+getx.alwaysShowChapterfilesOfVideo.length,
                                         scrollDirection: Axis.vertical,
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
@@ -597,10 +639,18 @@ class _MobilePackageVideoDashboardState
                                                   .length >
                                               index)
                                             return buildGridViewItem(
-                                                index, false);
+                                                index, false,false);
+
+
+                                                else if((getx.alwaysShowChapterDetailsOfVideo
+                                                  .length+getx.alwaysShowFileDetailsOfpdf.length )>
+                                              index)
+                                              return  buildGridViewItem(
+                                                index, true,false);
                                           else
                                             return buildGridViewItem(
-                                                index, true);
+                                                index-(getx.alwaysShowChapterDetailsOfVideo
+                                                  .length+getx.alwaysShowFileDetailsOfpdf.length ), false,true);
                                         },
                                       );
                                     }),
@@ -611,7 +661,7 @@ class _MobilePackageVideoDashboardState
                                       if (getx.alwaysShowChapterDetailsOfVideo
                                               .isEmpty &&
                                           getx.alwaysShowFileDetailsOfpdf
-                                              .isEmpty) {
+                                              .isEmpty && getx.alwaysShowChapterfilesOfVideo.isEmpty) {
                                         return Center(
                                           child: Column(
                                             mainAxisAlignment:
@@ -639,17 +689,28 @@ class _MobilePackageVideoDashboardState
                                                 .alwaysShowChapterDetailsOfVideo
                                                 .length +
                                             getx.alwaysShowFileDetailsOfpdf
-                                                .length,
+                                                .length+getx.alwaysShowChapterfilesOfVideo.length,
                                         scrollDirection: Axis.vertical,
                                         itemBuilder: (context, index) {
                                           if (getx.alwaysShowChapterDetailsOfVideo
                                                   .length >
                                               index)
                                             return buildListViewItem(
-                                                index, false);
+                                                index, false,false);
+
+
+                                                else if(index<( getx
+                                                .alwaysShowChapterDetailsOfVideo
+                                                .length +
+                                            getx.alwaysShowFileDetailsOfpdf
+                                                .length )&& getx.alwaysShowFileDetailsOfpdf.isNotEmpty)
+                                                return buildListViewItem(index
+                                            ,true,false);
                                           else
                                             return buildListViewItem(
-                                                index, true);
+                                                index-(getx
+                                                .alwaysShowChapterDetailsOfVideo
+                                                .length+getx.alwaysShowFileDetailsOfpdf.length), false,true);
                                           //updated
                                         },
                                       );
@@ -663,50 +724,50 @@ class _MobilePackageVideoDashboardState
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: Row(
-                  children: [
-                    Text(
-                      "Videos",
-                      style: FontFamily.font,
-                    ),
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 15),
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         "Videos",
+              //         style: FontFamily.font,
+              //       ),
+              //     ],
+              //   ),
+              // ),
 
               // new
               // bottom videos part
 
-              Expanded(
-                flex: 11,
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 7, right: 10, left: 10),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 3,
-                                color: Color.fromARGB(255, 192, 191, 191),
-                                offset: Offset(0, 0),
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                          child: VideoListLeft(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Expanded(
+              //   flex: 11,
+              //   child: Column(
+              //     children: [
+              //       Expanded(
+              //         flex: 3,
+              //         child: Padding(
+              //           padding: EdgeInsets.only(top: 7, right: 10, left: 10),
+              //           child: Container(
+              //             // decoration: BoxDecoration(
+              //             //   boxShadow: [
+              //             //     BoxShadow(
+              //             //       blurRadius: 3,
+              //             //       color: Color.fromARGB(255, 192, 191, 191),
+              //             //       offset: Offset(0, 0),
+              //             //     ),
+              //             //   ],
+              //             //   color: Colors.white,
+              //             //   borderRadius: BorderRadius.all(
+              //             //     Radius.circular(10),
+              //             //   ),
+              //             // ),
+              //             child: VideoListLeft(),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
 
               // Expanded(
               //   flex: 11,
@@ -780,474 +841,33 @@ class _MobilePackageVideoDashboardState
     );
   }
 
-  Widget buildListViewItem(int index, bool ispdf) {
-    return Container(
-      margin: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 3,
-            color: Color.fromARGB(255, 192, 191, 191),
-            offset: Offset(0, 0),
-          ),
-        ],
-        borderRadius: BorderRadius.all(
-          Radius.circular(10),
-        ),
-        color: selectedIndex == index ? ColorPage.colorbutton : ColorPage.white,
-      ),
-      child: MaterialButton(
-        onPressed: () {
-          if (ispdf) {
-            cancelAllDownloads();
+  Widget buildListViewItem(int index, bool ispdf, bool isVideo) {
 
-            Get.to(
-                transition: Transition.cupertino,
-                () => ShowChapterPDFMobile(
-                      pdfUrl: getx.alwaysShowFileDetailsOfpdf[index -
-                              getx.alwaysShowChapterDetailsOfVideo.length]
-                          ["DocumentPath"],
-                      title: getx.alwaysShowFileDetailsOfpdf[index -
-                              getx.alwaysShowChapterDetailsOfVideo.length]
-                          ["FileIdName"],
-                      folderName: getPackagNameById(
-                        getx.alwaysShowFileDetailsOfpdf[index -
-                                    getx.alwaysShowChapterDetailsOfVideo.length]
-                                ["PackageId"]
-                            .toString(),
-                      ),
-                      isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
-                                  getx.alwaysShowChapterDetailsOfVideo
-                                      .length]["IsEncrypted"] ==
-                              "1"
-                          ? true
-                          : false,
-                    ));
-            selectedIndex = index;
-          } else {
-            cancelAllDownloads();
-
-            insertTblLocalNavigation(
-                    "ParentId",
-                    getx.alwaysShowChapterDetailsOfVideo[index]
-                        ['SectionChapterId'],
-                    getx.alwaysShowChapterDetailsOfVideo[index]
-                        ['SectionChapterName'])
-                .whenComplete(
-              () {
-                getLocalNavigationDetails();
+      void showErrorDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
               },
-            );
-
-            // getx.isVideoDashBoard.value=false;
-            getChapterContents(int.parse(getx
-                .alwaysShowChapterDetailsOfVideo[index]['SectionChapterId']));
-            getChapterFiles(
-                parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
-                    ['SectionChapterId']),
-                'Video',
-                getx.selectedPackageId.value.toString());
-            getChapterFiles(
-                parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
-                    ['SectionChapterId']),
-                'PDF',
-                getx.selectedPackageId.value.toString());
-
-            selectedIndex = index;
-
-            setState(() {});
-          }
-        },
-        child: ListTile(
-          leading: ispdf
-              ? Image.asset(
-                  "assets/pdf5.png",
-                  width: 30,
-                )
-              : Image.asset(
-                  "assets/folder8.png",
-                  width: 30,
-                ),
-          trailing: Icon(
-            Icons.arrow_forward_ios_sharp,
-            size: 16,
-            color:
-                selectedIndex == index ? ColorPage.white : ColorPage.colorblack,
-          ),
-          title: Text(
-            ispdf
-                ? getx.alwaysShowFileDetailsOfpdf[index -
-                    getx.alwaysShowChapterDetailsOfVideo.length]["FileIdName"]
-                : getx.alwaysShowChapterDetailsOfVideo[index]
-                    ['SectionChapterName'],
-            style: FontFamily.font9.copyWith(
-              fontWeight: FontWeight.bold,
-              color: selectedIndex == index
-                  ? ColorPage.white
-                  : ColorPage.colorblack,
+              child: Text('OK'),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildGridViewItem(int index, bool isPdf) {
-    return InkWell(
-      enableFeedback: true,
-      overlayColor: WidgetStatePropertyAll(Colors.red),
-      onTap: () {
-        if (isPdf) {
-          cancelAllDownloads();
-
-          Get.to(
-              transition: Transition.cupertino,
-              () => ShowChapterPDFMobile(
-                    pdfUrl: getx.alwaysShowFileDetailsOfpdf[
-                            index - getx.alwaysShowChapterDetailsOfVideo.length]
-                        ["DocumentPath"],
-                    title: getx.alwaysShowFileDetailsOfpdf[
-                            index - getx.alwaysShowChapterDetailsOfVideo.length]
-                        ["FileIdName"],
-                    folderName: getPackagNameById(
-                      getx.alwaysShowFileDetailsOfpdf[index -
-                                  getx.alwaysShowChapterDetailsOfVideo.length]
-                              ["PackageId"]
-                          .toString(),
-                    ),
-                    isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
-                                    getx.alwaysShowChapterDetailsOfVideo.length]
-                                ["IsEncrypted"] ==
-                            "1"
-                        ? true
-                        : false,
-                  ));
-          selectedIndex = index;
-        } else {
-          cancelAllDownloads();
-
-          insertTblLocalNavigation(
-                  "ParentId",
-                  getx.alwaysShowChapterDetailsOfVideo[index]
-                      ['SectionChapterId'],
-                  getx.alwaysShowChapterDetailsOfVideo[index]
-                      ['SectionChapterName'])
-              .whenComplete(
-            () {
-              getLocalNavigationDetails();
-            },
-          );
-
-          // getx.isVideoDashBoard.value=false;
-          getChapterContents(int.parse(
-              getx.alwaysShowChapterDetailsOfVideo[index]['SectionChapterId']));
-          getChapterFiles(
-              parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
-                  ['SectionChapterId']),
-              'Video',
-              getx.selectedPackageId.value.toString());
-          getChapterFiles(
-              parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
-                  ['SectionChapterId']),
-              'PDF',
-              getx.selectedPackageId.value.toString());
-
-          selectedIndex = index;
-
-          setState(() {});
-        }
+          ],
+        );
       },
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Container(
-          padding: EdgeInsets.only(top: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(5),
-            ),
-            color: selectedIndex == index
-                ? ColorPage.blue.withOpacity(0.3)
-                : Colors.transparent,
-          ),
-          child: Column(
-            children: [
-              !isPdf
-                  ? Image.asset(
-                      "assets/folder5.png",
-                      scale: 16,
-                    )
-                  : Image.asset(
-                      "assets/pdf5.png",
-                      scale: 16,
-                    ),
-              AutoSizeText(
-                isPdf
-                    ? getx.alwaysShowFileDetailsOfpdf[
-                            index - getx.alwaysShowChapterDetailsOfVideo.length]
-                        ["FileIdName"]
-                    : getx.alwaysShowChapterDetailsOfVideo[index]
-                        ['SectionChapterName'],
-                overflow: TextOverflow.ellipsis,
-                style: FontFamily.font9.copyWith(color: ColorPage.colorblack),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class VideoListLeft extends StatefulWidget {
-  VideoListLeft({
-    super.key,
-  });
-
-  @override
-  State<VideoListLeft> createState() => _VideoListLeftState();
-}
-
-class _VideoListLeftState extends State<VideoListLeft> {
-  late final Dio dio;
-
-  int lastTapVideoIndex = -1; // Track the last tapped item index
-  DateTime lastTapvideoTime = DateTime.now();
-  var color = Color.fromARGB(255, 102, 112, 133);
-  Getx getx = Get.put(Getx());
-
-  int flag = 2;
-  int selectedVideoIndex = -1;
-  int selectedvideoListIndex = -1;
-
-  @override
-  void initState() {
-    dio = Dio();
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    cancelAllDownloads();
-    super.dispose();
-  }
-
-  @override
-  void handleTap(int index) {
-    DateTime now = DateTime.now();
-    if (index == lastTapVideoIndex &&
-        now.difference(lastTapvideoTime) < Duration(seconds: 1)) {
-      print('Double tapped on folder: $index');
-    }
-    lastTapVideoIndex = index;
-    lastTapvideoTime = now;
-  } // Track the selected list tile
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.sizeOf(context).width;
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: ColorPage.white,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 3,
-            color: Color.fromARGB(255, 192, 191, 191),
-            offset: Offset(0, 0),
-          ),
-        ],
-      ),
-      child: Obx(
-        () => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: ListView.builder(
-            shrinkWrap: true,
-            // physics: NeverScrollableScrollPhysics(),
-            itemCount: getx.alwaysShowChapterfilesOfVideo.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedVideoIndex = index;
-                  });
-
-                  handleTap(index);
-                },
-                child: Card(
-                  color: selectedVideoIndex == index
-                      ? ColorPage.colorbutton.withOpacity(0.9)
-                      : Color.fromARGB(255, 245, 243, 248),
-                  child: ListTile(
-                    leading: Image.asset(
-                      "assets/video2.png",
-                      scale: 19,
-                      color: selectedVideoIndex == index
-                          ? ColorPage.white.withOpacity(0.85)
-                          : ColorPage.colorbutton,
-                    ),
-                    subtitle: Text(
-                      'Duration: ${getx.alwaysShowChapterfilesOfVideo[index]['AllowDuration']}',
-                      style: TextStyle(
-                        color: selectedVideoIndex == index
-                            ? ColorPage.white.withOpacity(0.9)
-                            : ColorPage.grey,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    title: Text(
-                      getx.alwaysShowChapterfilesOfVideo[index]['FileIdName'],
-                      style: GoogleFonts.inter().copyWith(
-                        color: selectedVideoIndex == index
-                            ? ColorPage.white
-                            : ColorPage.colorblack,
-                        fontWeight: FontWeight.w800,
-                        fontSize: selectedvideoListIndex == index ? 20 : null,
-                        // color: selectedListIndex == index
-                        //     ? Colors.amber[900]
-                        //     : Colors.black,
-                      ),
-                    ),
-                    trailing: downloadProgress[index] == 0 &&
-                            File(getx.userSelectedPathForDownloadVideo.isEmpty
-                                        ? getx.defaultPathForDownloadVideo
-                                                .value +
-                                            '/' +
-                                            getx.alwaysShowChapterfilesOfVideo[
-                                                index]['FileIdName']
-                                        : getx.userSelectedPathForDownloadVideo
-                                                .value +
-                                            '/' +
-                                            getx.alwaysShowChapterfilesOfVideo[
-                                                index]['FileIdName'])
-                                    .existsSync() ==
-                                false
-                        ? IconButton(
-                            onPressed: () {
-                              startDownload(
-                                  index,
-                                  getx.alwaysShowChapterfilesOfVideo[index]
-                                      ['DocumentPath'],
-                                  getx.alwaysShowChapterfilesOfVideo[index]
-                                      ['FileIdName']);
-                            },
-                            icon: Icon(
-                              Icons.download,
-                              color: selectedVideoIndex == index
-                                  ? ColorPage.white.withOpacity(0.9)
-                                  : ColorPage.grey,
-                            ),
-                          )
-                        : downloadProgress[index] < 100 &&
-                                downloadProgress[index] > 0
-                            ? SizedBox(
-                                width: 85,
-                                child: Row(
-                                  children: [
-                                    CircularPercentIndicator(
-                                      radius: 15.0,
-                                      lineWidth: 4.0,
-                                      percent: downloadProgress[index] / 100,
-                                      center: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          "${downloadProgress[index].toInt()}%",
-                                          style: TextStyle(fontSize: 10.0),
-                                        ),
-                                      ),
-                                      progressColor: ColorPage.colorbutton,
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        cancelDownload(index);
-                                      },
-                                      icon: Icon(
-                                        FontAwesome.close,
-                                        color: selectedVideoIndex == index
-                                            ? ColorPage.white.withOpacity(0.9)
-                                            : ColorPage.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : IconButton(
-                                onPressed: () {
-                                  fetchUploadableVideoInfo()
-                                      .then((valueList) async {
-                                    if (getx.isInternet.value) {
-                                      unUploadedVideoInfoInsert(
-                                          context,
-                                          valueList,
-                                          getx.loginuserdata[0].token);
-                                    }
-                                  });
-                                  getx.playingVideoId.value = getx
-                                      .alwaysShowChapterfilesOfVideo[index]
-                                          ['FileId']
-                                      .toString();
-                                  getx.playLink.value = getx
-                                          .userSelectedPathForDownloadVideo
-                                          .isEmpty
-                                      ? getx.defaultPathForDownloadVideo.value +
-                                          '/' +
-                                          getx.alwaysShowChapterfilesOfVideo[
-                                              index]['FileIdName']
-                                      : getx.userSelectedPathForDownloadVideo
-                                              .value +
-                                          '/' +
-                                          getx.alwaysShowChapterfilesOfVideo[
-                                              index]['FileIdName'];
-
-                                  Get.to(() => MobileVideoPlayer(
-                                        videoLink: getx.playLink.value,
-                                        Videoindex: index,
-                                      ));
-                                },
-                                icon: Icon(
-                                  Icons.play_circle,
-                                  color: selectedVideoIndex == index
-                                      ? ColorPage.white.withOpacity(0.9)
-                                      : ColorPage.grey,
-                                ),
-                              ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
     );
   }
 
-  String? _videoFilePath;
+   String? _videoFilePath;
 
   bool isDownloading = false;
-  // double downloadProgress = 0.0;
-//  Future<void> _startDownload(int index) async {
-//     setState(() {
-//       isDownloading = true;
-//       selectedVideoIndex = index;
-//       downloadProgress = 0.0; // Initialize progress to 0
-//     });
 
-//     // Simulate a download delay with progress
-//     for (int i = 1; i <= 100; i++) {
-//       await Future.delayed(Duration(milliseconds: 30)); // Simulate time delay for each percentage
-//       setState(() {
-//         downloadProgress = i / 100; // Update progress
-//       });
-//     }
-
-//     setState(() {
-//       isDownloading = false;
-//       // selectedVideoIndex = null; // Reset index after download
-//       downloadProgress = 0.0; // Reset progress after download
-//     });
-//   }
-  Future<void> startDownload(int index, String Link, String title) async {
+     Future<void> startDownload(int index, String Link, String title) async {
     if (Link == "0") {
       print("ZVideo link is $Link");
       return;
@@ -1368,38 +988,20 @@ class _VideoListLeftState extends State<VideoListLeft> {
     }
   }
 
-// Method to show an error dialog
-  void showErrorDialog(BuildContext context, String title, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
-  void cancelAllDownloads() {
+     void cancelAllDownloads() {
     cancelTokens.forEach((index, cancelToken) {
       cancelToken.cancel();
       print('Download for index $index cancelled.');
     });
 
+
+
     // Clear the cancelTokens map after canceling
     cancelTokens.clear();
   }
 
-  void cancelDownload(int index) {
+    void cancelDownload(int index) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -1443,7 +1045,860 @@ class _VideoListLeftState extends State<VideoListLeft> {
           );
         });
   }
+    return isVideo? GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedVideoIndex = index;
+                  });
+
+                  // handleTap(index);
+                },
+                child: Card(
+                  color:
+                  //  selectedVideoIndex == index
+                  //     ? ColorPage.colorbutton.withOpacity(0.9)
+                      // :
+                       Color.fromARGB(255, 255, 255, 255),
+                  child: ListTile(
+                    leading: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Image.asset(
+                        "assets/video2.png",
+                        scale: 19,
+                        // color:
+                        //  selectedVideoIndex == index
+                        //     ? ColorPage.white.withOpacity(0.85)
+                        //     : 
+                            
+                            // ColorPage.colorbutton,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Duration: ${getx.alwaysShowChapterfilesOfVideo[index]['AllowDuration']}',
+                      style: TextStyle(
+                        color: 
+                        
+                        // selectedVideoIndex == index
+                        //     ? ColorPage.white.withOpacity(0.9)
+                        //     : 
+                            
+                            ColorPage.grey,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    title: Text(
+                      getx.alwaysShowChapterfilesOfVideo[index]['FileIdName'],
+                      style: GoogleFonts.inter().copyWith(
+                        color:
+                        
+                        //  selectedVideoIndex == index
+                        //     ? ColorPage.white
+                        //     :
+                            
+                             ColorPage.colorblack,
+                        fontWeight: FontWeight.w800,
+                        fontSize: selectedvideoListIndex == index ? 20 : null,
+                        // color: selectedListIndex == index
+                        //     ? Colors.amber[900]
+                        //     : Colors.black,
+                      ),
+                    ),
+                    trailing: downloadProgress[index] == 0 &&
+                            File(getx.userSelectedPathForDownloadVideo.isEmpty
+                                        ? getx.defaultPathForDownloadVideo
+                                                .value +
+                                            '/' +
+                                            getx.alwaysShowChapterfilesOfVideo[
+                                                index]['FileIdName']
+                                        : getx.userSelectedPathForDownloadVideo
+                                                .value +
+                                            '/' +
+                                            getx.alwaysShowChapterfilesOfVideo[
+                                                index]['FileIdName'])
+                                    .existsSync() ==
+                                false
+                        ? IconButton(
+                            onPressed: () {
+                              startDownload(
+                                  index,
+                                  getx.alwaysShowChapterfilesOfVideo[index]
+                                      ['DocumentPath'],
+                                  getx.alwaysShowChapterfilesOfVideo[index]
+                                      ['FileIdName']);
+                            },
+                            icon: Icon(
+                              Icons.download,
+                              color: 
+                              // selectedVideoIndex == index
+                              //     ? ColorPage.white.withOpacity(0.9)
+                              //     :
+                                  
+                                   ColorPage.grey,
+                            ),
+                          )
+                        : downloadProgress[index] < 100 &&
+                                downloadProgress[index] > 0
+                            ? SizedBox(
+                                width: 85,
+                                child: Row(
+                                  children: [
+                                    CircularPercentIndicator(
+                                      radius: 15.0,
+                                      lineWidth: 4.0,
+                                      percent: downloadProgress[index] / 100,
+                                      center: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          "${downloadProgress[index].toInt()}%",
+                                          style: TextStyle(fontSize: 10.0),
+                                        ),
+                                      ),
+                                      progressColor: ColorPage.colorbutton,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        cancelDownload(index);
+                                      },
+                                      icon: Icon(
+                                        FontAwesome.close,
+                                        color: 
+                                        
+                                        // selectedVideoIndex == index
+                                        //     ? ColorPage.white.withOpacity(0.9)
+                                        //     : 
+                                            
+                                            ColorPage.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : IconButton(
+                                onPressed: () {
+                                  fetchUploadableVideoInfo()
+                                      .then((valueList) async {
+                                    if (getx.isInternet.value) {
+                                      unUploadedVideoInfoInsert(
+                                          context,
+                                          valueList,
+                                          getx.loginuserdata[0].token);
+                                    }
+                                  });
+                                  getx.playingVideoId.value = getx
+                                      .alwaysShowChapterfilesOfVideo[index]
+                                          ['FileId']
+                                      .toString();
+                                  getx.playLink.value = getx
+                                          .userSelectedPathForDownloadVideo
+                                          .isEmpty
+                                      ? getx.defaultPathForDownloadVideo.value +
+                                          '/' +
+                                          getx.alwaysShowChapterfilesOfVideo[
+                                              index]['FileIdName']
+                                      : getx.userSelectedPathForDownloadVideo
+                                              .value +
+                                          '/' +
+                                          getx.alwaysShowChapterfilesOfVideo[
+                                              index]['FileIdName'];
+
+                                  Get.to(() => MobileVideoPlayer(
+                                        videoLink: getx.playLink.value,
+                                        Videoindex: index,
+                                      ));
+                                },
+                                icon: Icon(
+                                  Icons.play_circle,
+                                  color:
+                                  
+                                  //  selectedVideoIndex == index
+                                  //     ? ColorPage.white.withOpacity(0.9)
+                                  //     :
+                                      
+                                       ColorPage.grey,
+                                ),
+                              ),
+                  ),
+                ),
+              ): Container(
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 3,
+            color: Color.fromARGB(255, 192, 191, 191),
+            offset: Offset(0, 0),
+          ),
+        ],
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+        color: 
+        // selectedIndex == index ? ColorPage.colorbutton :
+         ColorPage.white,
+      ),
+      child: MaterialButton(
+        onPressed: () {
+          if (ispdf) {
+            cancelAllDownloads();
+
+            Get.to(
+                transition: Transition.cupertino,
+                () => ShowChapterPDFMobile(
+                      pdfUrl: getx.alwaysShowFileDetailsOfpdf[index -
+                              getx.alwaysShowChapterDetailsOfVideo.length]
+                          ["DocumentPath"],
+                      title: getx.alwaysShowFileDetailsOfpdf[index -
+                              getx.alwaysShowChapterDetailsOfVideo.length]
+                          ["FileIdName"],
+                      folderName: getPackagNameById(
+                        getx.alwaysShowFileDetailsOfpdf[index -
+                                    getx.alwaysShowChapterDetailsOfVideo.length]
+                                ["PackageId"]
+                            .toString(),
+                      ),
+                      isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
+                                  getx.alwaysShowChapterDetailsOfVideo
+                                      .length]["IsEncrypted"] ==
+                              "1"
+                          ? true
+                          : false,
+                    ));
+            selectedIndex = index;
+          } else {
+            cancelAllDownloads();
+
+            insertTblLocalNavigation(
+                    "ParentId",
+                    getx.alwaysShowChapterDetailsOfVideo[index]
+                        ['SectionChapterId'],
+                    getx.alwaysShowChapterDetailsOfVideo[index]
+                        ['SectionChapterName'])
+                .whenComplete(
+              () {
+                getLocalNavigationDetails();
+              },
+            );
+
+            // getx.isVideoDashBoard.value=false;
+            getChapterContents(int.parse(getx
+                .alwaysShowChapterDetailsOfVideo[index]['SectionChapterId']));
+            getChapterFiles(
+                parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
+                    ['SectionChapterId']),
+                'Video',
+                getx.selectedPackageId.value.toString());
+            getChapterFiles(
+                parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
+                    ['SectionChapterId']),
+                'PDF',
+                getx.selectedPackageId.value.toString());
+
+            selectedIndex = index;
+
+            setState(() {});
+          }
+        },
+        child: ListTile(
+          leading: ispdf
+              ? Image.asset(
+                  "assets/pdf5.png",
+                  width: 30,
+                )
+              : Image.asset(
+                  "assets/folder5.png",
+                  width: 30,
+                ),
+          trailing: Icon(
+            Icons.arrow_forward_ios_sharp,
+            size: 16,
+            color:
+                // selectedIndex == index ? ColorPage.white :
+                 ColorPage.colorblack,
+          ),
+          title: Text(
+            ispdf
+                ? getx.alwaysShowFileDetailsOfpdf[index -
+                    getx.alwaysShowChapterDetailsOfVideo.length]["FileIdName"]
+                : getx.alwaysShowChapterDetailsOfVideo[index]
+                    ['SectionChapterName'],
+            style: FontFamily.font9.copyWith(
+              fontWeight: FontWeight.bold,
+              color: 
+              // selectedIndex == index
+              //     ? ColorPage.white
+              //     :
+                   ColorPage.colorblack,
+            ),
+          ),
+        ),
+      ),
+    );
+
+
+    
+  }
+
+  Widget buildGridViewItem(int index, bool isPdf,bool isVideo) {
+    return InkWell(
+      enableFeedback: true,
+      overlayColor: WidgetStatePropertyAll(Colors.red),
+      onTap: () {
+        if (isPdf) {
+          cancelAllDownloads();
+
+          Get.to(
+              transition: Transition.cupertino,
+              () => ShowChapterPDFMobile(
+                    pdfUrl: getx.alwaysShowFileDetailsOfpdf[
+                            index - getx.alwaysShowChapterDetailsOfVideo.length]
+                        ["DocumentPath"],
+                    title: getx.alwaysShowFileDetailsOfpdf[
+                            index - getx.alwaysShowChapterDetailsOfVideo.length]
+                        ["FileIdName"],
+                    folderName: getPackagNameById(
+                      getx.alwaysShowFileDetailsOfpdf[index -
+                                  getx.alwaysShowChapterDetailsOfVideo.length]
+                              ["PackageId"]
+                          .toString(),
+                    ),
+                    isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
+                                    getx.alwaysShowChapterDetailsOfVideo.length]
+                                ["IsEncrypted"] ==
+                            "1"
+                        ? true
+                        : false,
+                  ));
+          selectedIndex = index;
+        } else {
+          cancelAllDownloads();
+
+          insertTblLocalNavigation(
+                  "ParentId",
+                  getx.alwaysShowChapterDetailsOfVideo[index]
+                      ['SectionChapterId'],
+                  getx.alwaysShowChapterDetailsOfVideo[index]
+                      ['SectionChapterName'])
+              .whenComplete(
+            () {
+              getLocalNavigationDetails();
+            },
+          );
+
+          // getx.isVideoDashBoard.value=false;
+          getChapterContents(int.parse(
+              getx.alwaysShowChapterDetailsOfVideo[index]['SectionChapterId']));
+          getChapterFiles(
+              parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
+                  ['SectionChapterId']),
+              'Video',
+              getx.selectedPackageId.value.toString());
+          getChapterFiles(
+              parentId: int.parse(getx.alwaysShowChapterDetailsOfVideo[index]
+                  ['SectionChapterId']),
+              'PDF',
+              getx.selectedPackageId.value.toString());
+
+          selectedIndex = index;
+
+          setState(() {});
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Container(
+          padding: EdgeInsets.only(top: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(5),
+            ),
+            color: selectedIndex == index
+                ? ColorPage.blue.withOpacity(0.3)
+                : Colors.transparent,
+          ),
+          child: Column(
+            children: [
+              !isPdf
+                  ? Image.asset(
+                      "assets/folder5.png",
+                      scale: 16,
+                    )
+                  : Image.asset(
+                      "assets/pdf5.png",
+                      scale: 16,
+                    ),
+              AutoSizeText(
+                isPdf
+                    ? getx.alwaysShowFileDetailsOfpdf[
+                            index - getx.alwaysShowChapterDetailsOfVideo.length]
+                        ["FileIdName"]
+                    : getx.alwaysShowChapterDetailsOfVideo[index]
+                        ['SectionChapterName'],
+                overflow: TextOverflow.ellipsis,
+                style: FontFamily.font9.copyWith(color: ColorPage.colorblack),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
+
+// class VideoListLeft extends StatefulWidget {
+//   VideoListLeft({
+//     super.key,
+//   });
+
+//   @override
+//   State<VideoListLeft> createState() => _VideoListLeftState();
+// }
+
+// class _VideoListLeftState extends State<VideoListLeft> {
+//   late final Dio dio;
+
+//   int lastTapVideoIndex = -1; // Track the last tapped item index
+//   DateTime lastTapvideoTime = DateTime.now();
+//   var color = Color.fromARGB(255, 102, 112, 133);
+//   Getx getx = Get.put(Getx());
+
+//   int flag = 2;
+//   int selectedVideoIndex = -1;
+//   int selectedvideoListIndex = -1;
+
+//   @override
+//   void initState() {
+//     dio = Dio();
+
+//     super.initState();
+//   }
+
+//   @override
+//   void dispose() {
+//     cancelAllDownloads();
+//     super.dispose();
+//   }
+
+//   @override
+//   void handleTap(int index) {
+//     DateTime now = DateTime.now();
+//     if (index == lastTapVideoIndex &&
+//         now.difference(lastTapvideoTime) < Duration(seconds: 1)) {
+//       print('Double tapped on folder: $index');
+//     }
+//     lastTapVideoIndex = index;
+//     lastTapvideoTime = now;
+//   } // Track the selected list tile
+
+//   @override
+//   Widget build(BuildContext context) {
+//     double screenWidth = MediaQuery.sizeOf(context).width;
+//     return Container(
+//       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+//       // decoration: BoxDecoration(
+//       //   borderRadius: BorderRadius.circular(10),
+//       //   color: ColorPage.white,
+//       //   boxShadow: [
+//       //     BoxShadow(
+//       //       blurRadius: 3,
+//       //       color: Color.fromARGB(255, 192, 191, 191),
+//       //       offset: Offset(0, 0),
+//       //     ),
+//       //   ],
+//       // ),
+//       child: Obx(
+//         () => Padding(
+//           padding: const EdgeInsets.symmetric(vertical: 10),
+//           child: ListView.builder(
+//             shrinkWrap: true,
+//             // physics: NeverScrollableScrollPhysics(),
+//             itemCount: getx.alwaysShowChapterfilesOfVideo.length,
+//             itemBuilder: (context, index) {
+//               return GestureDetector(
+//                 onTap: () {
+//                   setState(() {
+//                     selectedVideoIndex = index;
+//                   });
+
+//                   handleTap(index);
+//                 },
+//                 child: Card(
+//                   color: selectedVideoIndex == index
+//                       ? ColorPage.colorbutton.withOpacity(0.9)
+//                       : Color.fromARGB(255, 255, 255, 255),
+//                   child: ListTile(
+//                     leading: Image.asset(
+//                       "assets/video2.png",
+//                       scale: 19,
+//                       color: selectedVideoIndex == index
+//                           ? ColorPage.white.withOpacity(0.85)
+//                           : ColorPage.colorbutton,
+//                     ),
+//                     subtitle: Text(
+//                       'Duration: ${getx.alwaysShowChapterfilesOfVideo[index]['AllowDuration']}',
+//                       style: TextStyle(
+//                         color: selectedVideoIndex == index
+//                             ? ColorPage.white.withOpacity(0.9)
+//                             : ColorPage.grey,
+//                         fontWeight: FontWeight.w800,
+//                       ),
+//                     ),
+//                     title: Text(
+//                       getx.alwaysShowChapterfilesOfVideo[index]['FileIdName'],
+//                       style: GoogleFonts.inter().copyWith(
+//                         color: selectedVideoIndex == index
+//                             ? ColorPage.white
+//                             : ColorPage.colorblack,
+//                         fontWeight: FontWeight.w800,
+//                         fontSize: selectedvideoListIndex == index ? 20 : null,
+//                         // color: selectedListIndex == index
+//                         //     ? Colors.amber[900]
+//                         //     : Colors.black,
+//                       ),
+//                     ),
+//                     trailing: downloadProgress[index] == 0 &&
+//                             File(getx.userSelectedPathForDownloadVideo.isEmpty
+//                                         ? getx.defaultPathForDownloadVideo
+//                                                 .value +
+//                                             '/' +
+//                                             getx.alwaysShowChapterfilesOfVideo[
+//                                                 index]['FileIdName']
+//                                         : getx.userSelectedPathForDownloadVideo
+//                                                 .value +
+//                                             '/' +
+//                                             getx.alwaysShowChapterfilesOfVideo[
+//                                                 index]['FileIdName'])
+//                                     .existsSync() ==
+//                                 false
+//                         ? IconButton(
+//                             onPressed: () {
+//                               startDownload(
+//                                   index,
+//                                   getx.alwaysShowChapterfilesOfVideo[index]
+//                                       ['DocumentPath'],
+//                                   getx.alwaysShowChapterfilesOfVideo[index]
+//                                       ['FileIdName']);
+//                             },
+//                             icon: Icon(
+//                               Icons.download,
+//                               color: selectedVideoIndex == index
+//                                   ? ColorPage.white.withOpacity(0.9)
+//                                   : ColorPage.grey,
+//                             ),
+//                           )
+//                         : downloadProgress[index] < 100 &&
+//                                 downloadProgress[index] > 0
+//                             ? SizedBox(
+//                                 width: 85,
+//                                 child: Row(
+//                                   children: [
+//                                     CircularPercentIndicator(
+//                                       radius: 15.0,
+//                                       lineWidth: 4.0,
+//                                       percent: downloadProgress[index] / 100,
+//                                       center: Padding(
+//                                         padding: const EdgeInsets.all(4.0),
+//                                         child: Text(
+//                                           "${downloadProgress[index].toInt()}%",
+//                                           style: TextStyle(fontSize: 10.0),
+//                                         ),
+//                                       ),
+//                                       progressColor: ColorPage.colorbutton,
+//                                     ),
+//                                     IconButton(
+//                                       onPressed: () {
+//                                         cancelDownload(index);
+//                                       },
+//                                       icon: Icon(
+//                                         FontAwesome.close,
+//                                         color: selectedVideoIndex == index
+//                                             ? ColorPage.white.withOpacity(0.9)
+//                                             : ColorPage.grey,
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                               )
+//                             : IconButton(
+//                                 onPressed: () {
+//                                   fetchUploadableVideoInfo()
+//                                       .then((valueList) async {
+//                                     if (getx.isInternet.value) {
+//                                       unUploadedVideoInfoInsert(
+//                                           context,
+//                                           valueList,
+//                                           getx.loginuserdata[0].token);
+//                                     }
+//                                   });
+//                                   getx.playingVideoId.value = getx
+//                                       .alwaysShowChapterfilesOfVideo[index]
+//                                           ['FileId']
+//                                       .toString();
+//                                   getx.playLink.value = getx
+//                                           .userSelectedPathForDownloadVideo
+//                                           .isEmpty
+//                                       ? getx.defaultPathForDownloadVideo.value +
+//                                           '/' +
+//                                           getx.alwaysShowChapterfilesOfVideo[
+//                                               index]['FileIdName']
+//                                       : getx.userSelectedPathForDownloadVideo
+//                                               .value +
+//                                           '/' +
+//                                           getx.alwaysShowChapterfilesOfVideo[
+//                                               index]['FileIdName'];
+
+//                                   Get.to(() => MobileVideoPlayer(
+//                                         videoLink: getx.playLink.value,
+//                                         Videoindex: index,
+//                                       ));
+//                                 },
+//                                 icon: Icon(
+//                                   Icons.play_circle,
+//                                   color: selectedVideoIndex == index
+//                                       ? ColorPage.white.withOpacity(0.9)
+//                                       : ColorPage.grey,
+//                                 ),
+//                               ),
+//                   ),
+//                 ),
+//               );
+            
+            
+            
+            
+//             },
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   String? _videoFilePath;
+
+//   bool isDownloading = false;
+//   // double downloadProgress = 0.0;
+// //  Future<void> _startDownload(int index) async {
+// //     setState(() {
+// //       isDownloading = true;
+// //       selectedVideoIndex = index;
+// //       downloadProgress = 0.0; // Initialize progress to 0
+// //     });
+
+// //     // Simulate a download delay with progress
+// //     for (int i = 1; i <= 100; i++) {
+// //       await Future.delayed(Duration(milliseconds: 30)); // Simulate time delay for each percentage
+// //       setState(() {
+// //         downloadProgress = i / 100; // Update progress
+// //       });
+// //     }
+
+// //     setState(() {
+// //       isDownloading = false;
+// //       // selectedVideoIndex = null; // Reset index after download
+// //       downloadProgress = 0.0; // Reset progress after download
+// //     });
+// //   }
+//   Future<void> startDownload(int index, String Link, String title) async {
+//     if (Link == "0") {
+//       print("ZVideo link is $Link");
+//       return;
+//     }
+
+//     final appDocDir;
+//     final cancelToken =
+//         CancelToken(); // Create a new CancelToken for this download
+//     cancelTokens[index] =
+//         cancelToken; // Store the token to allow cancellation later
+
+//     try {
+//       var prefs = await SharedPreferences.getInstance();
+//       final path = await getApplicationDocumentsDirectory();
+//       appDocDir = path.path;
+
+//       getx.defaultPathForDownloadVideo.value =
+//           appDocDir + '/$origin' + '/Downloaded_videos';
+//       prefs.setString("DefaultDownloadpathOfVieo",
+//           appDocDir + '/$origin' + '/Downloaded_videos');
+//       print(getx.userSelectedPathForDownloadVideo.value +
+//           " it is user selected path");
+
+//       String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
+//           ? appDocDir + '/$origin' + '/Downloaded_videos' + '/$title'
+//           : getx.userSelectedPathForDownloadVideo.value + '/$title';
+
+//       String tempPath = appDocDir + '/temp' + '/$title';
+
+//       await Directory(appDocDir + '/temp').create(recursive: true);
+
+//       // Set a timeout duration (e.g., 60 seconds) for the download process
+//       const downloadTimeout = Duration(seconds: 60);
+//       int previousProgress = 0;
+//       DateTime lastProgressUpdate = DateTime.now();
+
+//       await dio.download(
+//         Link,
+//         tempPath,
+//         cancelToken: cancelToken, // Pass the CancelToken to the download method
+//         onReceiveProgress: (received, total) {
+//           if (total != -1) {
+//             double progress = (received / total * 100);
+//             setState(() {
+//               downloadProgress[index] = progress;
+//             });
+
+//             // Track the last time progress was updated
+//             if (progress != previousProgress) {
+//               lastProgressUpdate = DateTime.now();
+//               previousProgress = progress.toInt();
+//             }
+//           }
+//         },
+//       ).timeout(downloadTimeout, onTimeout: () {
+//         // If the download took longer than the timeout
+//         cancelToken.cancel(); // Cancel the download
+//         return Future.error('Download Timeout');
+//       });
+
+//       // Check if the download progress got stuck (e.g., progress hasn't updated in the last 10 seconds)
+//       if (DateTime.now().difference(lastProgressUpdate) >
+//           Duration(seconds: 30)) {
+//         cancelToken.cancel(); // Cancel the download
+//         showErrorDialog(context, 'Download Stuck',
+//             'The download seems to be stuck. Please try again.');
+//         return;
+//       }
+
+//       // After download is complete, copy the file to the final location
+//       final tempFile = File(tempPath);
+//       final finalFile = File(savePath);
+
+//       await finalFile.parent.create(recursive: true);
+//       await tempFile.copy(savePath);
+//       await tempFile.delete();
+
+//       // Success case: Update the progress to 100% and set the video file path
+//       setState(() {
+//         downloadProgress[index] = 100.0; // Mark the download as completed
+//         _videoFilePath = savePath;
+//         getx.playingVideoId.value =
+//             getx.alwaysShowChapterfilesOfVideo[index]["FileId"];
+//       });
+
+//       print('$savePath video saved to this location');
+
+//       await insertDownloadedFileData(
+//           getx.alwaysShowChapterfilesOfVideo[index]["PackageId"],
+//           getx.alwaysShowChapterfilesOfVideo[index]["FileId"],
+//           savePath,
+//           'Video',
+//           title);
+
+//       insertVideoDownloadPath(
+//         getx.alwaysShowChapterfilesOfVideo[index]["FileId"],
+//         getx.alwaysShowChapterfilesOfVideo[index]["PackageId"],
+//         savePath,
+//         context,
+//       );
+//     } catch (e) {
+//       writeToFile(e, "startDownload");
+//       if (e is DioException && CancelToken.isCancel(e)) {
+//         print("Download canceled for index $index");
+//       } else {
+//         print(e.toString() + " error on download");
+//         setState(() {
+//           // Reset progress to 0 if there's an error
+//           downloadProgress[index] = 0;
+//         });
+//         // Only show error dialog if there's a failure in the download process
+//         showErrorDialog(context, 'Download Failed',
+//             'An error occurred during the download. Please try again.');
+//       }
+//     } finally {
+//       cancelTokens.remove(
+//           index); // Remove the CancelToken when the download completes or fails
+//     }
+//   }
+
+// // Method to show an error dialog
+//   void showErrorDialog(BuildContext context, String title, String message) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text(title),
+//           content: Text(message),
+//           actions: <Widget>[
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//               },
+//               child: Text('OK'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+
+//   void cancelAllDownloads() {
+//     cancelTokens.forEach((index, cancelToken) {
+//       cancelToken.cancel();
+//       print('Download for index $index cancelled.');
+//     });
+
+//     // Clear the cancelTokens map after canceling
+//     cancelTokens.clear();
+//   }
+
+//   void cancelDownload(int index) {
+//     showDialog(
+//         context: context,
+//         builder: (BuildContext context) {
+//           return AlertDialog(
+//             title: Text('Cancel Download?'),
+//             content: Text('Are you sure you want to cancel the download?'),
+//             actions: <Widget>[
+//               TextButton(
+//                 style: ButtonStyle(
+//                     shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(30),
+//                         side: BorderSide(width: 2, color: Colors.red)))),
+//                 onPressed: () {
+//                   // Cancel the download (implement logic here)
+//                   if (cancelTokens.containsKey(index)) {
+//                     cancelTokens[index]?.cancel(); // Cancel the download
+//                     print("Download canceled for index $index");
+//                   } else {
+//                     print("No ongoing download for index $index");
+//                   }
+//                   Navigator.of(context).pop(); // Close the dialog
+//                   ScaffoldMessenger.of(context).showSnackBar(
+//                       SnackBar(content: Text('Download Cancelled')));
+//                   setState(() {
+//                     downloadProgress[index] = 0;
+//                   });
+//                 },
+//                 child: Text(
+//                   'Yes',
+//                   style: TextStyle(color: Colors.red),
+//                 ),
+//               ),
+//               TextButton(
+//                 onPressed: () {
+//                   // Don't cancel the download, close the dialog
+//                   Navigator.of(context).pop();
+//                 },
+//                 child: Text('No'),
+//               ),
+//             ],
+//           );
+//         });
+//   }
+// }
+
+
+
+
+
 
 class NavigationClipper extends CustomClipper<Path> {
   @override
@@ -1478,4 +1933,14 @@ class NavigationClipper1 extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
+}
+
+Widget filecountWidget(int itemcount, String imagepath){
+  return Row(children: [ Image.asset(
+                          imagepath,
+                          scale: 23,
+                        ), Text(
+                          "(${itemcount}) ",
+                          style: TextStyle(fontSize: 18),
+                        ),],);
 }

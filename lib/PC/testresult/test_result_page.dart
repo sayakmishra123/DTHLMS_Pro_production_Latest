@@ -705,8 +705,20 @@ class _TestResultPageState extends State<TestResultPage> {
                             onPressed:
                               isDownloading.value
                       ? null
-                      : () {
-                          downloadAnswerSheet("https://www.nutrient.io/downloads/pspdfkit-web-demo.pdf");
+                      : () async{
+                      await  getAnswerSheetURLforStudent(context,getx.loginuserdata[0].token,widget.examId).then((answerUrl){
+                        print(answerUrl);
+                        print(answerUrl);
+
+                         downloadAnswerSheet(answerUrl);
+
+
+                      });
+
+
+
+
+                         
                         },
                               // DownloadAnswerSheetAlert();
                             

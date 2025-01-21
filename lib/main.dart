@@ -37,7 +37,7 @@ import 'package:sqlite3/open.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:no_screenshot/no_screenshot.dart';
-import 'package:youtube_quality_player/initialized_function.dart';
+// import 'package:youtube_quality_player/initialized_function.dart';
 import 'notification_model.dart';
 
 void main(List<String> args) async {
