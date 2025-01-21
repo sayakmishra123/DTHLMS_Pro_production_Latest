@@ -320,17 +320,19 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                   )
                 : null,
             backgroundColor: Colors.black,
-            appBar: AppBar(
-              title: Text(widget.packageName.toString(),
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'ocenwide',
-                      color: Colors.black)),
-              leading: Image.asset(
-                logopath,
-                height: 40,
-              ),
-            ),
+            appBar: getx.isFullscreen.value
+                ? null
+                : AppBar(
+                    title: Text(widget.packageName.toString(),
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'ocenwide',
+                            color: Colors.black)),
+                    leading: Image.asset(
+                      logopath,
+                      height: 40,
+                    ),
+                  ),
             body: widget.videoCategory == "YouTube"
                 ? SingleChildScrollView(
                     child: Column(
@@ -342,9 +344,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                 : GetBuilder<VcController>(builder: (vcController) {
                     if (!vcController.isRoomJoined.value &&
                         widget.videoCategory == 'Live1') {
-                      return const Material(
+                      return Material(
                         color: Colors.transparent,
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Wait for a moment',
                             style: TextStyle(color: Colors.white, fontSize: 30),
@@ -393,7 +395,10 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                       children: [
                                                         Expanded(
                                                           // Adjust the flex value as needed
-                                                          child: Center(
+                                                          child: Container(
+
+                                                              // ),
+                                                              child: Center(
                                                             child: Stack(
                                                               children: [
                                                                 // Use a Column to stack widgets vertically
@@ -465,7 +470,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                 ),
                                                               ],
                                                             ),
-                                                          ),
+                                                          )),
                                                           // const SizedBox(
                                                           //   width: 25,
                                                           // )
