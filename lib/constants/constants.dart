@@ -1,7 +1,7 @@
 const String origin = 'com.dlp.tvs';
 
 // const String logopath = 'assets/icons/valuation-school-logo.png';
-const String logopath = 'assets/icons/AVJ_academy.png'; 
+const String logopath = 'assets/TVS_logo3.png'; 
  
 // const String logopathSquare = 'assets/icons/logo.png';
 // const String logopathSquare = 'assets/icons/valuation-school-logo-square.png';

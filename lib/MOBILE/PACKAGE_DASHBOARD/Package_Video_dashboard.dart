@@ -54,7 +54,7 @@ class _MobilePackageVideoDashboardState
     });
     int callCount = 0;
 
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       // Increment the counter
       callCount++;
 
@@ -163,12 +163,14 @@ class _MobilePackageVideoDashboardState
 
     _scrollController.animateTo(
       newOffset,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
       curve: Curves.easeInOut,
     );
   }
 
   int selectedIndex = -1;
+
+  ScrollController scroll = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -180,8 +182,8 @@ class _MobilePackageVideoDashboardState
               onPressed: () {
                 Get.back();
               },
-              icon: Icon(Icons.arrow_back)),
-          iconTheme: IconThemeData(color: ColorPage.white),
+              icon: const Icon(Icons.arrow_back)),
+          iconTheme: const IconThemeData(color: ColorPage.white),
           backgroundColor: ColorPage.mainBlue,
           title: Obx(
             () => Padding(
@@ -197,23 +199,22 @@ class _MobilePackageVideoDashboardState
         body: Obx(
           () => Column(
             children: [
-              // new added
               Row(
                 children: [
                   Expanded(
                     child: Obx(
                       () => SingleChildScrollView(
+                        controller: scroll,
                         scrollDirection:
                             Axis.horizontal, // Enables horizontal scrolling
                         child: Row(
                           children: [
                             for (var i = 0; i < getx.navigationList.length; i++)
                               getx.navigationList.isEmpty
-                                  ? Text("Blank")
+                                  ? const Text("Blank")
                                   : InkWell(
                                       onTap: () {
-                                        // resetTblLocalNavigationByOrder(i);
-                                        // insertTblLocalNavigation(navigationtype, navigationId, navigationName)
+                                       
                                         if (i == 0) {
                                           //nothing
                                         }
@@ -287,76 +288,17 @@ class _MobilePackageVideoDashboardState
                                         print(getx
                                             .alwaysShowChapterDetailsOfVideo
                                             .length);
+                                             WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (scroll.hasClients) {
+                    scroll.animateTo(
+                      scroll.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                  }
+                });
                                       },
-
-                                      // child: RichText(
-                                      //   text: TextSpan(
-                                      //     children: [
-                                      //       TextSpan(
-                                      //         text: getx.navigationList[i]["NavigationName"],
-                                      //         style: style.copyWith(fontSize: 18), // Style for the main text
-                                      //       ),
-                                      //       TextSpan(
-                                      //         text: ' > ',
-                                      //         style: style.copyWith(
-                                      //           fontSize: 18,
-                                      //           color: Colors.red, // Change to your desired color
-                                      //         ), // Style for the '>' symbol
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
-
-                                      child:
-                                          // Row(
-                                          //   children: [
-                                          //     if (i != 0) ...[
-                                          //       Card(
-                                          //         color: const Color.fromARGB(
-                                          //             220, 19, 23, 36),
-                                          //         shape: BeveledRectangleBorder(
-                                          //             borderRadius:
-                                          //                 BorderRadius.circular(8)),
-                                          //         elevation: 4,
-                                          //         child: Container(
-                                          //           padding: EdgeInsets.all(8),
-                                          //           child: Text(
-                                          //             getx.navigationList[i]
-                                          //                 ["NavigationName"],
-                                          //             style:
-                                          //                 FontFamily.style.copyWith(
-                                          //               fontSize: 10,
-                                          //               color: Colors
-                                          //                   .white, // Dark color for a classic look
-                                          //               fontWeight: FontWeight
-                                          //                   .w800, // Slightly bold
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //       Padding(
-                                          //         padding:
-                                          //             const EdgeInsets.symmetric(
-                                          //                 horizontal: 1),
-                                          //         child: Icon(
-                                          //           Icons.chevron_right,
-                                          //           color: Colors.grey,
-                                          //           size:
-                                          //               20, // Smaller size for a subtle arrow
-                                          //         ),
-                                          //       ),
-                                          //     ]
-                                          //     // Text(
-                                          //     //   getx.navigationList[i]
-                                          //     //           ["NavigationName"]
-                                          //     //       ,
-                                          //     //   style: FontFamily.style
-                                          //     //       .copyWith(fontSize: 18),
-                                          //     // ),
-                                          //   ],
-                                          // ),
-
-                                          Padding(
+                                      child:Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
                                         child: Row(children: [
@@ -372,7 +314,7 @@ class _MobilePackageVideoDashboardState
                                                             1
                                                     ? Colors.blue
                                                     : Colors.white,
-                                                padding: EdgeInsets.symmetric(
+                                                padding: const EdgeInsets.symmetric(
                                                     vertical: 10,
                                                     horizontal: 50),
                                               ),
@@ -447,7 +389,7 @@ class _MobilePackageVideoDashboardState
                                                             1
                                                     ? Colors.blue
                                                     : Colors.white,
-                                                padding: EdgeInsets.symmetric(
+                                                padding: const EdgeInsets.symmetric(
                                                     vertical: 10,
                                                     horizontal: 50),
                                               ),
@@ -529,7 +471,7 @@ class _MobilePackageVideoDashboardState
                   padding:
                       const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       boxShadow: [
                         BoxShadow(
                           blurRadius: 2,
@@ -549,7 +491,7 @@ class _MobilePackageVideoDashboardState
                             flex: 3,
                             child: getx.isFolderview.value
                                 ? Container(
-                                    padding: EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(10),
                                     child: Obx(() {
                                       if (getx.alwaysShowChapterDetailsOfVideo
                                               .isEmpty &&
@@ -606,7 +548,7 @@ class _MobilePackageVideoDashboardState
                                     }),
                                   )
                                 : Container(
-                                    padding: EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(10),
                                     child: Obx(() {
                                       if (getx.alwaysShowChapterDetailsOfVideo
                                               .isEmpty &&
@@ -685,9 +627,9 @@ class _MobilePackageVideoDashboardState
                     Expanded(
                       flex: 3,
                       child: Padding(
-                        padding: EdgeInsets.only(top: 7, right: 10, left: 10),
+                        padding: const EdgeInsets.only(top: 7, right: 10, left: 10),
                         child: Container(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             boxShadow: [
                               BoxShadow(
                                 blurRadius: 3,
@@ -782,16 +724,16 @@ class _MobilePackageVideoDashboardState
 
   Widget buildListViewItem(int index, bool ispdf) {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             blurRadius: 3,
             color: Color.fromARGB(255, 192, 191, 191),
             offset: Offset(0, 0),
           ),
         ],
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(10),
         ),
         color: selectedIndex == index ? ColorPage.colorbutton : ColorPage.white,
@@ -857,6 +799,15 @@ class _MobilePackageVideoDashboardState
 
             setState(() {});
           }
+             WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (scroll.hasClients) {
+                    scroll.animateTo(
+                      scroll.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                  }
+                });
         },
         child: ListTile(
           leading: ispdf
@@ -895,7 +846,7 @@ class _MobilePackageVideoDashboardState
   Widget buildGridViewItem(int index, bool isPdf) {
     return InkWell(
       enableFeedback: true,
-      overlayColor: WidgetStatePropertyAll(Colors.red),
+      overlayColor: const WidgetStatePropertyAll(Colors.red),
       onTap: () {
         if (isPdf) {
           cancelAllDownloads();
@@ -956,13 +907,22 @@ class _MobilePackageVideoDashboardState
 
           setState(() {});
         }
+           WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (scroll.hasClients) {
+                    scroll.animateTo(
+                      scroll.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                  }
+                });
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Container(
-          padding: EdgeInsets.only(top: 5),
+          padding: const EdgeInsets.only(top: 5),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
+            borderRadius: const BorderRadius.all(
               Radius.circular(5),
             ),
             color: selectedIndex == index
@@ -1012,7 +972,7 @@ class _VideoListLeftState extends State<VideoListLeft> {
 
   int lastTapVideoIndex = -1; // Track the last tapped item index
   DateTime lastTapvideoTime = DateTime.now();
-  var color = Color.fromARGB(255, 102, 112, 133);
+  var color = const Color.fromARGB(255, 102, 112, 133);
   Getx getx = Get.put(Getx());
 
   int flag = 2;
@@ -1036,7 +996,7 @@ class _VideoListLeftState extends State<VideoListLeft> {
   void handleTap(int index) {
     DateTime now = DateTime.now();
     if (index == lastTapVideoIndex &&
-        now.difference(lastTapvideoTime) < Duration(seconds: 1)) {
+        now.difference(lastTapvideoTime) < const Duration(seconds: 1)) {
       print('Double tapped on folder: $index');
     }
     lastTapVideoIndex = index;
@@ -1047,12 +1007,12 @@ class _VideoListLeftState extends State<VideoListLeft> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.sizeOf(context).width;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: ColorPage.white,
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             blurRadius: 3,
             color: Color.fromARGB(255, 192, 191, 191),
             offset: Offset(0, 0),
@@ -1078,7 +1038,7 @@ class _VideoListLeftState extends State<VideoListLeft> {
                 child: Card(
                   color: selectedVideoIndex == index
                       ? ColorPage.colorbutton.withOpacity(0.9)
-                      : Color.fromARGB(255, 245, 243, 248),
+                      : const Color.fromARGB(255, 245, 243, 248),
                   child: ListTile(
                     leading: Image.asset(
                       "assets/video2.png",
@@ -1153,7 +1113,7 @@ class _VideoListLeftState extends State<VideoListLeft> {
                                         padding: const EdgeInsets.all(4.0),
                                         child: Text(
                                           "${downloadProgress[index].toInt()}%",
-                                          style: TextStyle(fontSize: 10.0),
+                                          style: const TextStyle(fontSize: 10.0),
                                         ),
                                       ),
                                       progressColor: ColorPage.colorbutton,
@@ -1310,7 +1270,7 @@ class _VideoListLeftState extends State<VideoListLeft> {
 
       // Check if the download progress got stuck (e.g., progress hasn't updated in the last 10 seconds)
       if (DateTime.now().difference(lastProgressUpdate) >
-          Duration(seconds: 30)) {
+          const Duration(seconds: 30)) {
         cancelToken.cancel(); // Cancel the download
         showErrorDialog(context, 'Download Stuck',
             'The download seems to be stuck. Please try again.');
@@ -1381,7 +1341,7 @@ class _VideoListLeftState extends State<VideoListLeft> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -1404,14 +1364,14 @@ class _VideoListLeftState extends State<VideoListLeft> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Cancel Download?'),
-            content: Text('Are you sure you want to cancel the download?'),
+            title: const Text('Cancel Download?'),
+            content: const Text('Are you sure you want to cancel the download?'),
             actions: <Widget>[
               TextButton(
                 style: ButtonStyle(
                     shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(width: 2, color: Colors.red)))),
+                        side: const BorderSide(width: 2, color: Colors.red)))),
                 onPressed: () {
                   // Cancel the download (implement logic here)
                   if (cancelTokens.containsKey(index)) {
@@ -1422,12 +1382,12 @@ class _VideoListLeftState extends State<VideoListLeft> {
                   }
                   Navigator.of(context).pop(); // Close the dialog
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Download Cancelled')));
+                      const SnackBar(content: Text('Download Cancelled')));
                   setState(() {
                     downloadProgress[index] = 0;
                   });
                 },
-                child: Text(
+                child: const Text(
                   'Yes',
                   style: TextStyle(color: Colors.red),
                 ),
@@ -1437,7 +1397,7 @@ class _VideoListLeftState extends State<VideoListLeft> {
                   // Don't cancel the download, close the dialog
                   Navigator.of(context).pop();
                 },
-                child: Text('No'),
+                child: const Text('No'),
               ),
             ],
           );

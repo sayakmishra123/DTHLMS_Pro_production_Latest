@@ -1166,11 +1166,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                           const Color.fromARGB(
                                                               255, 163, 152, 4),
                                                       size: iconSize)
-                                                  : location == "Test"
-                                                      ? Icon(Icons.circle,
-                                                          color: ColorPage
-                                                              .testSeries,
-                                                          size: iconSize)
+                                                  // : location == "Test"
+                                                  //     ? Icon(Icons.circle,
+                                                  //         color: ColorPage
+                                                  //             .testSeries,
+                                                  //         size: iconSize)
                                                       : Icon(Icons.circle,
                                                           color:
                                                               ColorPage.history,
@@ -1294,7 +1294,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       hoverColor: const Color.fromARGB(255, 241, 241, 241),
                       tileColor: Colors.white,
                       onTap: () async {
-                        if (appointment.location == "Live") {
+                        if (appointment.location == "Live" ||
+                              appointment.location == "YouTube") {
+                          //  print( "${appointment.startTime
+                          //                     } shubha appointment.startTime" );
                           // getMeetingList(context).whenComplete(() {
                           //   try {
                           //     var meeting = findLiveDtails(
@@ -1311,6 +1314,26 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           //     print(e.toString());
                           //   }
                           // });
+                     DateTime(
+      appointment.startTime.year,
+      appointment.startTime.month,
+      appointment.startTime.day,
+    ).isBefore(DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    )) ?       await ArtSweetAlert.show(
+  barrierDismissible: false,
+  context: context,
+  artDialogArgs: ArtDialogArgs(
+    showCancelBtn: false,
+    title: "Live Expired",
+    text: "The live session has expired. Please check back later.",
+    
+    type: ArtSweetAlertType.warning,
+  ),
+)
+: null;
                         }
 
                         if (appointment.location == "Video") {
@@ -1432,9 +1455,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(12))),
-                                  backgroundColor: const WidgetStatePropertyAll(
-                                      Color.fromARGB(255, 255, 106, 95))),
-                              onPressed: () {
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    DateTime(
+      appointment.startTime.year,
+      appointment.startTime.month,
+      appointment.startTime.day,
+    ).isBefore(DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    )) ? Colors.blueGrey : Color.fromARGB(255, 255, 106, 95) )),
+                              onPressed: () async{
+
+                                
+                               
+                                  
                                 if (getx.isInternet.value) {
                                   getMeetingList(context).whenComplete(() {
                                     var meeting = findLiveDtails(
@@ -1442,11 +1477,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                 String, dynamic>)['SessionId']
                                             .toString(),
                                         getx.todaymeeting);
-                                    if (
-                                        // appointment.startTime
-                                        //       .isBefore(DateTime.now())
-                                        //        &&
-                                        meeting != null) {
+                                    if (meeting != null 
+                                    && 
+                                     !DateTime(
+      appointment.startTime.year,
+      appointment.startTime.month,
+      appointment.startTime.day,
+    ).isBefore(DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    ))
+    ) {
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => MobileMeetingPage(
@@ -1460,6 +1502,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                     meeting.videoCategory,
                                               ));
                                     }
+                                    else{
+                                       ArtSweetAlert.show(
+  barrierDismissible: false,
+  context: context,
+  artDialogArgs: ArtDialogArgs(
+    showCancelBtn: false,
+    title: "Live Expired",
+    text: "The live session has expired. Please check back later.",
+    
+    type: ArtSweetAlertType.warning,
+  ),
+);
+                                    }
                                   });
                                 } else {
                                   onNoInternetConnection(context, () {
@@ -1468,7 +1523,15 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                 }
                               },
                               child: Text(
-                                'Live class',
+                              DateTime(
+      appointment.startTime.year,
+      appointment.startTime.month,
+      appointment.startTime.day,
+    ).isBefore(DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    )) ? "Expired" : 'Live class',
                                 style: style.copyWith(
                                     fontSize: 10,
                                     color: Colors.white,
@@ -1484,13 +1547,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               fontSize: 14)),
                       subtitle: appointment.location == "Live"
                           ? Text(
-                              "Start at: " +
-                                      DateFormat('h:mm a')
-                                          .format(appointment.startTime) ??
-                                  'No details available.',
-                              style: FontFamily.style.copyWith(
-                                  fontSize: 12, color: ColorPage.grey),
-                            )
+  appointment.startTime != null
+      ? "" +
+          DateFormat('d MMM y h:mm a').format(appointment.startTime)
+      : 'Start at: No details available.',
+  style: FontFamily.style.copyWith(
+    fontSize: 12,
+    color: ColorPage.grey,
+  ),
+)
+
                           : appointment.location == "Video"
                               ? Text(
                                   "Duration :${(appointment.resourceIds![0] as Map<String, dynamic>)['VideoDuration'].toString()} ",
@@ -1892,18 +1958,18 @@ class TooltipWidgetMobile extends StatelessWidget {
                 const Text('YouTube Live Class'),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.circle,
-                  size: iconSize,
-                  color: ColorPage.testSeries,
-                ),
-                const SizedBox(width: 8),
-                const Text('Test Series'),
-              ],
-            ),
+            // const SizedBox(height: 8),
+            // Row(
+            //   children: [
+            //     Icon(
+            //       Icons.circle,
+            //       size: iconSize,
+            //       color: ColorPage.testSeries,
+            //     ),
+            //     const SizedBox(width: 8),
+            //     const Text('Test Series'),
+            //   ],
+            // ),
             const SizedBox(height: 8),
             Row(
               children: [
