@@ -15,6 +15,7 @@ import 'package:dthlms/log.dart';
 import 'package:dthlms/math_equation.dart';
 import 'package:dthlms/utctime.dart';
 import 'package:dthlms/youtube/youtubelive.dart';
+import 'package:flutter/gestures.dart';
 // import 'package:dthlms/android/MCQ/mockTestRank.dart';
 
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:youtube_quality_player/youtube_quality_player.dart';
+// import 'package:youtube_quality_player/youtube_quality_player.dart';
 
 import '../../API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 
@@ -404,8 +405,7 @@ class _RankCompetitionMcqExamPageMobileState
                                                             .length,
                                                     itemBuilder:
                                                         (context, index) {
-                                                      // print(sectionWiseQuestionIdList.length);
-                                                      // String rawdata=jsonEncode(sectionWiseQuestionIdList[index]);
+                                                    
                                                       Map<int, List<int>> data =
                                                           sectionWiseQuestionIdList[
                                                               index];
@@ -422,7 +422,7 @@ class _RankCompetitionMcqExamPageMobileState
                                                                 padding:
                                                                     const EdgeInsets
                                                                         .all(
-                                                                        8.0),
+                                                                        20.0),
                                                                 child: Text(fetchSectionName(data
                                                                     .keys
                                                                     .toString()
@@ -441,13 +441,14 @@ class _RankCompetitionMcqExamPageMobileState
                                                                     1),
                                                             child: GridView
                                                                 .builder(
+                                                          
                                                                     itemCount:
                                                                         indexList
                                                                             .length,
                                                                     gridDelegate:
                                                                         SliverGridDelegateWithFixedCrossAxisCount(
                                                                             crossAxisCount:
-                                                                                4),
+                                                                                3),
                                                                     itemBuilder:
                                                                         (context,
                                                                             ind) {
@@ -460,69 +461,68 @@ class _RankCompetitionMcqExamPageMobileState
                                                                               sectionId]!;
 
                                                                       return SingleChildScrollView(
-                                                                        child:
-                                                                            MaterialButton(
-                                                                          height:
-                                                                              55,
-                                                                          color: reviewlist.contains(offset + ind) && !isSubmitted.value
-                                                                              ? Colors.amber
-                                                                              : userAns.containsKey(indexList[ind])
-                                                                                  ? widget.examType == "Quick Practice"
-                                                                                      ? mcqData[offset + ind].mCQQuestionType == "One Word Answer"
-                                                                                          ? getOneWordAnswerFromQuestionId(mcqData[offset + ind].questionId.toString()).replaceAll(" ", "").toLowerCase() == onewordAnswerList[mcqData[offset + ind].questionId.toString()].toString().replaceAll(" ", "").toLowerCase()
-                                                                                              ? Colors.green
-                                                                                              : Colors.red
-                                                                                          : answer.any((map) => map.values.any((List<int> list) => list.any((item) => userAns[indexList[ind]]!.contains(item))))
-                                                                                              ? Colors.green
-                                                                                              : Colors.red
-                                                                                      : Colors.blue
-                                                                                  : qindex.value == offset + ind
-                                                                                      ? Color.fromARGB(255, 13, 32, 79)
-                                                                                      : Colors.white,
-                                                                          shape:
-                                                                              CircleBorder(side: BorderSide(width: qindex.value == offset + ind ? 4 : 1, color: qindex.value == offset + ind ? ColorPage.white : Colors.black12)),
-                                                                          onPressed:
-                                                                              () async {
-                                                                            audioController.stop();
-
-                                                                            //                   audioplayer
-                                                                            // .pause();
-                                                                            qindex.value =
-                                                                                offset + ind; // Update the current question index
-                                                                            _pageController.jumpToPage(qindex.value);
-
-                                                                            Get.back();
-                                                                            oneWordController.text =
-                                                                                onewordAnswerList[mcqData[qindex.value].questionId] ?? "";
-
-                                                                            if (widget.examType ==
-                                                                                "Quick Practice") {
-                                                                              showAnswerExplenetion.value = userAns.containsKey(int.parse(mcqData[qindex.value].questionId));
-                                                                            }
-                                                                            // if (mcqData[qindex
-                                                                            //             .value]
-                                                                            //         .mCQQuestionType ==
-                                                                            //     "Video Based Answer") {
-                                                                            //   _initWebViewContent(
-                                                                            //       mcqData[qindex.value]
-                                                                            //           .mCQQuestionUrl);
-                                                                            // }
-                                                                            if (mcqData[qindex.value].mCQQuestionType ==
-                                                                                "Audio Based Answer") {
-                                                                              intializeAudioLink(mcqData[qindex.value].documnetUrl);
-                                                                            }
-
-                                                                            mcqData[qindex.value].questionText.contains('<?xml')
-                                                                                ? await _sendMathMLToJS(mathml: mcqData[qindex.value].questionText)
-                                                                                : null;
-                                                                          },
-                                                                          child:
-                                                                              Text(
-                                                                            (ind + 1).toString(),
-                                                                            style:
-                                                                                TextStyle(color: qindex.value == offset + ind ? Colors.white : Colors.black),
-                                                                          ),
-                                                                        ),
+                                                                        child: MaterialButton(
+                                                                                                                                                  height:
+                                                                          55,
+                                                                                                                                                  color: reviewlist.contains(offset + ind) && !isSubmitted.value
+                                                                          ? Colors.amber
+                                                                          : userAns.containsKey(indexList[ind])
+                                                                              ? widget.examType == "Quick Practice"
+                                                                                  ? mcqData[offset + ind].mCQQuestionType == "One Word Answer"
+                                                                                      ? getOneWordAnswerFromQuestionId(mcqData[offset + ind].questionId.toString()).replaceAll(" ", "").toLowerCase() == onewordAnswerList[mcqData[offset + ind].questionId.toString()].toString().replaceAll(" ", "").toLowerCase()
+                                                                                          ? Colors.green
+                                                                                          : Colors.red
+                                                                                      : answer.any((map) => map.values.any((List<int> list) => list.any((item) => userAns[indexList[ind]]!.contains(item))))
+                                                                                          ? Colors.green
+                                                                                          : Colors.red
+                                                                                  : Colors.blue
+                                                                              : qindex.value == offset + ind
+                                                                                  ? Color.fromARGB(255, 13, 32, 79)
+                                                                                  : Colors.white,
+                                                                                                                                                  shape:
+                                                                          CircleBorder(side: BorderSide(width: qindex.value == offset + ind ? 4 : 1, color: qindex.value == offset + ind ? ColorPage.white : Colors.black12)),
+                                                                                                                                                  onPressed:
+                                                                          () async {
+                                                                        audioController.stop();
+                                                                        
+                                                                        //                   audioplayer
+                                                                        // .pause();
+                                                                        qindex.value =
+                                                                            offset + ind; // Update the current question index
+                                                                        _pageController.jumpToPage(qindex.value);
+                                                                        
+                                                                        Get.back();
+                                                                        oneWordController.text =
+                                                                            onewordAnswerList[mcqData[qindex.value].questionId] ?? "";
+                                                                        
+                                                                        if (widget.examType ==
+                                                                            "Quick Practice") {
+                                                                          showAnswerExplenetion.value = userAns.containsKey(int.parse(mcqData[qindex.value].questionId));
+                                                                        }
+                                                                        // if (mcqData[qindex
+                                                                        //             .value]
+                                                                        //         .mCQQuestionType ==
+                                                                        //     "Video Based Answer") {
+                                                                        //   _initWebViewContent(
+                                                                        //       mcqData[qindex.value]
+                                                                        //           .mCQQuestionUrl);
+                                                                        // }
+                                                                        if (mcqData[qindex.value].mCQQuestionType ==
+                                                                            "Audio Based Answer") {
+                                                                          intializeAudioLink(mcqData[qindex.value].documnetUrl);
+                                                                        }
+                                                                        
+                                                                        mcqData[qindex.value].questionText.contains('<?xml')
+                                                                            ? await _sendMathMLToJS(mathml: mcqData[qindex.value].questionText)
+                                                                            : null;
+                                                                                                                                                  },
+                                                                                                                                                  child:
+                                                                          Text(
+                                                                        (ind + 1).toString(),
+                                                                        style:
+                                                                            TextStyle(color: qindex.value == offset + ind ? Colors.white : Colors.black),
+                                                                                                                                                  ),
+                                                                                                                                                ),
                                                                       );
                                                                     }),
                                                           ),
