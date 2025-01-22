@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TopicModel {
   final String name;
@@ -13,14 +13,14 @@ class TopicModel {
     required this.sessionId, // Include sessionId in the constructor
   });
 
-  factory TopicModel.fromDocument(DocumentSnapshot doc) {
-    return TopicModel(
-      name: doc['name'],
-      // title: doc['title'],
-      // description: doc['description'],
-      sessionId: doc['sessionId'], // Initialize sessionId from Firestore
-    );
-  }
+  // factory TopicModel.fromDocument(DocumentSnapshot doc) {
+  //   return TopicModel(
+  //     name: doc['name'],
+  //     // title: doc['title'],
+  //     // description: doc['description'],
+  //     sessionId: doc['sessionId'], // Initialize sessionId from Firestore
+  //   );
+  // }
 
   Map<String, dynamic> toMap() {
     return {

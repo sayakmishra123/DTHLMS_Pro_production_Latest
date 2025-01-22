@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/Live/messageui.dart';
 import 'package:dthlms/Live/mobilegetx.dart';
@@ -30,7 +30,6 @@ class _PersonChatHomePageState extends State<PersonChatHomePage> {
   GetxLive getxLive = Get.put(GetxLive());
   Getx getx = Get.put(Getx());
 
-
   @override
   Widget build(BuildContext context) {
     TextStyle rightBarTopTextStyle = const TextStyle(
@@ -46,7 +45,7 @@ class _PersonChatHomePageState extends State<PersonChatHomePage> {
         //               itemCount: getxLive.userDetails.length,
         //               itemBuilder: (context, index) {
         //                 final user = getxLive.userDetails[index];
-    
+
         //                 // Fetch the last message for each user
         //                 return StreamBuilder<
         //                     DocumentSnapshot<Map<String, dynamic>>?>(
@@ -59,7 +58,7 @@ class _PersonChatHomePageState extends State<PersonChatHomePage> {
         //                       return Center(
         //                           child: CircularProgressIndicator());
         //                     }
-    
+
         //                     if (messageSnapshot.hasData &&
         //                         messageSnapshot.data != null &&
         //                         messageSnapshot.data!.exists) {
@@ -67,7 +66,7 @@ class _PersonChatHomePageState extends State<PersonChatHomePage> {
         //                               .data()?['lastMessage'] ??
         //                           '';
         //                     }
-    
+
         //                     return Container(
         //                       decoration: BoxDecoration(
         //                           color: Color.fromARGB(255, 8, 11, 31),
@@ -102,16 +101,16 @@ class _PersonChatHomePageState extends State<PersonChatHomePage> {
         //               },
         //             ),
         //           ),
-            
-       Expanded( 
-                child: MessageUiAskDoubt(  
-                   getx.loginuserdata[0],
-                    widget.userid,
-                    widget.username,
-                    "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
-                        ), // Display MessageUi if a user is selected
-              ),
-            
+
+        Expanded(
+          child: MessageUiAskDoubt(
+            getx.loginuserdata[0],
+            widget.userid,
+            widget.username,
+            "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
+          ), // Display MessageUi if a user is selected
+        ),
+
         // You can add a chat input here or other widgets below the user list
       ],
     );
