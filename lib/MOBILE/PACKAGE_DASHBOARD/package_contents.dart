@@ -83,8 +83,6 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
 
   @override
   void initState() {
-    print(
-        'okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
     // setState(() {
     // infoTetch(widget.packageid.toString(), 'Video');
 
@@ -246,38 +244,38 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     super.dispose();
   }
 
-  static final List<List<Color>> gradientColorsList = [
-    [
-      // Light orange -> peach
-      const Color(0xFFFFF1D5),
-      const Color(0xFFFFE0AF),
-    ],
-    [
-      // Light pink -> soft pink
-      const Color(0xFFFEE4F3),
-      const Color(0xFFFDD3E7),
-    ],
-    [
-      // Light pink -> soft pink
-      Colors.blue.shade200,
-      Colors.blue.shade100
-    ],
-    [
-      // Light pink -> soft pink
-      Colors.orange.shade200,
-      Colors.orange.shade100
-    ],
-    [
-      // Light pink -> soft pink
-      Colors.green.shade200,
-      Colors.green.shade100
-    ],
-    [
-      // Light pink -> soft pink
-      Colors.brown.shade200,
-      Colors.brown.shade100
-    ],
-  ];
+  // static final List<List<Color>> gradientColorsList = [
+  //   [
+  //     // Light orange -> peach
+  //     const Color(0xFFFFF1D5),
+  //     const Color(0xFFFFE0AF),
+  //   ],
+  //   [
+  //     // Light pink -> soft pink
+  //     const Color(0xFFFEE4F3),
+  //     const Color(0xFFFDD3E7),
+  //   ],
+  //   [
+  //     // Light pink -> soft pink
+  //     Colors.blue.shade200,
+  //     Colors.blue.shade100
+  //   ],
+  //   [
+  //     // Light pink -> soft pink
+  //     Colors.orange.shade200,
+  //     Colors.orange.shade100
+  //   ],
+  //   [
+  //     // Light pink -> soft pink
+  //     Colors.green.shade200,
+  //     Colors.green.shade100
+  //   ],
+  //   [
+  //     // Light pink -> soft pink
+  //     Colors.brown.shade200,
+  //     Colors.brown.shade100
+  //   ],
+  // ];
 
   final List<Map<String, dynamic>> folderIcons = [
     {
@@ -303,10 +301,11 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       ],
     },
     {
-      "section": "VideosBackup",
-      "icon": Icons.backup,
+      "section": "Podcast",
+      "icon": Icons.podcasts,
       "color": Colors.orange,
-      "subtitle": "Backup and restore your video files",
+      "subtitle":
+          "Listen to insightful discussions and audio episodes anytime, anywhere.",
       "color2": [
         // Light pink -> soft pink
         Colors.brown.shade200,
@@ -342,7 +341,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       "subtitle": "Access and manage your digital library",
       "color2": [
         // Light pink -> soft pink
-        const Color(0xFFFEE4F3),
+        const Color.fromARGB(255, 248, 177, 219),
         const Color(0xFFFDD3E7),
       ],
     },
@@ -352,20 +351,37 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     // Find the matching icon data from the list
     final iconData = folderIcons.firstWhere(
       (item) => item['section'] == foldername['section'],
-      orElse: () =>
-          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+      orElse: () => {
+        "icon": Icons.folder,
+        "color": Colors.blue,
+        "subtitle": '',
+        "color2": [
+          const Color(0xFFFFF1D5),
+          const Color(0xFFFFE0AF),
+        ]
+      },
     );
 
     // Return the showDetails widget with the appropriate icon and foldername
-    return Icon(iconData['icon'], color: iconData['color']);
+    return Icon(
+      iconData['icon'],
+      color: iconData['color'],
+    );
   }
 
   String getFolderSubtitle(Map<String, dynamic> foldername, int index) {
     // Find the matching icon data from the list
     final iconData = folderIcons.firstWhere(
       (item) => item['section'] == foldername['section'],
-      orElse: () =>
-          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+      orElse: () => {
+        "icon": Icons.folder,
+        "color": Colors.blue,
+        "subtitle": '',
+        "color2": [
+          const Color(0xFFFFF1D5),
+          const Color(0xFFFFE0AF),
+        ]
+      },
     );
 
     // Return the showDetails widget with the appropriate icon and foldername
@@ -376,12 +392,37 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     // Find the matching icon data from the list
     final iconData = folderIcons.firstWhere(
       (item) => item['section'] == foldername['section'],
-      orElse: () =>
-          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+      orElse: () => {
+        "icon": Icons.folder,
+        "color": Colors.blue,
+        "subtitle": '',
+        "color2": [
+          const Color(0xFFFFF1D5),
+          const Color(0xFFFFE0AF),
+        ]
+      },
     );
 
     // Return the showDetails widget with the appropriate icon and foldername
     return iconData['color'];
+  }
+
+  List<Color> gradientColorsList(Map<String, dynamic> foldername, int index) {
+    final iconData = folderIcons.firstWhere(
+      (item) => item['section'] == foldername['section'],
+      orElse: () => {
+        "icon": Icons.folder,
+        "color": Colors.blue,
+        "subtitle": '',
+        "color2": [
+          const Color(0xFFFFF1D5),
+          const Color(0xFFFFE0AF),
+        ]
+      },
+    );
+
+    // Return the showDetails widget with the appropriate icon and foldername
+    return iconData['color2'];
   }
 
   @override
@@ -399,7 +440,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
         ),
         body: getx.sectionListOfPackage.isNotEmpty
             ? ListView.builder(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 80),
                 itemCount: getx.sectionListOfPackage
                     .where((item) =>
                         item['section'] != 'PDF' &&
@@ -438,7 +479,8 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           title: filteredList[index]['section'],
                           subtitle:
                               getFolderSubtitle(filteredList[index], index),
-                          gradientColors: gradientColorsList[index],
+                          gradientColors:
+                              gradientColorsList(filteredList[index], index),
                           arrowBackground: Colors.orange.shade100,
                           arrowColor: Colors.orange,
                           icon: getFolderIcon(filteredList[index], index),
@@ -494,7 +536,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     return Container(
       width: 100,
       // Set a fixed height for the card
-      height: 160, // <-- Adjust this value as needed
+      height: 170, // <-- Adjust this value as needed
       // margin: const EdgeInsets.only(right: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

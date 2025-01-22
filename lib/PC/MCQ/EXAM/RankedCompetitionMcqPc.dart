@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart' as audio;
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/equality.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
@@ -457,9 +458,10 @@ class _RankedCompetitionMcqPcState extends State<RankedCompetitionMcqPc> {
                                               height: 60,
                                               child: mcqData[qindex.value]
                                                       .questionText
-                                                      .contains('<?xml')?
-                                          // SizedBox()
-    InAppWebView(
+                                                      .contains('<?xml')
+                                                  ?
+                                                  // SizedBox()
+                                                  InAppWebView(
                                                       initialFile:
                                                           "assets/youtubehtml/equation_solution.html",
                                                       initialSettings:
@@ -664,144 +666,140 @@ class _RankedCompetitionMcqPcState extends State<RankedCompetitionMcqPc> {
                                                         .mCQQuestionType ==
                                                     "Video Based Answer" &&
                                                 getx.isInternet.value)
-                                            
-                                                          // VideoPlayerMcq(
-                                                          //     mcqData[qindex.value]
-                                                          //         .mCQQuestionUrl)
 
-                                                          Container(
-                                                              height: 400,
-                                                              child: videoHtmlContent
-                                                                          .value ==
-                                                                      ''
-                                                                  ? Center(
-                                                                      child:
-                                                                          CircularProgressIndicator())
-                                                                  :
-                                                  InAppWebView(
-                                                    key: ValueKey( videoHtmlContent
-                                                                                .value,),
-                                                                      initialData:
-                                                                          InAppWebViewInitialData(
-                                                                        data:
-                                                                            videoHtmlContent
-                                                                                .value,
-                                                                        mimeType:
-                                                                            'text/html',
-                                                                        encoding:
-                                                                            'utf-8',
-                                                                      ),
-                                                                      onWebViewCreated:
-                                                                          (controller) {
-                                                                        webViewController =
-                                                                            controller;
-                                                                        webViewController!
-                                                                            .addJavaScriptHandler(
-                                                                          handlerName:
-                                                                              'disableRightClick',
-                                                                          callback:
-                                                                              (args) {
-                                                                            return null;
-                                                                          },
-                                                                        );
-                                                                        webViewController!
-                                                                            .evaluateJavascript(
-                                                                                source:
-                                                                                    '''
+                                              // VideoPlayerMcq(
+                                              //     mcqData[qindex.value]
+                                              //         .mCQQuestionUrl)
+
+                                              Container(
+                                                  height: 400,
+                                                  child: videoHtmlContent
+                                                              .value ==
+                                                          ''
+                                                      ? Center(
+                                                          child:
+                                                              CircularProgressIndicator())
+                                                      : InAppWebView(
+                                                          key: ValueKey(
+                                                            videoHtmlContent
+                                                                .value,
+                                                          ),
+                                                          initialData:
+                                                              InAppWebViewInitialData(
+                                                            data:
+                                                                videoHtmlContent
+                                                                    .value,
+                                                            mimeType:
+                                                                'text/html',
+                                                            encoding: 'utf-8',
+                                                          ),
+                                                          onWebViewCreated:
+                                                              (controller) {
+                                                            webViewController =
+                                                                controller;
+                                                            webViewController!
+                                                                .addJavaScriptHandler(
+                                                              handlerName:
+                                                                  'disableRightClick',
+                                                              callback: (args) {
+                                                                return null;
+                                                              },
+                                                            );
+                                                            webViewController!
+                                                                .evaluateJavascript(
+                                                                    source: '''
                                                     document.addEventListener('contextmenu', function(e) {
                                                       e.preventDefault();
                                                     });
                                                   ''');
-                                                                      },
-                                                                      onLoadStart:
-                                                                          (controller,
-                                                                              url) {
-                                                                        debugPrint(
-                                                                            "WebView started loading: $url");
-                                                                      },
-                                                                      onLoadStop:
-                                                                          (controller,
-                                                                              url) {
-                                                                        debugPrint(
-                                                                            "WebView stopped loading: $url");
-                                                                        controller
-                                                                            .evaluateJavascript(
-                                                                                source:
-                                                                                    '''
+                                                          },
+                                                          onLoadStart:
+                                                              (controller,
+                                                                  url) {
+                                                            debugPrint(
+                                                                "WebView started loading: $url");
+                                                          },
+                                                          onLoadStop:
+                                                              (controller,
+                                                                  url) {
+                                                            debugPrint(
+                                                                "WebView stopped loading: $url");
+                                                            controller
+                                                                .evaluateJavascript(
+                                                                    source: '''
                                                     document.addEventListener('contextmenu', function(e) {
                                                       e.preventDefault();
                                                     });
                                                   ''');
-                                                                      },
-                                                                      onLoadError:
-                                                                          (controller,
-                                                                              url,
-                                                                              code,
-                                                                              message) {
-                                                                        debugPrint(
-                                                                            "WebView load error: $message");
-                                                                      },
-                                                                    )
+                                                          },
+                                                          onLoadError:
+                                                              (controller,
+                                                                  url,
+                                                                  code,
+                                                                  message) {
+                                                            debugPrint(
+                                                                "WebView load error: $message");
+                                                          },
+                                                        )
 
-                                                              // InAppWebView(
-                                                              //   initialFile: "assets/youtubehtml/video_player.html",
-                                                              //   initialOptions: InAppWebViewGroupOptions(
-                                                              //     crossPlatform: InAppWebViewOptions(
-                                                              //       javaScriptEnabled: true,
-                                                              //       useOnLoadResource: true,
-                                                              //     ),
-                                                              //   ),
-                                                              //   onWebViewCreated: (controller) async {
-                                                              //     webViewController = controller;
+                                                  // InAppWebView(
+                                                  //   initialFile: "assets/youtubehtml/video_player.html",
+                                                  //   initialOptions: InAppWebViewGroupOptions(
+                                                  //     crossPlatform: InAppWebViewOptions(
+                                                  //       javaScriptEnabled: true,
+                                                  //       useOnLoadResource: true,
+                                                  //     ),
+                                                  //   ),
+                                                  //   onWebViewCreated: (controller) async {
+                                                  //     webViewController = controller;
 
-                                                              //     // Add a JavaScript handler to receive data from JS
-                                                              //     controller.addJavaScriptHandler(
-                                                              //       handlerName: 'JSHandler',
-                                                              //       callback: (args) {
-                                                              //         if (args.isNotEmpty && args[0] is Map) {
-                                                              //           Map<String, dynamic> data =
-                                                              //               Map<String, dynamic>.from(args[0]);
+                                                  //     // Add a JavaScript handler to receive data from JS
+                                                  //     controller.addJavaScriptHandler(
+                                                  //       handlerName: 'JSHandler',
+                                                  //       callback: (args) {
+                                                  //         if (args.isNotEmpty && args[0] is Map) {
+                                                  //           Map<String, dynamic> data =
+                                                  //               Map<String, dynamic>.from(args[0]);
 
-                                                              //           // Use the controller to update the result
-                                                              //           // mathEquationController.updateResult(
-                                                              //           //     data['numeric'].toString(),
-                                                              //           //     data['fraction'].toString());
-                                                              //           debugPrint(
-                                                              //               "Result from JS: ${data['numeric']}, ${data['fraction']}");
-                                                              //         }
-                                                              //         return {'status': 'Received'};
-                                                              //       },
-                                                              //     );
-                                                              //   },
-                                                              //   onLoadStart: (controller, url) {
-                                                              //     debugPrint("WebView started loading: $url");
-                                                              //   },
-                                                              //   onLoadStop: (controller, url) async {
-                                                              //     debugPrint("WebView stopped loading: $url");
-                                                              //     // Send MathML to JS once the page is loaded
-                                                              //     // await _sendMathMLToJS(mathml: widget.mathMl);
-                                                              //   },
-                                                              //   onJsAlert: (controller, jsAlertRequest) async {
-                                                              //     await showDialog(
-                                                              //       context: context,
-                                                              //       builder: (context) => AlertDialog(
-                                                              //         title: const Text('Alert'),
-                                                              //         actions: [
-                                                              //           TextButton(
-                                                              //             onPressed: () => Navigator.pop(context),
-                                                              //             child: const Text('OK'),
-                                                              //           ),
-                                                              //         ],
-                                                              //       ),
-                                                              //     );
-                                                              //     return JsAlertResponse(
-                                                              //       handledByClient: true,
-                                                              //       action: JsAlertResponseAction.CONFIRM,
-                                                              //     );
-                                                              //   },
-                                                              // ),
-                                                              ),
-                                                  
+                                                  //           // Use the controller to update the result
+                                                  //           // mathEquationController.updateResult(
+                                                  //           //     data['numeric'].toString(),
+                                                  //           //     data['fraction'].toString());
+                                                  //           debugPrint(
+                                                  //               "Result from JS: ${data['numeric']}, ${data['fraction']}");
+                                                  //         }
+                                                  //         return {'status': 'Received'};
+                                                  //       },
+                                                  //     );
+                                                  //   },
+                                                  //   onLoadStart: (controller, url) {
+                                                  //     debugPrint("WebView started loading: $url");
+                                                  //   },
+                                                  //   onLoadStop: (controller, url) async {
+                                                  //     debugPrint("WebView stopped loading: $url");
+                                                  //     // Send MathML to JS once the page is loaded
+                                                  //     // await _sendMathMLToJS(mathml: widget.mathMl);
+                                                  //   },
+                                                  //   onJsAlert: (controller, jsAlertRequest) async {
+                                                  //     await showDialog(
+                                                  //       context: context,
+                                                  //       builder: (context) => AlertDialog(
+                                                  //         title: const Text('Alert'),
+                                                  //         actions: [
+                                                  //           TextButton(
+                                                  //             onPressed: () => Navigator.pop(context),
+                                                  //             child: const Text('OK'),
+                                                  //           ),
+                                                  //         ],
+                                                  //       ),
+                                                  //     );
+                                                  //     return JsAlertResponse(
+                                                  //       handledByClient: true,
+                                                  //       action: JsAlertResponseAction.CONFIRM,
+                                                  //     );
+                                                  //   },
+                                                  // ),
+                                                  ),
                                             if (mcqData[qindex.value]
                                                         .mCQQuestionType ==
                                                     "Audio Based Answer" &&
@@ -1404,10 +1402,7 @@ class _RankedCompetitionMcqPcState extends State<RankedCompetitionMcqPc> {
                                                       .contains('<?xml')
                                                   ? Container(
                                                       height: 100,
-                                                      
-                                                      
-                                                      
-                                                    child:   InAppWebView(
+                                                      child: InAppWebView(
                                                         initialSettings:
                                                             InAppWebViewSettings(
                                                           javaScriptEnabled:
@@ -1516,8 +1511,7 @@ class _RankedCompetitionMcqPcState extends State<RankedCompetitionMcqPc> {
                                                                     .CONFIRM,
                                                           );
                                                         },
-                                                      )
-                                                      )
+                                                      ))
                                                   : SingleChildScrollView(
                                                       child: HtmlWidget(mcqData[
                                                               qindex.value]
@@ -2886,9 +2880,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       setState(() {
         _playerState = audio.PlayerState.stopped;
         _position = Duration.zero;
-       
       });
-        _play();
+      _play();
     });
 
     _playerStateChangeSubscription =

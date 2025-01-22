@@ -1,8 +1,8 @@
-const String origin = 'com.dlp.tvs';
+const String origin = 'com.dlp.vgsh';
 
 // const String logopath = 'assets/icons/valuation-school-logo.png';
-const String logopath = 'assets/icons/AJC.png'; 
- 
+const String logopath = 'assets/icons/AJC.png';
+
 // const String logopathSquare = 'assets/icons/logo.png';
 // const String logopathSquare = 'assets/icons/valuation-school-logo-square.png';
 

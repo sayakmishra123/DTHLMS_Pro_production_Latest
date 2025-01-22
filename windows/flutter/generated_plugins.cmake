@@ -7,12 +7,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   battery_plus
   bitsdojo_window_windows
-  cloud_firestore
   connectivity_plus
   desktop_multi_window
   file_selector_windows
-  firebase_core
-  firebase_storage
   flutter_inappwebview_windows
   flutter_platform_alert
   flutter_secure_storage_windows

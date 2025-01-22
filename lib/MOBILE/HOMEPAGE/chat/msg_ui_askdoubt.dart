@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 // import 'package:abc/getx.dart';
@@ -16,7 +15,6 @@ import 'package:dthlms/MOBILE/HOMEPAGE/chat/ask_doubt_services.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:flutter/material.dart';
 
-
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:teacher_live_class/getx.dart';
 // import 'package:teacher_live_class/widget/messageCard.dart';
@@ -27,12 +25,10 @@ class MessageUiAskDoubt extends StatefulWidget {
   final DthloginUserDetails userlist;
   late String userid;
   String hostname;
-  String username; 
+  String username;
   // String sessionId;
-  MessageUiAskDoubt(
-    this.userlist,
-     this.userid, this.username, this.hostname,
-  //  this. sessionId,
+  MessageUiAskDoubt(this.userlist, this.userid, this.username, this.hostname,
+      //  this. sessionId,
       {super.key});
   @override
   State<MessageUiAskDoubt> createState() => _MessageUiAskDoubtState();
@@ -42,7 +38,7 @@ class _MessageUiAskDoubtState extends State<MessageUiAskDoubt> {
   final ScrollController _scrollController = ScrollController();
   final ScrollController _scrollController2 = ScrollController();
   final ScrollController _scrollController3 = ScrollController();
-  List<UserMsg> msglist = []; 
+  List<UserMsg> msglist = [];
   TextEditingController msgController = TextEditingController();
   Color greencolor = const Color(0Xff15E8D8);
   @override
@@ -79,53 +75,54 @@ class _MessageUiAskDoubtState extends State<MessageUiAskDoubt> {
       Expanded(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),
-          child: StreamBuilder( 
-              stream: AskDoubtServices.getAllMsg(widget.userlist, widget.userid),
-              builder: (context, snapshot) {
-                print(snapshot.data);
-                final data = snapshot.data?.docs;
-                if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No messages',
-                      textScaler: TextScaler.linear(1.4),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }
-                if (snapshot.hasData) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _scrollToBottom();
-                  });
-                  msglist =
-                      data!.map((e) => UserMsg.fromJson(e.data())).toList() ??
-                          [];
-                  return ListView.builder( 
-                      controller: _scrollController,
-                      itemCount: msglist.length,
-                      itemBuilder: (context, index) {
-                        return Messagecard(msglist[index], widget.userid,
-                            widget.username, widget.hostname);
-                        // print(jsonEncode(snapshot.data!.docs[index].data()));
-                        // return Card(
-                        //   child: ListTile(
-                        //     onTap: () {
-                        //       // Get.to(() => ChatUi(userlist[index]));
-                        //     },
-                        //     title: Text(snapshot.data?.docs[index]['msg']),
-                        //     subtitle: Text(snapshot.data?.docs[index]['read']),
-                        //     trailing: const Icon(
-                        //       Icons.circle,
-                        //       color: Colors.blue,
-                        //     ),
-                        //   ),
-                        // );
-                      });
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }),
+          // child:
+          // StreamBuilder(
+          //     stream: AskDoubtServices.getAllMsg(widget.userlist, widget.userid),
+          //     builder: (context, snapshot) {
+          //       print(snapshot.data);
+          //       final data = snapshot.data?.docs;
+          //       if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+          //         return const Center(
+          //           child: Text(
+          //             'No messages',
+          //             textScaler: TextScaler.linear(1.4),
+          //             style: TextStyle(color: Colors.white),
+          //           ),
+          //         );
+          //       }
+          //       if (snapshot.hasData) {
+          //         WidgetsBinding.instance.addPostFrameCallback((_) {
+          //           _scrollToBottom();
+          //         });
+          //         msglist =
+          //             data!.map((e) => UserMsg.fromJson(e.data())).toList() ??
+          //                 [];
+          //         return ListView.builder(
+          //             controller: _scrollController,
+          //             itemCount: msglist.length,
+          //             itemBuilder: (context, index) {
+          //               return Messagecard(msglist[index], widget.userid,
+          //                   widget.username, widget.hostname);
+          //               // print(jsonEncode(snapshot.data!.docs[index].data()));
+          //               // return Card(
+          //               //   child: ListTile(
+          //               //     onTap: () {
+          //               //       // Get.to(() => ChatUi(userlist[index]));
+          //               //     },
+          //               //     title: Text(snapshot.data?.docs[index]['msg']),
+          //               //     subtitle: Text(snapshot.data?.docs[index]['read']),
+          //               //     trailing: const Icon(
+          //               //       Icons.circle,
+          //               //       color: Colors.blue,
+          //               //     ),
+          //               //   ),
+          //               // );
+          //             });
+          //       }
+          //       return const Center(
+          //         child: CircularProgressIndicator(),
+          //       );
+          //     }),
         ),
       ),
       Padding(
@@ -144,15 +141,15 @@ class _MessageUiAskDoubtState extends State<MessageUiAskDoubt> {
                   cursorWidth: 3,
                   cursorColor: greencolor,
                   onFieldSubmitted: (value) async {
-                    if (msgController.text.isNotEmpty) {
-                      await AskDoubtServices.sendMsg( 
-                        widget.userlist,
-                        msgController.text,
-                        widget.userid
-                        // widget.sessionId
-                      );
-                      msgController.clear();
-                    }
+                    // if (msgController.text.isNotEmpty) {
+                    //   await AskDoubtServices.sendMsg(
+                    //     widget.userlist,
+                    //     msgController.text,
+                    //     widget.userid
+                    //     // widget.sessionId
+                    //   );
+                    //   msgController.clear();
+                    // }
                   },
                   controller: msgController,
                   style: const TextStyle(color: Colors.white),
@@ -187,11 +184,11 @@ class _MessageUiAskDoubtState extends State<MessageUiAskDoubt> {
                     borderRadius: BorderRadius.circular(30)),
                 backgroundColor: chatConColor.withOpacity(0.3),
                 onPressed: () async {
-                  if (msgController.text.isNotEmpty) {
-                    await AskDoubtServices.sendMsg(
-                        widget.userlist, msgController.text, widget.userid);
-                    msgController.clear();
-                  }
+                  // if (msgController.text.isNotEmpty) {
+                  //   await AskDoubtServices.sendMsg(
+                  //       widget.userlist, msgController.text, widget.userid);
+                  //   msgController.clear();
+                  // }
                 },
                 child: Image.asset(
                   'assets/send.png',
