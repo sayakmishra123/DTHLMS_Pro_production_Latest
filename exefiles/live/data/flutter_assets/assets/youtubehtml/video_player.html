@@ -1,120 +1,142 @@
-
-
-
-
 <!doctype html>
 <html lang="ja" style="width:100%; height:100%; overflow:hidden;">
 <head>
-    <meta charset="utf-8"/>
-    <title>Live</title>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <style>
-        /* Ensure the player container fills the viewport */
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            background-color: black;
-        }
+  <meta charset="utf-8"/>
+  <title>Live</title>
 
-        #player {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
+  <!-- 1) Plyr CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 
-        /* Watermark styling */
-        #plyr_watermark {
-            position: absolute;
-            color: white;
-            -webkit-text-stroke: 1px #111111;
-            font-size: 25px;
-            font-weight: bold;
-            opacity: 0.5;
-            pointer-events: none; /* Ensure watermark doesn't block player interactions */
-            transition: top 0.5s, left 0.5s; /* Smooth movement */
-        }
-    </style>
-    <script>
-        let player;
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
 
-        function set_source(source_id, watermark_str, font_size) {
-            if (watermark_str) {
-                const thisMark = document.getElementById('plyr_watermark');
-                thisMark.innerHTML = watermark_str;
-                if (font_size) {
-                    thisMark.style.fontSize = font_size + "px";
-                }
-            }
+    #player {
+      position: relative;
+      width: 100%;
+      height: 100%; /* Ensure the player takes full height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black; /* Background color for the player */
+    }
 
-            const iframe = document.querySelector('#player iframe');
-            iframe.src = `https://www.youtube.com/embed/${source_id}?iv_load_policy=3&modestbranding=0&playsinline=1&rel=0&enablejsapi=1&autoplay=1&mute=1`;
+    #player iframe {
+      width: 100%;
+      height: 100%; /* Full height for the iframe */
+      border: none;
+    }
 
-            iframe.onload = () => {
-                player = new Plyr('#player', {
-                    autoplay: false,
-                    muted: false, // Mute to allow autoplay
-                    resetOnEnd: false,
-                    ratio: '16:9',
-                    fullscreen: { enabled: true },
-                    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
-                });
 
-                player.on('ready', (event) => {
-                    const fullscreenButton = document.querySelector('[data-plyr="fullscreen"]');
-                    if (fullscreenButton) {
-                        fullscreenButton.onclick = (e) => {
-                            document.title = "fullscreen";
-                        };
-                    }
-                });
-            };
-        }
+    .top-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      z-index: 9999;
+      background: transparent;
+      pointer-events: auto;                                                                                                                                                                                                                                                                                                                                                                                                                  
+    }
 
-        window.addEventListener("load", (event) => {
-            const username = '{USERNAME}'; // Placeholder for username
-            set_source('{SOURCE_ID}', username, 25);  // Replace {SOURCE_ID} dynamically
-            document.title = "load";
+
+    #plyr_watermark {
+      position: absolute;
+      color: white;
+      -webkit-text-stroke: 1px #fd9999;
+      font-size: 25px;
+      font-weight: bold;
+      opacity: 0.5;
+      pointer-events: none; /* Ensure watermark doesn't block player interactions */
+      transition: top 0.5s, left 0.5s; /* Smooth movement */
+    }
+  </style>
+
+  <script>
+    let player;
+
+    // Dynamically sets the video source & watermark
+    function set_source(source_id, font_size, username) {
+      const iframe = document.querySelector('#player iframe');
+      iframe.src =` https://www.youtube.com/embed/${source_id}?iv_load_policy=3&modestbranding=0&playsinline=1&rel=0&enablejsapi=1&autoplay=1&mute=1`;
+
+      // Set the watermark with the username
+      const watermark = document.getElementById('plyr_watermark');
+      watermark.innerHTML =" ${username}";
+
+      // Adjust the font size if provided
+      if (font_size) {
+        watermark.style.fontSize = "${font_size}"+px;
+      }
+
+      // Once the iframe loads, initialize Plyr
+      iframe.onload = () => {
+        player = new Plyr('#player', {
+          autoplay: true,
+          muted: true,
+          controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
         });
-    </script>
+
+       
+       
+      };
+
+    }
+
+
+    // Handle fullscreen with screen orientation
+   
+
+    // Move watermark dynamically
+    function getRandomNumber(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function moveWatermark() {
+      const playerContainer = document.getElementById('player');
+      const watermark = document.getElementById('plyr_watermark');
+      const playerRect = playerContainer.getBoundingClientRect();
+
+      // Calculate available space within the player
+      const maxLeft = playerRect.width - watermark.offsetWidth;
+      const maxTop = playerRect.height - watermark.offsetHeight;
+
+      // Generate random positions
+      const randomLeft = getRandomNumber(0, maxLeft);
+      const randomTop = getRandomNumber(0, maxTop);
+
+      // Apply positions relative to the player container
+      watermark.style.top = "${randomTop}"+px;
+    }
+
+    // On window load, set the source and initialize watermark
+    window.addEventListener("load", () => {
+      const username = '{USERNAME}';
+      const defaultSource = '{SOURCE_ID}';
+      // const username = 'JohnDoe'; // Example username to display in the watermark
+      set_source(defaultSource, 25, username);
+
+      // Move watermark every 5 seconds
+      setInterval(moveWatermark, 5000);
+    });
+  </script>
+
+
+
 </head>
 <body>
-    <div class="plyr__video-embed" id="player" style="width:100%; height:100%; margin:0;">
-        <iframe style="width:100%; height:100%; margin:0;"
-            allowtransparency
-            allowfullscreen
-            allow="autoplay; fullscreen"
-        ></iframe>
-        <div class="YTPOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-            <div id="plyr_watermark">Your Watermark</div>
-        </div>
-    </div>
-    <script>
-        function getRandomNumber(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+  <div id="player">
+    <iframe allowtransparency allowfullscreen allow="autoplay; fullscreen"></iframe>
 
-        function moveWatermark() {
-            const playerContainer = document.getElementById('player');
-            const watermark = document.getElementById('plyr_watermark');
-            const playerRect = playerContainer.getBoundingClientRect();
-
-            // Calculate available space within the player
-            const maxLeft = playerRect.width - watermark.offsetWidth;
-            const maxTop = playerRect.height - watermark.offsetHeight;
-
-            // Generate random positions
-            const randomLeft = getRandomNumber(0, maxLeft);
-            const randomTop = getRandomNumber(0, maxTop);
-
-            // Apply positions relative to the player container
-            watermark.style.left = `${randomLeft}px`;
-            watermark.style.top = `${randomTop}px`;
-        }
-
-        // Move watermark every 5 seconds
-        setInterval(moveWatermark, 5000);
-    </script>
+    <!-- Dynamic Watermark -->
+    <div class="top-overlay"></div>
+    <div id="plyr_watermark"></div>
+  </div>
 </body>
 </html>

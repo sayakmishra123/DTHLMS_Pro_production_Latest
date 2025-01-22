@@ -1,9 +1,9 @@
+import 'dart:math';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_contents.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../GETXCONTROLLER/getxController.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import '../../THEME_DATA/color/color.dart';
@@ -29,6 +29,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
         updateTabs();
       });
     });
+
   }
 
   void updateTabs() {
@@ -56,44 +57,202 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
   Widget build(BuildContext context) {
     updateTabs();
 
-    return Navigator(
-        onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => DefaultTabController(
-                length: tabs.length,
-                child: Scaffold(
-                  appBar: tabs.isNotEmpty
-                      ? AppBar(
-                          toolbarHeight: 10,
-                          automaticallyImplyLeading: false,
-                          backgroundColor: ColorPage.mainBlue,
-                          bottom: TabBar(
-                            tabAlignment: TabAlignment.fill,
-                            indicatorPadding: EdgeInsets.all(2),
-                            indicatorSize: TabBarIndicatorSize.tab,
-                            indicatorColor: ColorPage.white,
-                            labelPadding: EdgeInsets.all(10),
-                            tabs: tabs,
+    return WillPopScope(
+      onWillPop: () async {
+        return await false;
+      },
+      child: Navigator(
+          onGenerateRoute: (settings) => MaterialPageRoute(
+                builder: (context) => DefaultTabController(
+                  length: tabs.length,
+                  child: Scaffold(
+                    appBar: tabs.isNotEmpty
+                        ? AppBar(
+                            toolbarHeight: 10,
+                            automaticallyImplyLeading: false,
+                            backgroundColor: ColorPage.mainBlue,
+                            bottom: TabBar(
+                              tabAlignment: TabAlignment.fill,
+                              indicatorPadding: EdgeInsets.all(2),
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              indicatorColor: ColorPage.white,
+                              labelPadding: EdgeInsets.all(10),
+                              tabs: tabs,
+                            ),
+                          )
+                        : null,
+                    body: tabs.isNotEmpty
+                        ? TabBarView(children: tabViews)
+                        : Center(
+                            child: Text(
+                              'No data available',
+                              style: TextStyle(fontSize: 16),
+                            ),
                           ),
-                        )
-                      : null,
-                  body: tabs.isNotEmpty
-                      ? TabBarView(children: tabViews)
-                      : Center(
-                          child: Text(
-                            'No data available',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
+                  ),
                 ),
-              ),
-            ));
+              )),
+    );
   }
+  
+
+  // Icon? whichIcon(String? location) {
+  //   double iconSize = 20.0;
+
+  //   switch (location) {
+  //     case "Live":
+  //       return Icon(Icons.live_tv, color: ColorPage.live, size: iconSize);
+  //     case "Video":
+  //       return Icon(Icons.video_library, color: ColorPage.recordedVideo, size: iconSize);
+  //     case "Test":
+  //       return Icon(Icons.book, color: ColorPage.testSeries, size: iconSize);
+  //     case "YouTube":
+  //       return Icon(Icons.video_library, color: ColorPage.youtube, size: iconSize);
+  //     default:
+  //       return Icon(Icons.warning_amber_rounded, color: Colors.red, size: iconSize);
+  //   }
+  // }
+
+   List<Widget> _buildIconStack(packageId) {
+    getSectionListOfPackage(  
+        packageId,
+      );
+    //  List<String> locations = ["Live", "Video", "Test", "YouTube"];
+    List<Widget> iconStack = [];
+     final filteredList = getx.sectionListOfPackage
+                      .where((item) =>
+                          item['section'] != 'PDF' &&
+                          item['section'] != 'YouTube')
+                      .toList();
+    for (int i = 0; i <  getx.sectionListOfPackage
+                    .where((item) =>
+                        item['section'] != 'PDF' &&
+                        item['section'] != 'YouTube')
+                    .length; i++) {
+      iconStack.add(
+        Positioned(
+          left: i * 25.0,  // Slight shift to the right for each successive icon
+
+          child: CircleAvatar(
+            
+            radius: 20.0,  // Radius of the CircleAvatar
+            backgroundColor: Colors.grey.shade200, // White background for each avatar
+            child: getFolderIcon(filteredList[i], i),
+          ),
+        ),
+      );
+    }
+    return iconStack;
+  }
+  
+  final List<Map<String, dynamic>> folderIcons = [
+    {
+      "section": "Video",
+      "icon": Icons.video_library,
+      "color": Colors.blue,
+      "subtitle": "Watch recorded videos and tutorials",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.green.shade200,
+        Colors.green.shade100
+      ],
+    },
+    {
+      "section": "Live",
+      "icon": Icons.live_tv,
+      "color": Colors.red,
+      "subtitle": "Join live streaming sessions",
+      'color2': [
+        // Light orange -> peach
+        const Color(0xFFFFF1D5),
+        const Color(0xFFFFE0AF),
+      ],
+    },
+    {
+      "section": "Podcast",
+      "icon": Icons.podcasts,
+      "color": Colors.orange,
+      "subtitle":
+          "Listen to insightful discussions and audio episodes anytime, anywhere.",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.brown.shade200,
+        Colors.brown.shade100
+      ],
+    },
+    {
+      "section": "MCQ",
+      "icon": Icons.question_answer,
+      "color": Colors.green,
+      "subtitle": "Practice multiple-choice questions",
+      'color2': [
+        // Light pink -> soft pink
+        Colors.blue.shade200,
+        Colors.blue.shade100
+      ],
+    },
+    {
+      "section": "Test",
+      "icon": Icons.book,
+      "color": Colors.purple,
+      "subtitle": "Read and review theoretical content",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.orange.shade200,
+        Colors.orange.shade100
+      ],
+    },
+    {
+      "section": "Book",
+      "icon": Icons.library_books,
+      "color": Colors.brown,
+      "subtitle": "Access and manage your digital library",
+      "color2": [
+        // Light pink -> soft pink
+        const Color.fromARGB(255, 248, 177, 219),
+        const Color(0xFFFDD3E7),
+      ],
+    },
+  ];
+
+    Icon getFolderIcon(Map<String, dynamic> foldername, int index) {
+    // Find the matching icon data from the list
+    final iconData = folderIcons.firstWhere(
+      (item) => item['section'] == foldername['section'],
+      orElse: () => {
+        "icon": Icons.folder,
+        "color": Colors.blue,
+        "subtitle": '',
+        "color2": [
+          const Color(0xFFFFF1D5),
+          const Color(0xFFFFE0AF),
+        ]
+      },
+    );
+
+    // Return the showDetails widget with the appropriate icon and foldername
+    return Icon(
+      iconData['icon'],
+      color: iconData['color'],
+    );
+  }
+
+   Color _generateRandomColor() {
+    Random random = Random();
+    return Color.fromRGBO(
+      random.nextInt(256), // Random Red value (0-255)
+      random.nextInt(256), // Random Green value (0-255)
+      random.nextInt(256), // Random Blue value (0-255)
+      1.0, // Opacity value (1.0 = fully opaque)
+    );
+   }
+
 
   Widget buildPackageListView(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth - 20);
     final paidPackages =
-        getx.studentPackage.where((pkg) => pkg['IsFree'] == 'false').toList();
+        getx.studentPackage.where((pkg) => pkg['IsFree'] == 'false').toList(); 
 
     return paidPackages.isNotEmpty
         ? ListView.builder(
@@ -119,11 +278,12 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                 },
                 child: Container(
                   height: 150,
-                  width: itemWidth * 2, // Adjusted for wider card
+                  width: itemWidth , // Adjusted for wider card
                   margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
+                    
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -151,12 +311,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 // Title of the package or video
                                 Text(
                                   paidPackages[index]['packageName']!,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color:
-                                        const Color.fromARGB(255, 4, 42, 211),
-                                  ),
+                                  style: FontFamily.styleb.copyWith(color: const Color.fromARGB(255, 4, 0, 66),fontSize: 18),
                                   maxLines: 1,
                                   overflow:
                                       TextOverflow.ellipsis, // Handle overflow
@@ -164,11 +319,8 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 SizedBox(height: 5),
                                 // Subtitle or description
                                 Text(
-                                  'Course name ${paidPackages[index]['CourseName']}', // Replace with actual subtitle
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
+                                  '${paidPackages[index]['CourseName']}', // Replace with actual subtitle
+                                   style: FontFamily.styleb.copyWith(color: Colors.grey,fontSize: 14),
                                   maxLines: 1,
                                   overflow:
                                       TextOverflow.ellipsis, // Handle overflow
@@ -177,10 +329,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
 
                                 Text(
                                   'ExpiryDate: ${formatDate(paidPackages[index]['ExpiryDate']) ?? 'N/A'}',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.blue,
-                                  ),
+                                      style: FontFamily.styleb.copyWith(color: Colors.grey.withAlpha(100),fontSize: 12),
                                 ),
 
                                 SizedBox(height: 5),
@@ -192,6 +341,24 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 //     color: Colors.orangeAccent,
                                 //   ),
                                 // ),
+  //  FlutterImageStack.providers(
+  //         providers: _images,
+  //         showTotalCount: true,
+  //         totalCount: 4,
+  //         itemRadius: 60, // Radius of each images
+  //         itemCount: 3, // Maximum number of images to be shown in stack
+  //         itemBorderWidth: 3, // Border width around the images
+  //       )
+SizedBox(
+  height: 50,
+  child: Center(
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          clipBehavior: Clip.none, // Allows the icons to overlap
+          children: _buildIconStack(  int.parse(paidPackages[index]['packageId']) ),
+        ),
+      ),
+)
                               ],
                             ),
                           ),
@@ -365,7 +532,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
     if (dateString == null || dateString.isEmpty) return 'N/A';
     try {
       final dateTime = DateTime.parse(dateString);
-      return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
+      return DateFormat('dd MMM yyyy,').format(dateTime);
     } catch (e) {
       return 'Invalid Date';
     }

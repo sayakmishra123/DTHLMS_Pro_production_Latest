@@ -1,16 +1,12 @@
 import 'dart:async';
-import 'dart:async';
-import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
-import 'package:dthlms/API/ERROR_MASSEGE/errorhandling.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/Live/details.dart';
@@ -22,11 +18,9 @@ import 'package:dthlms/MOBILE/LOGIN/loginpage_mobile.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_List.dart';
 import 'package:dthlms/MOBILE/PROFILE/account.dart';
 import 'package:dthlms/MOBILE/VIDEO/mobilevideoplay.dart';
-import 'package:dthlms/MOBILE/mobilenotification.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/PC/VIDEO/scrollbarhide.dart';
-import 'package:dthlms/components/glass_box.dart' as g;
 import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/notifications_screen.dart';
@@ -52,12 +46,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../store/storemodelclass/storemodelclass.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart' as pinfo;
 
-// final ScrollController _scrollController = ScrollController();
 ScrollController _scrollController = ScrollController();
 
 class DashBoardMobile extends StatefulWidget {
@@ -275,9 +266,6 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
       if (exp == null) {
         throw Exception('Expiration time (exp) not found in the token');
       }
-      final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
-
-      // Convert Unix timestamp to DateTime
       final expirationDate = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
 
       // Get the current date and time
@@ -285,11 +273,6 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
       bool isvalid = now.isBefore(expirationDate);
       if (!isvalid) {
         onTokenExpire(context);
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => DthLmsLogin()));
-
-        // Get.offAll(() => DthLmsLogin());
       }
       if (isvalid) {}
 
@@ -303,7 +286,6 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
     }
   }
 
-  // final List<String> _items = ['The Valuation School', 'No Risk No Story'];
 
   String videoIndex = '';
 
@@ -490,14 +472,14 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
       appBar: AppBar(
         actionsIconTheme: const IconThemeData(color: Colors.black),
         automaticallyImplyLeading: false,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              color: Colors.transparent,
-            ),
-          ),
-        ),
+        // flexibleSpace: ClipRect(
+        //   child: BackdropFilter(
+        //     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        //     child: Container(
+        //       color: Colors.transparent,
+        //     ),
+        //   ),
+        // ),
         iconTheme: const IconThemeData(color: Colors.white),
         // backgroundColor: Colors.blue.withAlpha(200),
         backgroundColor: const Color(0xffF5F5DC),
@@ -598,9 +580,9 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                   if (snapshot.hasData) {
                     // Extract the titles into a list
                     List<dynamic> data = snapshot.data as List<dynamic>;
-                    List<String> _itemsType = data
-                        .map((item) => item['ImageType'].toString())
-                        .toList();
+                    // List<String> _itemsType = data
+                    //     .map((item) => item['ImageType'].toString())
+                    //     .toList();
                     List<String> _items = data
                         .map((item) => item['ImageText'].toString())
                         .toList();
@@ -705,20 +687,20 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                     lastVideoDetails.isNotEmpty &&
                             lastVideoDetailsAllPackage.isNotEmpty
                         ? Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                                color: Colors.white,
+                                // color: Colors.white,
                                 borderRadius: BorderRadius.circular(8)),
                             child: Column(
                               children: [
                                 const Row(
                                   children: [
                                     SizedBox(
-                                      width: 10,
+                                      width: 8,
                                     ),
                                     Text('Last where you left',
                                         style: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.grey)),
                                   ],
@@ -735,7 +717,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                         getx.playingVideoId.value =
                                             lastVideoDetailsAllPackage['FileId']
                                                 .toString();
-
+                                
                                         getx.playLink.value = getx
                                                 .userSelectedPathForDownloadVideo
                                                 .isEmpty
@@ -777,21 +759,12 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                           print("File dose not exist");
                                         }
                                       },
-                                      leading: ClipRRect(
-                                        borderRadius: BorderRadius.circular(2),
-                                        child: const Image(
-                                          height: 80,
-                                          width: 60,
-                                          image: AssetImage(
-                                              'assets/wallpaperflare.com_wallpaper.jpg'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                      leading: Icon( Icons.video_library,color: ColorPage.recordedVideo,),
                                       title: Text(
                                         lastVideoDetailsAllPackage['FileIdName']
                                             .toString(),
                                         style: const TextStyle(
-                                            fontSize: 18, color: Colors.blue),
+                                            fontSize: 15, color: Colors.blue),
                                       ),
                                       subtitle: RichText(
                                         text: TextSpan(
@@ -1255,6 +1228,25 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
+ Color whichColor(event){
+    switch (event) {
+      case "Live":
+        return ColorPage.live;
+      case "Video":
+        return ColorPage.recordedVideo;
+          
+      case "Test": 
+      return ColorPage.testSeries;
+      case "History":
+      return  ColorPage.history;
+      case "YouTube":
+      return ColorPage.youtube;
+      default:
+        return Colors.red;
+    }
+
+  }
+
   Widget _buildEventDetails() {
     return Obx(() {
       if (_selectedAppointments.isEmpty) {
@@ -1281,14 +1273,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 child: Material(
                   borderRadius: BorderRadius.circular(8),
                   elevation: 10.0,
-                  shadowColor: Colors.blueGrey.shade400.withOpacity(0.4),
-
-                  // shadowColor: Colors.black,
-
+                  shadowColor: whichColor(appointment.location).withAlpha(100),
                   child: ListTile(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        // side: BorderSide(color: Colors.black),
+                        side: BorderSide(color:whichColor(appointment.location)),
                       ),
                       hoverColor: const Color.fromARGB(255, 241, 241, 241),
                       tileColor: Colors.white,
@@ -1463,7 +1452,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       DateTime.now().year,
       DateTime.now().month,
       DateTime.now().day,
-    )) ? Colors.blueGrey : Color.fromARGB(255, 255, 106, 95) )),
+    )) ? Color.fromARGB(255, 255, 106, 95) : Colors.amberAccent )),
                               onPressed: () async{
 
                                 
@@ -1521,8 +1510,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                   });
                                 }
                               },
-                              child: Text(
-                              DateTime(
+                              child: DateTime(
       appointment.startTime.year,
       appointment.startTime.month,
       appointment.startTime.day,
@@ -1530,12 +1518,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       DateTime.now().year,
       DateTime.now().month,
       DateTime.now().day,
-    )) ? "Expired" : 'Live class',
+    )) ? Text(
+                               "Expired",
                                 style: style.copyWith(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w800),
-                              ),
+                              ) : Icon(Icons.arrow_forward_rounded,color: Colors.white,)
                             )
                           : null,
                       title: Text(appointment.subject,
@@ -1558,7 +1547,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
                           : appointment.location == "Video"
                               ? Text(
-                                  "Duration :${(appointment.resourceIds![0] as Map<String, dynamic>)['VideoDuration'].toString()} ",
+                                  "Duration : ${formatDuration(int.parse((appointment.resourceIds![0] as Map<String, dynamic>)['VideoDuration']))}",
+                                
                                   style: FontFamily.style.copyWith(
                                       fontSize: 12, color: ColorPage.grey),
                                 )
@@ -1568,46 +1558,38 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             },
           ));
     });
+    
   }
+  String formatDuration(int seconds) {
+  final hours = (seconds ~/ 3600).toString().padLeft(2, '0');
+  final minutes = ((seconds % 3600) ~/ 60).toString().padLeft(2, '0');
+  final secs = (seconds % 60).toString().padLeft(2, '0');
+  return "$hours:$minutes:$secs";
+}
 
   Icon? whichIcon(String? location) {
     double iconSize = 20;
 
     switch (location) {
       case "Live":
-        return Icon(Icons.circle, color: ColorPage.live, size: iconSize);
+        return Icon(Icons.live_tv, color: ColorPage.live, size: iconSize);
       case "Video":
         return Icon(
-          Icons.circle,
+          Icons.video_library,
           color: ColorPage.recordedVideo,
           size: iconSize,
         );
       case "Test":
-        return Icon(Icons.circle, color: ColorPage.testSeries, size: iconSize);
+        return Icon(Icons.book, color: ColorPage.testSeries, size: iconSize);
       case "History":
-        return Icon(Icons.circle, color: ColorPage.history, size: iconSize);
+        return Icon(Icons.history, color: ColorPage.history, size: iconSize);
       case "YouTube":
-        return Icon(Icons.circle, color: ColorPage.youtube, size: iconSize);
+        return Icon(Icons.live_tv, color: ColorPage.youtube, size: iconSize);
       default:
         return Icon(Icons.warning_amber_rounded,
             color: Colors.red, size: iconSize);
     }
   }
-
-  // MeetingDeatils? findLiveDtails(
-  //     String sessionId, List<MeetingDeatils> mettingList) {
-  //   MeetingDeatils liveDetails;
-  //   print(sessionId);
-  //   for (var item in mettingList) {
-  //     print(mettingList.length);
-  //     print(item.sessionId);
-  //     if (item.sessionId == sessionId) {
-  //       print(item.sessionId.toString() + "item");
-  //       return item;
-  //     }
-  //   }
-  //   return null;
-  // }
 
   MeetingDeatils? findLiveDtails(
       String sessionId, List<MeetingDeatils> mettingList) {
