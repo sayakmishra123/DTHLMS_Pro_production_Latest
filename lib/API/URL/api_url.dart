@@ -67,7 +67,7 @@ class ClsUrlApi {
   static const getExamStatus = "/api/AuthDataGet/ExecuteJson/spAppApi/32";
 
   static const getCountryCode =
-      "/api/AnonymousDataGet/ExecuteJson/SPMasterAdminAnonymous/1"; ///////////////
+      "/api/AnonymousDataGet/ExecuteJson/SPMasterAdminAnonymous/1"; 
   static const generateCodeForgetPassword = "/api/auth/generateFPCode";
 
   static const getEmailValidation =
