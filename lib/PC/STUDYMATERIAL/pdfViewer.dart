@@ -16,6 +16,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 Uint8List aesDecryptPdf(Uint8List encryptedData, String key) {
@@ -374,11 +375,10 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
       String pdfUrl, String title, String enkey, String foldername) async {
     this.title = title;
     data = getDownloadedPathOfPDF(title, foldername);
-    print(data + "ssss ${this.title}");
+    print(data + " ssss ${this.title}");
 
-    //  String enkey=await  getEncryptionKey(getx.loginuserdata[0].token);
     if (!File(data).existsSync()) {
-      print("downloaing file.....");
+      print("Downloading file.....");
       try {
         // Get the application's document directory
         Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -410,6 +410,10 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
 
         print('PDF downloaded and saved to: $filePath');
 
+        // Add watermark to the downloaded PDF
+        await addWatermarkToPdf(filePath, getx.loginuserdata[0].username,
+            getx.loginuserdata[0].phoneNumber, getx.loginuserdata[0].email);
+
         if (widget.isEncrypted) {
           final encryptedBytes = await readEncryptedPdfFromFile(filePath);
           final decryptedPdfBytes = aesDecryptPdf(encryptedBytes, enkey);
@@ -433,6 +437,63 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
       } else {
         return data;
       }
+    }
+  }
+
+// Function to add watermark to a PDF
+  Future<void> addWatermarkToPdf(
+      String filePath, String userName, String mobileNo, String email) async {
+    try {
+      // Load the PDF document
+      File file = File(filePath);
+      List<int> bytes = await file.readAsBytes();
+      PdfDocument document = PdfDocument(inputBytes: bytes);
+
+      // Define watermark properties
+      PdfBrush brush =
+          PdfSolidBrush(PdfColor(150, 150, 150, 50)); // Gray with opacity
+      PdfFont font = PdfStandardFont(
+          PdfFontFamily.helvetica, 20); // Font for watermark text
+
+      // Add watermark to all pages
+      for (int i = 0; i < document.pages.count; i++) {
+        PdfPage page = document.pages[i];
+        PdfGraphics graphics = page.graphics;
+
+        // Prepare watermark content
+        String watermarkText = '$userName\n$mobileNo\n$email';
+
+        // Get page dimensions
+        Size pageSize = page.getClientSize();
+
+        // Calculate position (center of page)
+        // double centerX = pageSize.width / 2;
+        // double centerY = pageSize.height / 2;
+
+        // Draw watermark text
+        graphics.drawString(
+          watermarkText,
+          font,
+          brush: brush,
+          bounds: Rect.fromLTWH(
+              0, 10, pageSize.width, 100), // Adjust bounds as needed
+          format: PdfStringFormat(
+            alignment: PdfTextAlignment.center,
+            lineAlignment: PdfVerticalAlignment.top,
+          ),
+        );
+      }
+
+      // Save the updated PDF
+      List<int> watermarkedBytes = document.saveSync();
+      await file.writeAsBytes(watermarkedBytes, flush: true);
+
+      // Dispose the document
+      document.dispose();
+
+      print('Watermark added successfully to: $filePath');
+    } catch (e) {
+      print('Error adding watermark to PDF: $e');
     }
   }
 }
