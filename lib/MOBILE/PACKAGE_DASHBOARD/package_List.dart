@@ -29,7 +29,6 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
         updateTabs();
       });
     });
-
   }
 
   void updateTabs() {
@@ -94,7 +93,6 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
               )),
     );
   }
-  
 
   // Icon? whichIcon(String? location) {
   //   double iconSize = 20.0;
@@ -113,38 +111,55 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
   //   }
   // }
 
-   List<Widget> _buildIconStack(packageId) {
-    getSectionListOfPackage(  
-        packageId,
-      );
-    //  List<String> locations = ["Live", "Video", "Test", "YouTube"];
-    List<Widget> iconStack = [];
-     final filteredList = getx.sectionListOfPackage
-                      .where((item) =>
-                          item['section'] != 'PDF' &&
-                          item['section'] != 'YouTube')
-                      .toList();
-    for (int i = 0; i <  getx.sectionListOfPackage
-                    .where((item) =>
-                        item['section'] != 'PDF' &&
-                        item['section'] != 'YouTube')
-                    .length; i++) {
-      iconStack.add(
-        Positioned(
-          left: i * 25.0,  // Slight shift to the right for each successive icon
+List<Widget> _buildIconStack(packageId) {
+  getSectionListOfPackage(packageId);
 
-          child: CircleAvatar(
-            
-            radius: 20.0,  // Radius of the CircleAvatar
-            backgroundColor: Colors.grey.shade200, // White background for each avatar
-            child: getFolderIcon(filteredList[i], i),
+  List<Widget> iconStack = [];
+  final filteredList = getx.sectionListOfPackage
+      .where((item) => item['section'] != 'PDF' && item['section'] != 'YouTube')
+      .toList();
+
+  // Limit the number of items to 6
+  int maxItems = filteredList.length > 5 ? 5 : filteredList.length;
+
+  // Add the first 6 icons (or fewer if the list has less than 6 items)
+  for (int i = 0; i < maxItems; i++) {
+    iconStack.add(
+      Positioned(
+        left: i * 25.0, // Slight shift to the right for each successive icon
+        child: CircleAvatar(
+          radius: 20.0, // Radius of the CircleAvatar
+          backgroundColor: Colors.grey.shade200, // Background color for each avatar
+          child: getFolderIcon(filteredList[i], i),
+        ),
+      ),
+    );
+  }
+
+  // If the list has more than 6 items, show the remaining count
+  if (filteredList.length > 5) {
+    iconStack.add(
+      Positioned(
+        left: 5 * 25.0, // Position the remaining count icon next to the 6th icon
+        child: CircleAvatar(
+          radius: 20.0, // Radius of the CircleAvatar
+          backgroundColor: Colors.grey.shade200, // Background color
+          child: Text(
+            '+${filteredList.length - 5}', // Show remaining count
+            style: TextStyle(
+              color: Colors.blue, // Color of the text
+              fontWeight: FontWeight.bold, // Make the text bold
+              fontSize: 14, // Size of the text
+            ),
           ),
         ),
-      );
-    }
-    return iconStack;
+      ),
+    );
   }
-  
+
+  return iconStack;
+}
+
   final List<Map<String, dynamic>> folderIcons = [
     {
       "section": "Video",
@@ -215,7 +230,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
     },
   ];
 
-    Icon getFolderIcon(Map<String, dynamic> foldername, int index) {
+  Icon getFolderIcon(Map<String, dynamic> foldername, int index) {
     // Find the matching icon data from the list
     final iconData = folderIcons.firstWhere(
       (item) => item['section'] == foldername['section'],
@@ -237,22 +252,11 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
     );
   }
 
-   Color _generateRandomColor() {
-    Random random = Random();
-    return Color.fromRGBO(
-      random.nextInt(256), // Random Red value (0-255)
-      random.nextInt(256), // Random Green value (0-255)
-      random.nextInt(256), // Random Blue value (0-255)
-      1.0, // Opacity value (1.0 = fully opaque)
-    );
-   }
-
-
   Widget buildPackageListView(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth - 20);
     final paidPackages =
-        getx.studentPackage.where((pkg) => pkg['IsFree'] == 'false').toList(); 
+        getx.studentPackage.where((pkg) => pkg['IsFree'] == 'false').toList();
 
     return paidPackages.isNotEmpty
         ? ListView.builder(
@@ -278,12 +282,11 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                 },
                 child: Container(
                   height: 150,
-                  width: itemWidth , // Adjusted for wider card
+                  width: itemWidth, // Adjusted for wider card
                   margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -311,7 +314,10 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 // Title of the package or video
                                 Text(
                                   paidPackages[index]['packageName']!,
-                                  style: FontFamily.styleb.copyWith(color: const Color.fromARGB(255, 4, 0, 66),fontSize: 18),
+                                  style: FontFamily.styleb.copyWith(
+                                      color:
+                                          const Color.fromARGB(255, 6, 0, 87),
+                                      fontSize: 18),
                                   maxLines: 1,
                                   overflow:
                                       TextOverflow.ellipsis, // Handle overflow
@@ -320,7 +326,8 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 // Subtitle or description
                                 Text(
                                   '${paidPackages[index]['CourseName']}', // Replace with actual subtitle
-                                   style: FontFamily.styleb.copyWith(color: Colors.grey,fontSize: 14),
+                                  style: FontFamily.styleb.copyWith(
+                                      color: Colors.grey, fontSize: 14),
                                   maxLines: 1,
                                   overflow:
                                       TextOverflow.ellipsis, // Handle overflow
@@ -329,7 +336,9 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
 
                                 Text(
                                   'ExpiryDate: ${formatDate(paidPackages[index]['ExpiryDate']) ?? 'N/A'}',
-                                      style: FontFamily.styleb.copyWith(color: Colors.grey.withAlpha(100),fontSize: 12),
+                                  style: FontFamily.styleb.copyWith(
+                                      color: Colors.grey.withAlpha(100),
+                                      fontSize: 12),
                                 ),
 
                                 SizedBox(height: 5),
@@ -341,24 +350,26 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 //     color: Colors.orangeAccent,
                                 //   ),
                                 // ),
-  //  FlutterImageStack.providers(
-  //         providers: _images,
-  //         showTotalCount: true,
-  //         totalCount: 4,
-  //         itemRadius: 60, // Radius of each images
-  //         itemCount: 3, // Maximum number of images to be shown in stack
-  //         itemBorderWidth: 3, // Border width around the images
-  //       )
-SizedBox(
-  height: 50,
-  child: Center(
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          clipBehavior: Clip.none, // Allows the icons to overlap
-          children: _buildIconStack(  int.parse(paidPackages[index]['packageId']) ),
-        ),
-      ),
-)
+                                //  FlutterImageStack.providers(
+                                //         providers: _images,
+                                //         showTotalCount: true,
+                                //         totalCount: 4,
+                                //         itemRadius: 60, // Radius of each images
+                                //         itemCount: 3, // Maximum number of images to be shown in stack
+                                //         itemBorderWidth: 3, // Border width around the images
+                                //       )
+                                SizedBox(
+                                  height: 50,
+                                  child: Center(
+                                    child: Stack(
+                                      alignment: AlignmentDirectional.center,
+                                      clipBehavior: Clip
+                                          .none, // Allows the icons to overlap
+                                      children: _buildIconStack(int.parse(
+                                          paidPackages[index]['packageId'])),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -495,6 +506,18 @@ SizedBox(
                                 //     color: Colors.orangeAccent,
                                 //   ),
                                 // ),
+                                SizedBox(
+                                  height: 50,
+                                  child: Center(
+                                    child: Stack(
+                                      alignment: AlignmentDirectional.center,
+                                      clipBehavior: Clip
+                                          .none, // Allows the icons to overlap
+                                      children: _buildIconStack(int.parse(
+                                          freePackages[index]['packageId'])),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),

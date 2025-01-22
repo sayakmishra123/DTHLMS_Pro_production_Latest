@@ -1,4 +1,4 @@
-const String origin = 'com.dlp.vgsh';
+const String origin = 'com.dlp.tvs';
 
 // const String logopath = 'assets/icons/valuation-school-logo.png';
 const String logopath = 'assets/icons/vg_study.png'; 
@@ -14,7 +14,7 @@ const String logopath = 'assets/icons/vg_study.png';
 
 
 // const String onesignalId = "7b67ad77-4ee9-451b-9346-8fdf8d66efae"; // avj
-const String onesignalId = "25a8c2e0-04c7-4265-8b91-42eac72f68fd"; // VG Study Hub
+const String onesignalId = "25a8c2e0-04c7-4265-8b91-42eac72f68fd"; // VG Study Hub 
 // const String onesignalId = "7b67ad77-4ee9-451b-9346-8fdf8d66efae"; // avj
 // const String onesignalId = "25a8c2e0-04c7-4265-8b91-42eac72f68fd"; // VG Study Hub
 // const String onesignalId = "25a8c2e0-04c7-4265-8b91-42eac72f68fd"; //vgsh
