@@ -79,10 +79,33 @@ class _MobilePackageVideoDashboardState
         timer.cancel();
       }
     });
-
+        //  _filteredItems = _combineAndTagItems();
     super.initState();
   }
 
+  // List<Map<String, dynamic>> _combineAndTagItems() {
+  //   final videos = getx.alwaysShowChapterDetailsOfVideo
+  //       .map((item) => {...item, 'type': 'video'})
+  //       .toList();
+  //       print(videos);
+  //       print('_combineAndTagItems');
+  //   final pdfs = getx.alwaysShowFileDetailsOfpdf
+  //       .map((item) => {...item, 'type': 'pdf'})
+  //       .toList();
+  //       print(pdfs);
+  //       print('_combineAndTagItems');
+
+
+  //   final chapterFiles = getx.alwaysShowChapterfilesOfVideo
+  //       .map((item) => {...item, 'type': 'chapter'})
+  //       .toList();
+  //       print(chapterFiles);
+  //       print('_combineAndTagItems');
+
+
+
+  //   return [...videos, ...pdfs, ...chapterFiles];
+  // }
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
@@ -194,6 +217,12 @@ class _MobilePackageVideoDashboardState
   }
 
   int selectedIndex = -1;
+    List<Map<String, dynamic>> _filteredItems = [];
+
+  search(value){
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -320,76 +349,7 @@ class _MobilePackageVideoDashboardState
                                         print(getx
                                             .alwaysShowChapterDetailsOfVideo
                                             .length);
-                                      },
-
-                                      // child: RichText(
-                                      //   text: TextSpan(
-                                      //     children: [
-                                      //       TextSpan(
-                                      //         text: getx.navigationList[i]["NavigationName"],
-                                      //         style: style.copyWith(fontSize: 18), // Style for the main text
-                                      //       ),
-                                      //       TextSpan(
-                                      //         text: ' > ',
-                                      //         style: style.copyWith(
-                                      //           fontSize: 18,
-                                      //           color: Colors.red, // Change to your desired color
-                                      //         ), // Style for the '>' symbol
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
-
-                                      child:
-                                          // Row(
-                                          //   children: [
-                                          //     if (i != 0) ...[
-                                          //       Card(
-                                          //         color: const Color.fromARGB(
-                                          //             220, 19, 23, 36),
-                                          //         shape: BeveledRectangleBorder(
-                                          //             borderRadius:
-                                          //                 BorderRadius.circular(8)),
-                                          //         elevation: 4,
-                                          //         child: Container(
-                                          //           padding: EdgeInsets.all(8),
-                                          //           child: Text(
-                                          //             getx.navigationList[i]
-                                          //                 ["NavigationName"],
-                                          //             style:
-                                          //                 FontFamily.style.copyWith(
-                                          //               fontSize: 10,
-                                          //               color: Colors
-                                          //                   .white, // Dark color for a classic look
-                                          //               fontWeight: FontWeight
-                                          //                   .w800, // Slightly bold
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //       Padding(
-                                          //         padding:
-                                          //             const EdgeInsets.symmetric(
-                                          //                 horizontal: 1),
-                                          //         child: Icon(
-                                          //           Icons.chevron_right,
-                                          //           color: Colors.grey,
-                                          //           size:
-                                          //               20, // Smaller size for a subtle arrow
-                                          //         ),
-                                          //       ),
-                                          //     ]
-                                          //     // Text(
-                                          //     //   getx.navigationList[i]
-                                          //     //           ["NavigationName"]
-                                          //     //       ,
-                                          //     //   style: FontFamily.style
-                                          //     //       .copyWith(fontSize: 18),
-                                          //     // ),
-                                          //   ],
-                                          // ),
-
-                                          Padding(
+                                      }, child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
                                         child: Row(children: [
@@ -484,18 +444,7 @@ class _MobilePackageVideoDashboardState
                                                     vertical: 10,
                                                     horizontal: 50),
                                               ),
-                                            ),
-
-                                            // Padding(
-                                            //   padding: const EdgeInsets
-                                            //       .symmetric(
-                                            //       horizontal: 1),
-                                            //   child: Icon(
-                                            //     Icons.chevron_right,
-                                            //     color: Colors.grey,
-                                            //     size: 20,
-                                            //   ),
-                                            // ),
+                                            )
                                           ],
                                         ]),
                                       ),
@@ -510,49 +459,52 @@ class _MobilePackageVideoDashboardState
               Padding(
                 padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        filecountWidget(
-                            getx.alwaysShowChapterDetailsOfVideo.length,
-                            "assets/folder5.png"),
-                        filecountWidget(getx.alwaysShowFileDetailsOfpdf.length,
-                            "assets/pdf.png"),
-                        filecountWidget(
-                            getx.alwaysShowChapterfilesOfVideo.length,
-                            "assets/video2.png"),
-                      ],
+                    Expanded(
+                      child: Row(
+                      
+                      
+                      
+                      
+                        children: [
+                      filecountWidget( getx.alwaysShowChapterDetailsOfVideo.length,"assets/folder5.png"),
+                      filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf.png"),
+                      filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
+                          
+                        ],
+                      ),
                     ),
 
-                    // Row(
-                    //   children: [
-                    //     Padding(
-                    //       padding: const EdgeInsets.only(right: 20),
-                    //       child: Container(
-                    //         margin: EdgeInsets.symmetric(vertical: 5),
-                    //         width: 200,
-                    //         child: TextFormField(
-                    //           // controller: _searchController,
-                    //           decoration: InputDecoration(
-                    //               suffixIcon: Icon(
-                    //                 Icons.search,
-                    //               ),
-                    //               suffixIconColor:
-                    //                   Color.fromARGB(255, 197, 195, 195),
-                    //               hintText: 'Search',
-                    //               hintStyle: FontFamily.font9
-                    //                   .copyWith(color: ColorPage.brownshade),
-                    //               fillColor: Color.fromARGB(255, 255, 255, 255),
-                    //               filled: true,
-                    //               border: OutlineInputBorder(
-                    //                   borderSide: BorderSide.none,
-                    //                   borderRadius: BorderRadius.circular(40))),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // )
+
+
+
+                    Expanded(
+                      child: Row(children: [Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10,right: 10),
+                          child: TextFormField( 
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                                              suffixIcon: Icon(
+                                                Icons.search,
+                                              ),
+                                              suffixIconColor: Color.fromARGB(255, 197, 195, 195),
+                                              hintText: 'Search',
+                                              hintStyle:
+                                                  FontFamily.font9.copyWith(color: ColorPage.brownshade),
+                                              fillColor: Color.fromARGB(255, 255, 255, 255),
+                                              filled: true,
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                  borderRadius: BorderRadius.circular(40))),
+                                                  onChanged: (value) {
+                                                    search(value);
+                                                  },
+                          ),
+                        ),
+                      ),],),
+                    )
                     // Row(
                     //   children: [
                     //     Tooltip(
@@ -1446,7 +1398,7 @@ class _MobilePackageVideoDashboardState
                               ['SectionChapterName'],
                       overflow: TextOverflow.ellipsis,
                       style: FontFamily.font9
-                          .copyWith(color: ColorPage.colorblack),
+                          .copyWith(color: ColorPage.colorblack), 
                     ),
                   ],
                 ),
