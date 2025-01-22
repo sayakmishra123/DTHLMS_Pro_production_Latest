@@ -45,7 +45,6 @@ void main(List<String> args) async {
 
   MediaKit.ensureInitialized();
 
-  MediaKit.ensureInitialized();
   // ensureYQPInitialized();
   Get.put(OnlineAudioPlayerController());
 
@@ -61,13 +60,12 @@ void main(List<String> args) async {
       doWhenWindowReady(
         () {
           final win = appWindow;
-          win.minSize =
-              const Size(1300, 600);
+          win.minSize = const Size(1300, 600);
           win.alignment = Alignment.topLeft;
           win.show();
         },
       );
-    } else if (Platform.isAndroid) {  
+    } else if (Platform.isAndroid) {
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
     }
@@ -124,7 +122,7 @@ class _MyAppState extends State<MyApp> {
 
   Getx getx = Get.put(Getx());
 
-  Future<void> checkDeveloperMode() async {
+  Future<void> checkDeveloperMode() async { 
     if (Platform.isAndroid) {
       getx.isAndroidDeveloperModeEnabled.value =
           await FlutterAndroidDeveloperMode.isAndroidDeveloperModeEnabled;
@@ -173,7 +171,6 @@ class _MyAppState extends State<MyApp> {
     // checkIfEmulator(context);
     // checkDeveloperMode();
   }
-
 
   ClsSimInfo ob = ClsSimInfo();
 
@@ -227,7 +224,7 @@ class _MyAppState extends State<MyApp> {
                         : FutureBuilder(
                             future: getSimCardsData(context),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == 
+                              if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return Center(
                                     child: CircularProgressIndicator());
@@ -237,17 +234,19 @@ class _MyAppState extends State<MyApp> {
 
                                 bool isDataLengthValid = false;
 
-if (snapshot.hasData && snapshot.data != null && snapshot.data is List) {
-  // Safely cast snapshot.data to a List and check the condition
-  final List dataList = snapshot.data!;
-  isDataLengthValid = dataList.every((element) {
-    if (element is String || element is Iterable) {
-      return element.length < 10;
-    }
-    return false; 
-  });
-}
-
+                                if (snapshot.hasData &&
+                                    snapshot.data != null &&
+                                    snapshot.data is List) {
+                                  // Safely cast snapshot.data to a List and check the condition
+                                  final List dataList = snapshot.data!;
+                                  isDataLengthValid = dataList.every((element) {
+                                    if (element is String ||
+                                        element is Iterable) {
+                                      return element.length < 10;
+                                    }
+                                    return false;
+                                  });
+                                }
 
                                 if (isDataLengthValid) {
                                   // return NoSim();
@@ -513,7 +512,7 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
         child: const Scaffold(
           body: Center(
             child: Text('Virtual Device Detected!'),
-          ), 
+          ),
         ),
       ),
     );

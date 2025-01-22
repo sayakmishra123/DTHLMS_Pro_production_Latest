@@ -13,6 +13,7 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../PC/PACKAGEDETAILS/packagedetails.dart';
+import '../../constants/constants.dart';
 
 class Mobile_Package_content extends StatefulWidget {
   final int packageid;
@@ -82,6 +83,8 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
 
   @override
   void initState() {
+    print(
+        'okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
     // setState(() {
     // infoTetch(widget.packageid.toString(), 'Video');
 
@@ -125,34 +128,34 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     // Get.back();
   }
 
-  Widget getFolderIcon(Map<String, dynamic> foldername, index) {
-    switch (foldername['section']) {
-      case "Video":
-        return showDetails(Icon(Icons.video_library, color: Colors.blue),
-            foldername: foldername);
+  // Widget getFolderIcon(Map<String, dynamic> foldername, index) {
+  //   switch (foldername['section']) {
+  //     case "Video":
+  //       return showDetails(Icon(Icons.video_library, color: Colors.blue),
+  //           foldername: foldername);
 
-      // return Icon(Icons.video_library, color: Colors.blue);
-      case "Live":
-        return showDetails(Icon(Icons.live_tv, color: Colors.red),
-            foldername: foldername);
+  //     // return Icon(Icons.video_library, color: Colors.blue);
+  //     case "Live":
+  //       return showDetails(Icon(Icons.live_tv, color: Colors.red),
+  //           foldername: foldername);
 
-      case "VideosBackup":
-        return showDetails(Icon(Icons.backup, color: Colors.orange),
-            foldername: foldername);
-      case "MCQ":
-        return showDetails(Icon(Icons.question_answer, color: Colors.green),
-            foldername: foldername);
-      case "Theory":
-        return showDetails(Icon(Icons.book, color: Colors.purple),
-            foldername: foldername);
-      case "Book":
-        return showDetails(Icon(Icons.library_books, color: Colors.brown),
-            foldername: foldername);
-      default:
-        return showDetails(Icon(Icons.folder, color: Colors.blue),
-            foldername: foldername);
-    }
-  }
+  //     case "VideosBackup":
+  //       return showDetails(Icon(Icons.backup, color: Colors.orange),
+  //           foldername: foldername);
+  //     case "MCQ":
+  //       return showDetails(Icon(Icons.question_answer, color: Colors.green),
+  //           foldername: foldername);
+  //     case "Theory":
+  //       return showDetails(Icon(Icons.book, color: Colors.purple),
+  //           foldername: foldername);
+  //     case "Book":
+  //       return showDetails(Icon(Icons.library_books, color: Colors.brown),
+  //           foldername: foldername);
+  //     default:
+  //       return showDetails(Icon(Icons.folder, color: Colors.blue),
+  //           foldername: foldername);
+  //   }
+  // }
 
   Widget showDetails(Icon icon, {Map<String, dynamic>? foldername}) {
     infoTetch(widget.packageid.toString(), foldername?['section'] ?? 'no');
@@ -243,214 +246,334 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     super.dispose();
   }
 
+  static final List<List<Color>> gradientColorsList = [
+    [
+      // Light orange -> peach
+      const Color(0xFFFFF1D5),
+      const Color(0xFFFFE0AF),
+    ],
+    [
+      // Light pink -> soft pink
+      const Color(0xFFFEE4F3),
+      const Color(0xFFFDD3E7),
+    ],
+    [
+      // Light pink -> soft pink
+      Colors.blue.shade200,
+      Colors.blue.shade100
+    ],
+    [
+      // Light pink -> soft pink
+      Colors.orange.shade200,
+      Colors.orange.shade100
+    ],
+    [
+      // Light pink -> soft pink
+      Colors.green.shade200,
+      Colors.green.shade100
+    ],
+    [
+      // Light pink -> soft pink
+      Colors.brown.shade200,
+      Colors.brown.shade100
+    ],
+  ];
+
+  final List<Map<String, dynamic>> folderIcons = [
+    {
+      "section": "Video",
+      "icon": Icons.video_library,
+      "color": Colors.blue,
+      "subtitle": "Watch recorded videos and tutorials",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.green.shade200,
+        Colors.green.shade100
+      ],
+    },
+    {
+      "section": "Live",
+      "icon": Icons.live_tv,
+      "color": Colors.red,
+      "subtitle": "Join live streaming sessions",
+      'color2': [
+        // Light orange -> peach
+        const Color(0xFFFFF1D5),
+        const Color(0xFFFFE0AF),
+      ],
+    },
+    {
+      "section": "VideosBackup",
+      "icon": Icons.backup,
+      "color": Colors.orange,
+      "subtitle": "Backup and restore your video files",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.brown.shade200,
+        Colors.brown.shade100
+      ],
+    },
+    {
+      "section": "MCQ",
+      "icon": Icons.question_answer,
+      "color": Colors.green,
+      "subtitle": "Practice multiple-choice questions",
+      'color2': [
+        // Light pink -> soft pink
+        Colors.blue.shade200,
+        Colors.blue.shade100
+      ],
+    },
+    {
+      "section": "Test",
+      "icon": Icons.book,
+      "color": Colors.purple,
+      "subtitle": "Read and review theoretical content",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.orange.shade200,
+        Colors.orange.shade100
+      ],
+    },
+    {
+      "section": "Book",
+      "icon": Icons.library_books,
+      "color": Colors.brown,
+      "subtitle": "Access and manage your digital library",
+      "color2": [
+        // Light pink -> soft pink
+        const Color(0xFFFEE4F3),
+        const Color(0xFFFDD3E7),
+      ],
+    },
+  ];
+
+  Icon getFolderIcon(Map<String, dynamic> foldername, int index) {
+    // Find the matching icon data from the list
+    final iconData = folderIcons.firstWhere(
+      (item) => item['section'] == foldername['section'],
+      orElse: () =>
+          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+    );
+
+    // Return the showDetails widget with the appropriate icon and foldername
+    return Icon(iconData['icon'], color: iconData['color']);
+  }
+
+  String getFolderSubtitle(Map<String, dynamic> foldername, int index) {
+    // Find the matching icon data from the list
+    final iconData = folderIcons.firstWhere(
+      (item) => item['section'] == foldername['section'],
+      orElse: () =>
+          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+    );
+
+    // Return the showDetails widget with the appropriate icon and foldername
+    return iconData['subtitle'];
+  }
+
+  Color getFolderIconColor(Map<String, dynamic> foldername, int index) {
+    // Find the matching icon data from the list
+    final iconData = folderIcons.firstWhere(
+      (item) => item['section'] == foldername['section'],
+      orElse: () =>
+          {"icon": Icons.folder, "color": Colors.blue, "subtitle": 'No'},
+    );
+
+    // Return the showDetails widget with the appropriate icon and foldername
+    return iconData['color'];
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Obx(() {
-        // var packagecontentlist = getx.packagedetailsfoldername.entries.toList();
-        return Scaffold(
-          appBar: AppBar(
-            iconTheme: IconThemeData(color: ColorPage.white),
-            backgroundColor: ColorPage.mainBlue,
-            title: Text(
-              widget.packagename,
-              style: FontFamily.style.copyWith(color: Colors.white),
-            ),
+    return Obx(() {
+      // var packagecontentlist = getx.packagedetailsfoldername.entries.toList();
+      return Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: ColorPage.white),
+          backgroundColor: ColorPage.mainBlue,
+          title: Text(
+            widget.packagename,
+            style: FontFamily.style.copyWith(color: Colors.white, fontSize: 15),
           ),
-          body: getx.sectionListOfPackage.isNotEmpty
-              ? ListView.builder(
-                  padding: EdgeInsets.all(8),
-                  itemCount: getx.sectionListOfPackage
+        ),
+        body: getx.sectionListOfPackage.isNotEmpty
+            ? ListView.builder(
+                padding: EdgeInsets.all(8),
+                itemCount: getx.sectionListOfPackage
+                    .where((item) =>
+                        item['section'] != 'PDF' &&
+                        item['section'] != 'YouTube')
+                    .length,
+                itemBuilder: (context, index) {
+                  final filteredList = getx.sectionListOfPackage
                       .where((item) =>
                           item['section'] != 'PDF' &&
                           item['section'] != 'YouTube')
-                      .length,
-                  itemBuilder: (context, index) {
-                    final filteredList = getx.sectionListOfPackage
-                        .where((item) =>
-                            item['section'] != 'PDF' &&
-                            item['section'] != 'YouTube')
-                        .toList();
+                      .toList();
 
-                    return InkWell(
-                      onTap: () {
-                        paging(filteredList[index]['section']);
+                  return InkWell(
+                    onTap: () {
+                      paging(filteredList[index]['section']);
 
-                        if (getx.sectionListOfPackage[index]['section'] ==
-                            "Video") {
-                          resetTblLocalNavigationByOrderOnsection(1);
-                          print(filteredList[index]['section'] + "wow mc");
+                      if (getx.sectionListOfPackage[index]['section'] ==
+                          "Video") {
+                        resetTblLocalNavigationByOrderOnsection(1);
+                        print(filteredList[index]['section'] + "wow mc");
 
-                          insertTblLocalNavigation(
-                                  "Section",
-                                  widget.packageid.toString(),
-                                  filteredList[index]["section"])
-                              .whenComplete(() => null);
+                        insertTblLocalNavigation(
+                                "Section",
+                                widget.packageid.toString(),
+                                filteredList[index]["section"])
+                            .whenComplete(() => null);
 
-                          getMainChapter(widget.packageid);
-                          getLocalNavigationDetails();
-                        }
-                        getx.selectedPackageId.value = widget.packageid;
-                      },
-                      child: Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              spreadRadius: 4,
-                              blurRadius: 10,
-                              offset: Offset(2, 2),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: getFolderIcon(filteredList[index], index),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.center,
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: [
-                          //         Row(
-                          //           children: [
-                          //             Container(
-                          //               margin: EdgeInsets.all(5),
-                          //               padding: EdgeInsets.all(10),
-                          //               decoration: BoxDecoration(
-                          //                 borderRadius: BorderRadius.circular(50),
-                          //                 color: Colors.blue[50],
-                          //               ),
-                          //               child: getFolderIcon(
-                          //                   filteredList[index]['section']),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //         Row(
-                          //           children: [
-                          //             Text(
-                          //               filteredList[index]['section'],
-                          //               style: FontFamily.font4.copyWith(
-                          //                 fontWeight: FontWeight.bold,
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ],
-                          //     ),
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(right: 10),
-                          //       child: Column(
-                          //         children: [
-                          //           Row(
-                          //             children: [
-                          //               Text(
-                          //                 'subtitle for this package',
-                          //                 style: FontFamily.style.copyWith(
-                          //                   fontSize: 13,
-                          //                   color: Colors.grey[600],
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //           //    Padding(
-                          //           //   padding: const EdgeInsets.only(left: 10, top: 5),
-                          //           //   child: Row(
-                          //           //     children: [
-                          //           //       Text(
-                          //           //         '5 Videos Available',
-                          //           //         style: FontFamily.style.copyWith(
-                          //           //           fontSize: 13,
-                          //           //           color: Colors.green,
-                          //           //         ),
-                          //           //       ),
-                          //           //     ],
-                          //           //   ),
-                          //           // ),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                        ),
-                      ),
-                    );
-                  },
-                )
-              : Center(
-                  child: CircularProgressIndicator(),
+                        getMainChapter(widget.packageid);
+                        getLocalNavigationDetails();
+                      }
+                      getx.selectedPackageId.value = widget.packageid;
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _buildOfferCard(
+                          title: filteredList[index]['section'],
+                          subtitle:
+                              getFolderSubtitle(filteredList[index], index),
+                          gradientColors: gradientColorsList[index],
+                          arrowBackground: Colors.orange.shade100,
+                          arrowColor: Colors.orange,
+                          icon: getFolderIcon(filteredList[index], index),
+                          iconcolor:
+                              getFolderIconColor(filteredList[index], index)
+                          // zipText: 'ZIP',
+                          // zipTextColor: Colors.orange,
+                          ),
+                    ),
+
+                    //  Container(
+                    //   margin:
+                    //       EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.white,
+                    //     borderRadius: BorderRadius.circular(10),
+                    //     boxShadow: [
+                    //       BoxShadow(
+                    //         color: Colors.black12,
+                    //         spreadRadius: 4,
+                    //         blurRadius: 10,
+                    //         offset: Offset(2, 2),
+                    //       ),
+                    //     ],
+                    //   ),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(10.0),
+                    // child: getFolderIcon(filteredList[index], index),
+                    //   ),
+                    // ),
+                  );
+                },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
+      );
+    });
+  }
+
+  static Widget _buildOfferCard(
+      {required String title,
+      required String subtitle,
+      required List<Color> gradientColors,
+      required Color arrowBackground,
+      required Color arrowColor,
+      required Icon icon,
+      required Color iconcolor
+
+      // required String zipText,
+      // required Color zipTextColor,
+      }) {
+    return Container(
+      width: 100,
+      // Set a fixed height for the card
+      height: 160, // <-- Adjust this value as needed
+      // margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-
-          // body: ListView.builder(
-          // itemCount: packagecontentlist.length,
-          //     itemCount: getx.sectionListOfPackage.length,
-          //     itemBuilder: (context, index) {
-          //       // var item = packagecontentlist[index];
-          //       return Container(
-          //           margin: EdgeInsets.all(5),
-          //           decoration: BoxDecoration(
-          //             // boxShadow: [
-          //             //   BoxShadow(
-          //             //     blurRadius: 3,
-          //             //     color: Color.fromARGB(255, 196, 190, 244),
-          //             //     offset: Offset(0, 0),
-          //             //   ),
-          //             // ],
-          //             borderRadius: BorderRadius.all(
-          //               Radius.circular(8),
-          //             ),
-          //             color: Color.fromARGB(255, 255, 255, 255),
-          //           ),
-          //           child: MaterialButton(
-          //             onPressed: () {
-          //               paging(
-          //                getx.sectionListOfPackage[index]['section'],
-          //               );
-          //               // if( getx.sectionListOfPackage[index]["section"]=="Video"){
-          //                   resetTblLocalNavigationByOrderOnsection(1);
-          //                 print(getx.sectionListOfPackage[index]['section']+"wow mc");
-
-          //                 insertTblLocalNavigation(
-          //                     "Section",
-          //                     widget.packageid.toString(),
-          //                     getx.sectionListOfPackage[index]
-          //                         ["section"]).whenComplete(() => null);
-
-          //                   getMainChapter(widget.packageid );
-
-          //                 // insertTblLocalNavigation(
-          //                 //     "Subject",
-          //                 //     getx.subjectDetails[0]['SubjectId'],
-          //                 //     getx.subjectDetails[0]['SubjectName']);
-          //                 getLocalNavigationDetails();
-
-          //                 getx.selectedPackageId.value = widget.packageid;
-          //                 // widget.onItemSelected(index);
-          //                 // paging(getx.sectionListOfPackage[index]
-          //                 //     ["section"]);
-          //               // }
-
-          //             },
-          //             child: ListTile(
-          //                 leading: getFolderIcon(
-          //                  getx.sectionListOfPackage[index]['section'],
-          //                 ),
-          //                 title: Text(getx.sectionListOfPackage[index]['section'],
-          //                     style: FontFamily.font4
-          //                         .copyWith(fontWeight: FontWeight.bold)),
-          //                 trailing: Icon(
-          //                   Icons.arrow_forward_ios,
-          //                  size: 16,
-          //                 )),
-          //           ));
-          //     }),
-        );
-      }),
+              ),
+              Container(
+                  // margin: EdgeInsets.all(5),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: const Color.fromARGB(255, 231, 242, 250),
+                  ),
+                  child: Icon(
+                    icon.icon,
+                    color: iconcolor,
+                  ))
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Subtitle
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 14,
+              color: const Color.fromARGB(255, 49, 49, 49).withOpacity(0.7),
+            ),
+          ),
+          const Spacer(),
+          // Bottom row: Circular arrow on the left, ZIP text on the right
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Image.asset(logopath, width: 45),
+              // Circular arrow icon
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: arrowBackground,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.arrow_forward,
+                  color: arrowColor,
+                  size: 20,
+                ),
+              ),
+              // Image.asset(logopath, width: 45),
+              // ZIP or ZIP EMI text
+              // Text(
+              //   zipText,
+              //   style: TextStyle(
+              //     fontSize: 18,
+              //     fontWeight: FontWeight.bold,
+              //     color: zipTextColor,
+              //   ),
+              // ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

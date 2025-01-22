@@ -48,12 +48,15 @@ class _MobilePackageVideoDashboardState
   int selectedVideoIndex = -1;
   int selectedvideoListIndex = -1;
 
+  TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     dio = Dio();
     filteredChapterDetails = [
       ...getx.alwaysShowChapterDetailsOfVideo,
-      ...getx.alwaysShowFileDetailsOfpdf
+      ...getx.alwaysShowFileDetailsOfpdf,
+      ...getx.alwaysShowChapterfilesOfVideo
     ];
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
@@ -76,10 +79,33 @@ class _MobilePackageVideoDashboardState
         timer.cancel();
       }
     });
-
+        //  _filteredItems = _combineAndTagItems();
     super.initState();
   }
 
+  // List<Map<String, dynamic>> _combineAndTagItems() {
+  //   final videos = getx.alwaysShowChapterDetailsOfVideo
+  //       .map((item) => {...item, 'type': 'video'})
+  //       .toList();
+  //       print(videos);
+  //       print('_combineAndTagItems');
+  //   final pdfs = getx.alwaysShowFileDetailsOfpdf
+  //       .map((item) => {...item, 'type': 'pdf'})
+  //       .toList();
+  //       print(pdfs);
+  //       print('_combineAndTagItems');
+
+
+  //   final chapterFiles = getx.alwaysShowChapterfilesOfVideo
+  //       .map((item) => {...item, 'type': 'chapter'})
+  //       .toList();
+  //       print(chapterFiles);
+  //       print('_combineAndTagItems');
+
+
+
+  //   return [...videos, ...pdfs, ...chapterFiles];
+  // }
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
@@ -191,6 +217,12 @@ class _MobilePackageVideoDashboardState
   }
 
   int selectedIndex = -1;
+    List<Map<String, dynamic>> _filteredItems = [];
+    
+  search(value){
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -318,76 +350,7 @@ class _MobilePackageVideoDashboardState
                                         print(getx
                                             .alwaysShowChapterDetailsOfVideo
                                             .length);
-                                      },
-
-                                      // child: RichText(
-                                      //   text: TextSpan(
-                                      //     children: [
-                                      //       TextSpan(
-                                      //         text: getx.navigationList[i]["NavigationName"],
-                                      //         style: style.copyWith(fontSize: 18), // Style for the main text
-                                      //       ),
-                                      //       TextSpan(
-                                      //         text: ' > ',
-                                      //         style: style.copyWith(
-                                      //           fontSize: 18,
-                                      //           color: Colors.red, // Change to your desired color
-                                      //         ), // Style for the '>' symbol
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
-
-                                      child:
-                                          // Row(
-                                          //   children: [
-                                          //     if (i != 0) ...[
-                                          //       Card(
-                                          //         color: const Color.fromARGB(
-                                          //             220, 19, 23, 36),
-                                          //         shape: BeveledRectangleBorder(
-                                          //             borderRadius:
-                                          //                 BorderRadius.circular(8)),
-                                          //         elevation: 4,
-                                          //         child: Container(
-                                          //           padding: EdgeInsets.all(8),
-                                          //           child: Text(
-                                          //             getx.navigationList[i]
-                                          //                 ["NavigationName"],
-                                          //             style:
-                                          //                 FontFamily.style.copyWith(
-                                          //               fontSize: 10,
-                                          //               color: Colors
-                                          //                   .white, // Dark color for a classic look
-                                          //               fontWeight: FontWeight
-                                          //                   .w800, // Slightly bold
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //       Padding(
-                                          //         padding:
-                                          //             const EdgeInsets.symmetric(
-                                          //                 horizontal: 1),
-                                          //         child: Icon(
-                                          //           Icons.chevron_right,
-                                          //           color: Colors.grey,
-                                          //           size:
-                                          //               20, // Smaller size for a subtle arrow
-                                          //         ),
-                                          //       ),
-                                          //     ]
-                                          //     // Text(
-                                          //     //   getx.navigationList[i]
-                                          //     //           ["NavigationName"]
-                                          //     //       ,
-                                          //     //   style: FontFamily.style
-                                          //     //       .copyWith(fontSize: 18),
-                                          //     // ),
-                                          //   ],
-                                          // ),
-
-                                          Padding(
+                                      }, child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
                                         child: Row(children: [
@@ -482,18 +445,7 @@ class _MobilePackageVideoDashboardState
                                                     vertical: 10,
                                                     horizontal: 50),
                                               ),
-                                            ),
-
-                                            // Padding(
-                                            //   padding: const EdgeInsets
-                                            //       .symmetric(
-                                            //       horizontal: 1),
-                                            //   child: Icon(
-                                            //     Icons.chevron_right,
-                                            //     color: Colors.grey,
-                                            //     size: 20,
-                                            //   ),
-                                            // ),
+                                            )
                                           ],
                                         ]),
                                       ),
@@ -511,56 +463,88 @@ class _MobilePackageVideoDashboardState
               Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-
-
-
-
-                      children: [
-filecountWidget( getx.alwaysShowChapterDetailsOfVideo.length,"assets/folder5.png"),
-filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf5.png"),
-filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
-                        
-                      ],
+                    Expanded(
+                      child: Row(
+                      
+                      
+                      
+                      
+                        children: [
+                      filecountWidget( getx.alwaysShowChapterDetailsOfVideo.length,"assets/folder5.png"),
+                      filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf.png"),
+                      filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
+                          
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Tooltip(
-                          message: "Folder View",
-                          child: IconButton(
-                              onPressed: () async {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setBool("folderview", true);
-                                getx.isFolderview.value = true;
-                              },
-                              icon: Icon(
-                                Icons.grid_view_rounded,
-                                color: getx.isFolderview.value
-                                    ? ColorPage.colorbutton
-                                    : ColorPage.colorblack,
-                              )),
+
+
+
+
+                    Expanded(
+                      child: Row(children: [Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10,right: 10),
+                          child: TextFormField( 
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                                              suffixIcon: Icon(
+                                                Icons.search,
+                                              ),
+                                              suffixIconColor: Color.fromARGB(255, 197, 195, 195),
+                                              hintText: 'Search',
+                                              hintStyle:
+                                                  FontFamily.font9.copyWith(color: ColorPage.brownshade),
+                                              fillColor: Color.fromARGB(255, 255, 255, 255),
+                                              filled: true,
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                  borderRadius: BorderRadius.circular(40))),
+                                                  onChanged: (value) {
+                                                    search(value);
+                                                  },
+                          ),
                         ),
-                        Tooltip(
-                          message: "List View",
-                          child: IconButton(
-                              onPressed: () async {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setBool("folderview", false);
-                                getx.isFolderview.value = false;
-                              },
-                              icon: Icon(
-                                Icons.view_list,
-                                color: !getx.isFolderview.value
-                                    ? ColorPage.colorbutton
-                                    : ColorPage.colorblack,
-                              )),
-                        ),
-                      ],
-                    ),
+                      ),],),
+                    )
+                    // Row(
+                    //   children: [
+                    //     Tooltip(
+                    //       message: "Folder View",
+                    //       child: IconButton(
+                    //           onPressed: () async {
+                    //             final SharedPreferences prefs =
+                    //                 await SharedPreferences.getInstance();
+                    //             await prefs.setBool("folderview", true);
+                    //             getx.isFolderview.value = true;
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.grid_view_rounded,
+                    //             color: getx.isFolderview.value
+                    //                 ? ColorPage.colorbutton
+                    //                 : ColorPage.colorblack,
+                    //           )),
+                    //     ),
+                    //     Tooltip(
+                    //       message: "List View",
+                    //       child: IconButton(
+                    //           onPressed: () async {
+                    //             final SharedPreferences prefs =
+                    //                 await SharedPreferences.getInstance();
+                    //             await prefs.setBool("folderview", false);
+                    //             getx.isFolderview.value = false;
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.view_list,
+                    //             color: !getx.isFolderview.value
+                    //                 ? ColorPage.colorbutton
+                    //                 : ColorPage.colorblack,
+                    //           )),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -1047,6 +1031,7 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
   }
     return isVideo? GestureDetector(
                 onTap: () {
+                      //  _filteredItems = _combineAndTagItems();
                   setState(() {
                     selectedVideoIndex = index;
                   });
@@ -1238,6 +1223,8 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
       ),
       child: MaterialButton(
         onPressed: () {
+        //  _filteredItems = _combineAndTagItems();
+
           if (ispdf) {
             cancelAllDownloads();
 
@@ -1301,7 +1288,7 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
         child: ListTile(
           leading: ispdf
               ? Image.asset(
-                  "assets/pdf5.png",
+                  "assets/pdf.png",
                   width: 30,
                 )
               : Image.asset(
@@ -1327,15 +1314,12 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
               // selectedIndex == index
               //     ? ColorPage.white
               //     :
-                   ColorPage.colorblack,
+                   ColorPage.colorblack, 
             ),
           ),
         ),
       ),
     );
-
-
-    
   }
 
   Widget buildGridViewItem(int index, bool isPdf,bool isVideo) {

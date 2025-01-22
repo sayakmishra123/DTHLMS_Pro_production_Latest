@@ -7,8 +7,10 @@ import 'dart:developer';
 // import 'package:dthlms/MOBILE/live/getx.dart';
 
 import 'package:dthlms/ACTIVATION_WIDGET/enebelActivationcode.dart';
+import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/Live/chatwidget.dart';
 import 'package:dthlms/Live/popupmenu.dart';
+import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/youtube/youtubelive.dart';
@@ -142,12 +144,14 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await InMeetClient.instance.getAvailableDeviceInfo();
-      Get.find<VcController>().assigningRenderer();
-    });
-    onUserJoinMeeting();
+    if (widget.videoCategory != 'YouTube') {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await InMeetClient.instance.getAvailableDeviceInfo();
+        Get.find<VcController>().assigningRenderer();
+      });
+    }
 
+    onUserJoinMeeting();
     super.initState();
   }
 
@@ -248,6 +252,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
     );
   }
 
+  Getx getx = Get.put(Getx());
   AnimationStyle? _animationStyle;
   Future back() async {
     await showDialog(
@@ -286,951 +291,898 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
       onWillPop: () async {
         return await back();
       },
-      child: Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            title: Text(widget.packageName.toString(),
-                style: const TextStyle(
-                    fontSize: 20, fontFamily: 'ocenwide', color: Colors.black)),
-            leading: Image.asset(
-              logopath,
-              height: 40,
-            ),
-          ),
-          body: GetBuilder<VcController>(builder: (vcController) {
-            if (!vcController.isRoomJoined.value &&
-                widget.videoCategory == 'Live1') {
-              return Material(
-                color: Colors.transparent,
-                child: const Center(
-                  child: Text(
-                    'Wait for a moment',
-                    style: TextStyle(color: Colors.white, fontSize: 30),
-                  ),
-                ),
-              );
-              // playSound();
-            }
-            return SafeArea(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        // right side main screen
-                        Positioned.fill(
-                            // top: 30,
-                            child: Row(
-                          children: [
-                            // Left main screen content
+      child: Obx(
+        () => Scaffold(
+            floatingActionButton: widget.videoCategory == 'YouTube'
+                ? FloatingActionButton.small(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return SafeArea(
+                            child: Material(
+                          color: Colors.transparent,
+                          child: ChatUi(widget.sessionId.toString(),
+                              widget.userid, widget.username
 
-                            Expanded(
-                              child: Column(
-                                // mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment
-                                    .center, // Center vertically
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                              // username
+
+                              ),
+                        ));
+                      }));
+                    },
+                    backgroundColor: btnColor,
+                    // heroTag: 'btn5',
+                    child: Icon(
+                      Icons.chat,
+                      color: Colors.white,
+                      weight: 5,
+                    ),
+                  )
+                : null,
+            backgroundColor: Colors.black,
+            appBar: getx.isFullscreen.value
+                ? null
+                : AppBar(
+                    title: Text(widget.packageName.toString(),
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'ocenwide',
+                            color: Colors.black)),
+                    leading: Image.asset(
+                      logopath,
+                      height: 40,
+                    ),
+                  ),
+            body: widget.videoCategory == "YouTube"
+                ? SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        YoutubeLive(widget.link, widget.username, true),
+                      ],
+                    ),
+                  )
+                : GetBuilder<VcController>(builder: (vcController) {
+                    if (!vcController.isRoomJoined.value &&
+                        widget.videoCategory == 'Live1') {
+                      return Material(
+                        color: Colors.transparent,
+                        child: const Center(
+                          child: Text(
+                            'Wait for a moment',
+                            style: TextStyle(color: Colors.white, fontSize: 30),
+                          ),
+                        ),
+                      );
+                      // playSound();
+                    }
+                    return SafeArea(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                // right side main screen
+                                Positioned.fill(
+                                    // top: 30,
+                                    child: Row(
+                                  children: [
+                                    // Left main screen content
+
+                                    Expanded(
+                                      child: Column(
+                                        // mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .center, // Center vertically
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          widget.videoCategory == "YouTube"
-                                              ? YoutubeLive(widget.link,
-                                                  widget.username, true)
-                                              : Expanded(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Expanded(
-                                                        // Adjust the flex value as needed
-                                                        child: Container(
+                                          Expanded(
+                                            child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  // widget.videoCategory == "YouTube"
+                                                  //     ? YoutubeLive(widget.link,
+                                                  //         widget.username, true)
+                                                  // :
+                                                  Expanded(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Expanded(
+                                                          // Adjust the flex value as needed
+                                                          child: Container(
 
-                                                            // ),
-                                                            child: Center(
-                                                          child: Stack(
-                                                            children: [
-                                                              // Use a Column to stack widgets vertically
-                                                              Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center, // Center content vertically
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: GetBuilder<
-                                                                        VcController>(
-                                                                      builder:
-                                                                          (vcController) {
-                                                                        // Combine peers and screen-sharing peers
-                                                                        List<Peer>
-                                                                            allPeers =
-                                                                            [];
+                                                              // ),
+                                                              child: Center(
+                                                            child: Stack(
+                                                              children: [
+                                                                // Use a Column to stack widgets vertically
+                                                                Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center, // Center content vertically
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: GetBuilder<
+                                                                          VcController>(
+                                                                        builder:
+                                                                            (vcController) {
+                                                                          // Combine peers and screen-sharing peers
+                                                                          List<Peer>
+                                                                              allPeers =
+                                                                              [];
 
-                                                                        // Add peers who are not screen-sharing
-                                                                        allPeers.addAll(vcController
-                                                                            .peersList
-                                                                            .values
-                                                                            .where((peer) {
-                                                                          return !(vcController
-                                                                              .screenShareList
-                                                                              .contains(peer));
-                                                                        }));
+                                                                          // Add peers who are not screen-sharing
+                                                                          allPeers.addAll(vcController
+                                                                              .peersList
+                                                                              .values
+                                                                              .where((peer) {
+                                                                            return !(vcController.screenShareList.contains(peer));
+                                                                          }));
 
-                                                                        // Add screen-sharing peers
-                                                                        allPeers
-                                                                            .addAll(vcController.screenShareList);
+                                                                          // Add screen-sharing peers
+                                                                          allPeers
+                                                                              .addAll(vcController.screenShareList);
 
-                                                                        if (allPeers
-                                                                            .isEmpty) {
-                                                                          // No peers to display
-                                                                          return Center(
-                                                                            child:
-                                                                                Text(
-                                                                              'No video available',
-                                                                              style: TextStyle(
-                                                                                color: Colors.white,
-                                                                                fontSize: 18,
+                                                                          if (allPeers
+                                                                              .isEmpty) {
+                                                                            // No peers to display
+                                                                            return Center(
+                                                                              child: Text(
+                                                                                'No video available',
+                                                                                style: TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontSize: 18,
+                                                                                ),
                                                                               ),
-                                                                            ),
-                                                                          );
-                                                                        }
-
-                                                                        // Build the list of RemoteStreamWidgets
-                                                                        return ListView
-                                                                            .builder(
-                                                                          // shrinkWrap: true,
-                                                                          itemCount:
-                                                                              allPeers.length,
-                                                                          itemBuilder:
-                                                                              (context, index) {
-                                                                            final peer =
-                                                                                allPeers[index];
-                                                                            final isScreenShare =
-                                                                                vcController.screenShareList.contains(peer);
-
-                                                                            return RemoteStreamWidget(
-                                                                              peer: peer,
-                                                                              isScreenShare: isScreenShare,
                                                                             );
-                                                                          },
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )),
-                                                        // const SizedBox(
-                                                        //   width: 25,
-                                                        // )
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                          //  widget.videoCategory == "YouTube"?SizedBox()  :
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 25,
-                                              horizontal: 5,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                widget.videoCategory ==
-                                                        "YouTube"
-                                                    ? SizedBox()
-                                                    : Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(left: 0),
-                                                        child: IconButton(
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Colors.red[400],
-                                                            shape:
-                                                                const RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .all(Radius
-                                                                          .circular(
-                                                                              8)),
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-                                                            showDialog(
-                                                              barrierDismissible:
-                                                                  false,
-                                                              context: context,
-                                                              builder: (context) =>
-                                                                  CustomLogoutDialog(
-                                                                title:
-                                                                    "You're close the meeting...\nAre you sure?",
-                                                                description: '',
-                                                                ok: () {},
-                                                              ),
-                                                            );
-                                                          },
-                                                          icon: Icon(
-                                                            Icons.phone,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
+                                                                          }
 
-                                                        // CupertinoButton(
-                                                        //   color: CupertinoColors.systemRed,
-                                                        //   padding: EdgeInsets.symmetric(horizontal: 3),
-                                                        //     // style: TextButton.styleFrom(
-                                                        //     //   backgroundColor:
-                                                        //     //   Colors.red[400],
-                                                        //     //   shape:
-                                                        //     //   const RoundedRectangleBorder(
-                                                        //     //     borderRadius:
-                                                        //     //     BorderRadius.all(
-                                                        //     //         Radius.circular(8)),
-                                                        //     //   ),
-                                                        //     // ),
-                                                        //     onPressed: () {
-                                                        //       // turned off by shubha
-                                                        //       // showDialog(
-                                                        //       //   barrierDismissible: false,
-                                                        //       //   context: context,
-                                                        //       //   builder: (context) =>
-                                                        //       //       CustomLogoutDialog(
-                                                        //       //           index: 0),
-                                                        //       // ).then((value) =>
-                                                        //       // value['id'] == 1
-                                                        //       //     ? Navigator.pop(context)
-                                                        //       //     : null);
-                                                        //     },
-                                                        //     child: Icon(CupertinoIcons.phone)),
-                                                        //
-                                                      ),
+                                                                          // Build the list of RemoteStreamWidgets
+                                                                          return ListView
+                                                                              .builder(
+                                                                            // shrinkWrap: true,
+                                                                            itemCount:
+                                                                                allPeers.length,
+                                                                            itemBuilder:
+                                                                                (context, index) {
+                                                                              final peer = allPeers[index];
+                                                                              final isScreenShare = vcController.screenShareList.contains(peer);
 
-                                                Row(
-                                                  children: [
-                                                    widget.videoCategory ==
-                                                            "YouTube"
-                                                        ? SizedBox()
-                                                        : Row(
-                                                            children: [
-                                                              PopupMenuButton<
-                                                                  String>(
-                                                                popUpAnimationStyle:
-                                                                    _animationStyle,
-                                                                icon:
-                                                                    const Icon(
-                                                                  CupertinoIcons
-                                                                      .chevron_down,
-                                                                  size: 12,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                                onSelected: (String
-                                                                    selectedItem) {
-                                                                  // Handle the selected item
-                                                                  print(
-                                                                      'Selected: $selectedItem');
-                                                                },
-                                                                itemBuilder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  // Create a list of PopupMenuEntry
-                                                                  List<PopupMenuEntry<String>>
-                                                                      menuItems =
-                                                                      [];
-
-                                                                  // Add the audio output items
-                                                                  menuItems.addAll(
-                                                                      vcController
-                                                                          .audioOutput
-                                                                          .map(
-                                                                              (e) {
-                                                                    return PopupMenuItem<
-                                                                        String>(
-                                                                      value: e,
-                                                                      child:
-                                                                          Text(
-                                                                        e,
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontFamily:
-                                                                                'ocenwide',
-                                                                            color:
-                                                                                Colors.black),
+                                                                              return RemoteStreamWidget(
+                                                                                peer: peer,
+                                                                                isScreenShare: isScreenShare,
+                                                                              );
+                                                                            },
+                                                                          );
+                                                                        },
                                                                       ),
-                                                                    );
-                                                                  }).toList());
-
-                                                                  return menuItems;
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-
-                                                    widget.videoCategory ==
-                                                            "YouTube"
-                                                        ? SizedBox()
-                                                        : Row(
-                                                            children: [
-                                                              // Display the small FloatingActionButton if there are audio input or output options
-                                                              if (vcController
-                                                                      .audioInput
-                                                                      .isNotEmpty ||
-                                                                  vcController
-                                                                      .audioOutput
-                                                                      .isNotEmpty)
-                                                                FloatingActionButton(
-                                                                    mini: true,
-                                                                    heroTag:
-                                                                        'mic',
-                                                                    backgroundColor:
-                                                                        btnColor,
-                                                                    onPressed:
-                                                                        () {
-                                                                      try {
-                                                                        if (vcController.micStreamStatus == ButtonStatus.off &&
-                                                                            vcController
-                                                                                .audioInput.isNotEmpty) {
-                                                                          vcController
-                                                                              .changeMicSreamStatus(ButtonStatus.loading);
-                                                                          inMeetClient
-                                                                              .unmuteMic(vcController.selectedAudioInputDeviceId);
-                                                                        } else if (vcController
-                                                                            .audioInput
-                                                                            .isNotEmpty) {
-                                                                          vcController
-                                                                              .changeMicSreamStatus(ButtonStatus.loading);
-                                                                          inMeetClient
-                                                                              .muteMic();
-                                                                        }
-                                                                      } catch (e) {
-                                                                        writeToFile(
-                                                                            e,
-                                                                            "mobile vc Screen");
-                                                                        // Handle any exceptions here, e.g., show an error message
-                                                                        print(
-                                                                            'Error: $e');
-                                                                      }
-                                                                    },
-                                                                    child: vcController.micStreamStatus ==
-                                                                            ButtonStatus.on
-                                                                        ? Image(
-                                                                            image:
-                                                                                AssetImage(
-                                                                              'assets/microphone.png',
-                                                                            ),
-                                                                            height:
-                                                                                20,
-                                                                            // width: 15,
-                                                                          )
-                                                                        : Image(
-                                                                            image:
-                                                                                AssetImage('assets/mute.png'),
-                                                                            height:
-                                                                                20,
-                                                                          ))
-                                                              // Otherwise, display the regular FloatingActionButton
-                                                              else
-                                                                FloatingActionButton(
-                                                                  mini: true,
-                                                                  onPressed:
-                                                                      () {
-                                                                    try {
-                                                                      if (vcController.micStreamStatus ==
-                                                                              ButtonStatus
-                                                                                  .off &&
-                                                                          vcController
-                                                                              .audioInput
-                                                                              .isNotEmpty) {
-                                                                        vcController
-                                                                            .changeMicSreamStatus(ButtonStatus.loading);
-                                                                        inMeetClient
-                                                                            .unmuteMic(vcController.selectedAudioInputDeviceId);
-                                                                      } else if (vcController
-                                                                          .audioInput
-                                                                          .isNotEmpty) {
-                                                                        vcController
-                                                                            .changeMicSreamStatus(ButtonStatus.loading);
-                                                                        inMeetClient
-                                                                            .muteMic();
-                                                                      }
-                                                                    } catch (e) {
-                                                                      writeToFile(
-                                                                          e,
-                                                                          "mobile VC Screen");
-                                                                      // Handle any exceptions here, e.g., show an error message
-                                                                      print(
-                                                                          'Error: $e');
-                                                                    }
-                                                                  },
-                                                                  backgroundColor:
-                                                                      btnColor,
-                                                                  heroTag:
-                                                                      'btn2',
-                                                                  child: Image
-                                                                      .asset(
-                                                                    'assets/microphone.png',
-                                                                    height: 20,
-                                                                    filterQuality:
-                                                                        FilterQuality
-                                                                            .medium,
-                                                                    scale: 1,
-                                                                  ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                            ],
-                                                          ),
-                                                    Row(
+                                                              ],
+                                                            ),
+                                                          )),
+                                                          // const SizedBox(
+                                                          //   width: 25,
+                                                          // )
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  //  widget.videoCategory == "YouTube"?SizedBox()  :
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 25,
+                                                      horizontal: 5,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
                                                       children: [
                                                         widget.videoCategory ==
                                                                 "YouTube"
                                                             ? SizedBox()
-                                                            : PopupMenuButton<
-                                                                String>(
-                                                                icon: Icon(
-                                                                  CupertinoIcons
-                                                                      .chevron_down,
-                                                                  size: 12,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                                onSelected: (String
-                                                                    selectedItem) {
-                                                                  // Update the selected video output device
-                                                                  selectedVideoOutputDevice =
-                                                                      selectedItem;
-                                                                  vcController.selectDevice(
-                                                                      DeviceType
-                                                                          .videoInput,
-                                                                      selectedVideoOutputDevice!);
-                                                                },
-                                                                itemBuilder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  // Generate the menu items from vcController.videoInputs
-                                                                  return vcController
-                                                                      .videoInputs
-                                                                      .map((e) {
-                                                                    return PopupMenuItem<
-                                                                        String>(
-                                                                      value: e,
-                                                                      child:
-                                                                          Text(
-                                                                        e,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          fontFamily:
-                                                                              'ocenwide',
-                                                                          color:
-                                                                              Colors.black, // You can adjust the color as needed
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
+                                                            : Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        left:
+                                                                            0),
+                                                                child:
+                                                                    IconButton(
+                                                                  style: TextButton
+                                                                      .styleFrom(
+                                                                    backgroundColor:
+                                                                        Colors.red[
+                                                                            400],
+                                                                    shape:
+                                                                        const RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.all(
+                                                                              Radius.circular(8)),
+                                                                    ),
+                                                                  ),
+                                                                  onPressed:
+                                                                      () {
+                                                                    showDialog(
+                                                                      barrierDismissible:
+                                                                          false,
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) =>
+                                                                              CustomLogoutDialog(
+                                                                        title:
+                                                                            "You're close the meeting...\nAre you sure?",
+                                                                        description:
+                                                                            '',
+                                                                        ok: () {},
                                                                       ),
                                                                     );
-                                                                  }).toList();
-                                                                },
+                                                                  },
+                                                                  icon: Icon(
+                                                                    Icons.phone,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+
+                                                                // CupertinoButton(
+                                                                //   color: CupertinoColors.systemRed,
+                                                                //   padding: EdgeInsets.symmetric(horizontal: 3),
+                                                                //     // style: TextButton.styleFrom(
+                                                                //     //   backgroundColor:
+                                                                //     //   Colors.red[400],
+                                                                //     //   shape:
+                                                                //     //   const RoundedRectangleBorder(
+                                                                //     //     borderRadius:
+                                                                //     //     BorderRadius.all(
+                                                                //     //         Radius.circular(8)),
+                                                                //     //   ),
+                                                                //     // ),
+                                                                //     onPressed: () {
+                                                                //       // turned off by shubha
+                                                                //       // showDialog(
+                                                                //       //   barrierDismissible: false,
+                                                                //       //   context: context,
+                                                                //       //   builder: (context) =>
+                                                                //       //       CustomLogoutDialog(
+                                                                //       //           index: 0),
+                                                                //       // ).then((value) =>
+                                                                //       // value['id'] == 1
+                                                                //       //     ? Navigator.pop(context)
+                                                                //       //     : null);
+                                                                //     },
+                                                                //     child: Icon(CupertinoIcons.phone)),
+                                                                //
                                                               ),
-                                                        widget.videoCategory ==
-                                                                "YouTube"
-                                                            ? SizedBox()
-                                                            : FloatingActionButton(
-                                                                mini: true,
-                                                                onPressed:
-                                                                    () async {
-                                                                  try {
-                                                                    log(vcController
-                                                                        .videoInputs
-                                                                        .toString());
-                                                                    vcController
-                                                                        .changeCameraSreamStatus(
-                                                                            ButtonStatus.loading);
-                                                                    if (vcController
-                                                                            .localRenderer ==
-                                                                        null) {
-                                                                      await inMeetClient
-                                                                          .enableWebcam();
-                                                                    } else {
-                                                                      await inMeetClient
-                                                                          .disableWebcam();
+
+                                                        Row(
+                                                          children: [
+                                                            widget.videoCategory ==
+                                                                    "YouTube"
+                                                                ? SizedBox()
+                                                                : Row(
+                                                                    children: [
+                                                                      PopupMenuButton<
+                                                                          String>(
+                                                                        popUpAnimationStyle:
+                                                                            _animationStyle,
+                                                                        icon:
+                                                                            const Icon(
+                                                                          CupertinoIcons
+                                                                              .chevron_down,
+                                                                          size:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        onSelected:
+                                                                            (String
+                                                                                selectedItem) {
+                                                                          // Handle the selected item
+                                                                          print(
+                                                                              'Selected: $selectedItem');
+                                                                        },
+                                                                        itemBuilder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          // Create a list of PopupMenuEntry
+                                                                          List<PopupMenuEntry<String>>
+                                                                              menuItems =
+                                                                              [];
+
+                                                                          // Add the audio output items
+                                                                          menuItems.addAll(vcController
+                                                                              .audioOutput
+                                                                              .map((e) {
+                                                                            return PopupMenuItem<String>(
+                                                                              value: e,
+                                                                              child: Text(
+                                                                                e,
+                                                                                style: TextStyle(fontSize: 14, fontFamily: 'ocenwide', color: Colors.black),
+                                                                              ),
+                                                                            );
+                                                                          }).toList());
+
+                                                                          return menuItems;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+
+                                                            widget.videoCategory ==
+                                                                    "YouTube"
+                                                                ? SizedBox()
+                                                                : Row(
+                                                                    children: [
+                                                                      // Display the small FloatingActionButton if there are audio input or output options
+                                                                      if (vcController
+                                                                              .audioInput
+                                                                              .isNotEmpty ||
+                                                                          vcController
+                                                                              .audioOutput
+                                                                              .isNotEmpty)
+                                                                        FloatingActionButton(
+                                                                            mini:
+                                                                                true,
+                                                                            heroTag:
+                                                                                'mic',
+                                                                            backgroundColor:
+                                                                                btnColor,
+                                                                            onPressed:
+                                                                                () {
+                                                                              try {
+                                                                                if (vcController.micStreamStatus == ButtonStatus.off && vcController.audioInput.isNotEmpty) {
+                                                                                  vcController.changeMicSreamStatus(ButtonStatus.loading);
+                                                                                  inMeetClient.unmuteMic(vcController.selectedAudioInputDeviceId);
+                                                                                } else if (vcController.audioInput.isNotEmpty) {
+                                                                                  vcController.changeMicSreamStatus(ButtonStatus.loading);
+                                                                                  inMeetClient.muteMic();
+                                                                                }
+                                                                              } catch (e) {
+                                                                                writeToFile(e, "mobile vc Screen");
+                                                                                // Handle any exceptions here, e.g., show an error message
+                                                                                print('Error: $e');
+                                                                              }
+                                                                            },
+                                                                            child: vcController.micStreamStatus == ButtonStatus.on
+                                                                                ? Image(
+                                                                                    image: AssetImage(
+                                                                                      'assets/microphone.png',
+                                                                                    ),
+                                                                                    height: 20,
+                                                                                    // width: 15,
+                                                                                  )
+                                                                                : Image(
+                                                                                    image: AssetImage('assets/mute.png'),
+                                                                                    height: 20,
+                                                                                  ))
+                                                                      // Otherwise, display the regular FloatingActionButton
+                                                                      else
+                                                                        FloatingActionButton(
+                                                                          mini:
+                                                                              true,
+                                                                          onPressed:
+                                                                              () {
+                                                                            try {
+                                                                              if (vcController.micStreamStatus == ButtonStatus.off && vcController.audioInput.isNotEmpty) {
+                                                                                vcController.changeMicSreamStatus(ButtonStatus.loading);
+                                                                                inMeetClient.unmuteMic(vcController.selectedAudioInputDeviceId);
+                                                                              } else if (vcController.audioInput.isNotEmpty) {
+                                                                                vcController.changeMicSreamStatus(ButtonStatus.loading);
+                                                                                inMeetClient.muteMic();
+                                                                              }
+                                                                            } catch (e) {
+                                                                              writeToFile(e, "mobile VC Screen");
+                                                                              // Handle any exceptions here, e.g., show an error message
+                                                                              print('Error: $e');
+                                                                            }
+                                                                          },
+                                                                          backgroundColor:
+                                                                              btnColor,
+                                                                          heroTag:
+                                                                              'btn2',
+                                                                          child:
+                                                                              Image.asset(
+                                                                            'assets/microphone.png',
+                                                                            height:
+                                                                                20,
+                                                                            filterQuality:
+                                                                                FilterQuality.medium,
+                                                                            scale:
+                                                                                1,
+                                                                          ),
+                                                                        ),
+                                                                    ],
+                                                                  ),
+                                                            Row(
+                                                              children: [
+                                                                widget.videoCategory ==
+                                                                        "YouTube"
+                                                                    ? SizedBox()
+                                                                    : PopupMenuButton<
+                                                                        String>(
+                                                                        icon:
+                                                                            Icon(
+                                                                          CupertinoIcons
+                                                                              .chevron_down,
+                                                                          size:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        onSelected:
+                                                                            (String
+                                                                                selectedItem) {
+                                                                          // Update the selected video output device
+                                                                          selectedVideoOutputDevice =
+                                                                              selectedItem;
+                                                                          vcController.selectDevice(
+                                                                              DeviceType.videoInput,
+                                                                              selectedVideoOutputDevice!);
+                                                                        },
+                                                                        itemBuilder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          // Generate the menu items from vcController.videoInputs
+                                                                          return vcController
+                                                                              .videoInputs
+                                                                              .map((e) {
+                                                                            return PopupMenuItem<String>(
+                                                                              value: e,
+                                                                              child: Text(
+                                                                                e,
+                                                                                style: const TextStyle(
+                                                                                  fontSize: 14,
+                                                                                  fontFamily: 'ocenwide',
+                                                                                  color: Colors.black, // You can adjust the color as needed
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          }).toList();
+                                                                        },
+                                                                      ),
+                                                                widget.videoCategory ==
+                                                                        "YouTube"
+                                                                    ? SizedBox()
+                                                                    : FloatingActionButton(
+                                                                        mini:
+                                                                            true,
+                                                                        onPressed:
+                                                                            () async {
+                                                                          try {
+                                                                            log(vcController.videoInputs.toString());
+                                                                            vcController.changeCameraSreamStatus(ButtonStatus.loading);
+                                                                            if (vcController.localRenderer ==
+                                                                                null) {
+                                                                              await inMeetClient.enableWebcam();
+                                                                            } else {
+                                                                              await inMeetClient.disableWebcam();
+                                                                              vcController.localRenderer = null;
+                                                                            }
+                                                                          } catch (e) {
+                                                                            writeToFile(e,
+                                                                                "mobile vc Screen");
+                                                                          }
+                                                                        },
+                                                                        backgroundColor:
+                                                                            btnColor,
+                                                                        heroTag:
+                                                                            'btn3',
+                                                                        child: vcController.localRenderer ==
+                                                                                null
+                                                                            ? Image.asset('assets/video-call.png',
+                                                                                height: 15,
+                                                                                filterQuality: FilterQuality.medium,
+                                                                                scale: 1)
+                                                                            : Image.asset('assets/video.png', height: 15, filterQuality: FilterQuality.medium, scale: 1)),
+                                                              ],
+                                                            ),
+                                                            // const SizedBox(
+                                                            //   width: 15,
+                                                            // ),
+                                                            widget.videoCategory ==
+                                                                    "YouTube"
+                                                                ? SizedBox()
+                                                                : FloatingActionButton
+                                                                    .small(
+                                                                    onPressed:
+                                                                        () {
                                                                       vcController
-                                                                              .localRenderer =
-                                                                          null;
-                                                                    }
-                                                                  } catch (e) {
-                                                                    writeToFile(
-                                                                        e,
-                                                                        "mobile vc Screen");
-                                                                  }
-                                                                },
-                                                                backgroundColor:
-                                                                    btnColor,
-                                                                heroTag: 'btn3',
-                                                                child: vcController
-                                                                            .localRenderer ==
-                                                                        null
-                                                                    ? Image.asset(
-                                                                        'assets/video-call.png',
-                                                                        height:
-                                                                            15,
-                                                                        filterQuality:
-                                                                            FilterQuality
-                                                                                .medium,
-                                                                        scale:
-                                                                            1)
-                                                                    : Image.asset(
-                                                                        'assets/video.png',
-                                                                        height:
-                                                                            15,
-                                                                        filterQuality:
-                                                                            FilterQuality
-                                                                                .medium,
-                                                                        scale:
-                                                                            1)),
+                                                                          .raiseHandSelf(
+                                                                              !vcController.selfHandRaised);
+                                                                    },
+                                                                    backgroundColor:
+                                                                        btnColor,
+                                                                    heroTag:
+                                                                        'btn4',
+                                                                    child: Icon(
+                                                                      vcController.selfHandRaised
+                                                                          ? Icons
+                                                                              .do_not_touch
+                                                                          : Icons
+                                                                              .pan_tool_outlined,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      weight: 5,
+                                                                    ),
+                                                                  ),
+
+                                                            //                   if (vcController
+                                                            //                       .screenShareStatus !=
+                                                            //                       ButtonStatus.off)
+                                                            //                     Row(
+                                                            //                       children: [
+                                                            //                         FloatingActionButton(
+                                                            //
+                                                            // mini: true,
+                                                            //                           onPressed: vcController
+                                                            //                               .screenShareStatus ==
+                                                            //                               ButtonStatus.loading
+                                                            //                               ? null
+                                                            //                               : () {
+                                                            //                             try {
+                                                            //                               vcController
+                                                            //                                   .stopScreenShare();
+                                                            //                             } catch (e) {
+                                                            //                               // Handle the error (e.g., log it)
+                                                            //                               print(
+                                                            //                                   "Error stopping screen share: $e");
+                                                            //                             }
+                                                            //                           },
+                                                            //                           backgroundColor: Colors.red,
+                                                            //                           heroTag: 'btn4',
+                                                            //                           child: Image.asset(
+                                                            //                             'assets/screen.png',
+                                                            //                             height: 20,
+                                                            //                             filterQuality:
+                                                            //                             FilterQuality.medium,
+                                                            //                             scale: 1,
+                                                            //                           ),
+                                                            //                         ),
+                                                            //                       ],
+                                                            //                     )
+                                                            //                   else
+                                                            //                     Row(
+                                                            //                       children: [
+                                                            //                         FloatingActionButton(
+                                                            //                           mini:true,
+                                                            //                           onPressed: vcController
+                                                            //                               .screenShareStatus ==
+                                                            //                               ButtonStatus.loading
+                                                            //                               ? null
+                                                            //                               : () {
+                                                            //                             try {
+                                                            //                               vcController
+                                                            //                                   .screenShare();
+                                                            //                             } catch (e) {
+                                                            //                               // Handle the error (e.g., log it)
+                                                            //                               print(
+                                                            //                                   "Error starting screen share: $e");
+                                                            //                             }
+                                                            //                           },
+                                                            //                           backgroundColor: btnColor,
+                                                            //                           heroTag: 'btn4',
+                                                            //                           child: Image.asset(
+                                                            //                             'assets/screen.png',
+                                                            //                             height: 20,
+                                                            //                             filterQuality:
+                                                            //                             FilterQuality.medium,
+                                                            //                             scale: 1,
+                                                            //                           ),
+                                                            //                         ),
+                                                            //                       ],
+                                                            //                     ),
+                                                            //                   const SizedBox(
+                                                            //                     width: 15,
+                                                            //                   ),
+
+                                                            if (widget
+                                                                    .videoCategory !=
+                                                                "YouTube")
+                                                              MyCupertinoPopupMenu(
+                                                                inMeetClient:
+                                                                    vcController
+                                                                        .inMeetClient,
+                                                                sessionId: widget
+                                                                    .sessionId
+                                                                    .toString(),
+                                                                userid: widget
+                                                                    .userid,
+                                                                username: widget
+                                                                    .username,
+                                                                vcController:
+                                                                    vcController,
+                                                              ),
+                                                          ],
+                                                        ),
+                                                        // const Expanded(
+                                                        //     flex: 3, child: SizedBox())
                                                       ],
                                                     ),
-                                                    // const SizedBox(
-                                                    //   width: 15,
-                                                    // ),
-                                                    widget.videoCategory ==
-                                                            "YouTube"
-                                                        ? SizedBox()
-                                                        : FloatingActionButton
-                                                            .small(
-                                                            onPressed: () {
-                                                              vcController
-                                                                  .raiseHandSelf(
-                                                                      !vcController
-                                                                          .selfHandRaised);
-                                                            },
-                                                            backgroundColor:
-                                                                btnColor,
-                                                            heroTag: 'btn4',
-                                                            child: Icon(
-                                                              vcController
-                                                                      .selfHandRaised
-                                                                  ? Icons
-                                                                      .do_not_touch
-                                                                  : Icons
-                                                                      .pan_tool_outlined,
-                                                              color:
-                                                                  Colors.white,
-                                                              weight: 5,
-                                                            ),
-                                                          ),
+                                                  )
+                                                ]),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )),
 
-                                                    //                   if (vcController
-                                                    //                       .screenShareStatus !=
-                                                    //                       ButtonStatus.off)
-                                                    //                     Row(
-                                                    //                       children: [
-                                                    //                         FloatingActionButton(
-                                                    //
-                                                    // mini: true,
-                                                    //                           onPressed: vcController
-                                                    //                               .screenShareStatus ==
-                                                    //                               ButtonStatus.loading
-                                                    //                               ? null
-                                                    //                               : () {
-                                                    //                             try {
-                                                    //                               vcController
-                                                    //                                   .stopScreenShare();
-                                                    //                             } catch (e) {
-                                                    //                               // Handle the error (e.g., log it)
-                                                    //                               print(
-                                                    //                                   "Error stopping screen share: $e");
-                                                    //                             }
-                                                    //                           },
-                                                    //                           backgroundColor: Colors.red,
-                                                    //                           heroTag: 'btn4',
-                                                    //                           child: Image.asset(
-                                                    //                             'assets/screen.png',
-                                                    //                             height: 20,
-                                                    //                             filterQuality:
-                                                    //                             FilterQuality.medium,
-                                                    //                             scale: 1,
-                                                    //                           ),
-                                                    //                         ),
-                                                    //                       ],
-                                                    //                     )
-                                                    //                   else
-                                                    //                     Row(
-                                                    //                       children: [
-                                                    //                         FloatingActionButton(
-                                                    //                           mini:true,
-                                                    //                           onPressed: vcController
-                                                    //                               .screenShareStatus ==
-                                                    //                               ButtonStatus.loading
-                                                    //                               ? null
-                                                    //                               : () {
-                                                    //                             try {
-                                                    //                               vcController
-                                                    //                                   .screenShare();
-                                                    //                             } catch (e) {
-                                                    //                               // Handle the error (e.g., log it)
-                                                    //                               print(
-                                                    //                                   "Error starting screen share: $e");
-                                                    //                             }
-                                                    //                           },
-                                                    //                           backgroundColor: btnColor,
-                                                    //                           heroTag: 'btn4',
-                                                    //                           child: Image.asset(
-                                                    //                             'assets/screen.png',
-                                                    //                             height: 20,
-                                                    //                             filterQuality:
-                                                    //                             FilterQuality.medium,
-                                                    //                             scale: 1,
-                                                    //                           ),
-                                                    //                         ),
-                                                    //                       ],
-                                                    //                     ),
-                                                    //                   const SizedBox(
-                                                    //                     width: 15,
-                                                    //                   ),
+                                // Expanded(child: TitleBar()),
 
-                                                    widget.videoCategory ==
-                                                            "YouTube"
-                                                        ? FloatingActionButton
-                                                            .small(
-                                                            onPressed: () {
-                                                              Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) {
-                                                                return SafeArea(
-                                                                    child:
-                                                                        Material(
-                                                                  color: Colors
-                                                                      .transparent,
-                                                                  child: ChatUi(
-                                                                      widget
-                                                                          .sessionId
-                                                                          .toString(),
-                                                                      widget
-                                                                          .userid,
-                                                                      widget
-                                                                          .username
-
-                                                                      // username
-
-                                                                      ),
-                                                                ));
-                                                              }));
-                                                            },
-                                                            backgroundColor:
-                                                                btnColor,
-                                                            heroTag: 'btn5',
-                                                            child: Icon(
-                                                              Icons.chat,
-                                                              color:
-                                                                  Colors.white,
-                                                              weight: 5,
-                                                            ),
-                                                          )
-                                                        : MyCupertinoPopupMenu(
-                                                            inMeetClient:
-                                                                vcController
-                                                                    .inMeetClient,
-                                                            sessionId: widget
-                                                                .sessionId
-                                                                .toString(),
-                                                            userid:
-                                                                widget.userid,
-                                                            username:
-                                                                widget.username,
-                                                            vcController:
-                                                                vcController,
-                                                          ),
-                                                  ],
-                                                ),
-                                                // const Expanded(
-                                                //     flex: 3, child: SizedBox())
-                                              ],
-                                            ),
-                                          )
-                                        ]),
+                                const Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: SizedBox(
+                                          height: 45,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )),
-
-                        // Expanded(child: TitleBar()),
-
-                        const Positioned(
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: 45,
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
+                        ],
+                      ),
+                    );
+                  }
 
-              // SizedBox(
-              //   height: 80,
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Row(
-              //         children: [
-              //           const SizedBox(width: 20),
-              //         ],
-              //       ),
-              //       Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           if (vcController.audioOutput.isNotEmpty)
-              //             Container(
-              //               decoration: BoxDecoration(
-              //                 color: Colors.blue,
-              //                 borderRadius: BorderRadius.circular(8),
-              //               ),
-              //               padding: const EdgeInsets.symmetric(horizontal: 8),
-              //               child:
-              // DropdownButton<String>(
-              //                 iconEnabledColor: Colors.white,
-              //                 style: TextStyle(color: Colors.white),
-              //                 dropdownColor: Colors.black,
-              //                 value: selectedAudioOutputDevice,
-              //                 underline:
-              //                     Container(), // This removes the underline
-              //                 items: vcController.audioOutput
-              //                     .map((e) => DropdownMenuItem(
-              //                           value: e,
-              //                           child: Text(
-              //                             e,
-              //                             style: TextStyle(
-              //                                 color: Colors.white,
-              //                                 fontWeight: FontWeight.bold),
-              //                           ),
-              //                         ))
-              //                     .toList(),
-              //                 onChanged: (value) {
-              //                   setState(() {
-              //                     selectedAudioOutputDevice = value;
-              //                   });
-              //                   vcController.inMeetClient
-              //                       .changeAudioOutput(value!);
-              //                 },
-              //               ),
-              //             ),
-              //           const SizedBox(width: 12),
-              // if (vcController.audioInput.isNotEmpty ||
-              //     vcController.audioOutput.isNotEmpty)
-              //   FloatingActionButton.small(
-              //     shape: ContinuousRectangleBorder(
-              //         borderRadius: BorderRadius.circular(12)),
-              //     heroTag: 'mic',
-              //     backgroundColor: micOffColor,
-              //     onPressed: () {
-              //       try {
-              //         if (vcController.micStreamStatus ==
-              //                 ButtonStatus.off &&
-              //             vcController.audioInput.isNotEmpty) {
-              //           vcController
-              //               .changeMicSreamStatus(ButtonStatus.loading);
-              //           inMeetClient.unmuteMic(
-              //               vcController.selectedAudioInputDeviceId);
-              //         } else if (vcController.audioInput.isNotEmpty) {
-              //           vcController
-              //               .changeMicSreamStatus(ButtonStatus.loading);
-              //           inMeetClient.muteMic();
-              //         }
-              //       } catch (e) {}
-              //     },
-              //     child: Icon(
-              //       vcController.micStreamStatus == ButtonStatus.on
-              //           ? Icons.mic_outlined
-              //           : Icons.mic_off_outlined,
-              //       color: Colors.white,
-              //     ),
-              //   ),
-              //           const SizedBox(width: 12),
-              //           if (vcController.videoInputs.isNotEmpty)
-              //             Container(
-              //               decoration: BoxDecoration(
-              //                 color: Colors.blue,
-              //                 borderRadius: BorderRadius.circular(8),
-              //               ),
-              //               padding: const EdgeInsets.symmetric(horizontal: 8),
-              //               child:
-              // DropdownButton<String>(
-              //                 iconEnabledColor: Colors.white,
-              //                 style: const TextStyle(color: Colors.white),
-              //                 dropdownColor: Colors.black,
-              //                 value: selectedVideoOutputDevice,
-              //                 underline:
-              //                     Container(), // This removes the underline
-              //                 items: vcController.videoInputs.map((e) {
-              //                   return DropdownMenuItem<String>(
-              //                     value: e,
-              //                     child: Text(
-              //                       e,
-              //                       style: const TextStyle(
-              //                         color: Colors.white,
-              //                         fontWeight: FontWeight.bold,
-              //                       ),
-              //                     ),
-              //                   );
-              //                 }).toList(),
-              //                 onChanged: (value) {
-              // setState(() {
-              //   selectedVideoOutputDevice = value;
-              // });
-              // vcController.selectDevice(DeviceType.videoInput,
-              //     selectedVideoOutputDevice.toString());
-              //                 },
-              //               ),
-              //             ),
+                    // SizedBox(
+                    //   height: 80,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Row(
+                    //         children: [
+                    //           const SizedBox(width: 20),
+                    //         ],
+                    //       ),
+                    //       Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           if (vcController.audioOutput.isNotEmpty)
+                    //             Container(
+                    //               decoration: BoxDecoration(
+                    //                 color: Colors.blue,
+                    //                 borderRadius: BorderRadius.circular(8),
+                    //               ),
+                    //               padding: const EdgeInsets.symmetric(horizontal: 8),
+                    //               child:
+                    // DropdownButton<String>(
+                    //                 iconEnabledColor: Colors.white,
+                    //                 style: TextStyle(color: Colors.white),
+                    //                 dropdownColor: Colors.black,
+                    //                 value: selectedAudioOutputDevice,
+                    //                 underline:
+                    //                     Container(), // This removes the underline
+                    //                 items: vcController.audioOutput
+                    //                     .map((e) => DropdownMenuItem(
+                    //                           value: e,
+                    //                           child: Text(
+                    //                             e,
+                    //                             style: TextStyle(
+                    //                                 color: Colors.white,
+                    //                                 fontWeight: FontWeight.bold),
+                    //                           ),
+                    //                         ))
+                    //                     .toList(),
+                    //                 onChanged: (value) {
+                    //                   setState(() {
+                    //                     selectedAudioOutputDevice = value;
+                    //                   });
+                    //                   vcController.inMeetClient
+                    //                       .changeAudioOutput(value!);
+                    //                 },
+                    //               ),
+                    //             ),
+                    //           const SizedBox(width: 12),
+                    // if (vcController.audioInput.isNotEmpty ||
+                    //     vcController.audioOutput.isNotEmpty)
+                    //   FloatingActionButton.small(
+                    //     shape: ContinuousRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(12)),
+                    //     heroTag: 'mic',
+                    //     backgroundColor: micOffColor,
+                    //     onPressed: () {
+                    //       try {
+                    //         if (vcController.micStreamStatus ==
+                    //                 ButtonStatus.off &&
+                    //             vcController.audioInput.isNotEmpty) {
+                    //           vcController
+                    //               .changeMicSreamStatus(ButtonStatus.loading);
+                    //           inMeetClient.unmuteMic(
+                    //               vcController.selectedAudioInputDeviceId);
+                    //         } else if (vcController.audioInput.isNotEmpty) {
+                    //           vcController
+                    //               .changeMicSreamStatus(ButtonStatus.loading);
+                    //           inMeetClient.muteMic();
+                    //         }
+                    //       } catch (e) {}
+                    //     },
+                    //     child: Icon(
+                    //       vcController.micStreamStatus == ButtonStatus.on
+                    //           ? Icons.mic_outlined
+                    //           : Icons.mic_off_outlined,
+                    //       color: Colors.white,
+                    //     ),
+                    //   ),
+                    //           const SizedBox(width: 12),
+                    //           if (vcController.videoInputs.isNotEmpty)
+                    //             Container(
+                    //               decoration: BoxDecoration(
+                    //                 color: Colors.blue,
+                    //                 borderRadius: BorderRadius.circular(8),
+                    //               ),
+                    //               padding: const EdgeInsets.symmetric(horizontal: 8),
+                    //               child:
+                    // DropdownButton<String>(
+                    //                 iconEnabledColor: Colors.white,
+                    //                 style: const TextStyle(color: Colors.white),
+                    //                 dropdownColor: Colors.black,
+                    //                 value: selectedVideoOutputDevice,
+                    //                 underline:
+                    //                     Container(), // This removes the underline
+                    //                 items: vcController.videoInputs.map((e) {
+                    //                   return DropdownMenuItem<String>(
+                    //                     value: e,
+                    //                     child: Text(
+                    //                       e,
+                    //                       style: const TextStyle(
+                    //                         color: Colors.white,
+                    //                         fontWeight: FontWeight.bold,
+                    //                       ),
+                    //                     ),
+                    //                   );
+                    //                 }).toList(),
+                    //                 onChanged: (value) {
+                    // setState(() {
+                    //   selectedVideoOutputDevice = value;
+                    // });
+                    // vcController.selectDevice(DeviceType.videoInput,
+                    //     selectedVideoOutputDevice.toString());
+                    //                 },
+                    //               ),
+                    //             ),
 
-              //           // FloatingActionButton.small(
-              //           //   shape: ContinuousRectangleBorder(
-              //           //       borderRadius: BorderRadius.circular(12)),
-              //           //   heroTag: 'video',
-              //           //   backgroundColor:
-              //           //       vcController.cameraStreamStatus == ButtonStatus.off
-              //           //           ? Colors.red
-              //           //           : bottomBoxColor,
-              //           //   onPressed: () async {
-              //     // try {
-              //     //   log(vcController.videoInputs.toString());
-              //     //   vcController
-              //     //       .changeCameraSreamStatus(ButtonStatus.loading);
-              //     //   if (vcController.localRenderer == null) {
-              //     //     await inMeetClient.enableWebCam(
-              //     //         vcController.selectedVideoInputDeviceId);
-              //     //   } else {
-              //     //     await inMeetClient.disableWebcam();
-              //     //     vcController.localRenderer = null;
-              //     //   }
-              //     // } catch (e) {}
-              //           //   },
-              //           //   child:
-              //           // ),
-              //           const SizedBox(width: 12),
-              //           if (vcController.screenShareStatus != ButtonStatus.off)
-              //             FloatingActionButton.small(
-              //               shape: ContinuousRectangleBorder(
-              //                   borderRadius: BorderRadius.circular(12)),
-              //               heroTag: 'screen',
-              //               backgroundColor: bottomBoxColor,
-              //               onPressed: vcController.screenShareStatus ==
-              //                       ButtonStatus.loading
-              //                   ? null
-              //                   : () {
-              //                       try {
-              //                         vcController.stopScreenShare();
-              //                       } catch (e) {}
-              //                     },
-              //               child: const Icon(Icons.stop_screen_share,
-              //                   color: Colors.white),
-              //             )
-              //           else
-              //             FloatingActionButton.small(
-              //               shape: ContinuousRectangleBorder(
-              //                   borderRadius: BorderRadius.circular(12)),
-              //               heroTag: 'screen',
-              //               backgroundColor: bottomBoxColor,
-              //               onPressed: vcController.screenShareStatus ==
-              //                       ButtonStatus.loading
-              //                   ? null
-              //                   : () {
-              //                       try {
-              //                         vcController.screenShare();
-              //                       } catch (e) {}
-              //                     },
-              //               child: const Icon(Icons.screen_share_outlined,
-              //                   color: Colors.white),
-              //             ),
-              //           const SizedBox(width: 12),
-              //           FloatingActionButton.small(
-              //             shape: ContinuousRectangleBorder(
-              //                 borderRadius: BorderRadius.circular(12)),
-              //             heroTag: 'more',
-              //             backgroundColor: bottomBoxColor,
-              //             onPressed: () {},
-              //             child: const Icon(Icons.more_horiz_rounded,
-              //                 color: Colors.white),
-              //           ),
-              //         ],
-              //       ),
-              //       Row(
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.symmetric(horizontal: 20),
-              //             child: SizedBox(
-              //               width: 100,
-              //               height: 45,
-              //               child: FloatingActionButton(
-              //                 heroTag: 'End Meeting',
-              //                 shape: ContinuousRectangleBorder(
-              //                     borderRadius:
-              //                         BorderRadiusDirectional.circular(12)),
-              //                 onPressed: () {
-              //                   try {
-              //                     if (vcController.selfRole
-              //                         .contains(ParticipantRoles.moderator)) {
-              //                       inMeetClient.endMeetingForAll();
-              //                       inMeetClient.endBreakoutRooms();
-              //                       vcController.isBreakoutStarted = false;
-              //                     } else {
-              //                       inMeetClient.exitMeeting();
-              //                     }
-              //                     Get.delete<VcController>(force: true);
-              //                     Get.back();
-              //                   } catch (e) {}
-              //                 },
-              //                 backgroundColor: micOffColor,
-              //                 child: const Text(
-              //                   'End Meeting',
-              //                   style: TextStyle(
-              //                     color: Colors.white,
-              //                     fontSize: 13,
-              //                     fontWeight: FontWeight.w400,
-              //                   ),
-              //                 ),
-              //               ),
-              //             ),
-              //           )
-              //         ],
-              //       )
-              //     ],
-              //   ),
-              // ),
-              //     ],
-              //   );
-              // }),
+                    //           // FloatingActionButton.small(
+                    //           //   shape: ContinuousRectangleBorder(
+                    //           //       borderRadius: BorderRadius.circular(12)),
+                    //           //   heroTag: 'video',
+                    //           //   backgroundColor:
+                    //           //       vcController.cameraStreamStatus == ButtonStatus.off
+                    //           //           ? Colors.red
+                    //           //           : bottomBoxColor,
+                    //           //   onPressed: () async {
+                    //     // try {
+                    //     //   log(vcController.videoInputs.toString());
+                    //     //   vcController
+                    //     //       .changeCameraSreamStatus(ButtonStatus.loading);
+                    //     //   if (vcController.localRenderer == null) {
+                    //     //     await inMeetClient.enableWebCam(
+                    //     //         vcController.selectedVideoInputDeviceId);
+                    //     //   } else {
+                    //     //     await inMeetClient.disableWebcam();
+                    //     //     vcController.localRenderer = null;
+                    //     //   }
+                    //     // } catch (e) {}
+                    //           //   },
+                    //           //   child:
+                    //           // ),
+                    //           const SizedBox(width: 12),
+                    //           if (vcController.screenShareStatus != ButtonStatus.off)
+                    //             FloatingActionButton.small(
+                    //               shape: ContinuousRectangleBorder(
+                    //                   borderRadius: BorderRadius.circular(12)),
+                    //               heroTag: 'screen',
+                    //               backgroundColor: bottomBoxColor,
+                    //               onPressed: vcController.screenShareStatus ==
+                    //                       ButtonStatus.loading
+                    //                   ? null
+                    //                   : () {
+                    //                       try {
+                    //                         vcController.stopScreenShare();
+                    //                       } catch (e) {}
+                    //                     },
+                    //               child: const Icon(Icons.stop_screen_share,
+                    //                   color: Colors.white),
+                    //             )
+                    //           else
+                    //             FloatingActionButton.small(
+                    //               shape: ContinuousRectangleBorder(
+                    //                   borderRadius: BorderRadius.circular(12)),
+                    //               heroTag: 'screen',
+                    //               backgroundColor: bottomBoxColor,
+                    //               onPressed: vcController.screenShareStatus ==
+                    //                       ButtonStatus.loading
+                    //                   ? null
+                    //                   : () {
+                    //                       try {
+                    //                         vcController.screenShare();
+                    //                       } catch (e) {}
+                    //                     },
+                    //               child: const Icon(Icons.screen_share_outlined,
+                    //                   color: Colors.white),
+                    //             ),
+                    //           const SizedBox(width: 12),
+                    //           FloatingActionButton.small(
+                    //             shape: ContinuousRectangleBorder(
+                    //                 borderRadius: BorderRadius.circular(12)),
+                    //             heroTag: 'more',
+                    //             backgroundColor: bottomBoxColor,
+                    //             onPressed: () {},
+                    //             child: const Icon(Icons.more_horiz_rounded,
+                    //                 color: Colors.white),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       Row(
+                    //         children: [
+                    //           Padding(
+                    //             padding: const EdgeInsets.symmetric(horizontal: 20),
+                    //             child: SizedBox(
+                    //               width: 100,
+                    //               height: 45,
+                    //               child: FloatingActionButton(
+                    //                 heroTag: 'End Meeting',
+                    //                 shape: ContinuousRectangleBorder(
+                    //                     borderRadius:
+                    //                         BorderRadiusDirectional.circular(12)),
+                    //                 onPressed: () {
+                    //                   try {
+                    //                     if (vcController.selfRole
+                    //                         .contains(ParticipantRoles.moderator)) {
+                    //                       inMeetClient.endMeetingForAll();
+                    //                       inMeetClient.endBreakoutRooms();
+                    //                       vcController.isBreakoutStarted = false;
+                    //                     } else {
+                    //                       inMeetClient.exitMeeting();
+                    //                     }
+                    //                     Get.delete<VcController>(force: true);
+                    //                     Get.back();
+                    //                   } catch (e) {}
+                    //                 },
+                    //                 backgroundColor: micOffColor,
+                    //                 child: const Text(
+                    //                   'End Meeting',
+                    //                   style: TextStyle(
+                    //                     color: Colors.white,
+                    //                     fontSize: 13,
+                    //                     fontWeight: FontWeight.w400,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           )
+                    //         ],
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
+                    //     ],
+                    //   );
+                    // }),
 
-              )),
+                    )),
+      ),
     );
   }
 }

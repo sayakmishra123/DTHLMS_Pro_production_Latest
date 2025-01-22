@@ -158,7 +158,11 @@ dependencies:
   audioplayers: ^6.1.0
   # webview_windows: ^0.4.0
   flutter_inappwebview: ^6.1.5
-  youtube_player_flutter: ^9.1.1
+  youtube_player_iframe:
+  webview_flutter: 
+
+  # youtube_player_flutter: ^9.1.1
+  
   
   # pdf: ^3.11.1
 
@@ -192,15 +196,15 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"                                                                                
-  image: assets/icons/peaks2tails_without_text.png
-  branding: assets/icons/peaks2tails_without_text.png
+  image: assets/icons/AJC.png
+  branding: assets/icons/AJC.png
 
   color_dark: "#FFFFFF"
-  image_dark: assets/icons/peaks2tails_without_text.png
-  branding_dark: assets/icons/peaks2tails_without_text.png
+  image_dark: assets/icons/AJC.png
+  branding_dark: assets/icons/AJC.png
 
   android_12:
-    image: assets/icons/peaks2tails_without_text.png
+    image: assets/icons/AJC.png
     icon_background_color: "#FFFFFF" 
 
  
@@ -211,7 +215,7 @@ flutter_native_splash:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: assets/icons/peaks2tails_without_text.png
+  image_path: assets/icons/AJC.png
   min_sdk_android: 21 # android min sdk min:16, default 21
   # web:
   #   generate: true
@@ -220,7 +224,7 @@ flutter_launcher_icons:
   #   theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: assets/icons/peaks2tails_without_text.png
+    image_path: assets/icons/AJC.png
     icon_size: 48 # min:48, max:256, default: 48
   # macos:
   #   generate: true
