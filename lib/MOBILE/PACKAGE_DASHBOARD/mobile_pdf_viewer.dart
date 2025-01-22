@@ -5,6 +5,7 @@ import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/EditPdf/pdf_edit.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/PC/STUDYMATERIAL/pdfViewer.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
@@ -372,7 +373,7 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
 
     //  String enkey=await  getEncryptionKey(getx.loginuserdata[0].token);
     if (!File(data).existsSync()) {
-      print("downloaing file....."); 
+      print("downloaing file.....");
       try {
         // Get the application's document directory
         Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -402,6 +403,14 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
           }
         });
 
+        await ShowChapterPDFState.addWatermarkToPdf(
+            filePath,
+            getx.loginuserdata[0].firstName +
+                " " +
+                getx.loginuserdata[0].lastName,
+            getx.loginuserdata[0].phoneNumber,
+            getx.loginuserdata[0].email);
+
         print('PDF downloaded and saved to: $filePath');
 
         if (widget.isEncrypted) {
@@ -411,7 +420,7 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
           return decryptedPdfBytes;
         } else {
           return filePath;
-        } 
+        }
       } catch (e) {
         writeToFile(e, "downloadAndSavePdf");
         print('Error downloading or saving the PDF: $e');

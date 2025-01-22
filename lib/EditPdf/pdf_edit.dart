@@ -16,7 +16,7 @@ class ImageEditorExample extends StatefulWidget {
 
   const ImageEditorExample({
     required this.pdfName,
-    required this.pdfPath, 
+    required this.pdfPath,
     Key? key,
   }) : super(key: key);
 
@@ -27,10 +27,10 @@ class ImageEditorExample extends StatefulWidget {
 class _ImageEditorExampleState extends State<ImageEditorExample> {
   List<Uint8List> imageDataList = [];
   List<Image> images = [];
-  // Store each PDF page's original width & height in points
   List<Size> originalPageSizes = [];
-
   String pdfFilePath = '';
+  pdfx.PdfDocument? document; // PDF document instance
+  bool _isDisposed = false; // To track if the widget is disposed
 
   @override
   void initState() {
@@ -38,6 +38,13 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
     if (widget.pdfPath != null && widget.pdfPath!.isNotEmpty) {
       convertPdfToImages(widget.pdfPath!);
     }
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    // document?.close(); // Ensure the PDF document is closed safely
+    super.dispose();
   }
 
   /// Pick a PDF file from the system
@@ -57,43 +64,47 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
 
   /// Convert PDF to images using pdfx, rendering as compressed JPEG
   Future<void> convertPdfToImages(String filePath) async {
-    final document = await pdfx.PdfDocument.openFile(filePath);
-    final pageCount = document.pagesCount;
+    try {
+      document = await pdfx.PdfDocument.openFile(filePath);
+      final pageCount = document!.pagesCount;
 
-    final List<Uint8List> imagesList = [];
-    originalPageSizes.clear();
+      final List<Uint8List> imagesList = [];
+      originalPageSizes.clear();
 
-    for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
-      final page = await document.getPage(pageIndex + 1);
+      for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+        if (_isDisposed) return; // Stop processing if the widget is disposed
 
-      final double pageWidth = page.width.toDouble();
-      final double pageHeight = page.height.toDouble();
+        final page = await document!.getPage(pageIndex + 1);
 
-      // Store for when we recreate the PDF pages
-      originalPageSizes.add(Size(pageWidth, pageHeight));
+        final double pageWidth = page.width.toDouble();
+        final double pageHeight = page.height.toDouble();
+        originalPageSizes.add(Size(pageWidth, pageHeight));
 
-      // Render page as JPEG instead of PNG + use quality=80 (tweak as needed)
-      final renderedPage = await page.render(
-        width: page.width, // in points
-        height: page.height, // in points
-        format: pdfx.PdfPageImageFormat.jpeg,
-        quality: 80, // between 1-100; 80 is a good balance
-      );
+        final renderedPage = await page.render(
+          width: page.width,
+          height: page.height,
+          format: pdfx.PdfPageImageFormat.jpeg,
+          quality: 90, // Improved image quality
+        );
 
-      if (renderedPage != null) {
-        imagesList.add(renderedPage.bytes);
+        if (renderedPage != null) {
+          imagesList.add(renderedPage.bytes);
+        }
+
+        page.close(); // Close each page after use
       }
 
-      page.close();
+      if (!_isDisposed) {
+        setState(() {
+          imageDataList = imagesList;
+          images = imagesList
+              .map((img) => Image.memory(img, fit: BoxFit.fill))
+              .toList();
+        });
+      }
+    } catch (e) {
+      debugPrint("Error converting PDF to images: $e");
     }
-
-    setState(() {
-      imageDataList = imagesList;
-      images =
-          imagesList.map((img) => Image.memory(img, fit: BoxFit.fill)).toList();
-    });
-
-    document.close();
   }
 
   /// Save images as a new PDF, with compression enabled
@@ -105,28 +116,21 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
       },
     );
 
-    // 1) Create a PDF document with compression enabled
-    final pdf = pw.Document(
-      compress: true, // <--- Enable PDF compression
-    );
+    final pdf = pw.Document(compress: true);
 
-    // 2) Add pages from imageDataList
     for (int i = 0; i < imageDataList.length; i++) {
       final imageBytes = imageDataList[i];
       final Size pageSize = originalPageSizes[i];
 
-      // Create a PdfPageFormat matching the original dimensions
       final customFormat = PdfPageFormat(
         pageSize.width,
         pageSize.height,
         marginAll: 0,
       );
 
-      // pw.MemoryImage with optional DPI.
-      // If you're only viewing, you can omit or reduce it (e.g., 72 or 150).
       final pw.MemoryImage pdfImage = pw.MemoryImage(
         imageBytes,
-        dpi: 150, // lower dpi => smaller file
+        dpi: 150,
       );
 
       pdf.addPage(
@@ -145,9 +149,8 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
       );
     }
 
-    // 3) Save the PDF to the same path (or choose a different path if you want)
     final outputFile = widget.pdfPath!;
-    final file = File('${outputFile}');
+    final file = File(outputFile);
 
     await file.writeAsBytes(await pdf.save());
     Navigator.pop(context);
@@ -155,7 +158,6 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
     debugPrint("PDF saved to: $outputFile");
   }
 
-  /// Build UI for picking a PDF, viewing pages, editing, and saving
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,7 +189,6 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
                       ElevatedButton(
                         child: const Text("Edit Image"),
                         onPressed: () async {
-                          // Use image_editor_plus to edit
                           final editedImage = await Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -230,7 +231,6 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
                             ),
                           );
 
-                          // If user didn't cancel, update the list
                           if (editedImage != null) {
                             setState(() {
                               imageDataList[index] = editedImage;
