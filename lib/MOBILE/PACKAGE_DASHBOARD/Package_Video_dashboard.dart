@@ -976,9 +976,13 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
                                         filteredvideoDetails[
                                               index]['FileIdName'];
 
+
+                                             
+
                                   Get.to(() => MobileVideoPlayer(
                                         videoLink: getx.playLink.value,
-                                        Videoindex: index,
+                                        Videoindex:  findIndexInAlwaysShowChapterFiles(filteredvideoDetails[index]
+                                          ['FileId'].toString()),
                                       ));
                                 },
                                 icon: Icon(
@@ -1129,6 +1133,16 @@ filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
 
     
   }
+
+int findIndexInAlwaysShowChapterFiles(String fileId) {
+  for (int i = 0; i < getx.alwaysShowChapterfilesOfVideo.length; i++) {
+    if (getx.alwaysShowChapterfilesOfVideo[i]['FileId'] == fileId) {
+      return i;
+    }
+  }
+  return -1; // Return -1 if the fileId is not found
+}
+
 
 }
 
