@@ -487,9 +487,11 @@ class _MobilePackageVideoDashboardState
 
 
                       children: [
+                        filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
+                        filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf.png"),
 filecountWidget( getx.alwaysShowChapterDetailsOfVideo.length,"assets/folder5.png"),
-filecountWidget( getx.alwaysShowFileDetailsOfpdf.length,"assets/pdf.png"),
-filecountWidget( getx.alwaysShowChapterfilesOfVideo.length,"assets/video2.png"),
+
+
                         
                       ],
                     ),
