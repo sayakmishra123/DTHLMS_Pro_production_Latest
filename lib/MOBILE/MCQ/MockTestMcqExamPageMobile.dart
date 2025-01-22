@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:art_sweetalert/art_sweetalert.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/equality.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/MCQ/exit_page_dialog.dart';
@@ -37,7 +38,8 @@ class MockTestMcqExamPageMobile extends StatefulWidget {
     required this.examStartTime,
     required this.paperName,
     required this.duration,
-    required this.attempt, required this.type,
+    required this.attempt,
+    required this.type,
   });
 
   @override
@@ -49,7 +51,7 @@ class _MockTestMcqExamPageMobileState extends State<MockTestMcqExamPageMobile> {
   List answer = [];
   List<Map<String, dynamic>> submitedData = [];
   Map<int, List<int>> userAns = {};
-  BuildContext? globalContext; 
+  BuildContext? globalContext;
 
   late Timer _timer;
   Getx getx_obj = Get.put(Getx());
@@ -191,7 +193,7 @@ class _MockTestMcqExamPageMobileState extends State<MockTestMcqExamPageMobile> {
     score.value = correctAnswers;
     isSubmitted.value = true;
     List rankdata = await getRankDataOfMockTest(
-        globalContext!, getx.loginuserdata[0].token, widget.paperId); 
+        globalContext!, getx.loginuserdata[0].token, widget.paperId);
 
     Get.to(
         transition: Transition.cupertino,
@@ -201,13 +203,13 @@ class _MockTestMcqExamPageMobileState extends State<MockTestMcqExamPageMobile> {
               questionData: submitedData,
               frompaper: false,
               isMcq: false,
-              type: widget.type, 
+              type: widget.type,
               paperName: widget.paperName,
               submitedOn: DateTime.now().toString(),
               isAnswerSheetShow: true,
             ));
   }
- 
+
   String get timerText {
     int hours = _start.value ~/ 3600;
     int minutes = (_start.value % 3600) ~/ 60;
@@ -948,120 +950,109 @@ class _MockTestMcqExamPageMobileState extends State<MockTestMcqExamPageMobile> {
 //       ],
 //     ).show();
 
-
-  ArtDialogResponse? response = await ArtSweetAlert.show(
+    ArtDialogResponse? response = await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
       artDialogArgs: ArtDialogArgs(
         denyButtonText: "Cancel",
-        title:"Are You Sure?",
-        text:"Once You submit, You can't Change your Sheet",
+        title: "Are You Sure?",
+        text: "Once You submit, You can't Change your Sheet",
         confirmButtonText: "Submit",
         type: ArtSweetAlertType.question,
-
       ),
-
     );
 
-    if (response == null) { 
+    if (response == null) {
       return;
     }
-    
-    if (response.isTapConfirmButton) {   
-            List<Map<String, dynamic>> resultJsonData = [];
 
-            // Loop through all questions in mcqData to ensure each question is processed
-            for (var question in mcqData) {
-              int questionId = int.parse(question.questionId);
-              String questionText = question.questionText;
+    if (response.isTapConfirmButton) {
+      List<Map<String, dynamic>> resultJsonData = [];
 
-              // Get correct answer IDs and texts
-              List<int> correctAnswerIds = answer
-                  .firstWhere((map) => map.containsKey(questionId))[questionId]!
-                  .toList();
-              List<String> correctAnswerTexts = correctAnswerIds
-                  .map((id) => question.options
-                      .firstWhere((opt) => opt.optionId == id.toString())
-                      .optionText)
-                  .toList();
+      // Loop through all questions in mcqData to ensure each question is processed
+      for (var question in mcqData) {
+        int questionId = int.parse(question.questionId);
+        String questionText = question.questionText;
 
-              // Check if the user provided an answer; if not, set "Not Answered"
-              List<int> selectedOptionIds = userAns[questionId] ?? [];
-              List<String> userSelectedAnswerTexts = selectedOptionIds
-                      .isNotEmpty
-                  ? selectedOptionIds
-                      .map((id) => question.options
-                          .firstWhere((opt) => opt.optionId == id.toString())
-                          .optionText)
-                      .toList()
-                  : ["Not Answered"];
+        // Get correct answer IDs and texts
+        List<int> correctAnswerIds = answer
+            .firstWhere((map) => map.containsKey(questionId))[questionId]!
+            .toList();
+        List<String> correctAnswerTexts = correctAnswerIds
+            .map((id) => question.options
+                .firstWhere((opt) => opt.optionId == id.toString())
+                .optionText)
+            .toList();
 
-              // If no answers selected, set user-selected IDs to [-1] to indicate no response
-              resultJsonData.add({
-                "questionid": questionId,
-                "question name": questionText,
-                "correctanswerId": correctAnswerIds,
-                "correctanswer": correctAnswerTexts,
-                "userselectedanswer id":
-                    selectedOptionIds.isNotEmpty ? selectedOptionIds : [-1],
-                "userselectedanswer": userSelectedAnswerTexts,
-              });
+        // Check if the user provided an answer; if not, set "Not Answered"
+        List<int> selectedOptionIds = userAns[questionId] ?? [];
+        List<String> userSelectedAnswerTexts = selectedOptionIds.isNotEmpty
+            ? selectedOptionIds
+                .map((id) => question.options
+                    .firstWhere((opt) => opt.optionId == id.toString())
+                    .optionText)
+                .toList()
+            : ["Not Answered"];
 
-              inserUserTblMCQAnswer(
-                  widget.paperId,
-                  questionId.toString(),
-                  questionText.toString(),
-                  correctAnswerIds.toString(),
-                  correctAnswerTexts.toString(),
-                  selectedOptionIds.isNotEmpty
-                      ? selectedOptionIds.toString()
-                      : "[]",
-                  userSelectedAnswerTexts.toString(),
-                  "",
-                  "",
-                  "");
-            }
-            updateTblUserResultDetails(
-                "true", widget.paperId, UtcTime().utctime().toString());
+        // If no answers selected, set user-selected IDs to [-1] to indicate no response
+        resultJsonData.add({
+          "questionid": questionId,
+          "question name": questionText,
+          "correctanswerId": correctAnswerIds,
+          "correctanswer": correctAnswerTexts,
+          "userselectedanswer id":
+              selectedOptionIds.isNotEmpty ? selectedOptionIds : [-1],
+          "userselectedanswer": userSelectedAnswerTexts,
+        });
 
-            // Log or display JSON data as needed
-            print("Result JSON Data: ");
-            print(resultJsonData);
+        inserUserTblMCQAnswer(
+            widget.paperId,
+            questionId.toString(),
+            questionText.toString(),
+            correctAnswerIds.toString(),
+            correctAnswerTexts.toString(),
+            selectedOptionIds.isNotEmpty ? selectedOptionIds.toString() : "[]",
+            userSelectedAnswerTexts.toString(),
+            "",
+            "",
+            "");
+      }
+      updateTblUserResultDetails(
+          "true", widget.paperId, UtcTime().utctime().toString());
+
+      // Log or display JSON data as needed
+      print("Result JSON Data: ");
+      print(resultJsonData);
 //hello
-            submitedData = resultJsonData;
-            double totalMarks = calculateTotalMarks(resultJsonData);
-            updateTblMCQhistory(widget.paperId, widget.attempt,
-                totalMarks.toString(), DateTime.now().toString(), context);
+      submitedData = resultJsonData;
+      double totalMarks = calculateTotalMarks(resultJsonData);
+      updateTblMCQhistory(widget.paperId, widget.attempt, totalMarks.toString(),
+          DateTime.now().toString(), context);
 
-            sendmarksToCalculateLeaderboard(
-                context,
-                getx.loginuserdata[0].token,
-                totalMarks.toString(),
-                widget.paperId);
-            _timer.cancel();
-            score.value = correctAnswers;
-            isSubmitted.value = true;
-            List rankdata = await getRankDataOfMockTest(
-                context, getx.loginuserdata[0].token, widget.paperId);
+      sendmarksToCalculateLeaderboard(context, getx.loginuserdata[0].token,
+          totalMarks.toString(), widget.paperId);
+      _timer.cancel();
+      score.value = correctAnswers;
+      isSubmitted.value = true;
+      List rankdata = await getRankDataOfMockTest(
+          context, getx.loginuserdata[0].token, widget.paperId);
 
-            Get.to(
-                transition: Transition.cupertino,
-                () => RankPage(
-                      totalmarks: widget.totalMarks,
-                      paperId: widget.paperId,
-                      questionData: submitedData,
-                      frompaper: false,
-                      isMcq: false,
-                      type: widget.type,
-                      paperName: widget.paperName,
-                      submitedOn: DateTime.now().toString(),
-                      isAnswerSheetShow: true,
-                    ));
-      
-     
+      Get.to(
+          transition: Transition.cupertino,
+          () => RankPage(
+                totalmarks: widget.totalMarks,
+                paperId: widget.paperId,
+                questionData: submitedData,
+                frompaper: false,
+                isMcq: false,
+                type: widget.type,
+                paperName: widget.paperName,
+                submitedOn: DateTime.now().toString(),
+                isAnswerSheetShow: true,
+              ));
+
       return;
     }
-  
   }
 
   bottomSheet() {

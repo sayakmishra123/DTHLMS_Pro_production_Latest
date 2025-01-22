@@ -18,7 +18,7 @@ import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
 import 'package:dthlms/security.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_android_developer_mode/flutter_android_developer_mode.dart';
@@ -48,10 +48,6 @@ void main(List<String> args) async {
   // ensureYQPInitialized();
   Get.put(OnlineAudioPlayerController());
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   function() async {
     open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
 
@@ -70,7 +66,7 @@ void main(List<String> args) async {
       initializeNotifications();
     }
 
-    firbase();
+    // firbase();
     singleInstance(args);
   }
 
@@ -312,11 +308,11 @@ Future<List> getSimCardsData(BuildContext context) async {
   }
 }
 
-firbase() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-}
+// firbase() async {
+//   await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+//   );
+// }
 
 singleInstance(args) async {
   await WindowsSingleInstance.ensureSingleInstance(args, "custom_identifier",

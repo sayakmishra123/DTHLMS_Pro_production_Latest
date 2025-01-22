@@ -218,7 +218,7 @@
 //   }
 // }
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 
@@ -241,15 +241,15 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   final TextEditingController _messageController = TextEditingController();
 
   void _sendMessage() {
-    if (_messageController.text.isNotEmpty) {
-      ChatService.sendMessage(
-        widget.sessionId,
-        widget.userId,
-        widget.userName,
-        _messageController.text,
-      );
-      _messageController.clear();
-    }
+    // if (_messageController.text.isNotEmpty) {
+    //   ChatService.sendMessage(
+    //     widget.sessionId,
+    //     widget.userId,
+    //     widget.userName,
+    //     _messageController.text,
+    //   );
+    //   _messageController.clear();
+    // }
   }
 
   final _controller = TextEditingController();
@@ -267,35 +267,35 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: StreamBuilder<List<Map<String, dynamic>>>(
-            stream: ChatService.getChatMessages(widget.sessionId),
-            builder: (ctx, chatSnapshot) {
-              if (chatSnapshot.data == null || chatSnapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'Chat is empty',
-                    textScaler: TextScaler.linear(1.4),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                );
-              }
-              if (chatSnapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final chatDocs = chatSnapshot.data ?? [];
-              return ListView.builder(
-                reverse: true,
-                itemCount: chatDocs.length,
-                itemBuilder: (ctx, index) => MessageBubble(
-                    chatDocs[index]['message'],
-                    chatDocs[index]['userName'],
-                    chatDocs[index]['userId'] == widget.userId,
-                    chatDocs[index]['timestamp']),
-              );
-            },
-          ),
-        ),
+        // Expanded(
+        //   child: StreamBuilder<List<Map<String, dynamic>>>(
+        //     stream: ChatService.getChatMessages(widget.sessionId),
+        //     builder: (ctx, chatSnapshot) {
+        //       if (chatSnapshot.data == null || chatSnapshot.data!.isEmpty) {
+        //         return const Center(
+        //           child: Text(
+        //             'Chat is empty',
+        //             textScaler: TextScaler.linear(1.4),
+        //             style: TextStyle(color: Colors.white),
+        //           ),
+        //         );
+        //       }
+        //       if (chatSnapshot.connectionState == ConnectionState.waiting) {
+        //         return const Center(child: CircularProgressIndicator());
+        //       }
+        //       final chatDocs = chatSnapshot.data ?? [];
+        //       return ListView.builder(
+        //         reverse: true,
+        //         itemCount: chatDocs.length,
+        //         itemBuilder: (ctx, index) => MessageBubble(
+        //             chatDocs[index]['message'],
+        //             chatDocs[index]['userName'],
+        //             chatDocs[index]['userId'] == widget.userId,
+        //             chatDocs[index]['timestamp']),
+        //       );
+        //     },
+        //   ),
+        // ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -351,8 +351,12 @@ class MessageBubble extends StatelessWidget {
   final String message;
   final String userName;
   final bool isMe;
-  final Timestamp? time; // Change to nullable Timestamp
-  MessageBubble(this.message, this.userName, this.isMe, this.time);
+  // final Timestamp? time; // Change to nullable Timestamp
+  MessageBubble(
+    this.message,
+    this.userName,
+    this.isMe,
+  );
 
   Color chatBoxColor = const Color(0XffC9E1FF);
   TextStyle rightBarTopTextStyle = const TextStyle(
@@ -409,11 +413,11 @@ class MessageBubble extends StatelessWidget {
     String formattedTime = "Unknown Time"; // Default value if timestamp is null
     String formattedDate = "Unknown Date";
 
-    if (time != null) {
-      dateTime = time!.toDate();
-      formattedTime = formatTime(dateTime);
-      formattedDate = formatDate(dateTime);
-    }
+    // if (time != null) {
+    //   dateTime = time!.toDate();
+    //   formattedTime = formatTime(dateTime);
+    //   formattedDate = formatDate(dateTime);
+    // }
     return Row(
       mainAxisSize:
           MainAxisSize.min, // Ensures Row takes only as much space as needed
@@ -515,41 +519,41 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
-class ChatService {
-  static Future<void> sendMessage(
-      String sessionId, String userId, String userName, String message) async {
-    final ref = FirebaseFirestore.instance
-        .collection("meetings")
-        .doc(sessionId)
-        .collection("chats");
+// class ChatService {
+//   static Future<void> sendMessage(
+//       String sessionId, String userId, String userName, String message) async {
+//     final ref = FirebaseFirestore.instance
+//         .collection("meetings")
+//         .doc(sessionId)
+//         .collection("chats");
 
-    await ref.add({
-      'userId': userId,
-      'userName': userName,
-      'message': message,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-  }
+//     await ref.add({
+//       'userId': userId,
+//       'userName': userName,
+//       'message': message,
+//       'timestamp': FieldValue.serverTimestamp(),
+//     });
+//   }
 
-  static Stream<List<Map<String, dynamic>>> getChatMessages(String sessionId) {
-    final ref = FirebaseFirestore.instance
-        .collection("meetings")
-        .doc(sessionId)
-        .collection("chats")
-        .orderBy('timestamp', descending: true);
+//   static Stream<List<Map<String, dynamic>>> getChatMessages(String sessionId) {
+//     final ref = FirebaseFirestore.instance
+//         .collection("meetings")
+//         .doc(sessionId)
+//         .collection("chats")
+//         .orderBy('timestamp', descending: true);
 
-    return ref.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return {
-          'userId': doc['userId'],
-          'userName': doc['userName'],
-          'message': doc['message'],
-          'timestamp': doc['timestamp'],
-        };
-      }).toList();
-    });
-  }
-}
+//     return ref.snapshots().map((snapshot) {
+//       return snapshot.docs.map((doc) {
+//         return {
+//           'userId': doc['userId'],
+//           'userName': doc['userName'],
+//           'message': doc['message'],
+//           'timestamp': doc['timestamp'],
+//         };
+//       }).toList();
+//     });
+//   }
+// }
 
 
 

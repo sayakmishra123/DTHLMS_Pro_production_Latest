@@ -4,8 +4,10 @@ import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 class LivePage extends StatefulWidget {
   const LivePage({super.key});
@@ -22,7 +24,20 @@ class _LivePageState extends State<LivePage> {
       itemCount: getx.todaymeeting.length,
       itemBuilder: (context, index) {
         MeetingDeatils meeting = getx.todaymeeting[index];
-        return _buildCard(index, meeting);
+        return TutorCard(
+          imageUrl: meeting.videoCategory == 'YouTube'
+              ? 'assets/youtube.png'
+              : logopath, // Replace with your image URL
+          name: meeting.videoName,
+          topicname: meeting.topicName,
+          time: meeting.videoDuration.toString(),
+          description: meeting.packageName,
+          languages: meeting.scheduledOn.toString(),
+          liveUrl: meeting.liveUrl.toString(),
+          projectId: meeting.projectId.toString(),
+          sessionId: meeting.sessionId.toString(),
+          videoCategory: meeting.videoCategory,
+        );
       },
     );
   }
@@ -76,7 +91,7 @@ class _LivePageState extends State<LivePage> {
                         ),
                       ],
                     ),
-                    Row( 
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         MaterialButton(
@@ -168,6 +183,161 @@ class _LivePageState extends State<LivePage> {
           children: [
             _buildHeaderRow(),
             _buildMeetingList(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TutorCard extends StatelessWidget {
+  final String imageUrl;
+  final String name;
+  final String topicname;
+  final String time;
+  final String description;
+  final String languages;
+  final String projectId;
+  final String sessionId;
+  final String liveUrl;
+  final String videoCategory;
+
+  const TutorCard(
+      {required this.imageUrl,
+      required this.name,
+      required this.topicname,
+      required this.time,
+      required this.description,
+      required this.languages,
+      required this.projectId,
+      required this.sessionId,
+      required this.liveUrl,
+      required this.videoCategory});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: ColorPage.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile Image
+                CircleAvatar(
+                  backgroundImage: AssetImage(imageUrl),
+                  radius: 30,
+                ),
+                SizedBox(width: 12),
+                // Name and Rating
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        topicname,
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Lottie.asset('assets/liveanimation.json',
+                    width: 70, height: 70),
+                // Rating
+                // Row(
+                //   children: [
+                //     Icon(Icons.alarm, color: Colors.amber, size: 20),
+                //     SizedBox(width: 4),
+                //     Text(
+                //       '$time min',
+                //       style: TextStyle(fontWeight: FontWeight.bold),
+                //     ),
+                //   ],
+                // ),
+              ],
+            ),
+            SizedBox(height: 8),
+            // Description
+            Text(
+              description,
+              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 8),
+            // Languages
+            // Wrap(
+            //   spacing: 8.0,
+            //   runSpacing: 4.0,
+            //   children: languages
+            //       .map(
+            //         (lang) => Chip(
+            //           label: Text(
+            //             lang,
+            //             style: TextStyle(color: Colors.white, fontSize: 12),
+            //           ),
+            //           backgroundColor: ColorPage.blue,
+            //         ),
+            //       )
+            //       .toList(),
+            // ),
+            SizedBox(height: 12),
+            // Buttons
+            Row(
+              children: [
+                // Text(
+                //   languages,
+                //   style: TextStyle(
+                //       fontSize: 14,
+                //       color: Colors.grey[700],
+                //       fontWeight: FontWeight.bold),
+                // ),
+                Icon(Icons.alarm, color: Colors.amber, size: 20),
+                SizedBox(width: 4),
+                Text(
+                  '$time min',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    Get.to(
+                        transition: Transition.cupertino,
+                        () => MobileMeetingPage(
+                              projectId.toString(),
+                              sessionId.toString(),
+                              getx.loginuserdata[0].nameId,
+                              "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
+                              topicname,
+                              liveUrl,
+                              videoCategory: videoCategory,
+                            ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorPage.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Join',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

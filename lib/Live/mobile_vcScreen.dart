@@ -173,14 +173,14 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
       log(widget.userid.toString());
       log(widget.username.toString());
 
-      await MeetingService.joinMeeting(widget.sessionId.toString(),
-          widget.userid.toString(), widget.username);
+      // await MeetingService.joinMeeting(widget.sessionId.toString(),
+      //     widget.userid.toString(), widget.username);
       print(
           "User ${widget.username} (${widget.userid}) joined the meeting with session ID ${widget.sessionId}.");
     }
 
-    await MeetingService.joinMeeting(
-        widget.sessionId.toString(), widget.userid.toString(), widget.username);
+    // await MeetingService.joinMeeting(
+    //     widget.sessionId.toString(), widget.userid.toString(), widget.username);
   }
 
   @override

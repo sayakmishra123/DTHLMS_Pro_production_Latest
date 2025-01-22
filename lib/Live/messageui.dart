@@ -186,7 +186,6 @@ import 'dart:developer';
 import 'package:dthlms/Live/models/modelClass.dart';
 import 'package:flutter/material.dart';
 
-
 import 'messagecard.dart';
 import 'mobilegetx.dart';
 import 'models/message.dart';
@@ -200,8 +199,10 @@ class MessageUi extends StatefulWidget {
   final UserDetails userlist;
   late String userid;
   String hostname;
-  String username; String sessionId;
-  MessageUi(this.userlist, this.userid, this.username, this.hostname, this. sessionId,
+  String username;
+  String sessionId;
+  MessageUi(
+      this.userlist, this.userid, this.username, this.hostname, this.sessionId,
       {super.key});
   @override
   State<MessageUi> createState() => _MessageUiState();
@@ -254,53 +255,54 @@ class _MessageUiState extends State<MessageUi> {
       Expanded(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),
-          child: StreamBuilder(
-              stream: MeetingService.getAllMsg(widget.userlist, widget.userid,widget.sessionId),
-              builder: (context, snapshot) {
-                print(snapshot.data);
-                final data = snapshot.data?.docs;
-                if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No messages',
-                      textScaler: TextScaler.linear(1.4),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }
-                if (snapshot.hasData) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _scrollToBottom();
-                  });
-                  msglist =
-                      data!.map((e) => UserMsg.fromJson(e.data())).toList() ??
-                          [];
-                  return ListView.builder(
-                      controller: _scrollController,
-                      itemCount: msglist.length,
-                      itemBuilder: (context, index) {
-                        return Messagecard(msglist[index], widget.userid,
-                            widget.username, widget.hostname);
-                        // print(jsonEncode(snapshot.data!.docs[index].data()));
-                        // return Card(
-                        //   child: ListTile(
-                        //     onTap: () {
-                        //       // Get.to(() => ChatUi(userlist[index]));
-                        //     },
-                        //     title: Text(snapshot.data?.docs[index]['msg']),
-                        //     subtitle: Text(snapshot.data?.docs[index]['read']),
-                        //     trailing: const Icon(
-                        //       Icons.circle,
-                        //       color: Colors.blue,
-                        //     ),
-                        //   ),
-                        // );
-                      });
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }),
+          // child:
+          // StreamBuilder(
+          //     stream: MeetingService.getAllMsg(widget.userlist, widget.userid,widget.sessionId),
+          //     builder: (context, snapshot) {
+          //       print(snapshot.data);
+          //       final data = snapshot.data?.docs;
+          //       if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+          //         return const Center(
+          //           child: Text(
+          //             'No messages',
+          //             textScaler: TextScaler.linear(1.4),
+          //             style: TextStyle(color: Colors.white),
+          //           ),
+          //         );
+          //       }
+          //       if (snapshot.hasData) {
+          //         WidgetsBinding.instance.addPostFrameCallback((_) {
+          //           _scrollToBottom();
+          //         });
+          //         msglist =
+          //             data!.map((e) => UserMsg.fromJson(e.data())).toList() ??
+          //                 [];
+          //         return ListView.builder(
+          //             controller: _scrollController,
+          //             itemCount: msglist.length,
+          //             itemBuilder: (context, index) {
+          //               return Messagecard(msglist[index], widget.userid,
+          //                   widget.username, widget.hostname);
+          //               // print(jsonEncode(snapshot.data!.docs[index].data()));
+          //               // return Card(
+          //               //   child: ListTile(
+          //               //     onTap: () {
+          //               //       // Get.to(() => ChatUi(userlist[index]));
+          //               //     },
+          //               //     title: Text(snapshot.data?.docs[index]['msg']),
+          //               //     subtitle: Text(snapshot.data?.docs[index]['read']),
+          //               //     trailing: const Icon(
+          //               //       Icons.circle,
+          //               //       color: Colors.blue,
+          //               //     ),
+          //               //   ),
+          //               // );
+          //             });
+          //       }
+          //       return const Center(
+          //         child: CircularProgressIndicator(),
+          //       );
+          //     }),
         ),
       ),
       Padding(
@@ -311,70 +313,70 @@ class _MessageUiState extends State<MessageUi> {
               color: Colors.transparent),
           height: 60,
           width: MediaQuery.sizeOf(context).width - 30,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  cursorWidth: 3,
-                  cursorColor: greencolor,
-                  onFieldSubmitted: (value) async {
-                    if (msgController.text.isNotEmpty) {
-                      await MeetingService.sendMsg(
-                        widget.userlist,
-                        msgController.text,
-                        widget.userid,
-                        widget.sessionId
-                      );
-                      msgController.clear();
-                    }
-                  },
-                  controller: msgController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    // prefixIcon: EmojiSelector(
-                    //   onSelected: (p0) {
-                    //     log(p0.char);
-                    //   },
-                    // ),
+          // child: Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //   children: [
+          //     Expanded(
+          //       child: TextFormField(
+          //         cursorWidth: 3,
+          //         cursorColor: greencolor,
+          //         onFieldSubmitted: (value) async {
+          //           if (msgController.text.isNotEmpty) {
+          //             await MeetingService.sendMsg(
+          //               widget.userlist,
+          //               msgController.text,
+          //               widget.userid,
+          //               widget.sessionId
+          //             );
+          //             msgController.clear();
+          //           }
+          //         },
+          //         controller: msgController,
+          //         style: const TextStyle(color: Colors.white),
+          //         decoration: InputDecoration(
+          //           // prefixIcon: EmojiSelector(
+          //           //   onSelected: (p0) {
+          //           //     log(p0.char);
+          //           //   },
+          //           // ),
 
-                    filled: true,
-                    fillColor: chatConColor.withOpacity(0.3),
+          //           filled: true,
+          //           fillColor: chatConColor.withOpacity(0.3),
 
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.only(left: 20),
-                    hintText: 'Type your message',
-                    hintStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'ocenwide',
-                        fontSize: 15),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              FloatingActionButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                backgroundColor: chatConColor.withOpacity(0.3),
-                onPressed: () async {
-                  if (msgController.text.isNotEmpty) {
-                    await MeetingService.sendMsg(
-                        widget.userlist, msgController.text, widget.userid,widget.sessionId);
-                    msgController.clear();
-                  }
-                },
-                child: Image.asset(
-                  'assets/send.png',
-                  height: 30,
-                ),
-              )
-            ],
-          ),
+          //           border: OutlineInputBorder(
+          //             borderRadius: BorderRadius.circular(30),
+          //             borderSide: BorderSide.none,
+          //           ),
+          //           contentPadding: const EdgeInsets.only(left: 20),
+          //           hintText: 'Type your message',
+          //           hintStyle: const TextStyle(
+          //               color: Colors.white,
+          //               fontFamily: 'ocenwide',
+          //               fontSize: 15),
+          //         ),
+          //       ),
+          //     ),
+          //     const SizedBox(
+          //       width: 10,
+          //     ),
+          //     FloatingActionButton(
+          //       shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(30)),
+          //       backgroundColor: chatConColor.withOpacity(0.3),
+          //       onPressed: () async {
+          //         if (msgController.text.isNotEmpty) {
+          //           await MeetingService.sendMsg(
+          //               widget.userlist, msgController.text, widget.userid,widget.sessionId);
+          //           msgController.clear();
+          //         }
+          //       },
+          //       child: Image.asset(
+          //         'assets/send.png',
+          //         height: 30,
+          //       ),
+          //     )
+          //   ],
+          // ),
         ),
       ),
     ]);
