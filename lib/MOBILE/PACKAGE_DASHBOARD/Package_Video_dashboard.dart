@@ -84,7 +84,7 @@ class _MobilePackageVideoDashboardState
         timer.cancel();
       }
     });
-
+        //  _filteredItems = _combineAndTagItems();
     super.initState();
   }
 
@@ -231,6 +231,12 @@ class _MobilePackageVideoDashboardState
   }
 
   int selectedIndex = -1;
+    List<Map<String, dynamic>> _filteredItems = [];
+
+  search(value){
+
+
+  }
 
   @override
   Widget build(BuildContext context) {

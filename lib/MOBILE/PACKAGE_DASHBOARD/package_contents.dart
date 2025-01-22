@@ -1,6 +1,6 @@
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
-import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
+// import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/EMPTY_PAGE/emptypage.dart';
 import 'package:dthlms/MOBILE/MCQ/MCQTYPE/mcqtypepage.dart';

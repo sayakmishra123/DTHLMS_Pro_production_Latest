@@ -116,26 +116,12 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  // final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-
   Getx getx = Get.put(Getx());
 
-  Future<void> checkDeveloperMode() async {
-    // bool isDevMode;
-
-    // Check if "isPhysicalDevice" is false (indicating an emulator, often used in development)
+  Future<void> checkDeveloperMode() async { 
     if (Platform.isAndroid) {
       getx.isAndroidDeveloperModeEnabled.value =
           await FlutterAndroidDeveloperMode.isAndroidDeveloperModeEnabled;
-      // print(isDevMode.toString());
-      // if (isDevMode) {
-      //   getx.isAndroidDeveloperModeEnabled.value = false;
-      //   //  WidgetsBinding.instance. addPostFrameCallback((_) {
-      //   //     _showDeveloperDialog(context);
-      //   //   });
-      // } else {
-      //   getx.isAndroidDeveloperModeEnabled.value = false;
-      // }
     }
   }
 
