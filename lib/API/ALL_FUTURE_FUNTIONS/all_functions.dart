@@ -272,7 +272,11 @@ Future<void> getMeetingList(BuildContext context) async {
           } else if (programStatus == 'Upcoming') {
             getx.upcomingmeeting.add(meeting);
           }
+
+           
         }
+
+      
 
         // Combine all lists into a single list if needed
 

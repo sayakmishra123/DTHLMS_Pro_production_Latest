@@ -38,6 +38,9 @@ import 'package:get/get.dart';
 import 'dart:ui';
 
 import 'package:inapi_core_sdk/inapi_core_sdk.dart';
+// import 'package:path/path.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 import 'mobilegetx.dart';
 import 'peer_model.dart';
@@ -98,12 +101,12 @@ class MobileMeetingPage extends StatefulWidget {
       {this.videoCategory = "YouTube",required this.meeting, super.key});
 
   @override
-  State<MobileMeetingPage> createState() => _MobileMeetingPageState();
+  State<MobileMeetingPage> createState() => _MobileMeetingPageState(meeting);
 }
 
 class _MobileMeetingPageState extends State<MobileMeetingPage> {
   Timer? timer;
-
+  MeetingDeatils? meeting;
   List img = [
     'assets/image9.jpg',
     'assets/image8.jpg',
@@ -133,6 +136,41 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
 
   RxBool pollOption = false.obs;
 
+
+
+  final WebViewController controller = WebViewController()
+  ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  ..setNavigationDelegate(
+    NavigationDelegate(
+      onProgress: (int progress) {
+        // Update loading bar.
+      },
+      onPageStarted: (String url) {},
+      onPageFinished: (String url) {},
+      onHttpError: (HttpResponseError error) {},
+      onWebResourceError: (WebResourceError error) {},
+      onNavigationRequest: (NavigationRequest request) {
+        if (request.url.startsWith('https://www.youtube.com/')) {
+          return NavigationDecision.prevent;
+        }
+        return NavigationDecision.navigate;
+      },
+    ),
+  )
+  ..loadRequest(Uri?.parse('https://www.youtube.com/'));
+
+Future<void> initializeWebView() async {
+  try {
+ 
+    controller.loadRequest(Uri.parse(widget.meeting!.groupChat!)); // Assuming widget.personchat is a URL
+    getx.isloadChatUrl.value = true;
+  } catch (e) {
+    debugPrint('Error initializing WebView: $e');
+  }
+}
+
+
+
   Future<void> playSound() async {
     // Path to the .opus file in the assets folder
     final soundPath = 'sound.mp3';
@@ -149,11 +187,19 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
   @override
   void initState() {
     if (widget.videoCategory != 'YouTube') {
+
+      
+
+
+      
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+
+        
         await InMeetClient.instance.getAvailableDeviceInfo();
         Get.find<VcController>().assigningRenderer();
       });
     }
+     initializeWebView();
 
     onUserJoinMeeting();
     super.initState();
@@ -212,20 +258,17 @@ await unUploadedVideoInfoInsert(context,[
 
 });
 
-   
-             
-          
-
-           
-   
-
-    // await MeetingService.joinMeeting(
-    //     widget.sessionId.toString(), widget.userid.toString(), widget.username);
   }
 
   @override
   void dispose() {
     if (widget.videoCategory == "YouTube") {
+
+      WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        getx.isloadChatUrl.value = false;
+      },
+    );
     } else {
       timer?.cancel();
       if (vcController.selfRole.contains(ParticipantRoles.moderator)) {
@@ -263,9 +306,6 @@ await unUploadedVideoInfoInsert(context,[
   RxBool chatMood = true.obs;
   RxBool topicChecValue = true.obs;
 
-  // String _selectedValue = 'Option 1'; // Default selected value
-  // List<String> _dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
-
   Widget showDropdown({
     required BuildContext context,
     required List<String> items,
@@ -294,6 +334,8 @@ await unUploadedVideoInfoInsert(context,[
 
   Getx getx = Get.put(Getx());
   AnimationStyle? _animationStyle;
+  
+  _MobileMeetingPageState(this. meeting);
   Future back() async {
     await showDialog(
         barrierDismissible: false,
@@ -352,6 +394,11 @@ if(widget.videoCategory!="YouTube"){
            
   }
 
+  // final WebviewController controller = WebviewController();
+
+
+ 
+
   @override
   Widget build(BuildContext context) {
     TextStyle rightBarTopTextStyle = const TextStyle(
@@ -368,32 +415,7 @@ if(widget.videoCategory!="YouTube"){
       },
       child: Obx(
         () => Scaffold(
-            floatingActionButton: widget.videoCategory == 'YouTube'
-                ? FloatingActionButton.small(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return SafeArea(
-                            child: Material(
-                          color: Colors.transparent,
-                          child: ChatUi(widget.sessionId.toString(),
-                              widget.userid, widget.username
-
-                              // username
-
-                              ),
-                        ));
-                      }));
-                    },
-                    backgroundColor: btnColor,
-                    // heroTag: 'btn5',
-                    child: Icon(
-                      Icons.chat,
-                      color: Colors.white,
-                      weight: 5,
-                    ),
-                  )
-                : null,
+           
             backgroundColor: Colors.black,
             appBar: getx.isFullscreen.value
                 ? null
@@ -413,6 +435,20 @@ if(widget.videoCategory!="YouTube"){
                     child: Column(
                       children: [
                         YoutubeLive(widget.link, widget.username, true),
+                        SizedBox(height: 30,),
+
+                        Obx(
+                          () => SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height/1.9,
+                         
+                            child: Center(
+                              child: getx.isloadChatUrl.value
+                                  ?WebViewWidget(controller: controller)
+                                  : CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )
@@ -458,10 +494,7 @@ if(widget.videoCategory!="YouTube"){
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  // widget.videoCategory == "YouTube"
-                                                  //     ? YoutubeLive(widget.link,
-                                                  //         widget.username, true)
-                                                  // :
+                                              
                                                   Expanded(
                                                     child: Row(
                                                       mainAxisAlignment:
@@ -613,34 +646,7 @@ if(widget.videoCategory!="YouTube"){
                                                                   ),
                                                                 ),
 
-                                                                // CupertinoButton(
-                                                                //   color: CupertinoColors.systemRed,
-                                                                //   padding: EdgeInsets.symmetric(horizontal: 3),
-                                                                //     // style: TextButton.styleFrom(
-                                                                //     //   backgroundColor:
-                                                                //     //   Colors.red[400],
-                                                                //     //   shape:
-                                                                //     //   const RoundedRectangleBorder(
-                                                                //     //     borderRadius:
-                                                                //     //     BorderRadius.all(
-                                                                //     //         Radius.circular(8)),
-                                                                //     //   ),
-                                                                //     // ),
-                                                                //     onPressed: () {
-                                                                //       // turned off by shubha
-                                                                //       // showDialog(
-                                                                //       //   barrierDismissible: false,
-                                                                //       //   context: context,
-                                                                //       //   builder: (context) =>
-                                                                //       //       CustomLogoutDialog(
-                                                                //       //           index: 0),
-                                                                //       // ).then((value) =>
-                                                                //       // value['id'] == 1
-                                                                //       //     ? Navigator.pop(context)
-                                                                //       //     : null);
-                                                                //     },
-                                                                //     child: Icon(CupertinoIcons.phone)),
-                                                                //
+                                                            
                                                               ),
 
                                                         Row(
@@ -896,74 +902,7 @@ if(widget.videoCategory!="YouTube"){
                                                                     ),
                                                                   ),
 
-                                                            //                   if (vcController
-                                                            //                       .screenShareStatus !=
-                                                            //                       ButtonStatus.off)
-                                                            //                     Row(
-                                                            //                       children: [
-                                                            //                         FloatingActionButton(
-                                                            //
-                                                            // mini: true,
-                                                            //                           onPressed: vcController
-                                                            //                               .screenShareStatus ==
-                                                            //                               ButtonStatus.loading
-                                                            //                               ? null
-                                                            //                               : () {
-                                                            //                             try {
-                                                            //                               vcController
-                                                            //                                   .stopScreenShare();
-                                                            //                             } catch (e) {
-                                                            //                               // Handle the error (e.g., log it)
-                                                            //                               print(
-                                                            //                                   "Error stopping screen share: $e");
-                                                            //                             }
-                                                            //                           },
-                                                            //                           backgroundColor: Colors.red,
-                                                            //                           heroTag: 'btn4',
-                                                            //                           child: Image.asset(
-                                                            //                             'assets/screen.png',
-                                                            //                             height: 20,
-                                                            //                             filterQuality:
-                                                            //                             FilterQuality.medium,
-                                                            //                             scale: 1,
-                                                            //                           ),
-                                                            //                         ),
-                                                            //                       ],
-                                                            //                     )
-                                                            //                   else
-                                                            //                     Row(
-                                                            //                       children: [
-                                                            //                         FloatingActionButton(
-                                                            //                           mini:true,
-                                                            //                           onPressed: vcController
-                                                            //                               .screenShareStatus ==
-                                                            //                               ButtonStatus.loading
-                                                            //                               ? null
-                                                            //                               : () {
-                                                            //                             try {
-                                                            //                               vcController
-                                                            //                                   .screenShare();
-                                                            //                             } catch (e) {
-                                                            //                               // Handle the error (e.g., log it)
-                                                            //                               print(
-                                                            //                                   "Error starting screen share: $e");
-                                                            //                             }
-                                                            //                           },
-                                                            //                           backgroundColor: btnColor,
-                                                            //                           heroTag: 'btn4',
-                                                            //                           child: Image.asset(
-                                                            //                             'assets/screen.png',
-                                                            //                             height: 20,
-                                                            //                             filterQuality:
-                                                            //                             FilterQuality.medium,
-                                                            //                             scale: 1,
-                                                            //                           ),
-                                                            //                         ),
-                                                            //                       ],
-                                                            //                     ),
-                                                            //                   const SizedBox(
-                                                            //                     width: 15,
-                                                            //                   ),
+                                                            
 
                                                             if (widget
                                                                     .videoCategory !=

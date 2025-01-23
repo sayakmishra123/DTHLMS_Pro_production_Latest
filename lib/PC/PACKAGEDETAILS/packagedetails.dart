@@ -2119,9 +2119,9 @@ class ExeRun {
           getx.loginuserdata[0].phoneNumber,
           getx.loginuserdata[0].token,
           origin,
-          ClsUrlApi.mainurl+ ClsUrlApi.getExamResultForIndividual,
-          getx.groupchatLink.string,
-          getx.personalChatLink.value,
+          "https://"+ClsUrlApi.mainurl+ ClsUrlApi.insertvideoTimeDetails,
+         meetingDeatils.groupChat!,
+        meetingDeatils.personalChat!
 
 
         ],

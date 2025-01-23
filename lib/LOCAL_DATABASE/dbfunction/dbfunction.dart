@@ -518,7 +518,7 @@ Speed TEXT,
 StartTime TEXT,
 PlayNo INTEGER,
 UploadFlag INTEGER DEFAULT 0,
-Type INTEGER DEFAULT 'video');
+Type TEXT DEFAULT 'video');
 ''');
 }
 
