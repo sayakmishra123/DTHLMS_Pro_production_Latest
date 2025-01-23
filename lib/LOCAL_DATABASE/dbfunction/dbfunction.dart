@@ -2709,7 +2709,7 @@ Future<List<Map<String, dynamic>>> fetchTheorySetList(String packageId) async {
     tblMCQSetList.add({
       'SetId': row['SetId'],
       'PackageId': row['PackageId'],
-      'SetName': row['SetName'],
+      'SetName': row['SetName'], 
       'ServicesTypeId': row['ServicesTypeId'],
       'ServicesTypeName': row['ServicesTypeName']
     });

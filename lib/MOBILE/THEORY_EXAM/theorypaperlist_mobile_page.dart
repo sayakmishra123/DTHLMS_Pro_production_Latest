@@ -5,29 +5,43 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TheoryPaperListMobile extends StatelessWidget {
+class TheoryPaperListMobile extends StatefulWidget {
   final RxList theorylist;
   final String type;
   final String img;
   bool istype;
   TheoryPaperListMobile(this.theorylist, this.type, this.img, this.istype,
       {super.key});
+
+  @override
+  State<TheoryPaperListMobile> createState() => _TheoryPaperListMobileState();
+}
+
+class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
   RxList filteredList = [].obs;
+
   RxList mcqPaperList = [].obs;
+
+  RxList theoryPaperList = [].obs;
+
+   Map<String, List<dynamic>> fetchedDataMap = {};
+
+  Future<void> getData(Map<String, dynamic> paperNames) async {
+    final setId = paperNames['SetId'];
+    if (!fetchedDataMap.containsKey(setId)) {
+      fetchedDataMap[setId] = await fetchTheoryPapertList(setId);
+      setState(() {}); 
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    int crossAxisCount = screenWidth > 1200
-        ? 6
-        : screenWidth > 800
-            ? 5
-            : 4; // Adjust the number of grid items per row based on screen width.
-
     filteredList.value =
-        theorylist.where((item) => item["ServicesTypeName"] == type).toList();
+        widget.theorylist.where((item) => item["ServicesTypeName"] == widget.type).toList();
     log(filteredList.toString());
 
     return SizedBox(
@@ -41,6 +55,15 @@ class TheoryPaperListMobile extends StatelessWidget {
                 itemCount: filteredList.length, // Use filtered list count
                 itemBuilder: (context, index) {
                   final theoryItem = filteredList[index];
+        final setId = theoryItem['SetId'];
+         if (!fetchedDataMap.containsKey(setId)) {
+          getData(theoryItem);
+        }
+         final currentDataLength =
+            fetchedDataMap[setId]?.length ?? 0;
+    
+                   getData(theoryItem);
+    
                   log(theoryItem.toString());
                   return InkWell(
                     onTap: () async {
@@ -48,31 +71,41 @@ class TheoryPaperListMobile extends StatelessWidget {
                       // mcqPaperList.value = await fetchMCQPapertList(paperNames['SetId']);
                       Navigator.push(
                         context,
-                        MaterialPageRoute( 
+                        MaterialPageRoute(  
                           builder: (context) => TheoryExamPapesMobile(
                             theoryItem,
-                            theorylist, 
-                            istype,
+                            widget.theorylist, 
+                            widget.istype,
                           ),
                         ),
                       );
                     },
                     child: Container(
+                      
+                      
                       padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                      margin: EdgeInsets.only(bottom: 20),
+                          EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      margin: EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
+                        border: Border.all(color: Colors.orange.withAlpha(200)),
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
                       child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              img,
-                              fit: BoxFit.contain,
-                              height: 100,
-                              width: 100,
+                          Container(
+                            margin: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: const Color.fromARGB(255, 192, 169, 255)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Image.asset(
+                                widget.img,
+                                fit: BoxFit.contain,
+                                height: 35,
+                                width: 35,
+                              ),
                             ),
                           ),
                           Container( 
@@ -82,12 +115,40 @@ class TheoryPaperListMobile extends StatelessWidget {
                             color: Colors.grey.shade200,
                           ),
                           Expanded(
-                            child: Text(
-                              maxLines: 5,
-                              overflow: TextOverflow.ellipsis,
-                                theoryItem["SetName"] ??
-                                    'Question', // Use dynamic title
-                                style: FontFamily.styleb),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                          theoryItem["SetName"] ?? 
+                                              'Question', // Use dynamic title
+                                          style: FontFamily.styleb.copyWith(fontSize: 16)),
+                                          SizedBox(height: 5,),
+                                        //   Text( 
+                                        // maxLines: 2,
+                                        // overflow: TextOverflow.ellipsis,
+                                        //   theoryItem["SetName"] ??
+                                        //       'Question', // Use dynamic title
+                                        //   style: FontFamily.style.copyWith(fontSize: 14,color: Colors.grey)),
+                                    ],
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Column(
+                                      children: [CircleAvatar(
+                                        backgroundColor: Colors.pink.withAlpha(50),
+                                        radius: 15.0,
+                                        child: Text(currentDataLength.toString(),style: FontFamily.style.copyWith(fontSize: 16),))],
+                                    ),
+                              ),
+
+                              ],
+                            ),
                           ),
                         ],
                       ),

@@ -37,7 +37,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
     log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
     theoryPaperList.clear();
     theoryPaperList.value =
-        await fetchTheoryPapertList(widget.paperNames['SetId']);
+    await fetchTheoryPapertList(widget.paperNames['SetId']);
     log(theoryPaperList.toString() + " type");
   }
 

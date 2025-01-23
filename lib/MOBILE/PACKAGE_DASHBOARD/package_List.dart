@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_contents.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:flutter/material.dart';
@@ -51,47 +50,43 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
       tabViews.add(buildFreeServicesListView(context));
     }
   }
+   
 
   @override
   Widget build(BuildContext context) {
     updateTabs();
 
-    return WillPopScope(
-      onWillPop: () async {
-        return await false;
-      },
-      child: Navigator(
-          onGenerateRoute: (settings) => MaterialPageRoute(
-                builder: (context) => DefaultTabController(
-                  length: tabs.length,
-                  child: Scaffold(
-                    appBar: tabs.isNotEmpty
-                        ? AppBar(
-                            toolbarHeight: 10,
-                            automaticallyImplyLeading: false,
-                            backgroundColor: ColorPage.mainBlue,
-                            bottom: TabBar(
-                              tabAlignment: TabAlignment.fill,
-                              indicatorPadding: EdgeInsets.all(2),
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              indicatorColor: ColorPage.white,
-                              labelPadding: EdgeInsets.all(10),
-                              tabs: tabs,
-                            ),
-                          )
-                        : null,
-                    body: tabs.isNotEmpty
-                        ? TabBarView(children: tabViews)
-                        : Center(
-                            child: Text(
-                              'No data available',
-                              style: TextStyle(fontSize: 16),
-                            ),
+    return Navigator(
+        onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => DefaultTabController(
+                length: tabs.length,
+                child: Scaffold(
+                  appBar: tabs.isNotEmpty
+                      ? AppBar(
+                          toolbarHeight: 10,
+                          automaticallyImplyLeading: false,
+                          backgroundColor: ColorPage.mainBlue,
+                          bottom: TabBar(
+                            tabAlignment: TabAlignment.fill,
+                            indicatorPadding: EdgeInsets.all(2),
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            indicatorColor: ColorPage.white,
+                            labelPadding: EdgeInsets.all(10),
+                            tabs: tabs,
                           ),
-                  ),
+                        )
+                      : null,
+                  body: tabs.isNotEmpty
+                      ? TabBarView(children: tabViews)
+                      : Center(
+                          child: Text(
+                            'No data available',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
                 ),
-              )),
-    );
+              ),
+            ));
   }
 
   // Icon? whichIcon(String? location) {
