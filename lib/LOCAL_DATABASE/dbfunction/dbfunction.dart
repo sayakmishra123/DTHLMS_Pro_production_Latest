@@ -456,7 +456,8 @@ Future<void> insertVideoplayInfo(
     String playBackSpeed,
     String startClockTime,
     int playNo,
-    int uploadflag) async {
+    int uploadflag,
+   { String type="video"}) async {
   try {
     // print(videoId.toString() + watchduration.toString());
 
@@ -476,8 +477,8 @@ Future<void> insertVideoplayInfo(
     } else {
       // If the record does not exist, insert a new record
       _db.execute('''
-        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, EndDuration, Speed, StartTime, PlayNo,UploadFlag)
-        VALUES ('$videoId', '$startingTimeLine', '$watchduration', '$playBackSpeed', '$startClockTime', '$playNo','$uploadflag')
+        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, EndDuration, Speed, StartTime, PlayNo,UploadFlag,Type)
+        VALUES ('$videoId', '$startingTimeLine', '$watchduration', '$playBackSpeed', '$startClockTime', '$playNo','$uploadflag','$type')
       ''');
       // print("Insert successful: New record inserted");
     }
@@ -516,7 +517,8 @@ EndDuration TEXT,
 Speed TEXT,
 StartTime TEXT,
 PlayNo INTEGER,
-UploadFlag INTEGER DEFAULT 0);
+UploadFlag INTEGER DEFAULT 0,
+Type INTEGER DEFAULT 'video');
 ''');
 }
 
@@ -524,7 +526,7 @@ Future<Map<String, dynamic>> getLastRow() async {
   try {
     // Replace '_db' with your database instance
     List<Map<String, dynamic>> result = await _db.select('''
-    SELECT * FROM TblvideoPlayInfo 
+    SELECT * FROM TblvideoPlayInfo WHERE Type='video'
     ORDER BY ROWID DESC 
     LIMIT 1
   ''');
@@ -2969,6 +2971,7 @@ Future<dynamic> fetchUploadableVideoInfo() async {
       print(
           "${row['VideoId']}\n,${row['StartDuration']}\n,${row['EndDuration']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
       unUploadedVideoInfo.add({
+        'Type':row['Type'],
         'VideoId': row['VideoId'],
         'StartDuration': row['StartDuration'],
         'EndDuration': row['EndDuration'],

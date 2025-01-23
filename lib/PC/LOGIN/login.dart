@@ -84,7 +84,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
 
   getUserid() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.clear();
+  
     loginemail.text = prefs.getString("LoginId") ?? '';
   }
 

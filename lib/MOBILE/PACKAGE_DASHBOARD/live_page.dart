@@ -25,6 +25,7 @@ class _LivePageState extends State<LivePage> {
       itemBuilder: (context, index) {
         MeetingDeatils meeting = getx.todaymeeting[index];
         return TutorCard(
+          meeting: meeting,
           imageUrl: meeting.videoCategory == 'YouTube'
               ? 'assets/youtube.png'
               : logopath, // Replace with your image URL
@@ -104,6 +105,7 @@ class _LivePageState extends State<LivePage> {
                             Get.to(
                                 transition: Transition.cupertino,
                                 () => MobileMeetingPage(
+                                meeting: meeting,
                                       meeting.projectId.toString(),
                                       meeting.sessionId.toString(),
                                       getx.loginuserdata[0].nameId,
@@ -191,6 +193,8 @@ class _LivePageState extends State<LivePage> {
 }
 
 class TutorCard extends StatelessWidget {
+
+   final MeetingDeatils meeting;
   final String imageUrl;
   final String name;
   final String topicname;
@@ -212,7 +216,8 @@ class TutorCard extends StatelessWidget {
       required this.projectId,
       required this.sessionId,
       required this.liveUrl,
-      required this.videoCategory});
+      required this.videoCategory,
+      required this.meeting});
 
   @override
   Widget build(BuildContext context) {
@@ -316,6 +321,8 @@ class TutorCard extends StatelessWidget {
                     Get.to(
                         transition: Transition.cupertino,
                         () => MobileMeetingPage(
+
+                          meeting:meeting ,
                               projectId.toString(),
                               sessionId.toString(),
                               getx.loginuserdata[0].nameId,

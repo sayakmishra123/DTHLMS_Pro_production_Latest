@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/mobile_pdf_viewer.dart';
@@ -2117,6 +2118,16 @@ class ExeRun {
           meetingDeatils.topicName.toString(),
           meetingDeatils.liveUrl.toString(),
           meetingDeatils.videoCategory.toString(),
+          getx.dbPath.value,
+          meetingDeatils.videoId,
+          getx.loginuserdata[0].phoneNumber,
+          getx.loginuserdata[0].token,
+          origin,
+          ClsUrlApi.mainurl+ ClsUrlApi.getExamResultForIndividual,
+          getx.groupchatLink.string,
+          getx.personalChatLink.value,
+
+
         ],
         runInShell: true,
       );

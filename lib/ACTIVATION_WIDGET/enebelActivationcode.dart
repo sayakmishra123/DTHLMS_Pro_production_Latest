@@ -283,10 +283,7 @@ class CustomLogoutDialog extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     TextButton(
-                      onPressed: () {
-                        Get.back();
-                        Get.back();
-                      },
+                      onPressed:ok,
                       child: Text(
                         'Yes, End meeting',
                         style: TextStyle(color: Colors.white),

@@ -1480,6 +1480,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => MobileMeetingPage(
+                                            meeting: meeting,
                                                 meeting!.projectId.toString(),
                                                 meeting.sessionId.toString(),
                                                 getx.loginuserdata[0].nameId,

@@ -7,9 +7,12 @@ import 'dart:developer';
 // import 'package:dthlms/MOBILE/live/getx.dart';
 
 import 'package:dthlms/ACTIVATION_WIDGET/enebelActivationcode.dart';
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
+import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/Live/chatwidget.dart';
 import 'package:dthlms/Live/popupmenu.dart';
+import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
@@ -80,6 +83,7 @@ class MobileMeetingPage extends StatefulWidget {
   // String userid;
   // String username;
   // String packageName;
+   MeetingDeatils? meeting;
   String projectId;
   String? sessionId;
   String userid;
@@ -91,7 +95,7 @@ class MobileMeetingPage extends StatefulWidget {
 
   MobileMeetingPage(this.projectId, this.sessionId, this.userid, this.username,
       this.packageName, this.link,
-      {this.videoCategory = "YouTube", super.key});
+      {this.videoCategory = "YouTube",required this.meeting, super.key});
 
   @override
   State<MobileMeetingPage> createState() => _MobileMeetingPageState();
@@ -154,7 +158,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
     onUserJoinMeeting();
     super.initState();
   }
-
+var startTime=  DateTime.now().toString();
   void onUserJoinMeeting() async {
     if (widget.videoCategory == "YouTube") {
     } else {
@@ -178,6 +182,42 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
       print(
           "User ${widget.username} (${widget.userid}) joined the meeting with session ID ${widget.sessionId}.");
     }
+
+
+await unUploadedVideoInfoInsert(context,[
+
+  {
+        
+        'VideoId':  int.parse(widget.meeting!.videoId),
+        'StartDuration': "0",
+        'EndDuration': "0",
+        "Speed":"0",
+        "StartTime":
+          startTime.substring(0, startTime.length - 3),
+        "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
+      
+
+}],getx.loginuserdata[0].token,true).then((value){
+   insertVideoplayInfo(
+
+                  int.parse(widget.meeting!.videoId),
+               "0",
+                 "0",
+               "0",
+            startTime.substring(0, startTime.length - 3),
+             int.parse(getx.loginuserdata[0].phoneNumber),
+                  value?1:0,
+                type: "live"
+                  );
+
+});
+
+   
+             
+          
+
+           
+   
 
     // await MeetingService.joinMeeting(
     //     widget.sessionId.toString(), widget.userid.toString(), widget.username);
@@ -261,7 +301,37 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
         builder: (context) => CustomLogoutDialog(
               title: "You're close the meeting...\nAre you sure?",
               description: '',
-              ok: () {
+              ok: ()async {
+await unUploadedVideoInfoInsert(context,[
+
+  {
+        
+        'VideoId':  int.parse(widget.meeting!.videoId),
+        'StartDuration': "0",
+        'EndDuration': "0",
+        "Speed":"0",
+        "StartTime":
+          startTime.substring(0, startTime.length - 3),
+        "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
+      
+
+}],getx.loginuserdata[0].token,true).then((value){
+   insertVideoplayInfo(
+
+                  int.parse(widget.meeting!.videoId),
+               "0",
+                 "0",
+               "0",
+            startTime.substring(0, startTime.length - 3),
+             int.parse(getx.loginuserdata[0].phoneNumber),
+                  value?1:0,
+                type: "live"
+                  );
+
+});
+
+
+if(widget.videoCategory!="YouTube"){
                 if (vcController.selfRole
                     .contains(ParticipantRoles.moderator)) {
                   inMeetClient.endMeetingForAll();
@@ -272,9 +342,14 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                   inMeetClient.disableWebcam();
 
                   print('object');
-                }
+                }}
+
+                 Get.back();
+            Get.back();
               },
             ));
+
+           
   }
 
   @override
