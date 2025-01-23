@@ -16,9 +16,8 @@ import 'package:get/get.dart';
 import '../HOMEPAGE/homepage_mobile.dart';
 
 class MyAccountScreen extends StatefulWidget {
-
   final bool fromDrawer;
-  MyAccountScreen({ required this.fromDrawer});
+  MyAccountScreen({required this.fromDrawer});
 
   @override
   State<MyAccountScreen> createState() => _MyAccountScreenState();
@@ -56,6 +55,38 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
     }
   }
 
+  deleteAccount(data) async {
+    ArtDialogResponse? response = await ArtSweetAlert.show(
+      barrierDismissible: false,
+      context: context,
+      artDialogArgs: ArtDialogArgs(
+        denyButtonText: "Cancel",
+        title: "Are you sure?",
+        text: data,
+        confirmButtonText: "Yes",
+        confirmButtonColor: ColorPage.red,
+        denyButtonColor: ColorPage.grey,
+        type: ArtSweetAlertType.warning,
+      ),
+    );
+
+    if (response == null) {
+      return;
+    }
+
+    if (response.isTapConfirmButton) {
+      if (getx.isInternet.value) {
+        // handleLogoutProcess(context);
+      } else {
+        // onNoInternetConnection(context, () {
+        //   Get.back();
+        // });
+      }
+
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +106,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
           children: [
             // Profile Card
             Card(
+              elevation: 0,
               color: ColorPage.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -96,6 +128,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
             ),
             SectionHeader(title: 'General'),
             Card(
+              elevation: 0,
               color: ColorPage.white,
               child: Column(
                 children: [
@@ -143,6 +176,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
             ),
             SectionHeader(title: 'Support'),
             Card(
+              elevation: 0,
               color: ColorPage.white,
               child: Column(
                 children: [
@@ -161,7 +195,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     },
                   ),
                   MenuItem(
-                    icon: FontAwesome.comment,
+                    icon: MaterialIcons.email,
                     title: 'Contact Us',
                     onTap: () {
                       Get.to(
@@ -173,10 +207,35 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     title: 'Privacy Policy',
                     onTap: () {},
                   ),
+                  MenuItem(
+                    icon: FontAwesome.undo,
+                    title: 'Refund Policy',
+                    onTap: () {},
+                  ),
                 ],
               ),
             ),
             SizedBox(height: 20),
+            Card(
+              elevation: 0,
+              color: ColorPage.white,
+              child: ListTile(
+                leading: Icon(Icons.delete_forever, color: Colors.red),
+                title: Text(
+                  'Delete Account',
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  deleteAccount(
+                    'Are you sure you want to permanently delete your account?\n\n'
+                    'This action cannot be undone, and all your personal information, '
+                    'settings, and history will be permanently erased. You will lose access to your account and all associated services.',
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 10),
             Card(
               color: ColorPage.white,
               child: ListTile(
@@ -234,7 +293,10 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon),
+      leading: Icon(
+        icon,
+        color: ColorPage.blue,
+      ),
       title: Text(title),
       trailing: Icon(
         Icons.arrow_forward_ios,

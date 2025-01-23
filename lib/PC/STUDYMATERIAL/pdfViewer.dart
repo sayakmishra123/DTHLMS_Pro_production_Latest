@@ -60,10 +60,10 @@ class ShowChapterPDF extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ShowChapterPDFState createState() => _ShowChapterPDFState();
+  ShowChapterPDFState createState() => ShowChapterPDFState();
 }
 
-class _ShowChapterPDFState extends State<ShowChapterPDF> {
+class ShowChapterPDFState extends State<ShowChapterPDF> {
   Getx getx = Get.put(Getx());
   final PdfViewerController _pdfViewerController = PdfViewerController();
   // State variable to store decrypted PDF bytes
@@ -316,6 +316,11 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
           )
         : Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back)),
               title: Text(
                 '${widget.title}',
                 style: FontFamily.styleb,
@@ -325,10 +330,19 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
                   icon: Icon(Icons.edit),
                   onPressed: () {
                     log(widget.pdfUrl + "$data");
-                    Get.to(() => ImageEditorExample(
-                          pdfName: this.title,
-                          pdfPath: this.data,
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageEditorExample(
+                            pdfName: this.title,
+                            pdfPath: this.data,
+                          ),
                         ));
+                    // Get.to(() => ImageEditorExample(
+                    //       pdfName: this.title,
+                    //       pdfPath: this.data,
+                    //     ));
                   }, // Zoom out functionality
                 ),
                 IconButton(
@@ -411,8 +425,13 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
         print('PDF downloaded and saved to: $filePath');
 
         // Add watermark to the downloaded PDF
-        await addWatermarkToPdf(filePath, getx.loginuserdata[0].username,
-            getx.loginuserdata[0].phoneNumber, getx.loginuserdata[0].email);
+        await addWatermarkToPdf(
+            filePath,
+            getx.loginuserdata[0].firstName +
+                " " +
+                getx.loginuserdata[0].lastName,
+            getx.loginuserdata[0].phoneNumber,
+            getx.loginuserdata[0].email);
 
         if (widget.isEncrypted) {
           final encryptedBytes = await readEncryptedPdfFromFile(filePath);
@@ -441,7 +460,7 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
   }
 
 // Function to add watermark to a PDF
-  Future<void> addWatermarkToPdf(
+  static Future<void> addWatermarkToPdf(
       String filePath, String userName, String mobileNo, String email) async {
     try {
       // Load the PDF document
@@ -450,10 +469,10 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
       PdfDocument document = PdfDocument(inputBytes: bytes);
 
       // Define watermark properties
-      PdfBrush brush =
-          PdfSolidBrush(PdfColor(150, 150, 150, 50)); // Gray with opacity
-      PdfFont font = PdfStandardFont(
-          PdfFontFamily.helvetica, 20); // Font for watermark text
+      PdfBrush brush = PdfSolidBrush(PdfColor(175, 169, 169, 50));
+      // Gray with opacity
+      PdfFont font =
+          PdfStandardFont(PdfFontFamily.courier, 14); // Font for watermark text
 
       // Add watermark to all pages
       for (int i = 0; i < document.pages.count; i++) {
@@ -467,8 +486,8 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
         Size pageSize = page.getClientSize();
 
         // Calculate position (center of page)
-        // double centerX = pageSize.width / 2;
-        // double centerY = pageSize.height / 2;
+        double centerX = pageSize.width / 2;
+        double centerY = pageSize.height / 2;
 
         // Draw watermark text
         graphics.drawString(
@@ -476,10 +495,10 @@ class _ShowChapterPDFState extends State<ShowChapterPDF> {
           font,
           brush: brush,
           bounds: Rect.fromLTWH(
-              0, 10, pageSize.width, 100), // Adjust bounds as needed
+              centerX - 100, centerY - 50, 200, 100), // Adjust bounds as needed
           format: PdfStringFormat(
             alignment: PdfTextAlignment.center,
-            lineAlignment: PdfVerticalAlignment.top,
+            lineAlignment: PdfVerticalAlignment.middle,
           ),
         );
       }
