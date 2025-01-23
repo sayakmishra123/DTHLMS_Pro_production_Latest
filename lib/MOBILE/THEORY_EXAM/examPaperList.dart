@@ -30,7 +30,7 @@ class _TheoryExamPaperListofMobileState
 
   // Fetch theory set list and unique services
   Future getTheorySetList() async {
-    theorySetList.value =
+    theorySetList.value = 
         await fetchTheorySetList(getx.selectedPackageId.value.toString());
     Set<String> uniqueServices =
         theorySetList.map((item) => item['ServicesTypeName'] as String).toSet();
@@ -51,7 +51,7 @@ class _TheoryExamPaperListofMobileState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
         appBar: AppBar(
           backgroundColor: ColorPage.appbarcolor,
           automaticallyImplyLeading: true,
@@ -98,50 +98,7 @@ class _TheoryExamPaperListofMobileState
               )
             : Center(
                 child: Text("No Data Found"),
-              )
-
-//        ListView.builder(
-//         itemCount: getx.testWrittenExamList.length, // Number of ExpansionTiles
-//         itemBuilder: (context, index) {
-//           return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 border:
-//                     Border.all(color: const Color.fromARGB(255, 212, 212, 212)),
-//                 borderRadius: BorderRadius.circular(10),
-//                 color: ColorPage.white,
-//               ),
-//               child: MaterialButton(
-//                 onPressed: () {
-//                   if (getx.isInternet.value) {
-//                     Get.to(() => McqTermAndConditionmobile(
-//                       url:  getx.testWrittenExamList[index]
-//                               ['DocumentPath'],
-// duration:getx.testWrittenExamList[index]
-//                               ['VideoDuration'] ,paperId: getx.testWrittenExamList[index]['FileId'],paperName: getx.testWrittenExamList[index]
-//                               ['FileIdName'] ,
-
-// startTime:getx.testWrittenExamList[index]
-//                               ['ScheduleOn'] ,
-// termAndCondition:"" ,totalMarks:"100" ,type: "Theory",
-//                     ));
-//                   } else {
-//                     _onNoInternetConnection(context);
-//                   }
-//                 },
-//                 child: ListTile(
-//                   leading: Icon(Icons.bookmark),
-//                   title:
-//                       Text('${getx.testWrittenExamList[index]['FileIdName']}'),
-//                 ),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-
-        );
+              ));
   }
 
   Widget _buildTabContent(
@@ -151,18 +108,11 @@ class _TheoryExamPaperListofMobileState
       () => theorySetList.isNotEmpty
           ? Navigator(
               onGenerateRoute: (RouteSettings settings) {
-                // Check which route is being requested within this tab
                 if (settings.name == '/$tabTitle') {
-                  // If the mcqSetList is not empty, show the McqList, else show "No Set Found"
                   return MaterialPageRoute(
                     builder: (_) {
-                      // Check for the list data to display
-                      // if (mcqSetList.isNotEmpty) {
-                      return TheoryPaperListMobile(    
-                          theorySetList, tabTitle, 'assets/mcq_img.png', true);
-                      // } else {
-                      // return ; // Show "No Set Found" if the list is empty
-                      // }
+                      return TheoryPaperListMobile( 
+                          theorySetList, tabTitle, 'assets/exam.png', true);
                     },
                   );
                 }
@@ -183,29 +133,29 @@ class _TheoryExamPaperListofMobileState
     );
   }
 
-  _onNoInternetConnection(context) {
-    Alert(
-      context: context,
-      type: AlertType.error,
-      style: AlertStyle(
-        titleStyle:
-            TextStyle(color: ColorPage.red, fontWeight: FontWeight.bold),
-        descStyle: FontFamily.font6,
-        isCloseButton: false,
-      ),
-      title: "!! No internet found !!",
-      desc: "Make sure you have a proper internet Connection.  ",
-      buttons: [
-        DialogButton(
-          child:
-              Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
-          highlightColor: Color.fromRGBO(3, 77, 59, 1),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Color.fromRGBO(9, 89, 158, 1),
-        ),
-      ],
-    ).show();
-  }
+  // _onNoInternetConnection(context) {
+  //   Alert(
+  //     context: context,
+  //     type: AlertType.error,
+  //     style: AlertStyle(
+  //       titleStyle:
+  //           TextStyle(color: ColorPage.red, fontWeight: FontWeight.bold),
+  //       descStyle: FontFamily.font6,
+  //       isCloseButton: false,
+  //     ),
+  //     title: "!! No internet found !!",
+  //     desc: "Make sure you have a proper internet Connection.  ",
+  //     buttons: [
+  //       DialogButton(
+  //         child:
+  //             Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
+  //         highlightColor: Color.fromRGBO(3, 77, 59, 1),
+  //         onPressed: () {
+  //           Navigator.pop(context);
+  //         },
+  //         color: Color.fromRGBO(9, 89, 158, 1),
+  //       ),
+  //     ],
+  //   ).show();
+  // }
 }

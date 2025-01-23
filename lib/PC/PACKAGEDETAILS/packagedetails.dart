@@ -367,214 +367,210 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
       body: Obx(
         () {
           return Container(
-            alignment: Alignment.topCenter,
-            decoration: BoxDecoration(
-              // borderRadius: BorderRadius.circular(20),
-              color: ColorPage.white,
-              // boxShadow: [
-              //   BoxShadow(
-              //     blurRadius: 3,
-              //     color: Color.fromARGB(255, 192, 191, 191),
-              //     offset: Offset(0, 0),
-              //   ),
-              // ],
-            ),
-            child: 
-                 SingleChildScrollView(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+              alignment: Alignment.topCenter,
+              decoration: BoxDecoration(
+                // borderRadius: BorderRadius.circular(20),
+                color: ColorPage.white,
+                // boxShadow: [
+                //   BoxShadow(
+                //     blurRadius: 3,
+                //     color: Color.fromARGB(255, 192, 191, 191),
+                //     offset: Offset(0, 0),
+                //   ),
+                // ],
+              ),
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 10, left: 12, right: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  onExitPage(context, () {
+                                    getx.alwaysShowChapterfilesOfVideo.clear();
+                                    getx.alwaysShowFileDetailsOfpdf.clear();
+                                    getx.liveList.clear();
+                                    getx.alwaysShowChapterDetailsOfVideo
+                                        .clear();
+                                    print(getx
+                                        .alwaysShowChapterfilesOfVideo.length);
+                                    print(getx.alwaysShowChapterDetailsOfVideo
+                                        .length);
+
+                                    Get.offAll(
+                                        transition: Transition.leftToRight,
+                                        () => DthDashboard());
+                                  }, () {
+                                    Navigator.pop(context);
+                                  });
+                                },
+                                icon: Icon(Icons.arrow_back)),
+
+                            // ),
+                            IconButton(
+                                onPressed: () {
+                                  getx.isCollapsed.value =
+                                      !getx.isCollapsed.value;
+                                },
+                                icon: Icon(Icons.close))
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                              image:
+                                  DecorationImage(image: AssetImage(logopath))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 12, right: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                IconButton(
-                                    onPressed: () {
-                                      onExitPage(context, () {
-                                        getx.alwaysShowChapterfilesOfVideo
-                                            .clear();
-                                        getx.alwaysShowFileDetailsOfpdf.clear();
-                                        getx.liveList.clear();
-                                        getx.alwaysShowChapterDetailsOfVideo
-                                            .clear();
-                                        print(getx.alwaysShowChapterfilesOfVideo
-                                            .length);
-                                        print(getx
-                                            .alwaysShowChapterDetailsOfVideo
-                                            .length);
-
-                                        Get.offAll(
-                                            transition: Transition.leftToRight,
-                                            () => DthDashboard());
-                                      }, () {
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    icon: Icon(Icons.arrow_back)),
-
-                                // ),
-                                IconButton(
-                                    onPressed: () {
-                                      getx.isCollapsed.value =
-                                          !getx.isCollapsed.value;
-                                    },
-                                    icon: Icon(Icons.close))
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(logopath))),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    textAlign: TextAlign.start,
-                                    widget.headname,
-                                    style:
-                                        FontFamily.font.copyWith(fontSize: 17),
-                                    // overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-
-                              // IconButton(
-                              //     onPressed: () {
-                              //       getx.isCollapsed.value =
-                              //           !getx.isCollapsed.value;
-                              //     },
-                              //     icon: Icon(Icons.close))
-                            ],
-                          ),
-
-                           getx.sectionListOfPackage.isNotEmpty?
                           Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: getx.sectionListOfPackage.length,
-                              itemBuilder: (context, index) {
-                                return getx.sectionListOfPackage[index]
-                                                ["section"] ==
-                                            "PDF" ||
-                                        getx.sectionListOfPackage[index]
-                                                ["section"] ==
-                                            "YouTube"
-                                    ? SizedBox()
-                                    : buttonWidget(
-                                        () {
-                                          if (widget.selectedIndex != index) {
-                                            resetTblLocalNavigationByOrderOnsection(
-                                                1);
-                                            print(
-                                                getx.sectionListOfPackage[index]
-                                                        ['section'] +
-                                                    "wow mc");
-
-                                            insertTblLocalNavigation(
-                                                    "Section",
-                                                    widget.packageId.toString(),
-                                                    getx.sectionListOfPackage[
-                                                        index]["section"])
-                                                .whenComplete(() => null);
-
-                                            getMainChapter(widget.packageId);
-
-                                            getLocalNavigationDetails();
-
-                                            getx.selectedPackageId.value =
-                                                widget.packageId;
-                                            widget.onItemSelected(index);
-
-                                            paging(
-                                                getx.sectionListOfPackage[index]
-                                                    ["section"]);
-                                          }
-                                        },
-                                        widget.selectedIndex == index,
-                                        hoverIndex == index,
-                                        index,
-                                        getx.sectionListOfPackage[index]
-                                            ["section"],
-                                      );
-                              },
-                            ),
-                          ):Center(child: Text("No section found"),),
-
-                          // Spacer(),
-                          //  Align(
-                          //   alignment: Alignment.bottomCenter,
-                          //    child: Opacity(
-                          //     opacity: 0.6,
-                          //     child: Column(
-                          //       children: [
-                          //         const SizedBox(height: 5),
-                          //         Text(
-                          //           "Version ${version.value}",
-                          //           style:
-                          //               TextStyle(fontSize: 12, color: Colors.grey),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //                            ),
-                          //  ),
-                          // SizedBox.expand(),
-                          // Spacer(),
-
-                          Opacity(
-                            opacity: 0.6,
-                            child: Column(
-                              children: [
-                                // Image.asset(
-                                //   logopath,
-                                //   height: 30,
-                                // ),
-                                Text(
-                                  'Expiry Date:\n${formatDate(widget.ExpiryDate)}',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey.shade600),
-                                ),
-
-                                const SizedBox(height: 5),
-                                Text(
-                                  "Version ${version.value}",
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.grey),
-                                ),
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                textAlign: TextAlign.start,
+                                widget.headname,
+                                style: FontFamily.font.copyWith(fontSize: 17),
+                                // overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          )
+
+                          // IconButton(
+                          //     onPressed: () {
+                          //       getx.isCollapsed.value =
+                          //           !getx.isCollapsed.value;
+                          //     },
+                          //     icon: Icon(Icons.close))
                         ],
                       ),
-                    ),
-                  )
-                
-          );
+
+                      getx.sectionListOfPackage.isNotEmpty
+                          ? Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: getx.sectionListOfPackage.length,
+                                itemBuilder: (context, index) {
+                                  return getx.sectionListOfPackage[index]
+                                                  ["section"] ==
+                                              "PDF" ||
+                                          getx.sectionListOfPackage[index]
+                                                  ["section"] ==
+                                              "YouTube"
+                                      ? SizedBox()
+                                      : buttonWidget(
+                                          () {
+                                            if (widget.selectedIndex != index) {
+                                              resetTblLocalNavigationByOrderOnsection(
+                                                  1);
+                                              print(getx.sectionListOfPackage[
+                                                      index]['section'] +
+                                                  "wow mc");
+
+                                              insertTblLocalNavigation(
+                                                      "Section",
+                                                      widget.packageId
+                                                          .toString(),
+                                                      getx.sectionListOfPackage[
+                                                          index]["section"])
+                                                  .whenComplete(() => null);
+
+                                              getMainChapter(widget.packageId);
+
+                                              getLocalNavigationDetails();
+
+                                              getx.selectedPackageId.value =
+                                                  widget.packageId;
+                                              widget.onItemSelected(index);
+
+                                              paging(getx.sectionListOfPackage[
+                                                  index]["section"]);
+                                            }
+                                          },
+                                          widget.selectedIndex == index,
+                                          hoverIndex == index,
+                                          index,
+                                          getx.sectionListOfPackage[index]
+                                              ["section"],
+                                        );
+                                },
+                              ),
+                            )
+                          : Center(
+                              child: Text("No section found"),
+                            ),
+
+                      // Spacer(),
+                      //  Align(
+                      //   alignment: Alignment.bottomCenter,
+                      //    child: Opacity(
+                      //     opacity: 0.6,
+                      //     child: Column(
+                      //       children: [
+                      //         const SizedBox(height: 5),
+                      //         Text(
+                      //           "Version ${version.value}",
+                      //           style:
+                      //               TextStyle(fontSize: 12, color: Colors.grey),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //                            ),
+                      //  ),
+                      // SizedBox.expand(),
+                      // Spacer(),
+
+                      Opacity(
+                        opacity: 0.6,
+                        child: Column(
+                          children: [
+                            // Image.asset(
+                            //   logopath,
+                            //   height: 30,
+                            // ),
+                            Text(
+                              'Expiry Date:\n${formatDate(widget.ExpiryDate)}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade600),
+                            ),
+
+                            const SizedBox(height: 5),
+                            Text(
+                              "Version ${version.value}",
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      )
+                    ],
+                  ),
+                ),
+              ));
         },
       ),
     );
@@ -2426,18 +2422,24 @@ class _HoverListItemState extends State<HoverListItem> {
                     ),
                   );
                 } else {
-                  Get.to(
-                    transition: Transition.cupertino,
-                    () => ShowChapterPDF(
-                      pdfUrl: widget.bookurl['DocumentPath'],
-                      title: widget.bookurl['FileIdName'],
-                      folderName: getPackagNameById(
-                        getx.selectedPackageId.toString(),
-                      ),
-                      isEncrypted: widget.bookurl["IsEncrypted"] == "true" ||
-                          widget.bookurl["IsEncrypted"] == "1",
-                    ),
-                  );
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return ShowChapterPDF(
+                        pdfUrl: widget.bookurl['DocumentPath'],
+                        title: widget.bookurl['FileIdName'],
+                        folderName: getPackagNameById(
+                          getx.selectedPackageId.toString(),
+                        ),
+                        isEncrypted: widget.bookurl["IsEncrypted"] == "true" ||
+                            widget.bookurl["IsEncrypted"] == "1",
+                      );
+                    },
+                  ));
+
+                  // Get.to(
+                  //   transition: Transition.cupertino,
+                  //   () =>
+                  // );
                 }
               },
               child: const Text(

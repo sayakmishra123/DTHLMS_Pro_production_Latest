@@ -425,10 +425,11 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     return iconData['color2'];
   }
 
+ 
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // var packagecontentlist = getx.packagedetailsfoldername.entries.toList();
       return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(color: ColorPage.white),
@@ -452,22 +453,22 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           item['section'] != 'PDF' &&
                           item['section'] != 'YouTube')
                       .toList();
-
+      
                   return InkWell(
                     onTap: () {
                       paging(filteredList[index]['section']);
-
+      
                       if (getx.sectionListOfPackage[index]['section'] ==
                           "Video") {
                         resetTblLocalNavigationByOrderOnsection(1);
                         print(filteredList[index]['section'] + "wow mc");
-
+      
                         insertTblLocalNavigation(
                                 "Section",
                                 widget.packageid.toString(),
                                 filteredList[index]["section"])
                             .whenComplete(() => null);
-
+      
                         getMainChapter(widget.packageid);
                         getLocalNavigationDetails();
                       }
@@ -490,7 +491,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           // zipTextColor: Colors.orange,
                           ),
                     ),
-
+      
                     //  Container(
                     //   margin:
                     //       EdgeInsets.symmetric(vertical: 8, horizontal: 10),
