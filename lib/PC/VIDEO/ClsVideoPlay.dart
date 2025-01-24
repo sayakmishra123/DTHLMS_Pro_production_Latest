@@ -26,7 +26,7 @@ class VideoPlayClass {
       // player = Player();
       controller = VideoController(player);
   
-log(videoLink);
+// log(videoLink);
       player.open(
         Media(
            !File(videoLink).existsSync()?"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4":videoLink),
@@ -36,7 +36,7 @@ log(videoLink);
   }
   Future<void> playVideo() async {
     await player.play();
-    log(totalPlayTimeofVideo.inSeconds.toString());
+    // log(totalPlayTimeofVideo.inSeconds.toString());
   }
 
    void updateVideoLink(String newLink) {

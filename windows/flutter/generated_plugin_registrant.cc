@@ -17,6 +17,7 @@
 #include <flutter_platform_alert/flutter_platform_alert_plugin.h>
 #include <flutter_secure_storage_windows/flutter_secure_storage_windows_plugin.h>
 #include <flutter_webrtc/flutter_web_r_t_c_plugin.h>
+#include <irondash_engine_context/irondash_engine_context_plugin_c_api.h>
 #include <local_notifier/local_notifier_plugin.h>
 #include <media_kit_libs_windows_video/media_kit_libs_windows_video_plugin_c_api.h>
 #include <media_kit_video/media_kit_video_plugin_c_api.h>
@@ -24,6 +25,7 @@
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <screen_brightness_windows/screen_brightness_windows_plugin.h>
 #include <sqlite3_flutter_libs/sqlite3_flutter_libs_plugin.h>
+#include <super_native_extensions/super_native_extensions_plugin_c_api.h>
 #include <syncfusion_pdfviewer_windows/syncfusion_pdfviewer_windows_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
 #include <window_size/window_size_plugin.h>
@@ -52,6 +54,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterSecureStorageWindowsPlugin"));
   FlutterWebRTCPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterWebRTCPlugin"));
+  IrondashEngineContextPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("IrondashEngineContextPluginCApi"));
   LocalNotifierPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("LocalNotifierPlugin"));
   MediaKitLibsWindowsVideoPluginCApiRegisterWithRegistrar(
@@ -66,6 +70,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("ScreenBrightnessWindowsPlugin"));
   Sqlite3FlutterLibsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("Sqlite3FlutterLibsPlugin"));
+  SuperNativeExtensionsPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("SuperNativeExtensionsPluginCApi"));
   SyncfusionPdfviewerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("SyncfusionPdfviewerWindowsPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(

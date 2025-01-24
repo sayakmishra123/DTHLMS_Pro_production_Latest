@@ -324,7 +324,7 @@ class _ModuleListState extends State<ModuleList> {
 
   @override
   Widget build(BuildContext context) {
-    log(widget.data.toString());
+    // log(widget.data.toString());
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),

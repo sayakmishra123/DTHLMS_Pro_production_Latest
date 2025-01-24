@@ -243,7 +243,7 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
         getx.forgetPasswordNewPasswordEntryValue.value = false;
 
         forgetkey = value;
-        log(forgetkey);
+        // log(forgetkey);
       });
     } catch (e) {
       print(e.toString() + "hello");
@@ -754,7 +754,7 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
                                 false;
 
                             forgetkey = value;
-                            log(forgetkey);
+                            // log(forgetkey);
                           });
 
                           //   }
@@ -930,7 +930,7 @@ class _ForgotScreenPCState extends State<ForgotScreenPC> {
                                             .value = false;
 
                                         forgetkey = value;
-                                        log(forgetkey);
+                                        // log(forgetkey);
                                       });
                                     } catch (e) {
                                       print(e.toString() + "hello");

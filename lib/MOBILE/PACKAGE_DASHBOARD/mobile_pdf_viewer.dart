@@ -322,7 +322,7 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
                 IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
-                    log(widget.pdfUrl + "      $data ");
+                    // log(widget.pdfUrl + "      $data ");
                     Get.to(() => ImageEditorExample(
                           pdfName: this.title,
                           pdfPath: this.data,

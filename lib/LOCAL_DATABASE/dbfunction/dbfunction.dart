@@ -1011,7 +1011,7 @@ Future getMainChapter(int packageId) async {
         getx.subjectDetails[0]['SubjectName']);
     // log("Subject added");
   } else {
-    log("Subject not found");
+    // log("Subject not found");
   }
 }
 
@@ -2663,7 +2663,7 @@ Future<void> inserTblTheoryPaper(
   String paperId,
   String setId,
   String paperName,
-  String totalMarks,
+  String totalMarks, 
   String termAndCondition,
   String duration,
   String documentUrl,
@@ -2672,7 +2672,7 @@ Future<void> inserTblTheoryPaper(
   String paperEndDate,
   String paperStartDate,
 ) async {
-  try {
+  try {                                                                                                                                                                                                                                                                             
     _db.execute(
       '''
         INSERT INTO TblTheoryPaper (PaperId, SetId, PaperName,TotalMarks,TermAndCondition,Duration,DocumentUrl,StartTime,PassMarks,PaperEndDate,PaperStartDate)
@@ -3183,7 +3183,7 @@ Future infoTetch(packageId, type) async {
       // if (dateCheck(row['ScheduleOn'])) {
       //   getx.infoFetch.add(details);
       // }
-      log(row['ScheduleOn'].toString());
+      // log(row['ScheduleOn'].toString());
 
       switch (row['FileIdType']) {
         case 'Live':
@@ -3539,8 +3539,8 @@ Future<List<Map<String, dynamic>>> getAllTblImages() async {
     // Ensure '_db' is your initialized database instance
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblImages''');
-      print("shubha getAllTblImages");
-log(result.toString());
+      // print("shubha getAllTblImages");
+// log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {
     writeToFile(e, "getAllTblImages");

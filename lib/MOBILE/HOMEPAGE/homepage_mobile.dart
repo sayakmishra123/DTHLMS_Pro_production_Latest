@@ -245,9 +245,9 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
       // Print formatted date
       print(formattedDate); // Output: 2 Dec 2024 4:18 PM
     }
-    print("${lastVideoDetails} shubha video last played info");
-    print(
-        "${lastVideoDetailsAllPackage} shubha video last played info all package details");
+    // print("${lastVideoDetails} shubha video last played info");
+    // print(
+        // "${lastVideoDetailsAllPackage} shubha video last played info all package details");
   }
 
   bool isTokenValid(String jwtToken) {
@@ -3069,7 +3069,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
     final int? notificationCounter = prefs.getInt('notificationCounter');
 
     if (notificationCounter != null) {
-      log("${notificationCounter} notification counter");
+      // log("${notificationCounter} notification counter");
       if (notificationCounter <= 2) {
         var status = await Permission.notification.status;
         if (status.isDenied) {

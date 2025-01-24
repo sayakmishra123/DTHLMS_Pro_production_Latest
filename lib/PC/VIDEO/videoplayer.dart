@@ -137,7 +137,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           isPlaying = playing;
 
           if (playing) {
-            log('playing');
+            // log('playing');
             videoPlay.startTrackingPlayTime();
 
             // Cancel any existing timer to avoid multiple timers running
@@ -145,7 +145,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
             // Start a new timer that triggers every 5 seconds
             _timer = Timer.periodic(Duration(seconds: 5), (timer) {
-              log(videoPlay.totalPlayTime.inSeconds.toString());
+              // log(videoPlay.totalPlayTime.inSeconds.toString());
 
               // insertVideoplayInfo(
               //   int.parse(getx.playingVideoId.value),
@@ -1518,8 +1518,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                 setState(() {
                                   videoPlay.pauseVideo();
                                 });
-                                log(videoPlay.totalPlayTime.inSeconds
-                                    .toString());
+                                // log(videoPlay.totalPlayTime.inSeconds
+                                //     .toString());
                               },
                               icon: Icon(
                                 Icons.pause,

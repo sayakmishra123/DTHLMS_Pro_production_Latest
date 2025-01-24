@@ -25,7 +25,7 @@ class NotificationService {
     final prefs = await SharedPreferences.getInstance();
     List<String> notifications = prefs.getStringList(notificationsKey) ?? [];
 
-    log(notifications.toString());
+    // log(notifications.toString());
     return notifications
         .map((jsonStr) => NotificationModel.fromJson(jsonStr))
         .toList();

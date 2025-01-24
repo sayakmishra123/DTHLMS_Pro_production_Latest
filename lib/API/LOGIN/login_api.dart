@@ -64,7 +64,7 @@ Future loginApi(
       body: json.encode(logindata),
     );
     var jsondata = json.decode(res.body);
-    print(jsondata);
+    // print(jsondata);
 
     if (jsondata['isSuccess'] == true) {
       final jwt = JWT.decode(jsondata['result']['token']);
@@ -219,7 +219,7 @@ Future signupApi(
   String whatsappnumbercountryid,
   String whatsappnumbercode,
 ) async {
-  print(ClsUrlApi.signupEndpoint);
+  // print(ClsUrlApi.signupEndpoint);
   try {
     loader(context);
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -251,7 +251,7 @@ Future signupApi(
         whatsappnumbercountryid,
         whatsappnumbercode);
 
-    log(signupdata.toString());
+    // log(signupdata.toString());
     final http.Response res = await http.post(
         Uri.https(ClsUrlApi.mainurl, '${ClsUrlApi.signupEndpoint}$key'),
         headers: <String, String>{
@@ -261,7 +261,7 @@ Future signupApi(
         },
         body: jsonEncode(signupdata));
     var jsondata = json.decode(res.body);
-    log(res.body);
+    // log(res.body);
 
     if (jsondata['isSuccess'] == true) {
       Get.back();
@@ -372,7 +372,7 @@ Future signupcodegenerate(
         getObj.otplineshow.value = true;
         return key;
       } else {
-        print(datacode);
+        // print(datacode);
         ClsErrorMsg.fnErrorDialog(
             context,
             'Sign up',
@@ -557,17 +557,17 @@ Future<void> backgroundlistApi(String token) async {
           await insertBlackList(
               blackList.map((app) => app as Map<String, dynamic>).toList());
         } else {
-          print('No whitelist entries found.');
+          // print('No whitelist entries found.');
         }
       } else {
-        print('Failed to get a successful response.');
+        // print('Failed to get a successful response.');
       }
     } else {
-      print('Failed to fetch data: ${res.statusCode}, ${res.body}');
+      // print('Failed to fetch data: ${res.statusCode}, ${res.body}');
     }
   } catch (e) {
     writeToFile(e, 'backgroundlistApi');
-    print('An error occurred: $e');
+    // print('An error occurred: $e');
   }
 }
 
@@ -591,7 +591,7 @@ Future<void> writeAppsToDMJFile(List<String> apps) async {
     // log("File contents: ${await file.readAsString()}");
   } catch (e) {
     writeToFile(e, 'writeAppsToDMJFile');
-    print("Failed to write to .dmj file: $e");
+    // print("Failed to write to .dmj file: $e");
   }
 }
 
@@ -638,7 +638,7 @@ Future<void> getRunningBackgroundAppsAndKill(BuildContext context) async {
     getx.blackListProcess.value = await fetchBlackList();
     getx.whiteListProcess.value = await fetchWhiteList();
 
-    log("bcakground process running");
+    // log("bcakground process running");
 
     final List<String> blacklist = getx.blackListProcess
         .map((item) => item['ApplicationBaseName'].toString().toLowerCase())
@@ -683,7 +683,7 @@ Future<void> getRunningBackgroundAppsAndKill(BuildContext context) async {
             final killResult =
                 await Process.run('taskkill', ['/F', '/IM', '$app.exe']);
             if (killResult.exitCode == 0) {
-              log("Successfully killed process: $app.");
+              // log("Successfully killed process: $app.");
             } else {}
           } catch (e) {
             writeToFile(e, "failsed to kill process");

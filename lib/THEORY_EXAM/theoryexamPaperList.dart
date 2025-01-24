@@ -36,11 +36,11 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
   }
 
   getData() async {
-    log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
+    // log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
     theoryPaperList.clear();
     theoryPaperList.value = 
         await fetchTheoryPapertList(widget.paperNames['SetId']);
-    log(theoryPaperList.toString() + " type");
+    // log(theoryPaperList.toString() + " type");
   }
 
   @override

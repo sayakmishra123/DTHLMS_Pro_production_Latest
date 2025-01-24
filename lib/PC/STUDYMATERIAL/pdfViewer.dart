@@ -329,7 +329,7 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
                 IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
-                    log(widget.pdfUrl + "$data");
+                    // log(widget.pdfUrl + "$data");
 
                     Navigator.push(
                         context,

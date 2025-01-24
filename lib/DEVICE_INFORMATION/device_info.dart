@@ -55,12 +55,12 @@ class ClsDeviceInfo {
     try {
       final batteryLevel = await battery.batteryLevel;
       final batteryState = await battery.onBatteryStateChanged.first;
-      print('Battery Level: $batteryLevel%');
-      print('Battery State: $batteryState');
+      // print('Battery Level: $batteryLevel%');
+      // print('Battery State: $batteryState');
       return true;
     } catch (e) {
       writeToFile(e, 'getBatteryInfo');
-      print("Bettery not Exit");
+      // print("Bettery not Exit");
       return false;
     }
   }

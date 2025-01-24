@@ -43,7 +43,7 @@ class _MessageUiAskDoubtState extends State<MessageUiAskDoubt> {
   Color greencolor = const Color(0Xff15E8D8);
   @override
   void initState() {
-    log(widget.userid);
+    // log(widget.userid);
     super.initState();
   }
 

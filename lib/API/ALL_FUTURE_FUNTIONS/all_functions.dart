@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 // import 'dart:core';
 import 'dart:developer';
-import 'dart:ffi';
+// import 'dart:ffi';
 import 'dart:io';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +15,7 @@ import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
-import 'package:dthlms/MODEL_CLASS/Icon_model.dart';
+// import 'package:dthlms/MODEL_CLASS/Icon_model.dart';
 // import 'package:dthlms/MOBILE/PROFILE/profilrmodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/MODEL_CLASS/allPackageDetails.dart';
@@ -40,14 +40,14 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+// import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:html/parser.dart';
 import '../../GLOBAL_WIDGET/confirmActivationCode.dart';
-import '../../MOBILE/store/storemodelclass/storemodelclass.dart';
+
 
 Getx getx = Get.put(Getx());
 
@@ -192,7 +192,7 @@ Future packactivationKey(
           'Origin': origin,
         },
         body: jsonEncode(data));
-    // print(res.body);
+    // // print(res.body);
     if (res.statusCode == 201) {
       deleteAllFolders();
       deleteAllPackage();
@@ -276,7 +276,7 @@ Future<void> getMeetingList(BuildContext context) async {
 
         // Combine all lists into a single list if needed
 
-        // Printing the categorized meetings
+        // // printing the categorized meetings
       } else {}
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
@@ -318,10 +318,10 @@ Future<String> getEncryptionKey(String token, BuildContext context) async {
       String encryptionKey = result['PDfEncryptionKey'] ?? "";
       String secretKey = result['EncryptionSecretKey'] ?? "";
       String franchiseName = result['FranchiseName'] ?? "";
-      print('PDF Encryption Key: $encryptionKey');
+      // print('PDF Encryption Key: $encryptionKey');
 
-      print('PDF secret key Key: $secretKey');
-      print('PDF secret key Key: $franchiseName');
+      // print('PDF secret key Key: $secretKey');
+      // print('PDF secret key Key: $franchiseName');
 
       deleteDataFromTblSettings();
       insertTblSetting("OldSKey", secretKey);
@@ -340,7 +340,7 @@ Future<String> getEncryptionKey(String token, BuildContext context) async {
     }
   } catch (error) {
     writeToFile(error, 'getEncryptionKey');
-    print('Error2: $error');
+    // print('Error2: $error');
     return 'null';
   }
 }
@@ -394,7 +394,7 @@ Future getAllFolders(BuildContext context, token, String packageId) async {
     }
   } catch (r) {
     writeToFile(r, 'getAllFolders');
-    print("error:$r folder");
+    // print("error:$r folder");
   }
 }
 
@@ -415,7 +415,7 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
     if (res.statusCode == 200) {
       var responseBody = jsonDecode(res.body);
 
-      log(responseBody['result'].toString());
+      // log(responseBody['result'].toString());
 
       List<AllPackageDetails> resultData =
           AllPackageDetails.fromJsonList(responseBody['result']);
@@ -463,7 +463,7 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
                 file.sortedOrder.toString()
                 )
             .whenComplete(() {
-          log('Inserted');
+          // log('Inserted');
           getx.packageDetailsdata.add(details);
         });
       });
@@ -472,13 +472,13 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
       // Get.back();
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
-      print("Error: in user files");
+      // print("Error: in user files");
     } else {
       // Get.back();
     }
   } catch (p) {
     writeToFile(p, 'getAllFiles');
-    print("error:$p files2");
+    // print("error:$p files2");
   }
 }
 
@@ -553,8 +553,8 @@ Future<void> getPackageData(BuildContext context, String token) async {
       var jsonResponse = jsonDecode(res.body);
 
       String resultString = jsonResponse['result'];
-      log(resultString);
-      log(resultString);
+      // log(resultString);
+      // log(resultString);
       // Step 2: Decode the result string and store data in a list
       List<dynamic> packageJsonList = jsonDecode(resultString);
       List<PackageData> packageList = packageJsonList
@@ -579,12 +579,12 @@ Future<void> getPackageData(BuildContext context, String token) async {
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print("errorn in insert");
+      // print("errorn in insert");
       // Get.back();
     }
   } catch (e) {
     writeToFile(e, 'getPackageData');
-    print("Error: $e+'package details'");
+    // print("Error: $e+'package details'");
   }
 }
 
@@ -648,7 +648,7 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
 
     if (res.statusCode == 200) {
       var responseBody = jsonDecode(res.body);
-      // print(responseBody.toString());
+      // // print(responseBody.toString());
       List<dynamic> resultList = jsonDecode(responseBody['result']);
       List<VideoComponents> videoResults =
           resultList.map((item) => VideoComponents.fromJson(item)).toList();
@@ -687,13 +687,13 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
       // Get.back();
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
-      print("Error: in user components");
+      // print("Error: in user components");
     } else {
       // Get.back();
     }
   } catch (p) {
     writeToFile(p, 'getVideoComponents');
-    print("error:$p files2 video component");
+    // print("error:$p files2 video component");
   }
 }
 
@@ -707,7 +707,7 @@ Future<String> uploadImage(
 
   // Validate MIME type to ensure it's an image
   if (mimeType == null || !mimeType.startsWith('image/')) {
-    print('The selected file is not an image.');
+    // print('The selected file is not an image.');
     return 'null';
   }
 
@@ -745,7 +745,7 @@ Future<String> uploadImage(
 
     // Handle the response
     if (response.statusCode == 200) {
-      print('Image uploaded successfully!');
+      // print('Image uploaded successfully!');
       var responseData = await response.stream.bytesToString();
       var jsonResponse = json.decode(responseData);
       var jsondata = jsonDecode(jsonResponse["result"]);
@@ -755,7 +755,7 @@ Future<String> uploadImage(
       var prefs = await SharedPreferences.getInstance();
       prefs.setInt("UserImagedocumentId", jsondata['DocumentId']);
 
-      // Print response data if needed
+      // // print response data if needed
       return documentPath;
     } else if (response.statusCode == 401) {
       onTokenExpire(context);
@@ -767,7 +767,7 @@ Future<String> uploadImage(
     }
   } catch (e) {
     writeToFile(e, 'uploadImage');
-    print("error on upload image:$e");
+    // print("error on upload image:$e");
     return 'null';
   }
 }
@@ -864,18 +864,18 @@ Future<Map<String, dynamic>> getUserImage(
         });
       }
 
-      // Print the map of all keys and values
+      // // print the map of all keys and values
       return userResult; // Return the map with all key-value pairs
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
-      print("Error: in user image"); // Handle token expiration
+      // print("Error: in user image"); // Handle token expiration
     } else {
       Get.back(); // Handle other responses
     }
   } catch (e) {
     writeToFile(e, 'getUserImage');
 
-    print("Error: $e+'package details'"); // Error handling
+    // print("Error: $e+'package details'"); // Error handling
   }
 
   return {};
@@ -929,9 +929,9 @@ Future<void> getHomePageBannerImage(BuildContext context, String token) async {
           getx.bannerImageList.add(bannerData);
         }
 
-        log(bannerData.toString());
+        // log(bannerData.toString());
 
-        log(bannerData.toString());
+        // log(bannerData.toString());
 
         // Add the cleaned map to the result list
       }
@@ -944,7 +944,7 @@ Future<void> getHomePageBannerImage(BuildContext context, String token) async {
     }
   } catch (e) {
     writeToFile(e, 'getHomePageBannerImage');
-    print("Error: $e+'image details'"); // Error handling
+    // print("Error: $e+'image details'"); // Error handling
   }
 }
 
@@ -952,7 +952,7 @@ Future<String> downloadBannerAndSave(String documentUrl) async {
   try {
     // Ensure the URL is not empty or null
     if (documentUrl.isEmpty) {
-      print('URL is empty');
+      // print('URL is empty');
       return '';
     }
 
@@ -967,7 +967,7 @@ Future<String> downloadBannerAndSave(String documentUrl) async {
 
     if (!await bannerImagesDir.exists()) {
       await bannerImagesDir.create(recursive: true);
-      print('BannerImages directory created at ${bannerImagesDir.path}');
+      // print('BannerImages directory created at ${bannerImagesDir.path}');
     }
 
     // Save the path in SharedPreferences
@@ -983,12 +983,12 @@ Future<String> downloadBannerAndSave(String documentUrl) async {
 
     // Check if fileName is valid
     if (fileName.isEmpty) {
-      print('Failed to extract file name from URL');
+      // print('Failed to extract file name from URL');
       return '';
     }
 
     // Download the file
-    print('Downloading banner from: $documentUrl');
+    // print('Downloading banner from: $documentUrl');
     await dio.download(
       documentUrl,
       filePath,
@@ -998,15 +998,15 @@ Future<String> downloadBannerAndSave(String documentUrl) async {
     // Verify if the file exists
     final file = File(filePath);
     if (await file.exists()) {
-      print('File saved successfully at: $filePath');
+      // print('File saved successfully at: $filePath');
       return filePath;
     } else {
-      print('File download failed: $filePath does not exist.');
+      // print('File download failed: $filePath does not exist.');
       return '';
     }
   } catch (e) {
     // Log and rethrow the error
-    print('Error downloading banner: $e');
+    // print('Error downloading banner: $e');
     rethrow;
   }
 }
@@ -1015,11 +1015,11 @@ Future<String> downloadBannerAndSave(String documentUrl) async {
 //     String pdfUrl, String title, String enkey, String foldername) async {
 //   this.title = title;
 //   this.data = getDownloadedPathOfPDF(title, foldername);
-//   print(data);
+//   // print(data);
 
 //   //  String enkey=await  getEncryptionKey(getx.loginuserdata[0].token);
 //   if (!File(data).existsSync()) {
-//     print("downloaing file.....");
+//     // print("downloaing file.....");
 //     try {
 //       // Get the application's document directory
 //       Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -1044,12 +1044,12 @@ Future<String> downloadBannerAndSave(String documentUrl) async {
 //       await dio.download(pdfUrl, filePath,
 //           onReceiveProgress: (received, total) {
 //         if (total != -1) {
-//           print(
+//           // print(
 //               'Downloading: ${(received / total * 100).toStringAsFixed(0)}%');
 //         }
 //       });
 
-//       print('PDF downloaded and saved to: $filePath');
+//       // print('PDF downloaded and saved to: $filePath');
 
 //       if (widget.isEncrypted) {
 //         final encryptedBytes = await readEncryptedPdfFromFile(filePath);
@@ -1061,7 +1061,7 @@ Future<String> downloadBannerAndSave(String documentUrl) async {
 //       }
 //     } catch (e) {
 //       writeToFile(e, "downloadAndSavePdf");
-//       print('Error downloading or saving the PDF: $e');
+//       // print('Error downloading or saving the PDF: $e');
 //       isLoading = false;
 //       return widget.isEncrypted ? Uint8List(0) : "";
 //     }
@@ -1127,7 +1127,7 @@ Future<String> checkUserBeforeRegister(BuildContext context, String loginemail,
     "ActivationKey": activationkey,
   };
 
-  // print(token);
+  // // print(token);
   // log(jsonEncode(logindata.toString()+"///////////////////////////////////////////////////"));
   try {
     var responce = await http.post(
@@ -1141,7 +1141,7 @@ Future<String> checkUserBeforeRegister(BuildContext context, String loginemail,
 
     var jsondata = jsonDecode(responce.body);
 
-    log(jsondata.toString() + "///////////////////////////");
+    // log(jsondata.toString() + "///////////////////////////");
 
     if (jsondata['result'] != null) {
       activationkey = jsonDecode(jsondata['result']);
@@ -1163,7 +1163,7 @@ Future<String> checkUserBeforeRegister(BuildContext context, String loginemail,
     }
   } catch (e) {
     writeToFile(e, 'checkUserBeforeRegisterFunction');
-    print(e.toString());
+    // print(e.toString());
     onregisterexists(context, e.toString());
     Get.back();
     return activationkey;
@@ -1216,7 +1216,7 @@ Future<bool> getMcqDataForTest(
 
       // Decode the result JSON string into a List of Maps
       List<dynamic> resultData = jsonDecode(jsonResponse['result']);
-// print(resultData.toString());
+// // print(resultData.toString());
       // Level 1: Package Level
       for (var package in resultData) {
         // Level 2: MCQSet Level
@@ -1233,7 +1233,7 @@ Future<bool> getMcqDataForTest(
               List<dynamic> mcqPapers = mcqSet['TblMasterMCQPaper'];
               for (var mcqPaper in mcqPapers) {
                 if (mcqPaper['MCQPaperId'].toString() == "178") {
-                  print(mcqPaper['TblMasterMCQSection'].toString());
+                  // print(mcqPaper['TblMasterMCQSection'].toString());
                 }
                 // log(  mcqPaper["MCQPaperEndDate"].toString());
                 await inserTblMCQPaper(
@@ -1347,7 +1347,7 @@ Future<bool> getMcqDataForTest(
   } catch (e) {
     // Get.back();
 
-    log("Error: $e");
+    // log("Error: $e");
     writeToFile(e, 'getMcqDataForTest');
     return false;
   }
@@ -1357,7 +1357,7 @@ Future<void> sendmarksToCalculateLeaderboard(
     BuildContext context, String token, String marks, String paperId) async {
   List<Map<String, dynamic>> resultList = [];
   Map data = {"MCQPaperId": paperId, "Marks": marks};
-  print("call send");
+  // print("call send");
 
   try {
     var res = await http.post(
@@ -1370,12 +1370,12 @@ Future<void> sendmarksToCalculateLeaderboard(
       body: jsonEncode(data),
     );
 
-    // print(res.body);
+    // // print(res.body);
 
     if (res.statusCode == 201) {
       var jsonResponse = jsonDecode(res.body);
 
-      // Print the list of all keys and values
+      // // print the list of all keys and values
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
@@ -1384,7 +1384,7 @@ Future<void> sendmarksToCalculateLeaderboard(
   } catch (e) {
     writeToFile(e, 'sendmarksToCalculateLeaderboard');
 
-    print("Error: $e+'sendmarksToCalculateLeaderboard'"); // Error handling
+    // print("Error: $e+'sendmarksToCalculateLeaderboard'"); // Error handling
   }
 }
 
@@ -1406,11 +1406,11 @@ Future<List> getRankDataOfMockTest(
       body: jsonEncode(data),
     );
 
-    // print(res.body);
+    // // print(res.body);
 
     if (res.statusCode == 200) {
       var jsonResponse = jsonDecode(res.body);
-      log(res.body);
+      // log(res.body);
 
       // Correctly decode the result JSON string into a List of Maps
       // List<dynamic> resultList = jsonDecode(jsonResponse['result']);
@@ -1433,7 +1433,7 @@ Future<List> getRankDataOfMockTest(
 
       // getx.rankerList.value = resultList;
 
-      // Print the list of all keys and values
+      // // print the list of all keys and values
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
@@ -1441,7 +1441,7 @@ Future<List> getRankDataOfMockTest(
     }
   } catch (e) {
     writeToFile(e, 'getRankDataOfMockTest');
-    print("Error: $e+'getRanked data'"); // Error handling
+    // print("Error: $e+'getRanked data'"); // Error handling
   }
   return resultList;
 }
@@ -1467,7 +1467,7 @@ Future<List> getRankDataOfMockTest2(
     if (res.statusCode == 200) {
       // Decode the top-level response
       var jsonResponse = jsonDecode(res.body);
-      log(res.body);
+      // log(res.body);
 
       if (jsonResponse['isSuccess'] == true) {
         // Decode the `result` string
@@ -1496,7 +1496,7 @@ Future<List> getRankDataOfMockTest2(
               };
             }
 
-            log("Your Rank: $yourRank");
+            // log("Your Rank: $yourRank");
           }
 
           // Convert `TopTen` to List<Map<String, dynamic>> and assign to resultList
@@ -1504,7 +1504,7 @@ Future<List> getRankDataOfMockTest2(
 
           getx.rankerList.value = resultList;
 
-          log("Top Ten List: $topTenList");
+          // log("Top Ten List: $topTenList");
         }
       }
     } else if (res.statusCode == 401) {
@@ -1514,14 +1514,14 @@ Future<List> getRankDataOfMockTest2(
     }
   } catch (e) {
     writeToFile(e, 'getRankDataOfMockTest');
-    print("Error: $e + 'getRanked data'"); // Error handling
+    // print("Error: $e + 'getRanked data'"); // Error handling
   }
   return resultList;
 }
 
 Future<bool> senddatatoRankedmcqtest(BuildContext context, String token,
     List questionanswer, String spendedTime) async {
-  print(questionanswer.toString() + "Question answer list");
+  // print(questionanswer.toString() + "Question answer list");
   //     "////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
   loader(context);
   List<Map<String, dynamic>> resultList = [];
@@ -1546,7 +1546,7 @@ Future<bool> senddatatoRankedmcqtest(BuildContext context, String token,
 
       updateTblUserResult();
 
-      print("spwnd time: $spendedTime");
+      // print("spwnd time: $spendedTime");
       // _onUploadSuccessFull(context,(){
       //   Get.back();
       //   Get.back();
@@ -1556,10 +1556,10 @@ Future<bool> senddatatoRankedmcqtest(BuildContext context, String token,
       // Correctly decode the result JSON string into a List of Maps
       // List<dynamic> resultList = jsonDecode(jsonResponse['result']);
 
-      // print(rest);
+      // // print(rest);
       // getx.rankerList.value = resultList;
 
-      // Print the list of all keys and values
+      // // print the list of all keys and values
     } else if (res.statusCode == 401) {
       Get.back();
       onTokenExpire(context);
@@ -1581,7 +1581,7 @@ Future<bool> senddatatoRankedmcqtest(BuildContext context, String token,
   } catch (e) {
     // Get.back();
     writeToFile(e, 'sendQuestionAnswerList');
-    print("Error: $e sendQuestionAnswerList");
+    // print("Error: $e sendQuestionAnswerList");
     return false; // Error handling
   }
 }
@@ -1661,7 +1661,7 @@ Future<String> uploadSheet(
     var jsonResponse = json.decode(responseData);
     // Check the response
     if (response.statusCode == 200) {
-      print('sheet uploaded successfully! ${jsonResponse["result"]} $file');
+      // print('sheet uploaded successfully! ${jsonResponse["result"]} $file');
       var json = jsonDecode(jsonResponse["result"]);
 
       String documentId = json['DocumentId'].toString();
@@ -1691,7 +1691,7 @@ Future<String> uploadSheet(
       //       .replaceAll("[", "")
       //       .replaceAll("]", ""),
       // "");
-      print('Failed to upload video. Status code: ${response.statusCode}');
+      // print('Failed to upload video. Status code: ${response.statusCode}');
       return "";
     }
   } catch (e) {
@@ -1709,7 +1709,7 @@ Future<String> uploadSheet(
 
 Future sendDocumentIdOfanswerSheets(
     BuildContext context, String token, int paperid, String documentId) async {
-  // print(questionanswer);
+  // // print(questionanswer);
   // loader(context);
   // List<Map<String, dynamic>> resultList = [];
   Map data = {
@@ -1730,7 +1730,7 @@ Future sendDocumentIdOfanswerSheets(
       body: jsonEncode(data),
     );
 
-    // print(res.body);
+    // // print(res.body);
 
     if (res.statusCode == 201) {
       var jsonResponse = jsonDecode(res.body);
@@ -1740,10 +1740,10 @@ Future sendDocumentIdOfanswerSheets(
       // Correctly decode the result JSON string into a List of Maps
       // List<dynamic> resultList = jsonDecode(jsonResponse['result']);
 
-      // print(rest);
+      // // print(rest);
       // getx.rankerList.value = resultList;
 
-      // Print the list of all keys and values
+      // // print the list of all keys and values
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
@@ -1758,7 +1758,7 @@ Future sendDocumentIdOfanswerSheets(
     }
   } catch (e) {
     writeToFile(e, 'sendDocumentIdOfanswerSheets');
-    print("Error: $e+'sendDocumentIdOfanswerSheets'"); // Error handling
+    // print("Error: $e+'sendDocumentIdOfanswerSheets'"); // Error handling
   }
 }
 
@@ -1782,11 +1782,11 @@ Future getFullBannerPackages(BuildContext context, String token) async {
       var package = await ApiResponse.fromJson(json.decode(res.body));
       getx.style.add(package);
     } else {
-      print('Error r: ${res.body}');
+      // print('Error r: ${res.body}');
     }
   } catch (e) {
     writeToFile(e, 'getFullBannerPackages');
-    print("Error rx: $e");
+    // print("Error rx: $e");
   }
 
   // return fullBannerPackages;
@@ -1818,13 +1818,13 @@ Future<PackagInfoData> getPremiumPackageinfo(
       onTokenExpire(context);
       return PackagInfoData.fromJson({});
     } else {
-      print('Error r: ${res.body}');
+      // print('Error r: ${res.body}');
 
       return PackagInfoData.fromJson({});
     }
   } catch (e) {
     writeToFile(e, 'getPremiumPackageinfo');
-    print("Error rx: $e");
+    // print("Error rx: $e");
     return PackagInfoData.fromJson({});
     // return ;
   }
@@ -1860,12 +1860,12 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
       onTokenExpire(context);
       return [];
     } else {
-      print('Error r: ${res.body}');
+      // print('Error r: ${res.body}');
       return [];
     }
   } catch (e) {
     writeToFile(e, 'getDeviceLoginHistory');
-    print("Error rx: $e");
+    // print("Error rx: $e");
     return [];
   }
 
@@ -1898,7 +1898,7 @@ Future<int> getExamStatus(
     }
   } catch (e) {
     writeToFile(e, 'getExamStatus');
-    print("Error rx: $e");
+    // print("Error rx: $e");
     return 0;
   }
 
@@ -1924,22 +1924,22 @@ Future<List<Map<String, dynamic>>> getCountryId() async {
     var jsondata = jsonDecode(res.body);
     if (jsondata["isSuccess"] == true) {
       var resultdata = jsonDecode(jsondata["result"]);
-      // print(resultdata);
+      // // print(resultdata);
       // Store result values in the list
       countryList = List<Map<String, dynamic>>.from(resultdata.map(
           (country) => {"value": country["value"], "label": country["label"]}));
 
-      // Print or use the list as needed
+      // // print or use the list as needed
 
       return countryList; // Optional: to verify the list contents
     } else {
-      print("API Response Error: ${res.body}");
-      return [];
       // print("API Response Error: ${res.body}");
+      return [];
+      // // print("API Response Error: ${res.body}");
     }
   } catch (e) {
     writeToFile(e, 'getCountryId');
-    print("Error: $e");
+    // print("Error: $e");
     return [];
   }
 }
@@ -1964,7 +1964,7 @@ Future forgetPasswordGeneratecode(
         },
         body: jsonEncode(body));
     var jsondata = jsonDecode(res.body);
-    print(jsondata.toString());
+    // print(jsondata.toString());
 
     Get.back();
     if (jsondata['isSuccess'] == true) {
@@ -2021,11 +2021,11 @@ Future<bool> forgetPasswordEmailVerify(
   BuildContext context,
   String email,
 ) async {
-  print("forgetPasswordEmailVerify");
+  // print("forgetPasswordEmailVerify");
   try {
     loader(context);
     Map data = {'UserName': email};
-    // print(data);
+    // // print(data);
     var res = await http.post(
         Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getEmailValidation),
         headers: {
@@ -2057,7 +2057,7 @@ Future<bool> forgetPasswordEmailVerify(
 
     ClsErrorMsg.fnErrorDialog(
         context, '', e.toString().replaceAll("[", "").replaceAll("]", ""), "");
-    print(e.toString());
+    // print(e.toString());
     return false;
   }
 }
@@ -2094,12 +2094,12 @@ Future<Map> getEncryptionKeyAndIdofVideo(
       onTokenExpire(context);
       return {};
     } else {
-      print('Error r: ${res.body}');
+      // print('Error r: ${res.body}');
       return {};
     }
   } catch (e) {
     writeToFile(e, 'getEncryptionKeyAndIdofVideo');
-    print("Error rx: $e");
+    // print("Error rx: $e");
     return {};
   }
 
@@ -2122,7 +2122,7 @@ Future<List> getTheryExamHistoryList(
       },
       body: json.encode(obj),
     );
-    // print(res.body);
+    // // print(res.body);
     if (res.statusCode == 200) {
       Map<String, dynamic> response = jsonDecode(res.body);
 
@@ -2131,19 +2131,19 @@ Future<List> getTheryExamHistoryList(
       List<Map<String, dynamic>> parsedResult =
           result.map((e) => Map<String, dynamic>.from(e)).toList();
       parsedResult.forEach((exam) {
-        print('TheoryExamId: ${exam['TheoryExamId']}');
-        print('TheoryExamName: ${exam['TheoryExamName']}');
-        print('TotalCheckedMarks: ${exam['TotalCheckedMarks']}');
-        print('TotalReCheckedMarks: ${exam['TotalReCheckedMarks']}');
-        print('AttamptOn: ${exam['AttamptOn']}');
-        print('isAttempt: ${exam['isAttempt']}');
-        print('SubmitedOn: ${exam['SubmitedOn']}');
-        print('isSubmitted: ${exam['isSubmitted']}');
-        print('IsResultPublished: ${exam['IsResultPublished']}');
-        print('ReportPublishDate:${exam['ReportPublishDate']}');
-        print('PassMarks:${exam['PassMarks']}');
-        print('TotalMarks:${exam['TotalMarks']}');
-        print('---------------------------');
+        // print('TheoryExamId: ${exam['TheoryExamId']}');
+        // print('TheoryExamName: ${exam['TheoryExamName']}');
+        // print('TotalCheckedMarks: ${exam['TotalCheckedMarks']}');
+        // print('TotalReCheckedMarks: ${exam['TotalReCheckedMarks']}');
+        // print('AttamptOn: ${exam['AttamptOn']}');
+        // print('isAttempt: ${exam['isAttempt']}');
+        // print('SubmitedOn: ${exam['SubmitedOn']}');
+        // print('isSubmitted: ${exam['isSubmitted']}');
+        // print('IsResultPublished: ${exam['IsResultPublished']}');
+        // print('ReportPublishDate:${exam['ReportPublishDate']}');
+        // print('PassMarks:${exam['PassMarks']}');
+        // print('TotalMarks:${exam['TotalMarks']}');
+        // print('---------------------------');
       });
 
       return parsedResult;
@@ -2151,12 +2151,12 @@ Future<List> getTheryExamHistoryList(
       onTokenExpire(context);
       return [];
     } else {
-      print('Error r: ${res.body}');
+      // print('Error r: ${res.body}');
       return [];
     }
   } catch (e) {
     writeToFile(e, 'getTheryExamHistoryList');
-    print("Error rx: $e");
+    // print("Error rx: $e");
     return [];
   }
 
@@ -2182,7 +2182,7 @@ Future<String> getUploadAccessKey(BuildContext context, String token) async {
       if (jsonResponse['isSuccess'] == true) {
         String resultString = jsonResponse['result'];
         List<dynamic> resultList = jsonDecode(resultString);
-        // print(resultList.toString());
+        // // print(resultList.toString());
         if (resultList.isNotEmpty) {
           // Extract the first TestUploadAccessKey from the list
           String accessKey = resultList[0]['TestUploadAccessKey'];
@@ -2198,7 +2198,7 @@ Future<String> getUploadAccessKey(BuildContext context, String token) async {
     }
   } catch (e) {
     writeToFile(e, 'getUploadAccessKey');
-    print("Error: $e+'get upload access key'");
+    // print("Error: $e+'get upload access key'");
     return "";
   }
 }
@@ -2291,7 +2291,7 @@ Future<bool> gettheoryExamDataForTest2(
   } catch (e) {
     // Get.back();
     writeToFile(e, "gettheoryExamDataForTest2");
-    log("Error: $e");
+    // log("Error: $e");
     return false;
   }
 }
@@ -2318,7 +2318,7 @@ Future unUploadedVideoInfoInsert(context, List videolist, String token) async {
 
     if (jsondata['isSuccess'] == true) {
       updateUploadableVideoInfo();
-      log("sucessfulli insert video  ${res.statusCode}");
+      // log("sucessfulli insert video  ${res.statusCode}");
 
       // log(res.body);
 
@@ -2367,7 +2367,7 @@ Future<Map<String, dynamic>> getTheryExamResultForIndividual(
       },
       body: json.encode(obj),
     );
-    // print(res.body);
+    // // print(res.body);
 
     if (res.statusCode == 200) {
       Map<String, dynamic> response = jsonDecode(res.body);
@@ -2379,20 +2379,20 @@ Future<Map<String, dynamic>> getTheryExamResultForIndividual(
       if (result.isNotEmpty) {
         Map<String, dynamic> exam = Map<String, dynamic>.from(result[0]);
 
-        // Print the data (you can remove this if not needed)
-        print('TheoryExamId: ${exam['TheoryExamId']}');
-        // print('TheoryExamName: ${exam['TheoryExamName']}');
-        // print('TotalCheckedMarks: ${exam['TotalCheckedMarks']}');
-        // print('TotalReCheckedMarks: ${exam['TotalReCheckedMarks']}');
-        // print('AttamptOn: ${exam['AttamptOn']}');
-        // print('isAttempt: ${exam['isAttempt']}');
-        // print('SubmitedOn: ${exam['SubmitedOn']}');
-        // print('isSubmitted: ${exam['isSubmitted']}');
-        // print('IsResultPublished: ${exam['IsResultPublished']}');
-        // print('ReportPublishDate:${exam['ReportPublishDate']}');
-        // print('PassMarks:${exam['PassMarks']}');
-        // print('TotalMarks:${exam['TotalMarks']}');
-        print('---------------------------');
+        // // print the data (you can remove this if not needed)
+        // print('TheoryExamId: ${exam['TheoryExamId']}');
+        // // print('TheoryExamName: ${exam['TheoryExamName']}');
+        // // print('TotalCheckedMarks: ${exam['TotalCheckedMarks']}');
+        // // print('TotalReCheckedMarks: ${exam['TotalReCheckedMarks']}');
+        // // print('AttamptOn: ${exam['AttamptOn']}');
+        // // print('isAttempt: ${exam['isAttempt']}');
+        // // print('SubmitedOn: ${exam['SubmitedOn']}');
+        // // print('isSubmitted: ${exam['isSubmitted']}');
+        // // print('IsResultPublished: ${exam['IsResultPublished']}');
+        // // print('ReportPublishDate:${exam['ReportPublishDate']}');
+        // // print('PassMarks:${exam['PassMarks']}');
+        // // print('TotalMarks:${exam['TotalMarks']}');
+        // print('---------------------------');
 
         return exam; // Return the first item as a Map<String, dynamic>
       } else {
@@ -2402,12 +2402,12 @@ Future<Map<String, dynamic>> getTheryExamResultForIndividual(
       onTokenExpire(context);
       return {};
     } else {
-      print('Error: ${res.body}');
+      // print('Error: ${res.body}');
       return {}; // Return an empty map in case of an error
     }
   } catch (e) {
     writeToFile(e, 'getTheryExamHistoryList');
-    print("Error: $e");
+    // print("Error: $e");
     return {}; // Return an empty map in case of an exception
   }
 }
@@ -2435,7 +2435,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
 
   try {
     // Make the HTTP request to get package data from the server
-    print('Sending request to fetch package data...');
+    // print('Sending request to fetch package data...');
     var res = await http.post(
       Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getPackageData),
       headers: <String, String>{
@@ -2448,14 +2448,14 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
 
     // Check if the request was successful
     if (res.statusCode == 200) {
-      print('Request successful. Parsing response...');
+      // print('Request successful. Parsing response...');
 
       var jsonResponse = jsonDecode(res.body);
       List oldPackageData =
           readAllpackageInfo(); // Get the old package data from the local database
 
-      print('Old package data (local DB):');
-      print(oldPackageData);
+      // print('Old package data (local DB):');
+      // print(oldPackageData);
 
       String resultString = jsonResponse['result'];
 
@@ -2465,9 +2465,9 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
           .map((packageJson) => PackageData.fromJson(packageJson))
           .toList();
 
-      print('New package data (from API):');
+      // print('New package data (from API):');
       for (var item in packageList) {
-        print(item.packageId);
+        // print(item.packageId);
       }
 
       // Check for newly found package IDs
@@ -2480,7 +2480,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
         );
 
         if (oldPackage == null) {
-          print('New package found with ID: ${newPackage.packageId}');
+          // print('New package found with ID: ${newPackage.packageId}');
 
           insertOrUpdateTblPackageData(
               newPackage.packageId,
@@ -2496,8 +2496,8 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
 
           // Delete the old package data (if needed)
           deletePartularPackageData(newPackage.packageId.toString(), context);
-          print(
-              'Old package data for ${newPackage.packageId} has been deleted.');
+          // print(
+              // 'Old package data for ${newPackage.packageId} has been deleted.');
 
           getx.mcqdataList.value = await getMcqDataForTest(context,
               getx.loginuserdata[0].token, newPackage.packageId.toString());
@@ -2508,7 +2508,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
 
       // Loop through each old package to compare with the new data
       for (var oldPackage in oldPackageData) {
-        print('Processing old package with ID: ${oldPackage['packageId']}');
+        // print('Processing old package with ID: ${oldPackage['packageId']}');
 
         // Find the matching package in the new data using packageId
         var newPackage = packageList.firstWhere(
@@ -2542,9 +2542,9 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
 
         // If we found a valid new package (packageId != -1), we proceed with the comparison
         if (newPackage.packageId != -1) {
-          print('Found matching new package with ID: ${newPackage.packageId}');
-          print('Old LastUpdatedOn: ${oldPackage['LastUpdatedOn']}');
-          print('New LastUpdatedOn: ${newPackage.lastUpdatedOn}');
+          // print('Found matching new package with ID: ${newPackage.packageId}');
+          // print('Old LastUpdatedOn: ${oldPackage['LastUpdatedOn']}');
+          // print('New LastUpdatedOn: ${newPackage.lastUpdatedOn}');
 
           // Compare LastUpdatedOn values
           String oldLastUpdatedOn = oldPackage['LastUpdatedOn'];
@@ -2552,8 +2552,8 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
 
           if (oldLastUpdatedOn.toString() != newLastUpdatedOn.toString()) {
             if (isPackage) {
-              print(
-                  'LastUpdatedOn has changed for package ${newPackage.packageId}. Updating package...');
+              // print(
+                  // 'LastUpdatedOn has changed for package ${newPackage.packageId}. Updating package...');
 
               // Insert or update the package data in the DB
               insertOrUpdateTblPackageData(
@@ -2568,14 +2568,14 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
                   newPackage.isFree.toString(),
                   newPackage.isDirectPlay.toString());
 
-              print(
-                  'Package ${newPackage.packageId} has been updated in the database.');
+              // print(
+                  // 'Package ${newPackage.packageId} has been updated in the database.');
 
               // Delete the old package data (if needed)
               deletePartularPackageData(
                   newPackage.packageId.toString(), context);
-              print(
-                  'Old package data for ${newPackage.packageId} has been deleted.');
+              // print(
+                  // 'Old package data for ${newPackage.packageId} has been deleted.');
             } else {
               getx.mcqdataList.value = await getMcqDataForTest(
                   context, getx.loginuserdata[0].token, packageId);
@@ -2586,19 +2586,19 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
             getx.mcqdataList.value = true;
             getx.theoryExamvalue.value = true;
 
-            print(
-                'No update needed for package ${newPackage.packageId} (LastUpdatedOn is the same).');
+            // print(
+                // 'No update needed for package ${newPackage.packageId} (LastUpdatedOn is the same).');
           }
         } else {
-          print(
-              'No matching new package found for old package ${oldPackage['packageId']}');
+          // print(
+              // 'No matching new package found for old package ${oldPackage['packageId']}');
         }
       }
       if (isPackage) {
         Get.back();
       }
     } else if (res.statusCode == 401) {
-      print('Unauthorized (Token expired). Redirecting to login...');
+      // print('Unauthorized (Token expired). Redirecting to login...');
       if (isPackage) {
         Get.back();
       }
@@ -2608,14 +2608,14 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
         Get.back();
       }
       // Handle other status codes
-      print('Request failed with status code: ${res.statusCode}');
+      // print('Request failed with status code: ${res.statusCode}');
     }
   } catch (e) {
     if (isPackage) {
       Get.back();
     }
     // Catch any errors during the HTTP request or processing
-    print('Error occurred while fetching or processing package data: $e');
+    // print('Error occurred while fetching or processing package data: $e');
     writeToFile(e, 'getPackageData');
   }
 }
@@ -2639,13 +2639,13 @@ onNoInternetConnection(context, VoidCallback ontap) async {
     // retryInternetConnection(context);
   } else {
     // Optionally handle cancel action
-    print("User chose to cancel.");
+    // print("User chose to cancel.");
   }
 }
 
 Future unUploadedMcQHistoryInfoInsert(
     context, List mcqHistoryList, String token) async {
-  print("$mcqHistoryList lllllllllll");
+  // print("$mcqHistoryList lllllllllll");
   // loader(context);
   try {
     Map data = {"MCQExamHistory": mcqHistoryList};
@@ -2667,8 +2667,8 @@ Future unUploadedMcQHistoryInfoInsert(
 
     if (jsondata['isSuccess'] == true) {
       updateTblMCQhistoryForUploadFlag();
-      log("sucessfulli insert  mcq history ${res.statusCode}");
-      log(res.body);
+      // log("sucessfulli insert  mcq history ${res.statusCode}");
+      // log(res.body);
       return true;
 
       // Get.back();
@@ -2711,7 +2711,7 @@ Future<void> getMCQExamHistory(
       },
       body: json.encode(obj),
     );
-    // print(res.body);
+    // // print(res.body);
 
     if (res.statusCode == 200) {
       Map<String, dynamic> response = jsonDecode(res.body);
@@ -2749,8 +2749,8 @@ Future<void> getMCQExamHistory(
           // Insert the exam data into your table
           // await insertData(dataForInsert);  // Assuming insertData is an async function
 
-          // Print each inserted record (optional)
-          // print('Inserted exam data: $dataForInsert');
+          // // print each inserted record (optional)
+          // // print('Inserted exam data: $dataForInsert');
         }
 
         ; // Return success after all records are inserted
@@ -2760,11 +2760,11 @@ Future<void> getMCQExamHistory(
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print('Error: ${res.body}////////////////// fetchmcqhistory data');
+      // print('Error: ${res.body}////////////////// fetchmcqhistory data');
     }
   } catch (e) {
     writeToFile(e, 'getTheryExamHistoryList');
-    print("Error: $e ////////// mcqhistorydata");
+    // print("Error: $e ////////// mcqhistorydata");
   }
 }
 
@@ -2784,7 +2784,7 @@ Future<void> getVideowatchHistory(
       },
       body: json.encode(obj),
     );
-    // print(res.body);
+    // // print(res.body);
 
     if (res.statusCode == 200) {
       Map<String, dynamic> response = jsonDecode(res.body);
@@ -2821,8 +2821,8 @@ Future<void> getVideowatchHistory(
           // Insert the exam data into your table
           // await insertData(dataForInsert);  // Assuming insertData is an async function
 
-          // Print each inserted record (optional)
-          // print('Inserted VideoData :');
+          // // print each inserted record (optional)
+          // // print('Inserted VideoData :');
         }
 
         ; // Return success after all records are inserted
@@ -2832,11 +2832,11 @@ Future<void> getVideowatchHistory(
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print('Error: ${res.body}////////////////// fetchVideowatch data');
+      // print('Error: ${res.body}////////////////// fetchVideowatch data');
     }
   } catch (e) {
     writeToFile(e, 'getVideowatchHistory');
-    print("Error: $e ////////// getVideowatchHistoryyyyy");
+    // print("Error: $e ////////// getVideowatchHistoryyyyy");
   }
 }
 
@@ -2848,7 +2848,7 @@ Future<void> getMCQhistoryResult(
     Map obj = {};
 
     var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getRankMcqResult),
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getRankMcqResult), 
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -2856,7 +2856,7 @@ Future<void> getMCQhistoryResult(
       },
       body: json.encode(obj),
     );
-    print(res.body);
+    // print(res.body);
 
     if (res.statusCode == 200) {
       deleteTblUserResult();
@@ -2908,8 +2908,8 @@ Future<void> getMCQhistoryResult(
           // Insert the exam data into your table
           // await insertData(dataForInsert);  // Assuming insertData is an async function
 
-          // Print each inserted record (optional)
-          // print('Inserted exam data:');
+          // // print each inserted record (optional)
+          // // print('Inserted exam data:');
         }
 
         ; // Return success after all records are inserted
@@ -2919,11 +2919,11 @@ Future<void> getMCQhistoryResult(
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print('Error: ${res.body}////////////////// getMCQhistoryResult data');
+      // print('Error: ${res.body}////////////////// getMCQhistoryResult data');
     }
   } catch (e) {
     writeToFile(e, 'getMCQhistoryResult');
-    print("Error: $e ////////// getMCQhistoryResult");
+    // print("Error: $e ////////// getMCQhistoryResult");
   }
 }
 
@@ -2943,7 +2943,7 @@ Future<List> getMCQRankresultForIndividual(
       },
       body: json.encode(obj),
     );
-    print(res.body);
+    // print(res.body);
     List<Map<String, dynamic>> resultSetList = [];
 
     if (res.statusCode == 200) {
@@ -2991,27 +2991,24 @@ Future<List> getMCQRankresultForIndividual(
           "ObtainMarks": question['MarksObtain']
         });
       }
-      print(resultSetList);
+      // print(resultSetList);
       return resultSetList;
 
-      // Print or process the resultSetList as needed
+      // // print or process the resultSetList as needed
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
       return resultSetList;
     } else {
-      print(
-          'Error: ${res.body} ////////////////// getMCQhistoryResultfor individual data');
       return resultSetList;
     }
   } catch (e) {
     writeToFile(e, 'getMCQRankresultForIndividual');
-    print("Error: $e ////////// getMCQRankresultForIndividual");
+    // print("Error: $e ////////// getMCQRankresultForIndividual");
     return [];
   }
 }
 
-Future<Map> checkMCQRankStatus(
-    BuildContext context, String token, String paperId) async {
+Future<Map> checkMCQRankStatus(BuildContext context, String token, String paperId) async {
   try {
     Map obj = {
       "MCQExamHistory": {"MCQPaperId": paperId}
@@ -3026,10 +3023,10 @@ Future<Map> checkMCQRankStatus(
       },
       body: json.encode(obj),
     );
-    print(res.body);
+    // print(res.body);
     Map<int, List<int>> resultSet = {};
     Map<String, dynamic> response = jsonDecode(res.body);
-    print(response['statusCode'].toString());
+    // print(response['statusCode'].toString());
 
     if (res.statusCode == 200) {
       // deleteTblUserResult();
@@ -3066,15 +3063,15 @@ Future<Map> checkMCQRankStatus(
       //         "userselectedanswer": userSelectedAnswers.length==0?["Not answered"]:userSelectedAnswers,
       //       });
       //     }
-      //  print(resultSetList);
+      //  // print(resultSetList);
       //     return resultSetList;
       return {};
 
-      // Print or process the resultSetList as needed
+      // // print or process the resultSetList as needed
     } else if (response['statusCode'] == 220) {
       // Initialize variables
       double spentimeInminutes = 0.0;
-      print("Response status code is 220, processing the result...");
+      // print("Response status code is 220, processing the result...");
 
       // Decode the 'result' field which is a string containing a JSON array
       List<dynamic> mainResult = jsonDecode(response['result']);
@@ -3091,7 +3088,7 @@ Future<Map> checkMCQRankStatus(
           // Iterate through each question in the attemptedQuestions array
           for (var question in attemptedQuestions) {
             int questionId = question['MCQQuestionId'];
-            print("Processing question with ID: $questionId");
+            // print("Processing question with ID: $questionId");
 
             // Initialize an empty list to store selected answer IDs for this question
             List<int> selectedAnswerIds = [];
@@ -3099,8 +3096,8 @@ Future<Map> checkMCQRankStatus(
             // Check if AnswerOptions exists and is iterable
             if (question['AnswerOptions'] is List) {
               for (var option in question['AnswerOptions']) {
-                print(
-                    "Checking option: ${option['MCQOption']} with ID: ${option['MCQOptionId']}");
+                // print(
+                    // "Checking option: ${option['MCQOption']} with ID: ${option['MCQOptionId']}");
 
                 // Add the MCQOptionId to the selectedAnswerIds list
                 selectedAnswerIds.add(option['MCQOptionId']);
@@ -3109,18 +3106,18 @@ Future<Map> checkMCQRankStatus(
 
             // Add to resultSet if there are selected answers
             if (selectedAnswerIds.isNotEmpty) {
-              print(
-                  "Selected answers for question $questionId: $selectedAnswerIds");
+              // print(
+                  // "Selected answers for question $questionId: $selectedAnswerIds");
               resultSet[questionId] = selectedAnswerIds;
             } else {
-              print("No selected answers for question $questionId");
+              // print("No selected answers for question $questionId");
             }
           }
         }
       }
 
-      // Print and return the final response
-      print("Spent time in minutes: $spentimeInminutes");
+      // // print and return the final response
+      // print("Spent time in minutes: $spentimeInminutes");
       return {
         "StatusCode": response['statusCode'],
         "IsSuccess": true,
@@ -3156,7 +3153,7 @@ Future<Map> checkMCQRankStatus(
         "RemainingTimeInSeconds": 0
       };
     } else {
-      print('Error: ${res.body} ////////////////// checkMCQRankStatus  ');
+      // print('Error: ${res.body} ////////////////// checkMCQRankStatus  ');
       return {
         "StatusCode": res.statusCode,
         "UserAnswerList": [],
@@ -3169,7 +3166,7 @@ Future<Map> checkMCQRankStatus(
     }
   } catch (e) {
     writeToFile(e, 'checkMCQRankStatus');
-    print("Error Exeption: $e ////////// checkMCQRankStatus");
+    // print("Error Exeption: $e ////////// checkMCQRankStatus");
 
     return {
       "StatusCode": 999,
@@ -3202,7 +3199,7 @@ Future<List<SocialMediaIconModel>> getSocialMediaIcons(
       Map<String, dynamic> response = jsonDecode(res.body);
 
       List<dynamic> result = jsonDecode(response['result']);
-      print("${result} ////////////////// get social media links");
+      // print("${result} ////////////////// get social media links");
 
       resultSetList =
           result.map((item) => SocialMediaIconModel.fromJson(item)).toList();
@@ -3222,10 +3219,10 @@ Future<List<SocialMediaIconModel>> getSocialMediaIcons(
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print('Error: ${res.body} ////////////////// get social media links');
+      // print('Error: ${res.body} ////////////////// get social media links');
     }
   } catch (e) {
-    print("Error: $e ////////// get social media links");
+    // print("Error: $e ////////// get social media links");
     writeToFile(e, 'getSocialMediaIcons');
   }
 
@@ -3275,11 +3272,11 @@ Future<List<InfiniteMarqueeModel>> getInfiniteMarqueeDetails(
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print(
-          'Error: ${res.body} ////////////////// get infinite marquee details');
+      // print(
+          // 'Error: ${res.body} ////////////////// get infinite marquee details');
     }
   } catch (e) {
-    print("Error: $e ////////// get infinite marquee details");
+    // print("Error: $e ////////// get infinite marquee details");
     writeToFile(e, 'getInfiniteMarqueeDetails');
   }
 
@@ -3326,10 +3323,10 @@ Future<List<InfiniteMarqueeModel>> getInfiniteMarqueeDetails(
 //     } else if (res.statusCode == 401) {
 //       onTokenExpire(context);
 //     } else {
-//       print('Error: ${res.body} ////////////////// get Icon details');
+//       // print('Error: ${res.body} ////////////////// get Icon details');
 //     }
 //   } catch (e) {
-//     print("Error: $e ////////// get Icon details");
+//     // print("Error: $e ////////// get Icon details");
 //     writeToFile(e, 'getIconData');
 //   }
 
@@ -3363,14 +3360,14 @@ Future<bool> downloadAndSaveAppIcon(String url, String fileName) async {
       filePath,
       onReceiveProgress: (received, total) {
         if (total != -1) {
-          log('Downloading: ${(received / total * 100).toStringAsFixed(0)}%');
+          // log('Downloading: ${(received / total * 100).toStringAsFixed(0)}%');
         }
       },
     );
 
-    log('Icon downloaded and saved to: $filePath');
+    // log('Icon downloaded and saved to: $filePath');
     // logopath = filePath;
-    log(logopath);
+    // log(logopath);
     return true;
   } catch (e) {
     writeToFile(e, "downloadAndSaveAppIcon");
@@ -3426,11 +3423,11 @@ Future<List> getNotificationDetails(
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print(
-          'Error: ${res.body} ////////////////// get Notifications details 401');
+      // print(
+          // 'Error: ${res.body} ////////////////// get Notifications details 401');
     }
   } catch (e) {
-    print("Error: $e ////////// get Notifications details exception");
+    // print("Error: $e ////////// get Notifications details exception");
     writeToFile(e, 'getNotificationDetails');
   }
 
@@ -3441,7 +3438,7 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
   try {
     // Ensure the URL is not empty or null
     if (documentUrl.isEmpty) {
-      print('URL is empty');
+      // print('URL is empty');
       return '';
     }
 
@@ -3457,8 +3454,8 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
 
     if (!await notificationImagesDir.exists()) {
       await notificationImagesDir.create(recursive: true);
-      print(
-          'NotificationImages directory created at ${notificationImagesDir.path}');
+      // print(
+          // 'NotificationImages directory created at ${notificationImagesDir.path}');
     }
 
     // Save the path in SharedPreferences
@@ -3475,12 +3472,12 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
 
     // Check if fileName is valid
     if (fileName.isEmpty) {
-      print('Failed to extract file name from URL');
+      // print('Failed to extract file name from URL');
       return '';
     }
 
     // Download the file
-    print('Downloading banner from: $documentUrl');
+    // print('Downloading banner from: $documentUrl');
     await dio.download(
       documentUrl,
       filePath,
@@ -3490,15 +3487,15 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
     // Verify if the file exists
     final file = File(filePath);
     if (await file.exists()) {
-      print('File saved successfully at: $filePath');
+      // print('File saved successfully at: $filePath');
       return filePath;
     } else {
-      print('File download failed: $filePath does not exist.');
+      // print('File download failed: $filePath does not exist.');
       return '';
     }
   } catch (e) {
     // Log and rethrow the error
-    print('Error downloading banner: $e');
+    // print('Error downloading banner: $e');
     rethrow;
   }
 }
@@ -3534,10 +3531,10 @@ Future<bool> requestForRecheckAnswerSheet(
     } else if (res.statusCode == 401) {
       onTokenExpire(context);
     } else {
-      print('Error: ${res.body} ////////////////// recheckAnswerSheet');
+      // print('Error: ${res.body} ////////////////// recheckAnswerSheet');
     }
   } catch (e) {
-    print("Error: $e ////////// get recheckAnswerSheet");
+    // print("Error: $e ////////// get recheckAnswerSheet");
     writeToFile(e, 'recheckAnswerSheet');
   }
   return returnValue;
@@ -3580,11 +3577,11 @@ Future<String> getAnswerSheetURLforStudent(
       onTokenExpire(context);
     } else {
           Get.back();
-      print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
     }
   } catch (e) {
         Get.back();
-    print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
     writeToFile(e, 'getAnswerSheetURLforStudent');
   }
   return returnValue;

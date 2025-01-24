@@ -78,11 +78,11 @@ void setWindowDisplayAffinity() {
 
     if (result == 0) {
       final errorCode = GetLastError();
-      print('SetWindowDisplayAffinity failed with error: $errorCode');
+      // print('SetWindowDisplayAffinity failed with error: $errorCode');
     } else {
-      print('SetWindowDisplayAffinity succeeded');
+      // print('SetWindowDisplayAffinity succeeded');
     }
   } else {
-    print('Could not get window handle');
+    // print('Could not get window handle');
   }
 }

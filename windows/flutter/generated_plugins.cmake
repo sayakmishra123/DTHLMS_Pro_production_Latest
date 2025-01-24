@@ -14,6 +14,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_platform_alert
   flutter_secure_storage_windows
   flutter_webrtc
+  irondash_engine_context
   local_notifier
   media_kit_libs_windows_video
   media_kit_video
@@ -21,6 +22,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   permission_handler_windows
   screen_brightness_windows
   sqlite3_flutter_libs
+  super_native_extensions
   syncfusion_pdfviewer_windows
   url_launcher_windows
   window_size

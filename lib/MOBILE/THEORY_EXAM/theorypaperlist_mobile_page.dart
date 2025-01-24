@@ -42,7 +42,7 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
 
     filteredList.value =
         widget.theorylist.where((item) => item["ServicesTypeName"] == widget.type).toList();
-    log(filteredList.toString());
+    // log(filteredList.toString());
 
     return SizedBox(
       height: screenHeight,
@@ -64,7 +64,7 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
     
                    getData(theoryItem);
     
-                  log(theoryItem.toString());
+                  // log(theoryItem.toString());
                   return InkWell(
                     onTap: () async {
                       //                   mcqPaperList.clear();
@@ -175,7 +175,7 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
     // log(paperNames!.first.toString());
     mcqPaperList.clear();
     mcqPaperList.value = await fetchMCQPapertList(paperNames['SetId']);
-    log(mcqPaperList.string);
+    // log(mcqPaperList.string);
     showDialog(
       context: context,
       builder: (context) {

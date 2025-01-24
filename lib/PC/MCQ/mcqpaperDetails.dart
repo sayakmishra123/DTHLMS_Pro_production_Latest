@@ -46,10 +46,10 @@ class _McqPaperDetailsState extends State<McqPaperDetails> {
   }
 
   getData() async {
-    log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
+    // log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
     mcqPaperList.clear();
     mcqPaperList.value = await fetchMCQPapertList(widget.paperNames['SetId']);
-    log(mcqPaperList.toString() + " type");
+    // log(mcqPaperList.toString() + " type");
     // setState(() {});
   }
 

@@ -33,7 +33,7 @@ class McqListMobile extends StatelessWidget {
     // Filter the mcqSetList to only include "Quick Practice"
     filteredList.value =
         mcqSetList.where((item) => item["ServicesTypeName"] == type).toList();
-    log(filteredList.toString());
+    // log(filteredList.toString());
     return SizedBox(
       height: screenHeight * 0.8, // Make it responsive to screen height.
       child: Column(

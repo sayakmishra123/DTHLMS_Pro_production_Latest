@@ -233,7 +233,7 @@ class _ForgotScreenMobileState extends State<ForgotScreenMobile> {
         getx.forgetPasswordNewPasswordEntryValue.value = false;
 
         forgetkey = value;
-        log(forgetkey);
+        // log(forgetkey);
       });
     } catch (e) {
       print(e.toString() + "hello");
@@ -522,7 +522,7 @@ class _ForgotScreenMobileState extends State<ForgotScreenMobile> {
                               false;
 
                           forgetkey = value;
-                          log(forgetkey);
+                          // log(forgetkey);
                         });
                         // }
 

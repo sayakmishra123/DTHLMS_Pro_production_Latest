@@ -93,7 +93,7 @@ class MyCupertinoPopupMenu extends StatelessWidget {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              log(sessionId.toString());
+              // log(sessionId.toString());
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return SafeArea(
