@@ -2371,7 +2371,7 @@ Future<bool> _uploadRemainingData(BuildContext context) async {
     var videoInfoList = await fetchUploadableVideoInfo();
     if (videoInfoList.length != 0) {
       rteurnvalue = await unUploadedVideoInfoInsert(
-          context, videoInfoList, getx.loginuserdata[0].token);
+          context, videoInfoList, getx.loginuserdata[0].token,false);
     } else {
       rteurnvalue = true;
     }

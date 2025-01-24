@@ -834,7 +834,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                                   getx
                                                                       .loginuserdata[
                                                                           0]
-                                                                      .token);
+                                                                      .token,false);
                                                             }
                                                             getx.playingVideoId
                                                                     .value =
@@ -1065,7 +1065,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                                     getx
                                                                         .loginuserdata[
                                                                             0]
-                                                                        .token);
+                                                                        .token,false);
                                                               }
                                                               getx.playingVideoId
                                                                       .value =
@@ -1367,7 +1367,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           print(valueList);
           if (getx.isInternet.value) {
             unUploadedVideoInfoInsert(
-                context, valueList, getx.loginuserdata[0].token);
+                context, valueList, getx.loginuserdata[0].token,false);
           }
           if (await isProcessRunning("dthlmspro_video_player") == false) {
             run_Video_Player_exe(

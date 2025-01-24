@@ -162,6 +162,10 @@ dependencies:
   youtube_player_iframe:
   webview_flutter: 
   flutter_image_stack: ^0.0.7
+  pod_player: ^0.2.2
+  y_player: ^2.0.3
+
+  
 
   # youtube_player_flutter: ^9.1.1
   

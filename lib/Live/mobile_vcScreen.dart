@@ -7,9 +7,13 @@ import 'dart:developer';
 // import 'package:dthlms/MOBILE/live/getx.dart';
 
 import 'package:dthlms/ACTIVATION_WIDGET/enebelActivationcode.dart';
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
+import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
+import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/Live/chatwidget.dart';
 import 'package:dthlms/Live/popupmenu.dart';
+import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
@@ -35,6 +39,10 @@ import 'package:get/get.dart';
 import 'dart:ui';
 
 import 'package:inapi_core_sdk/inapi_core_sdk.dart';
+// import 'package:path/path.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:y_player/y_player.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 import 'mobilegetx.dart';
 import 'peer_model.dart';
@@ -80,6 +88,7 @@ class MobileMeetingPage extends StatefulWidget {
   // String userid;
   // String username;
   // String packageName;
+  MeetingDeatils? meeting;
   String projectId;
   String? sessionId;
   String userid;
@@ -91,15 +100,15 @@ class MobileMeetingPage extends StatefulWidget {
 
   MobileMeetingPage(this.projectId, this.sessionId, this.userid, this.username,
       this.packageName, this.link,
-      {this.videoCategory = "YouTube", super.key});
+      {this.videoCategory = "YouTube", required this.meeting, super.key});
 
   @override
-  State<MobileMeetingPage> createState() => _MobileMeetingPageState();
+  State<MobileMeetingPage> createState() => _MobileMeetingPageState(meeting);
 }
 
 class _MobileMeetingPageState extends State<MobileMeetingPage> {
   Timer? timer;
-
+  MeetingDeatils? meeting;
   List img = [
     'assets/image9.jpg',
     'assets/image8.jpg',
@@ -129,6 +138,37 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
 
   RxBool pollOption = false.obs;
 
+  final WebViewController controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {
+          // Update loading bar.
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onHttpError: (HttpResponseError error) {},
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (request.url.startsWith('https://www.youtube.com/')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ),
+    )
+    ..loadRequest(Uri?.parse('https://www.youtube.com/'));
+
+  Future<void> initializeWebView() async {
+    try {
+      controller.loadRequest(Uri.parse(
+          widget.meeting!.groupChat!)); // Assuming widget.personchat is a URL
+      getx.isloadChatUrl.value = true;
+    } catch (e) {
+      debugPrint('Error initializing WebView: $e');
+    }
+  }
+
   Future<void> playSound() async {
     // Path to the .opus file in the assets folder
     final soundPath = 'sound.mp3';
@@ -150,11 +190,13 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
         Get.find<VcController>().assigningRenderer();
       });
     }
+    initializeWebView();
 
     onUserJoinMeeting();
     super.initState();
   }
 
+  var startTime = DateTime.now().toString();
   void onUserJoinMeeting() async {
     if (widget.videoCategory == "YouTube") {
     } else {
@@ -179,13 +221,41 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
           "User ${widget.username} (${widget.userid}) joined the meeting with session ID ${widget.sessionId}.");
     }
 
-    // await MeetingService.joinMeeting(
-    //     widget.sessionId.toString(), widget.userid.toString(), widget.username);
+    await unUploadedVideoInfoInsert(
+            context,
+            [
+              {
+                'VideoId': int.parse(widget.meeting!.videoId),
+                'StartDuration': "0",
+                'EndDuration': "0",
+                "Speed": "0",
+                "StartTime": startTime.substring(0, startTime.length - 3),
+                "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
+              }
+            ],
+            getx.loginuserdata[0].token,
+            true)
+        .then((value) {
+      insertVideoplayInfo(
+          int.parse(widget.meeting!.videoId),
+          "0",
+          "0",
+          "0",
+          startTime.substring(0, startTime.length - 3),
+          int.parse(getx.loginuserdata[0].phoneNumber),
+          value ? 1 : 0,
+          type: "live");
+    });
   }
 
   @override
   void dispose() {
     if (widget.videoCategory == "YouTube") {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) {
+          getx.isloadChatUrl.value = false;
+        },
+      );
     } else {
       timer?.cancel();
       if (vcController.selfRole.contains(ParticipantRoles.moderator)) {
@@ -223,9 +293,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
   RxBool chatMood = true.obs;
   RxBool topicChecValue = true.obs;
 
-  // String _selectedValue = 'Option 1'; // Default selected value
-  // List<String> _dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
-
   Widget showDropdown({
     required BuildContext context,
     required List<String> items,
@@ -254,6 +321,8 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
 
   Getx getx = Get.put(Getx());
   AnimationStyle? _animationStyle;
+
+  _MobileMeetingPageState(this.meeting);
   Future back() async {
     await showDialog(
         barrierDismissible: false,
@@ -261,21 +330,56 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
         builder: (context) => CustomLogoutDialog(
               title: "You're close the meeting...\nAre you sure?",
               description: '',
-              ok: () {
-                if (vcController.selfRole
-                    .contains(ParticipantRoles.moderator)) {
-                  inMeetClient.endMeetingForAll();
-                  inMeetClient.endBreakoutRooms();
-                  vcController.isBreakoutStarted = false;
-                } else {
-                  inMeetClient.exitMeeting();
-                  inMeetClient.disableWebcam();
+              ok: () async {
+                await unUploadedVideoInfoInsert(
+                        context,
+                        [
+                          {
+                            'VideoId': int.parse(widget.meeting!.videoId),
+                            'StartDuration': "0",
+                            'EndDuration': "0",
+                            "Speed": "0",
+                            "StartTime":
+                                startTime.substring(0, startTime.length - 3),
+                            "PlayNo":
+                                int.parse(getx.loginuserdata[0].phoneNumber),
+                          }
+                        ],
+                        getx.loginuserdata[0].token,
+                        true)
+                    .then((value) {
+                  insertVideoplayInfo(
+                      int.parse(widget.meeting!.videoId),
+                      "0",
+                      "0",
+                      "0",
+                      startTime.substring(0, startTime.length - 3),
+                      int.parse(getx.loginuserdata[0].phoneNumber),
+                      value ? 1 : 0,
+                      type: "live");
+                });
 
-                  print('object');
+                if (widget.videoCategory != "YouTube") {
+                  if (vcController.selfRole
+                      .contains(ParticipantRoles.moderator)) {
+                    inMeetClient.endMeetingForAll();
+                    inMeetClient.endBreakoutRooms();
+                    vcController.isBreakoutStarted = false;
+                  } else {
+                    inMeetClient.exitMeeting();
+                    inMeetClient.disableWebcam();
+
+                    print('object');
+                  }
                 }
+
+                Get.back();
+                Get.back();
               },
             ));
   }
+
+  // final WebviewController controller = WebviewController();
 
   @override
   Widget build(BuildContext context) {
@@ -293,32 +397,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
       },
       child: Obx(
         () => Scaffold(
-            floatingActionButton: widget.videoCategory == 'YouTube'
-                ? FloatingActionButton.small(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return SafeArea(
-                            child: Material(
-                          color: Colors.transparent,
-                          child: ChatUi(widget.sessionId.toString(),
-                              widget.userid, widget.username
-
-                              // username
-
-                              ),
-                        ));
-                      }));
-                    },
-                    backgroundColor: btnColor,
-                    // heroTag: 'btn5',
-                    child: Icon(
-                      Icons.chat,
-                      color: Colors.white,
-                      weight: 5,
-                    ),
-                  )
-                : null,
             backgroundColor: Colors.black,
             appBar: getx.isFullscreen.value
                 ? null
@@ -337,7 +415,50 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                 ? SingleChildScrollView(
                     child: Column(
                       children: [
-                        YoutubeLive(widget.link, widget.username, true),
+                        // YoutubeLive(widget.link, widget.username, true),
+                        // YoutubeLive(link: widget.link!),
+
+                        Container(
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.only(top: 30),
+                          child: YPlayer(
+                            aspectRatio: 20 / 9,
+                            loadingWidget: CircularProgressIndicator(
+                              color: ColorPage.colorbutton,
+                            ),
+                            placeholder: Image.asset(
+                              "assets/video.png",
+                              scale: 10,
+                            ),
+
+                            bottomButtonBarMargin: EdgeInsets.all(8),
+                            seekBarMargin: EdgeInsets.all(10),
+
+                            fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
+                            fullscreenSeekBarMargin:
+                                EdgeInsets.only(bottom: 15),
+                            youtubeUrl: widget.link!,
+                            color: const Color.fromARGB(255, 54, 168,
+                                244), // New property for customizing controls color
+                            // materialProgressColors and cupertinoProgressColors are no longer available
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+
+                        Obx(
+                          () => SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 1.7,
+                            child: Center(
+                              child: getx.isloadChatUrl.value
+                                  ? WebViewWidget(controller: controller)
+                                  : CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )
@@ -383,10 +504,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  // widget.videoCategory == "YouTube"
-                                                  //     ? YoutubeLive(widget.link,
-                                                  //         widget.username, true)
-                                                  // :
                                                   Expanded(
                                                     child: Row(
                                                       mainAxisAlignment:
@@ -537,35 +654,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                         .white,
                                                                   ),
                                                                 ),
-
-                                                                // CupertinoButton(
-                                                                //   color: CupertinoColors.systemRed,
-                                                                //   padding: EdgeInsets.symmetric(horizontal: 3),
-                                                                //     // style: TextButton.styleFrom(
-                                                                //     //   backgroundColor:
-                                                                //     //   Colors.red[400],
-                                                                //     //   shape:
-                                                                //     //   const RoundedRectangleBorder(
-                                                                //     //     borderRadius:
-                                                                //     //     BorderRadius.all(
-                                                                //     //         Radius.circular(8)),
-                                                                //     //   ),
-                                                                //     // ),
-                                                                //     onPressed: () {
-                                                                //       // turned off by shubha
-                                                                //       // showDialog(
-                                                                //       //   barrierDismissible: false,
-                                                                //       //   context: context,
-                                                                //       //   builder: (context) =>
-                                                                //       //       CustomLogoutDialog(
-                                                                //       //           index: 0),
-                                                                //       // ).then((value) =>
-                                                                //       // value['id'] == 1
-                                                                //       //     ? Navigator.pop(context)
-                                                                //       //     : null);
-                                                                //     },
-                                                                //     child: Icon(CupertinoIcons.phone)),
-                                                                //
                                                               ),
 
                                                         Row(
@@ -820,75 +908,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                       weight: 5,
                                                                     ),
                                                                   ),
-
-                                                            //                   if (vcController
-                                                            //                       .screenShareStatus !=
-                                                            //                       ButtonStatus.off)
-                                                            //                     Row(
-                                                            //                       children: [
-                                                            //                         FloatingActionButton(
-                                                            //
-                                                            // mini: true,
-                                                            //                           onPressed: vcController
-                                                            //                               .screenShareStatus ==
-                                                            //                               ButtonStatus.loading
-                                                            //                               ? null
-                                                            //                               : () {
-                                                            //                             try {
-                                                            //                               vcController
-                                                            //                                   .stopScreenShare();
-                                                            //                             } catch (e) {
-                                                            //                               // Handle the error (e.g., log it)
-                                                            //                               print(
-                                                            //                                   "Error stopping screen share: $e");
-                                                            //                             }
-                                                            //                           },
-                                                            //                           backgroundColor: Colors.red,
-                                                            //                           heroTag: 'btn4',
-                                                            //                           child: Image.asset(
-                                                            //                             'assets/screen.png',
-                                                            //                             height: 20,
-                                                            //                             filterQuality:
-                                                            //                             FilterQuality.medium,
-                                                            //                             scale: 1,
-                                                            //                           ),
-                                                            //                         ),
-                                                            //                       ],
-                                                            //                     )
-                                                            //                   else
-                                                            //                     Row(
-                                                            //                       children: [
-                                                            //                         FloatingActionButton(
-                                                            //                           mini:true,
-                                                            //                           onPressed: vcController
-                                                            //                               .screenShareStatus ==
-                                                            //                               ButtonStatus.loading
-                                                            //                               ? null
-                                                            //                               : () {
-                                                            //                             try {
-                                                            //                               vcController
-                                                            //                                   .screenShare();
-                                                            //                             } catch (e) {
-                                                            //                               // Handle the error (e.g., log it)
-                                                            //                               print(
-                                                            //                                   "Error starting screen share: $e");
-                                                            //                             }
-                                                            //                           },
-                                                            //                           backgroundColor: btnColor,
-                                                            //                           heroTag: 'btn4',
-                                                            //                           child: Image.asset(
-                                                            //                             'assets/screen.png',
-                                                            //                             height: 20,
-                                                            //                             filterQuality:
-                                                            //                             FilterQuality.medium,
-                                                            //                             scale: 1,
-                                                            //                           ),
-                                                            //                         ),
-                                                            //                       ],
-                                                            //                     ),
-                                                            //                   const SizedBox(
-                                                            //                     width: 15,
-                                                            //                   ),
 
                                                             if (widget
                                                                     .videoCategory !=

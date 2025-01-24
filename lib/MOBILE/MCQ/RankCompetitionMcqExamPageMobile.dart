@@ -916,7 +916,8 @@ class _RankCompetitionMcqExamPageMobileState
                                                                   mcqData[qindex.value]
                                                                       .mCQQuestionUrl)
                                                               ? Container(
-                                                                  child: YoutubeLive(mcqData[qindex.value].mCQQuestionUrl, getx.loginuserdata[0].firstName, false)
+                                                                  // child: YoutubeLive(mcqData[qindex.value].mCQQuestionUrl, getx.loginuserdata[0].firstName, false)
+                                                                  child: YoutubeLive(link:mcqData[qindex.value].mCQQuestionUrl ),
 
                                                                   // YQPlayer(
                                                                   //   key: ValueKey( mcqData[qindex.value]

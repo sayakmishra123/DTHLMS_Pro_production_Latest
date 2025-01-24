@@ -38,7 +38,7 @@ class Getx extends GetxController {
   RxBool isPhoneOtpRequired = false.obs;
   RxBool isEmailOtpRequired = false.obs;
   RxBool isWhatsAppOtpRequired = false.obs;
-
+  RxBool isloadChatUrl = true.obs;
   RxBool show = false.obs;
   RxList rankerList = [].obs;
   RxMap userRankDetails = {}.obs;
@@ -185,6 +185,9 @@ class Getx extends GetxController {
   Rx<Uint8List> encryptedQuestionPaperfile = Uint8List(0).obs;
   RxString unEncryptedPDFfile = "".obs;
   RxString unEncryptedQuestionPaperfile = "".obs;
+
+  RxString groupchatLink = "".obs;
+  RxString personalChatLink = "".obs;
 
   RxString pdfFilePath = ''.obs;
   RxBool isdownloading = false.obs;

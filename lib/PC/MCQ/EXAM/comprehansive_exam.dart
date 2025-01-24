@@ -1141,7 +1141,7 @@ try{
     Alert(
       context: context,
       onWillPopActive: false,
-      type: AlertType.info,
+      type: AlertType.info,       
       style: AlertStyle(
         isOverlayTapDismiss: false,
         animationType: AnimationType.fromTop,

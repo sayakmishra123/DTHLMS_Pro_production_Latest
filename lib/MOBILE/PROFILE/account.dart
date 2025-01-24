@@ -194,7 +194,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     },
                   ),
                   MenuItem(
-                    icon: FontAwesome.comment,
+                    icon: MaterialIcons.email,
                     title: 'Contact Us',
                     onTap: () {
                       Get.to(
@@ -204,6 +204,11 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                   MenuItem(
                     icon: Icons.privacy_tip,
                     title: 'Privacy Policy',
+                    onTap: () {},
+                  ),
+                  MenuItem(
+                    icon: FontAwesome.undo,
+                    title: 'Refund Policy',
                     onTap: () {},
                   ),
                 ],
