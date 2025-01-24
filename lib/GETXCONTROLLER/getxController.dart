@@ -192,7 +192,7 @@ RxBool isloadChatUrl=true.obs;
   RxBool isAndroidDeveloperModeEnabled = false.obs;
   RxBool isEmulator = false.obs;
   RxString isLogout = "".obs;
-  RxBool isFullscreen = true.obs;
+  RxBool isFullscreen = false.obs;
   // List<Map<String, dynamic>> infoFetch = <Map<String, dynamic>>[];
 
   RxList<Map<String, dynamic>> booklist = <Map<String, dynamic>>[].obs;

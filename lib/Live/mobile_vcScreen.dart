@@ -9,6 +9,7 @@ import 'dart:developer';
 import 'package:dthlms/ACTIVATION_WIDGET/enebelActivationcode.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
+import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/Live/chatwidget.dart';
 import 'package:dthlms/Live/popupmenu.dart';
@@ -40,6 +41,7 @@ import 'dart:ui';
 import 'package:inapi_core_sdk/inapi_core_sdk.dart';
 // import 'package:path/path.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:y_player/y_player.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 
 import 'mobilegetx.dart';
@@ -434,13 +436,41 @@ if(widget.videoCategory!="YouTube"){
                 ? SingleChildScrollView(
                     child: Column(
                       children: [
-                        YoutubeLive(widget.link, widget.username, true),
+                        // YoutubeLive(widget.link, widget.username, true),
+                  // YoutubeLive(link: widget.link!),
+
+                  Container(
+                    height: 300,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.only(top: 30),
+                    child: YPlayer(
+
+                      aspectRatio: 20/9,
+                      loadingWidget: CircularProgressIndicator(color: ColorPage.colorbutton,),
+                      placeholder:Image.asset("assets/video.png",scale: 10,),
+                    
+                      bottomButtonBarMargin: EdgeInsets.all(8),
+                      seekBarMargin: EdgeInsets.all(10),
+
+                      // onEnterFullScreen: (){
+                      //   getx.isFullscreen.value = true;
+                      // },
+                      // onExitFullScreen: (){
+                      //   getx.isFullscreen.value = false;  
+                      // },
+                      fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
+                      fullscreenSeekBarMargin: EdgeInsets.only(bottom: 15),
+                      youtubeUrl: widget.link!,
+                      color: const Color.fromARGB(255, 54, 168, 244), // New property for customizing controls color
+                      // materialProgressColors and cupertinoProgressColors are no longer available
+                    ),
+                  ),
                         SizedBox(height: 30,),
 
                         Obx(
                           () => SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height/1.9,
+                            height: MediaQuery.of(context).size.height/1.7,
                          
                             child: Center(
                               child: getx.isloadChatUrl.value

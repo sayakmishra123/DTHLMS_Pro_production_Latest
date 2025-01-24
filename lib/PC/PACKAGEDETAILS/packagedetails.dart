@@ -2094,6 +2094,22 @@ class ExeRun {
     late String exePath;
     late String token;
     exePath = "exefiles/live/abc.exe";
+    print("exePath: $exePath");
+print("meetingDeatils.packageId: ${meetingDeatils.packageId.toString()}");
+print("User's Full Name: ${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}");
+print("User Name ID: ${getx.loginuserdata[0].nameId.toString()}");
+print("Meeting Details - Session ID: ${meetingDeatils.sessionId.toString()}");
+print("Meeting Details - Topic Name: ${meetingDeatils.topicName.toString()}");
+print("Meeting Details - Live URL: ${meetingDeatils.liveUrl.toString()}");
+print("Meeting Details - Video Category: ${meetingDeatils.videoCategory.toString()}");
+print("Database Path: ${getx.dbPath.value}");
+print("Meeting Details - Video ID: ${meetingDeatils.videoId}");
+print("User's Phone Number: ${getx.loginuserdata[0].phoneNumber}");
+print("User's Token: ${getx.loginuserdata[0].token}");
+print("Origin: $origin");
+print("API URL: https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}");
+print("Group Chat: ${meetingDeatils.groupChat!}");
+print("Personal Chat: ${meetingDeatils.personalChat!}");
 
     print(
         "${meetingDeatils.liveUrl.toString() + "   " + getx.loginuserdata[0].firstName.toString() + " " + getx.loginuserdata[0].lastName + getx.loginuserdata[0].nameId.toString() + "/// " + meetingDeatils.sessionId.toString() + "////// category  " + meetingDeatils.videoCategory.toString() + "  ////" + meetingDeatils.packageId.toString()}");
@@ -2119,7 +2135,7 @@ class ExeRun {
           getx.loginuserdata[0].phoneNumber,
           getx.loginuserdata[0].token,
           origin,
-          "https://"+ClsUrlApi.mainurl+ ClsUrlApi.insertvideoTimeDetails,
+          "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
          meetingDeatils.groupChat!,
         meetingDeatils.personalChat!
 
