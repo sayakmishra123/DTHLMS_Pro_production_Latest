@@ -286,7 +286,6 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
     }
   }
 
-
   String videoIndex = '';
 
   // Future getLastPlayedVideo() async {
@@ -500,11 +499,13 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
             onPressed: () {
               Get.to(() => NotificationsPage());
             },
-            icon: const Badge(
-              label: Text('2'),
-              child: Icon(
-                Icons.notifications_none_outlined,
-                weight: 5,
+            icon: Obx(
+              () => Badge(
+                label: Text(getx.notifications.length.toString()),
+                child: Icon(
+                  Icons.notifications_none_outlined,
+                  weight: 5,
+                ),
               ),
             ),
           )
@@ -698,7 +699,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                     SizedBox(
                                       width: 8,
                                     ),
-                                    Text('Last where you left',
+                                    Text('Start where you left',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -717,7 +718,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                         getx.playingVideoId.value =
                                             lastVideoDetailsAllPackage['FileId']
                                                 .toString();
-                                
+
                                         getx.playLink.value = getx
                                                 .userSelectedPathForDownloadVideo
                                                 .isEmpty
@@ -759,7 +760,10 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                           print("File dose not exist");
                                         }
                                       },
-                                      leading: Icon( Icons.video_library,color: ColorPage.recordedVideo,),
+                                      leading: Icon(
+                                        Icons.video_library,
+                                        color: ColorPage.recordedVideo,
+                                      ),
                                       title: Text(
                                         lastVideoDetailsAllPackage['FileIdName']
                                             .toString(),
@@ -1143,10 +1147,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                   //         color: ColorPage
                                                   //             .testSeries,
                                                   //         size: iconSize)
-                                                      : Icon(Icons.circle,
-                                                          color:
-                                                              ColorPage.history,
-                                                          size: iconSize),
+                                                  : Icon(Icons.circle,
+                                                      color: ColorPage.history,
+                                                      size: iconSize),
                                     );
                                   }).toList(),
                                 ),
@@ -1228,23 +1231,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
- Color whichColor(event){
+  Color whichColor(event) {
     switch (event) {
       case "Live":
         return ColorPage.live;
       case "Video":
         return ColorPage.recordedVideo;
-          
-      case "Test": 
-      return ColorPage.testSeries;
+
+      case "Test":
+        return ColorPage.testSeries;
       case "History":
-      return  ColorPage.history;
+        return ColorPage.history;
       case "YouTube":
-      return ColorPage.youtube;
+        return ColorPage.youtube;
       default:
         return Colors.red;
     }
-
   }
 
   Widget _buildEventDetails() {
@@ -1277,13 +1279,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   child: ListTile(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color:whichColor(appointment.location)),
+                        side:
+                            BorderSide(color: whichColor(appointment.location)),
                       ),
                       hoverColor: const Color.fromARGB(255, 241, 241, 241),
                       tileColor: Colors.white,
                       onTap: () async {
                         if (appointment.location == "Live" ||
-                              appointment.location == "YouTube") {
+                            appointment.location == "YouTube") {
                           //  print( "${appointment.startTime
                           //                     } shubha appointment.startTime" );
                           // getMeetingList(context).whenComplete(() {
@@ -1302,26 +1305,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           //     print(e.toString());
                           //   }
                           // });
-                     DateTime(
-      appointment.startTime.year,
-      appointment.startTime.month,
-      appointment.startTime.day,
-    ).isBefore(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    )) ?       await ArtSweetAlert.show(
-  barrierDismissible: false,
-  context: context,
-  artDialogArgs: ArtDialogArgs(
-    showCancelBtn: false,
-    title: "Live Expired",
-    text: "The live session has expired. Please check back later.",
-    
-    type: ArtSweetAlertType.warning,
-  ),
-)
-: null;
+                          DateTime(
+                            appointment.startTime.year,
+                            appointment.startTime.month,
+                            appointment.startTime.day,
+                          ).isBefore(DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day,
+                          ))
+                              ? await ArtSweetAlert.show(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  artDialogArgs: ArtDialogArgs(
+                                    showCancelBtn: false,
+                                    title: "Live Expired",
+                                    text:
+                                        "The live session has expired. Please check back later.",
+                                    type: ArtSweetAlertType.warning,
+                                  ),
+                                )
+                              : null;
                         }
 
                         if (appointment.location == "Video") {
@@ -1443,21 +1447,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(12))),
-                                  backgroundColor: WidgetStatePropertyAll(
-                                    DateTime(
-      appointment.startTime.year,
-      appointment.startTime.month,
-      appointment.startTime.day,
-    ).isBefore(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    )) ? Color.fromARGB(255, 255, 106, 95) : Colors.amberAccent )),
-                              onPressed: () async{
-
-                                
-                               
-                                  
+                                  backgroundColor:
+                                      WidgetStatePropertyAll(DateTime(
+                                    appointment.startTime.year,
+                                    appointment.startTime.month,
+                                    appointment.startTime.day,
+                                  ).isBefore(DateTime(
+                                    DateTime.now().year,
+                                    DateTime.now().month,
+                                    DateTime.now().day,
+                                  ))
+                                          ? Color.fromARGB(255, 255, 106, 95)
+                                          : Colors.amberAccent)),
+                              onPressed: () async {
                                 if (getx.isInternet.value) {
                                   getMeetingList(context).whenComplete(() {
                                     var meeting = findLiveDtails(
@@ -1465,18 +1467,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                 String, dynamic>)['SessionId']
                                             .toString(),
                                         getx.todaymeeting);
-                                    if (meeting != null 
-                                    && 
-                                     !DateTime(
-      appointment.startTime.year,
-      appointment.startTime.month,
-      appointment.startTime.day,
-    ).isBefore(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    ))
-    ) {
+                                    if (meeting != null &&
+                                        !DateTime(
+                                          appointment.startTime.year,
+                                          appointment.startTime.month,
+                                          appointment.startTime.day,
+                                        ).isBefore(DateTime(
+                                          DateTime.now().year,
+                                          DateTime.now().month,
+                                          DateTime.now().day,
+                                        ))) {
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => MobileMeetingPage(
@@ -1489,19 +1489,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                 videoCategory:
                                                     meeting.videoCategory,
                                               ));
-                                    }
-                                    else{
-                                       ArtSweetAlert.show(
-  barrierDismissible: false,
-  context: context,
-  artDialogArgs: ArtDialogArgs(
-    showCancelBtn: false,
-    title: "Live Expired",
-    text: "The live session has expired. Please check back later.",
-    
-    type: ArtSweetAlertType.warning,
-  ),
-);
+                                    } else {
+                                      ArtSweetAlert.show(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        artDialogArgs: ArtDialogArgs(
+                                          showCancelBtn: false,
+                                          title: "Live Expired",
+                                          text:
+                                              "The live session has expired. Please check back later.",
+                                          type: ArtSweetAlertType.warning,
+                                        ),
+                                      );
                                     }
                                   });
                                 } else {
@@ -1511,21 +1510,25 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                 }
                               },
                               child: DateTime(
-      appointment.startTime.year,
-      appointment.startTime.month,
-      appointment.startTime.day,
-    ).isBefore(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    )) ? Text(
-                               "Expired",
-                                style: style.copyWith(
-                                    fontSize: 10,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800),
-                              ) : Icon(Icons.arrow_forward_rounded,color: Colors.white,)
-                            )
+                                appointment.startTime.year,
+                                appointment.startTime.month,
+                                appointment.startTime.day,
+                              ).isBefore(DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day,
+                              ))
+                                  ? Text(
+                                      "Expired",
+                                      style: style.copyWith(
+                                          fontSize: 10,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800),
+                                    )
+                                  : Icon(
+                                      Icons.arrow_forward_rounded,
+                                      color: Colors.white,
+                                    ))
                           : null,
                       title: Text(appointment.subject,
                           overflow: TextOverflow.ellipsis,
@@ -1535,20 +1538,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               fontSize: 14)),
                       subtitle: appointment.location == "Live"
                           ? Text(
-  appointment.startTime != null
-      ? "" +
-          DateFormat('d MMM y h:mm a').format(appointment.startTime)
-      : 'Start at: No details available.',
-  style: FontFamily.style.copyWith(
-    fontSize: 12,
-    color: ColorPage.grey,
-  ),
-)
-
+                              appointment.startTime != null
+                                  ? "" +
+                                      DateFormat('d MMM y h:mm a')
+                                          .format(appointment.startTime)
+                                  : 'Start at: No details available.',
+                              style: FontFamily.style.copyWith(
+                                fontSize: 12,
+                                color: ColorPage.grey,
+                              ),
+                            )
                           : appointment.location == "Video"
                               ? Text(
                                   "Duration : ${formatDuration(int.parse((appointment.resourceIds![0] as Map<String, dynamic>)['VideoDuration']))}",
-                                
                                   style: FontFamily.style.copyWith(
                                       fontSize: 12, color: ColorPage.grey),
                                 )
@@ -1558,14 +1560,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             },
           ));
     });
-    
   }
+
   String formatDuration(int seconds) {
-  final hours = (seconds ~/ 3600).toString().padLeft(2, '0');
-  final minutes = ((seconds % 3600) ~/ 60).toString().padLeft(2, '0');
-  final secs = (seconds % 60).toString().padLeft(2, '0');
-  return "$hours:$minutes:$secs";
-}
+    final hours = (seconds ~/ 3600).toString().padLeft(2, '0');
+    final minutes = ((seconds % 3600) ~/ 60).toString().padLeft(2, '0');
+    final secs = (seconds % 60).toString().padLeft(2, '0');
+    return "$hours:$minutes:$secs";
+  }
 
   Icon? whichIcon(String? location) {
     double iconSize = 20;

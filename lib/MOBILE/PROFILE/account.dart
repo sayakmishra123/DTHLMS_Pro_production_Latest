@@ -12,7 +12,6 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-
 import '../HOMEPAGE/homepage_mobile.dart';
 
 class MyAccountScreen extends StatefulWidget {
