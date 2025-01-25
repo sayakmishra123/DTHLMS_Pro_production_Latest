@@ -3291,12 +3291,12 @@ String getFranchiseNameFromTblSetting() {
   return '';
 }
 
-String getEncryptionKeyFromTblSetting() {
+String getEncryptionKeyFromTblSetting(String keyName) {
   try {
     // Parameterized SQL query
     final sql.ResultSet resultSet = _db.select(
       'SELECT Value FROM TblSetting WHERE FieldName = ?',
-      ['EncryptionKey'], // Bind the parameter
+      [keyName], // Bind the parameter
     );
 
     // Check if a result is returned and fetch the Value

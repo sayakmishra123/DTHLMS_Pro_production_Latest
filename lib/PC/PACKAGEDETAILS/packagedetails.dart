@@ -2200,6 +2200,9 @@ class _BookDashboardState extends State<BookDashboard>
       backgroundColor: Colors.white,
       // drawer: _buildSideNavigation(),
       appBar: AppBar(
+
+
+        
         automaticallyImplyLeading: false,
         leading: Platform.isAndroid
             ? IconButton(

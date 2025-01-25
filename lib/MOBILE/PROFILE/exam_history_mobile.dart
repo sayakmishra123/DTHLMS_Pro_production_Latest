@@ -594,9 +594,9 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                 obtain: snapshot.data![index]['TotalReCheckedMarks']!= null?  snapshot.data![index]['TotalReCheckedMarks']:  snapshot.data![index]['TotalCheckedMarks'],
                                                 
                                                 totalMarks: double.parse(snapshot.data![index]['TotalMarks'].toString()) , 
-                                                totalMarksRequired: double.parse( snapshot.data![index]['PassMarks'].toString())
+                                                totalMarksRequired: double.parse( snapshot.data![index]['PassMarks'].toString()),
                                              
-                                                
+                                                examId: "121",
                                               ));
                                         })
                                     : Text("Result not publish ")))

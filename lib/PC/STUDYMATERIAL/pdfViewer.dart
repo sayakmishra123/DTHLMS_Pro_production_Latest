@@ -73,7 +73,7 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
   @override
   void initState() {
     super.initState();
-    getPdf(getEncryptionKeyFromTblSetting()).whenComplete(() {
+    getPdf(getEncryptionKeyFromTblSetting('EncryptionKey')).whenComplete(() {
       setState(() {});
     });
   }

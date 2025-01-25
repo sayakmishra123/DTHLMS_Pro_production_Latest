@@ -43,7 +43,7 @@ class _ShowQuestionPaperState extends State<ShowQuestionPaper> {
 
   @override
   void initState() {
-    encryptionKey = getEncryptionKeyFromTblSetting();
+    encryptionKey = getEncryptionKeyFromTblSetting('EncryptionKey');
     // getPdf();
     print(widget.pdfUrl);
     super.initState();

@@ -518,11 +518,20 @@ class EmulatorOnPage extends StatefulWidget {
 // import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> initializeNotifications() async {
-  // Initialize OneSignal
+
+  String osid=getEncryptionKeyFromTblSetting('OneSignalId');
+
+
+  if(osid.isNotEmpty){
+
+     // Initialize OneSignal
   OneSignal.Debug.setLogLevel(
     OSLogLevel.none,
   );
-  OneSignal.initialize(onesignalId); // Replace with your OneSignal App ID
+
+
+
+  OneSignal.initialize(osid); // Replace with your OneSignal App ID
 
   // Request notification permissions
   OneSignal.Notifications.addPermissionObserver((state) {
@@ -559,4 +568,7 @@ Future<void> initializeNotifications() async {
 
     // Optionally, handle further UI updates or state management here
   });
+
+  }
+ 
 }

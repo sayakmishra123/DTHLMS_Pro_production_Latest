@@ -23,6 +23,8 @@ import 'package:flutter/material.dart'
     show Colors, Icon, Icons, Text, TextButton, TextStyle;
 import 'package:get/get.dart';
 import 'package:simnumber/siminfo.dart';
+
+import '../notification_model.dart';
 // import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 // import 'package:sqflite_common_ffi/sqflite_ffi.dart'
 // show databaseFactory, databaseFactoryFfi, sqfliteFfiInit;
@@ -36,7 +38,7 @@ class Getx extends GetxController {
   RxBool isPhoneOtpRequired = false.obs;
   RxBool isEmailOtpRequired = false.obs;
   RxBool isWhatsAppOtpRequired = false.obs;
-RxBool isloadChatUrl=true.obs;
+  RxBool isloadChatUrl = true.obs;
   RxBool show = false.obs;
   RxList rankerList = [].obs;
   RxMap userRankDetails = {}.obs;
@@ -184,15 +186,16 @@ RxBool isloadChatUrl=true.obs;
   RxString unEncryptedPDFfile = "".obs;
   RxString unEncryptedQuestionPaperfile = "".obs;
 
-  RxString groupchatLink="".obs;
-  RxString personalChatLink="".obs;
+  RxString groupchatLink = "".obs;
+  RxString personalChatLink = "".obs;
 
   RxString pdfFilePath = ''.obs;
   RxBool isdownloading = false.obs;
   RxBool isAndroidDeveloperModeEnabled = false.obs;
   RxBool isEmulator = false.obs;
   RxString isLogout = "".obs;
-  RxBool isFullscreen = false.obs;
+  RxBool isFullscreen = true.obs;
+  RxList<NotificationModel> notifications = <NotificationModel>[].obs;
   // List<Map<String, dynamic>> infoFetch = <Map<String, dynamic>>[];
 
   RxList<Map<String, dynamic>> booklist = <Map<String, dynamic>>[].obs;
@@ -215,13 +218,7 @@ RxBool isloadChatUrl=true.obs;
 
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-    // ignore: unused_local_variable
-    // StreamSubscription<List<ConnectivityResult>> subscription = Connectivity()
-    //     .onConnectivityChanged
-    //     .listen((List<ConnectivityResult> result) {
-    //   print(result.toString() + "kmfkjsdandkjasdnmkjasd");
-    //   // Received changes in available connectivity types!
-    // });
+
     databasecopy();
     super.onInit();
   }
@@ -235,15 +232,6 @@ RxBool isloadChatUrl=true.obs;
       // developer.log('Couldn\'t check connectivity status', error: e);
       return;
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    // if (!mounted) {
-    //   return Future.value(null);
-    // }
-
-    // return _updateConnectionStatus(result);
   }
 
   Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
@@ -257,11 +245,6 @@ RxBool isloadChatUrl=true.obs;
   }
 
   Future<void> networkcheckingsnakbar() async {
-    // String connection = result.toString();
-
-    // if (connection == ConnectivityResult.none.toString()) {
-    //   if (!isInternet.value) return; // Prevent duplicate snackbars
-    //   isInternet.value = false;
     List.generate(_connectionStatus.length, (index) {
       if (_connectionStatus[index] == ConnectivityResult.none) {
         isInternet.value = false;
@@ -290,21 +273,11 @@ RxBool isloadChatUrl=true.obs;
         isInternet.value = true;
       }
     });
-    // } else {
-    //   isInternet.value = true;
-    // }
   }
 
   databasecopy() async {
-    if (Platform.isWindows) {
-      // sqfliteFfiInit();
-
-      // databaseFactory = databaseFactoryFfi;
-    }
+    if (Platform.isWindows) {}
 
     String path = "assets/copydb/databases/sayakdb.db";
-    // if (!await DbHandler().doesDatabaseExist('sayakdb.db')) {
-    //   await copyDatabase(path, 'sayakdb.db');
-    // }
   }
 }

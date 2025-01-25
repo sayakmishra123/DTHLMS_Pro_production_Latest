@@ -1133,7 +1133,7 @@ class _PdfState extends State<Pdf> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    encryptionKey = getEncryptionKeyFromTblSetting();
+    encryptionKey = getEncryptionKeyFromTblSetting('EncryptionKey');
     print(encryptionKey);
     _tabController = TabController(
       length: getx.pdfListOfVideo.length, // Number of tabs

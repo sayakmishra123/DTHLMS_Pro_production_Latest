@@ -315,7 +315,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                   value['PassMarks']
                                                       .toString()),
                                               // theoryExamAnswerId: '12',
-                                              // examId: paperId,
+                                              examId: paperId,
                                             ));
                                   }
                                 });
