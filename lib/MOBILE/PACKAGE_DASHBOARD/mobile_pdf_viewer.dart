@@ -73,7 +73,7 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
   @override
   void initState() {
     super.initState();
-    getPdf(getEncryptionKeyFromTblSetting()).whenComplete(() {
+    getPdf(getEncryptionKeyFromTblSetting('EncryptionKey')).whenComplete(() {
       setState(() {});
     });
     print('books page encrypted or not shubha ${widget.isEncrypted}');

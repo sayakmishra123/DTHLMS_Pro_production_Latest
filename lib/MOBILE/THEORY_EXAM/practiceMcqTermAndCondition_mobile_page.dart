@@ -297,7 +297,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                           'TotalReCheckedMarks']
                                                       .toString())
                                                   : double.parse(
-                                                      value['TotalCheckedMarks']
+                                                      value['TotalObtainMarks']
                                                           .toString()),
                                               resultPublishedOn: formatDateTime(
                                                   value['ReportPublishDate']),
@@ -315,7 +315,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                   value['PassMarks']
                                                       .toString()),
                                               // theoryExamAnswerId: '12',
-                                              // examId: paperId,
+                                              examId: paperId,
                                             ));
                                   }
                                 });

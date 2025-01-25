@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.dlp.vgsh" "\0"
-            VALUE "FileDescription", "vgsh" "\0"
+            VALUE "CompanyName", "com.example.aac"
+            VALUE "FileDescription", "AAC clases"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "vgsh" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.dlp.vgsh. All rights reserved." "\0"
-            VALUE "OriginalFilename", "vgsh.exe" "\0"
-            VALUE "ProductName", "vgsh" "\0"
+            VALUE "InternalName", "anurag" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 com.dlp.anurag. All rights reserved." "\0"
+            VALUE "OriginalFilename", "dthlms.exe" "\0"
+            VALUE "ProductName", "AAC clases"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

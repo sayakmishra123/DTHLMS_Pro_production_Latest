@@ -88,7 +88,7 @@ class MobileMeetingPage extends StatefulWidget {
   // String userid;
   // String username;
   // String packageName;
-   MeetingDeatils? meeting;
+  MeetingDeatils? meeting;
   String projectId;
   String? sessionId;
   String userid;
@@ -100,7 +100,7 @@ class MobileMeetingPage extends StatefulWidget {
 
   MobileMeetingPage(this.projectId, this.sessionId, this.userid, this.username,
       this.packageName, this.link,
-      {this.videoCategory = "YouTube",required this.meeting, super.key});
+      {this.videoCategory = "YouTube", required this.meeting, super.key});
 
   @override
   State<MobileMeetingPage> createState() => _MobileMeetingPageState(meeting);
@@ -138,40 +138,36 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
 
   RxBool pollOption = false.obs;
 
-
-
   final WebViewController controller = WebViewController()
-  ..setJavaScriptMode(JavaScriptMode.unrestricted)
-  ..setNavigationDelegate(
-    NavigationDelegate(
-      onProgress: (int progress) {
-        // Update loading bar.
-      },
-      onPageStarted: (String url) {},
-      onPageFinished: (String url) {},
-      onHttpError: (HttpResponseError error) {},
-      onWebResourceError: (WebResourceError error) {},
-      onNavigationRequest: (NavigationRequest request) {
-        if (request.url.startsWith('https://www.youtube.com/')) {
-          return NavigationDecision.prevent;
-        }
-        return NavigationDecision.navigate;
-      },
-    ),
-  )
-  ..loadRequest(Uri?.parse('https://www.youtube.com/'));
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {
+          // Update loading bar.
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onHttpError: (HttpResponseError error) {},
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (request.url.startsWith('https://www.youtube.com/')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ),
+    )
+    ..loadRequest(Uri?.parse('https://www.youtube.com/'));
 
-Future<void> initializeWebView() async {
-  try {
- 
-    controller.loadRequest(Uri.parse(widget.meeting!.groupChat!)); // Assuming widget.personchat is a URL
-    getx.isloadChatUrl.value = true;
-  } catch (e) {
-    debugPrint('Error initializing WebView: $e');
+  Future<void> initializeWebView() async {
+    try {
+      controller.loadRequest(Uri.parse(
+          widget.meeting!.groupChat!)); // Assuming widget.personchat is a URL
+      getx.isloadChatUrl.value = true;
+    } catch (e) {
+      debugPrint('Error initializing WebView: $e');
+    }
   }
-}
-
-
 
   Future<void> playSound() async {
     // Path to the .opus file in the assets folder
@@ -189,24 +185,18 @@ Future<void> initializeWebView() async {
   @override
   void initState() {
     if (widget.videoCategory != 'YouTube') {
-
-      
-
-
-      
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-
-        
         await InMeetClient.instance.getAvailableDeviceInfo();
         Get.find<VcController>().assigningRenderer();
       });
     }
-     initializeWebView();
+    initializeWebView();
 
     onUserJoinMeeting();
     super.initState();
   }
-var startTime=  DateTime.now().toString();
+
+  var startTime = DateTime.now().toString();
   void onUserJoinMeeting() async {
     if (widget.videoCategory == "YouTube") {
     } else {
@@ -231,46 +221,41 @@ var startTime=  DateTime.now().toString();
           "User ${widget.username} (${widget.userid}) joined the meeting with session ID ${widget.sessionId}.");
     }
 
-
-await unUploadedVideoInfoInsert(context,[
-
-  {
-        
-        'VideoId':  int.parse(widget.meeting!.videoId),
-        'StartDuration': "0",
-        'EndDuration': "0",
-        "Speed":"0",
-        "StartTime":
+    await unUploadedVideoInfoInsert(
+            context,
+            [
+              {
+                'VideoId': int.parse(widget.meeting!.videoId),
+                'StartDuration': "0",
+                'EndDuration': "0",
+                "Speed": "0",
+                "StartTime": startTime.substring(0, startTime.length - 3),
+                "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
+              }
+            ],
+            getx.loginuserdata[0].token,
+            true)
+        .then((value) {
+      insertVideoplayInfo(
+          int.parse(widget.meeting!.videoId),
+          "0",
+          "0",
+          "0",
           startTime.substring(0, startTime.length - 3),
-        "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
-      
-
-}],getx.loginuserdata[0].token,true).then((value){
-   insertVideoplayInfo(
-
-                  int.parse(widget.meeting!.videoId),
-               "0",
-                 "0",
-               "0",
-            startTime.substring(0, startTime.length - 3),
-             int.parse(getx.loginuserdata[0].phoneNumber),
-                  value?1:0,
-                type: "live"
-                  );
-
-});
-
+          int.parse(getx.loginuserdata[0].phoneNumber),
+          value ? 1 : 0,
+          type: "live");
+    });
   }
 
   @override
   void dispose() {
     if (widget.videoCategory == "YouTube") {
-
       WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
-        getx.isloadChatUrl.value = false;
-      },
-    );
+        (timeStamp) {
+          getx.isloadChatUrl.value = false;
+        },
+      );
     } else {
       timer?.cancel();
       if (vcController.selfRole.contains(ParticipantRoles.moderator)) {
@@ -336,8 +321,8 @@ await unUploadedVideoInfoInsert(context,[
 
   Getx getx = Get.put(Getx());
   AnimationStyle? _animationStyle;
-  
-  _MobileMeetingPageState(this. meeting);
+
+  _MobileMeetingPageState(this.meeting);
   Future back() async {
     await showDialog(
         barrierDismissible: false,
@@ -345,61 +330,56 @@ await unUploadedVideoInfoInsert(context,[
         builder: (context) => CustomLogoutDialog(
               title: "You're close the meeting...\nAre you sure?",
               description: '',
-              ok: ()async {
-await unUploadedVideoInfoInsert(context,[
+              ok: () async {
+                await unUploadedVideoInfoInsert(
+                        context,
+                        [
+                          {
+                            'VideoId': int.parse(widget.meeting!.videoId),
+                            'StartDuration': "0",
+                            'EndDuration': "0",
+                            "Speed": "0",
+                            "StartTime":
+                                startTime.substring(0, startTime.length - 3),
+                            "PlayNo":
+                                int.parse(getx.loginuserdata[0].phoneNumber),
+                          }
+                        ],
+                        getx.loginuserdata[0].token,
+                        true)
+                    .then((value) {
+                  insertVideoplayInfo(
+                      int.parse(widget.meeting!.videoId),
+                      "0",
+                      "0",
+                      "0",
+                      startTime.substring(0, startTime.length - 3),
+                      int.parse(getx.loginuserdata[0].phoneNumber),
+                      value ? 1 : 0,
+                      type: "live");
+                });
 
-  {
-        
-        'VideoId':  int.parse(widget.meeting!.videoId),
-        'StartDuration': "0",
-        'EndDuration': "0",
-        "Speed":"0",
-        "StartTime":
-          startTime.substring(0, startTime.length - 3),
-        "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
-      
+                if (widget.videoCategory != "YouTube") {
+                  if (vcController.selfRole
+                      .contains(ParticipantRoles.moderator)) {
+                    inMeetClient.endMeetingForAll();
+                    inMeetClient.endBreakoutRooms();
+                    vcController.isBreakoutStarted = false;
+                  } else {
+                    inMeetClient.exitMeeting();
+                    inMeetClient.disableWebcam();
 
-}],getx.loginuserdata[0].token,true).then((value){
-   insertVideoplayInfo(
+                    print('object');
+                  }
+                }
 
-                  int.parse(widget.meeting!.videoId),
-               "0",
-                 "0",
-               "0",
-            startTime.substring(0, startTime.length - 3),
-             int.parse(getx.loginuserdata[0].phoneNumber),
-                  value?1:0,
-                type: "live"
-                  );
-
-});
-
-
-if(widget.videoCategory!="YouTube"){
-                if (vcController.selfRole
-                    .contains(ParticipantRoles.moderator)) {
-                  inMeetClient.endMeetingForAll();
-                  inMeetClient.endBreakoutRooms();
-                  vcController.isBreakoutStarted = false;
-                } else {
-                  inMeetClient.exitMeeting();
-                  inMeetClient.disableWebcam();
-
-                  print('object');
-                }}
-
-                 Get.back();
-            Get.back();
+                Get.back();
+                Get.back();
               },
             ));
-
-           
   }
 
   // final WebviewController controller = WebviewController();
-
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -417,7 +397,6 @@ if(widget.videoCategory!="YouTube"){
       },
       child: Obx(
         () => Scaffold(
-           
             backgroundColor: Colors.black,
             appBar: getx.isFullscreen.value
                 ? null
@@ -437,44 +416,45 @@ if(widget.videoCategory!="YouTube"){
                     child: Column(
                       children: [
                         // YoutubeLive(widget.link, widget.username, true),
-                  // YoutubeLive(link: widget.link!),
+                        // YoutubeLive(link: widget.link!),
 
-                  Container(
-                    height: 300,
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.only(top: 30),
-                    child: YPlayer(
+                        Container(
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.only(top: 30),
+                          child: YPlayer(
+                            aspectRatio: 20 / 9,
+                            loadingWidget: CircularProgressIndicator(
+                              color: ColorPage.colorbutton,
+                            ),
+                            placeholder: Image.asset(
+                              "assets/video.png",
+                              scale: 10,
+                            ),
 
-                      aspectRatio: 20/9,
-                      loadingWidget: CircularProgressIndicator(color: ColorPage.colorbutton,),
-                      placeholder:Image.asset("assets/video.png",scale: 10,),
-                    
-                      bottomButtonBarMargin: EdgeInsets.all(8),
-                      seekBarMargin: EdgeInsets.all(10),
+                            bottomButtonBarMargin: EdgeInsets.all(8),
+                            seekBarMargin: EdgeInsets.all(10),
 
-                      // onEnterFullScreen: (){
-                      //   getx.isFullscreen.value = true;
-                      // },
-                      // onExitFullScreen: (){
-                      //   getx.isFullscreen.value = false;  
-                      // },
-                      fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
-                      fullscreenSeekBarMargin: EdgeInsets.only(bottom: 15),
-                      youtubeUrl: widget.link!,
-                      color: const Color.fromARGB(255, 54, 168, 244), // New property for customizing controls color
-                      // materialProgressColors and cupertinoProgressColors are no longer available
-                    ),
-                  ),
-                        SizedBox(height: 30,),
+                            fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
+                            fullscreenSeekBarMargin:
+                                EdgeInsets.only(bottom: 15),
+                            youtubeUrl: widget.link!,
+                            color: const Color.fromARGB(255, 54, 168,
+                                244), // New property for customizing controls color
+                            // materialProgressColors and cupertinoProgressColors are no longer available
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
 
                         Obx(
                           () => SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height/1.7,
-                         
+                            height: MediaQuery.of(context).size.height / 1.7,
                             child: Center(
                               child: getx.isloadChatUrl.value
-                                  ?WebViewWidget(controller: controller)
+                                  ? WebViewWidget(controller: controller)
                                   : CircularProgressIndicator(),
                             ),
                           ),
@@ -524,7 +504,6 @@ if(widget.videoCategory!="YouTube"){
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                              
                                                   Expanded(
                                                     child: Row(
                                                       mainAxisAlignment:
@@ -675,8 +654,6 @@ if(widget.videoCategory!="YouTube"){
                                                                         .white,
                                                                   ),
                                                                 ),
-
-                                                            
                                                               ),
 
                                                         Row(
@@ -931,8 +908,6 @@ if(widget.videoCategory!="YouTube"){
                                                                       weight: 5,
                                                                     ),
                                                                   ),
-
-                                                            
 
                                                             if (widget
                                                                     .videoCategory !=

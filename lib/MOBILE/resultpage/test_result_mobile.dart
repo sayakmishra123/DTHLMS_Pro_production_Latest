@@ -1,9 +1,16 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../CUSTOMDIALOG/customdialog.dart';
 
 class TestResultPageMobile extends StatefulWidget {
@@ -14,9 +21,10 @@ class TestResultPageMobile extends StatefulWidget {
   final double totalMarks;
   final double obtain;
   final double totalMarksRequired;
+  final String examId;
 
 
-  const TestResultPageMobile({super.key, required this.studentName, required this.examName, required this.submitedOn, required this.resultPublishedOn, required this.totalMarks, required this.obtain, required this.totalMarksRequired,});
+  const TestResultPageMobile({super.key, required this.studentName, required this.examName, required this.submitedOn, required this.resultPublishedOn, required this.totalMarks, required this.obtain, required this.totalMarksRequired, required this.examId,});
 
   @override
   State<TestResultPageMobile> createState() => _TestResultPageMobileState();
@@ -108,6 +116,158 @@ String formatDate(DateTime dateTime) {
 }
 String pass='';
 bool isPass = false;
+String downloadedFilePath = '';
+   Future<String?> getSavePath() async {
+    // Open a file picker dialog
+    String? result = await FilePicker.platform.saveFile(
+      dialogTitle: "Save Answer Sheet",
+      fileName: "answer_sheet.pdf", // default file name
+    );
+
+    if (result != null) { 
+      return result; // Return the file path selected by the user
+    }
+    return null; // Return null if the user cancels the file picker
+  }
+double downloadProgress = 0.0;
+  CancelToken cancelToken = CancelToken();
+
+RxBool    isDownloading = false.obs;
+Future<void> downloadAnswerSheet(String url) async {
+    Dio dio = Dio();
+
+    String? filePath = await getSavePath();
+    if (filePath == null) {
+      return; // If user cancels file selection, stop the process
+    }
+
+    try {
+      
+        isDownloading.value = true;
+     
+
+      // Start downloading the file
+      await dio.download(
+        url,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            setState(() {
+              downloadProgress = (received / total);
+            });
+          }
+        },
+        cancelToken: cancelToken,
+      );
+
+      setState(() {
+        isDownloading.value = false;
+        downloadedFilePath = filePath;
+      });
+
+      // Show dialog to inform the user that download is complete
+      showDownloadCompleteDialog();
+    } catch (e) {
+    
+        isDownloading.value = false;
+    
+
+      // Show error dialog if the download fails
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text("Download Failed"),
+          content: Text("There was an error downloading the file."),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+
+    void cancelDownload() {
+    cancelToken.cancel();
+    setState(() {
+      isDownloading.value = false;
+    });
+  }
+
+//  void showDownloadCompleteDialog() {
+//     showDialog(
+//       context: context,
+//       builder: (_) => AlertDialog(
+//         title: Text("Download Complete"),
+//         content: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: <Widget>[
+//             Text("The answer sheet has been downloaded."),
+//             SizedBox(height: 10),
+//             ElevatedButton(
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//                 showPdfDialog(downloadedFilePath);
+//               },
+//               child: Text("Show PDF"),
+//             ),
+//           ],
+//         ),
+//         actions: <Widget>[
+//           TextButton(
+//             child: Text("Close"),
+//             onPressed: () => Navigator.of(context).pop(),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+
+ void showDownloadCompleteDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Answer Sheet Not Found"),
+        // content: Column(
+        //   mainAxisSize: MainAxisSize.min,
+        //   children: <Widget>[
+        //     Text("The answer sheet has been downloaded."),
+        //     SizedBox(height: 10),
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         Navigator.of(context).pop();
+        //         showPdfDialog(downloadedFilePath);
+        //       },
+        //       child: Text("Show PDF"),
+        //     ),
+        //   ],
+        // ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Close"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+   void showPdfDialog(String filePath) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        child: Container(
+          width: MediaQuery.of(context).size.width*0.7,
+          height: MediaQuery.of(context).size.height*0.9,
+          child: SfPdfViewer.file(File(filePath)), // Using spfpdfviewer to display PDF
+        ),
+      ),
+    );
+  }
 
 
 
@@ -485,21 +645,39 @@ bool isPass = false;
                                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                 children: [
                                                 
-                                                ElevatedButton(
-                         style: ButtonStyle(
-                                 padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
-                                 backgroundColor: WidgetStatePropertyAll(Colors.blueGrey)),
-                         onPressed: (){
-                          //  DownloadQuestionPaperAlert();
-                         }, child: Text('Download Question Paper',style: TextStyle(color: Colors.white),)),
+                        //                         ElevatedButton(
+                        //  style: ButtonStyle(
+                        //          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
+                        //          backgroundColor: WidgetStatePropertyAll(Colors.blueGrey)),
+                        //  onPressed: (){
+                        //   //  DownloadQuestionPaperAlert();
+                        //  }, child: Text('Download Question Paper',style: TextStyle(color: Colors.white),)),
                                               
                                                 ElevatedButton(
                          style: ButtonStyle(
                                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
                                  backgroundColor: WidgetStatePropertyAll(Colors.blue)),
-                         onPressed: (){
-                          //  DownloadAnswerSheetAlert();
-                         }, child: Text('Download Answer Sheet',style: TextStyle(color: Colors.white),)),
+                         onPressed: isDownloading.value
+                      ? null
+                      : () async{
+
+                        showDownloadCompleteDialog();
+                      // await  getAnswerSheetURLforStudent(context,getx.loginuserdata[0].token,widget.examId).then((answerUrl){
+                      //   print(answerUrl);
+                      //   print(answerUrl);
+
+                      //   if(answerUrl.isNotEmpty){
+                      //      downloadAnswerSheet("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf");
+                      //   }
+
+
+                      // });
+
+
+
+
+                         
+                        }, child: Text('Download Answer Sheet',style: TextStyle(color: Colors.white),)),
                                       
                                                 ],),
                                                 SizedBox(height: 50,)
@@ -510,6 +688,8 @@ bool isPass = false;
       ),
     );
   }
+
+
 
   List<PieChartSectionData> showingSections() {
 double remainingMarks = widget.totalMarks - widget.obtain;

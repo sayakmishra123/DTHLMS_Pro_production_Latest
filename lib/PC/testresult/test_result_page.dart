@@ -678,23 +678,23 @@ class _TestResultPageState extends State<TestResultPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton(
-                            style: ButtonStyle(
-                                padding: WidgetStatePropertyAll(
-                                    EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 15)),
-                                backgroundColor:
-                                    WidgetStatePropertyAll(Colors.blueGrey)),
-                            onPressed: () {
-                              DownloadQuestionPaperAlert();
-                            },
-                            child: Text(
-                              'Download Question Paper',
-                              style: TextStyle(color: Colors.white),
-                            )),
-                        SizedBox(
-                          width: 30,
-                        ),
+                        // ElevatedButton(
+                        //     style: ButtonStyle(
+                        //         padding: WidgetStatePropertyAll(
+                        //             EdgeInsets.symmetric(
+                        //                 vertical: 15, horizontal: 15)),
+                        //         backgroundColor:
+                        //             WidgetStatePropertyAll(Colors.blueGrey)),
+                        //     onPressed: () {
+                        //       DownloadQuestionPaperAlert();
+                        //     },
+                        //     child: Text(
+                        //       'Download Question Paper',
+                        //       style: TextStyle(color: Colors.white),
+                        //     )),
+                        // SizedBox(
+                        //   width: 30,
+                        // ),
                         ElevatedButton(
                             style: ButtonStyle(
                                 padding: WidgetStatePropertyAll(
@@ -710,7 +710,9 @@ class _TestResultPageState extends State<TestResultPage> {
                         print(answerUrl);
                         print(answerUrl);
 
-                         downloadAnswerSheet(answerUrl);
+                        if(answerUrl.isNotEmpty){
+                           downloadAnswerSheet(answerUrl);
+                        }
 
 
                       });
