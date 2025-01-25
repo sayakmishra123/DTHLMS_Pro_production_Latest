@@ -36,7 +36,7 @@ class Getx extends GetxController {
   RxBool isPhoneOtpRequired = false.obs;
   RxBool isEmailOtpRequired = false.obs;
   RxBool isWhatsAppOtpRequired = false.obs;
-
+RxBool isloadChatUrl=true.obs;
   RxBool show = false.obs;
   RxList rankerList = [].obs;
   RxMap userRankDetails = {}.obs;
@@ -184,12 +184,15 @@ class Getx extends GetxController {
   RxString unEncryptedPDFfile = "".obs;
   RxString unEncryptedQuestionPaperfile = "".obs;
 
+  RxString groupchatLink="".obs;
+  RxString personalChatLink="".obs;
+
   RxString pdfFilePath = ''.obs;
   RxBool isdownloading = false.obs;
   RxBool isAndroidDeveloperModeEnabled = false.obs;
   RxBool isEmulator = false.obs;
   RxString isLogout = "".obs;
-  RxBool isFullscreen = true.obs;
+  RxBool isFullscreen = false.obs;
   // List<Map<String, dynamic>> infoFetch = <Map<String, dynamic>>[];
 
   RxList<Map<String, dynamic>> booklist = <Map<String, dynamic>>[].obs;

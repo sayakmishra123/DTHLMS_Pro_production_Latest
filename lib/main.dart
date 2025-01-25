@@ -50,14 +50,13 @@ void main(List<String> args) async {
 
     testSQLCipherOnWindows();
     if (Platform.isWindows) {
-      doWhenWindowReady(
-        () {
+      doWhenWindowReady(() {
           final win = appWindow;
           win.minSize = const Size(1300, 600);
           win.alignment = Alignment.topLeft;
           win.show();
-        },
-      );
+          },
+          );
     } else if (Platform.isAndroid) {
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
@@ -84,7 +83,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  pageRouter router = pageRouter();
+  pageRouter router = pageRouter(); 
   // late Future<void> userDetailsFuture;
 
   @override
@@ -237,7 +236,7 @@ class _MyAppState extends State<MyApp> {
                                         element is Iterable) {
                                       return element.length < 10;
                                     }
-                                    return false;
+                                    return false; 
                                   });
                                 }
 

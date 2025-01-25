@@ -15,6 +15,8 @@ class MeetingDeatils {
   final String? projectId;
   final String? meetingId;
   final String? liveUrl;
+  final String? groupChat;
+  final String? personalChat;
 
   MeetingDeatils(
       {required this.packageName,
@@ -28,10 +30,12 @@ class MeetingDeatils {
       required this.topicName,
       required this.videoCategory,
       required this.programStatus,
+      this.groupChat,
       this.sessionId,
       this.hostUid,
       this.projectId,
       this.meetingId,
+      this.personalChat,
       this.liveUrl});
 
   factory MeetingDeatils.fromJson(Map<String, dynamic> json) {
@@ -53,7 +57,9 @@ class MeetingDeatils {
       hostUid: json['HostUid'], // Nullable, no need for default
       projectId: json['ProjectId'], // Nullable, no need for default
       meetingId: json['MeetingId'], // Nullable, no need for default
-      liveUrl: json['LiveURL'], // Nullable, no need for default
+      liveUrl: json['LiveURL'], 
+      groupChat: json['ChatURL']??"",
+      personalChat: json['ChatURL']??""// Nullable, no need for default
     );
   }
 }

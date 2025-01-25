@@ -97,7 +97,7 @@ class _MocktestAnswerState extends State<MocktestAnswer> {
                 ),
               ),
               child:    Container(
-                height: MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height -100,
                 child: ListView.builder(
                     itemCount: widget.questionData.length,
                     itemBuilder: (context, index) {

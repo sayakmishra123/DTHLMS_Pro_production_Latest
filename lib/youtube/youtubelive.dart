@@ -1,229 +1,54 @@
-// import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 // import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:get/get.dart';
-// import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-// // import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+// import 'package:pod_player/pod_player.dart';
 
 // class YoutubeLive extends StatefulWidget {
-//   final String? link;
-//   final String? username;
-//   final bool isLive;
+//   final String link;  // Video URL
 
-//   const YoutubeLive(this.link, this.username, this.isLive, {Key? key})
-//       : super(key: key);
+//   YoutubeLive({required this.link});
 
 //   @override
 //   _YoutubeLiveState createState() => _YoutubeLiveState();
 // }
 
 // class _YoutubeLiveState extends State<YoutubeLive> {
-//   // late YoutubePlayerController _controller;
-//   final _controller = YoutubePlayerController.fromVideoId(
-//     videoId: 'KBYSpR8N6pc',
-//     params: YoutubePlayerParams(
-//       mute: false,
-//       showControls: true,
-//       showFullscreenButton: true,
-//     ),
-//   );
+//   late PodPlayerController _controller;
+
 //   @override
 //   void initState() {
 //     super.initState();
-
-//     // Extract YouTube Video ID from the provided link
-//     // final videoId = YoutubePlayer.convertUrlToId(widget.link ?? '') ?? '';
-//     // _controller = YoutubePlayerController(
-//     //   initialVideoId: videoId,
-//     //   flags: YoutubePlayerFlags(
-//     //     showLiveFullscreenButton: true,
-
-//     //     autoPlay: true,
-//     //     mute: false,
-//     //     isLive: widget.isLive, // Set this to true if playing a live video
-//     //     disableDragSeek: false,
-//     //     enableCaption: false,
-//     //     useHybridComposition: true,
-//     //   ),
-//     // );
+//      _controller = PodPlayerController(
+//     playVideoFrom: PlayVideoFrom.youtube(widget.link),
+//     podPlayerConfig: const PodPlayerConfig(
+//       autoPlay: true,
+//       isLooping: false,
+     
+//     )
+//   )..initialise();
 //   }
 
 //   @override
 //   void dispose() {
-//     // _controller.dispose();
 //     super.dispose();
+//     _controller.dispose();  // Dispose the controller to free resources
 //   }
 
 //   @override
 //   Widget build(BuildContext context) {
-//     final orientation = MediaQuery.of(context).orientation;
-
-//     return YoutubePlayerScaffold(
-//       controller: _controller,
-//       aspectRatio: 16 / 9,
-//       builder: (context, player) {
-//         return Expanded(
-//           child: Column(
-//             children: [
-//               player,
-//               Text('Youtube Player'),
-//             ],
-//           ),
-//         );
-//       },
+//     return Scaffold(
+      
+//       body: Center(
+//         child: Container(
+//           width: double.infinity,
+//           height: 300,
+//           child:PodVideoPlayer(controller: _controller)
+//         ),
+//       ),
 //     );
-//     // YoutubePlayerBuilder(
-//     //   player: YoutubePlayer(
-//     //     // aspectRatio: 50,
-
-//     //     width: MediaQuery.of(context).size.width - 40,
-//     //     controller: _controller,
-
-//     //     showVideoProgressIndicator: true,
-
-//     //     progressIndicatorColor: Colors.red,
-//     //     onReady: () {
-//     //       debugPrint('YouTube Player is ready.');
-//     //     },
-//     //     onEnded: (metaData) {
-//     //       ScaffoldMessenger.of(context).showSnackBar(
-//     //         SnackBar(content: Text('Video Ended')),
-//     //       );
-//     //     },
-//     //   ),
-//     //   builder: (context, player) {
-//     //     return Container(
-//     //       height: orientation == Orientation.portrait
-//     //           ? MediaQuery.of(context).size.height / 1.7
-//     //           : MediaQuery.of(context).size.height / 1.7,
-//     //       child: player,
-//     //     );
-//     //   },
-//     // );
 //   }
 // }
 
-// // class YoutubeLive extends StatefulWidget {
-// //   final String? link;
-// //   final String? username;
-// //   final bool isLive;
 
-// //   const YoutubeLive(this.link, this.username, this.isLive, {Key? key})
-// //       : super(key: key);
 
-// //   @override
-// //   _YoutubeLiveState createState() => _YoutubeLiveState();
-// // }
-
-// // class _YoutubeLiveState extends State<YoutubeLive> {
-// //   // late YoutubePlayerController _controller;
-// //   Getx getx = Get.put(Getx());
-
-// //   @override
-// //   void initState() {
-// //     super.initState();
-// //     final videoId = YoutubePlayer.convertUrlToId(widget.link ?? '') ?? '';
-// //     _controller = YoutubePlayerController(
-// //       initialVideoId: videoId,
-// //       flags: YoutubePlayerFlags(
-// //         showLiveFullscreenButton: true,
-// //         autoPlay: true,
-// //         mute: false,
-// //         isLive: widget.isLive, // true if this is a live stream
-// //         disableDragSeek: false,
-// //         enableCaption: false,
-// //         useHybridComposition: true,
-// //         loop: true,
-// //       ),
-// //     );
-// //   }
-
-// //   @override
-// //   void dispose() {
-// //     // Important to dispose the controller
-// //     _controller.dispose();
-// //     // Restore overlays & orientation if needed
-// //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-// //     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-// //     super.dispose();
-// //   }
-
-// //   YoutubePlayerController _controller = YoutubePlayerController(
-// //     initialVideoId: 'iLnmTe5Q2Qw',
-// //     flags: YoutubePlayerFlags(
-// //       autoPlay: true,
-// //       mute: true,
-// //     ),
-// //   );
-
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     final orientation = MediaQuery.of(context).orientation;
-
-// //     return YoutubePlayerBuilder(
-// //         player: YoutubePlayer(
-// //           controller: _controller,
-// //         ),
-// //         builder: (context, player) {
-// //           return Column(
-// //             children: [
-// //               // some widgets
-// //               player,
-// //               //some other widgets
-// //             ],
-// //           );
-// //         });
-
-// //     //  YoutubePlayerBuilder(
-// //     //   // Called when user presses the plugin's fullscreen button:
-// //     //   onEnterFullScreen: () {
-// //     //     setState(() => getx.isFullscreen.value = true);
-// //     //     // Hide status bar & nav bar:
-// //     //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky,
-// //     //         overlays: []);
-// //     //     // Force landscape orientation:
-// //     //     SystemChrome.setPreferredOrientations([
-// //     //       DeviceOrientation.landscapeLeft,
-// //     //       DeviceOrientation.landscapeRight,
-// //     //     ]);
-// //     //   },
-// //     //   // Called when user exits fullscreen:
-// //     //   onExitFullScreen: () {
-// //     //     setState(() => getx.isFullscreen.value = false);
-// //     //     // Restore system overlays:
-// //     //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-// //     //     // Allow all orientations again:
-// //     //     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-// //     //   },
-// //     //   player: YoutubePlayer(
-// //     //     controller: _controller,
-// //     //     showVideoProgressIndicator: true,
-// //     //     progressIndicatorColor: Colors.red,
-// //     //     onReady: () {
-// //     //       debugPrint('YouTube Player is ready.');
-// //     //     },
-// //     //     onEnded: (metaData) {
-// //     //       ScaffoldMessenger.of(context).showSnackBar(
-// //     //         const SnackBar(content: Text('Video Ended')),
-// //     //       );
-// //     //     },
-// //     //   ),
-// //     //   builder: (context, player) {
-// //     //     // If in fullscreen, just return the player so it fills the entire screen:
-// //     //     if (getx.isFullscreen.value)
-// //     //       return SizedBox(height: 250, child: player);
-
-// //     //     // Otherwise, display player in a Container/SizedBox of your choice:
-// //     //     return SizedBox(
-// //     //       height: orientation == Orientation.portrait
-// //     //           ? MediaQuery.of(context).size.height / 1.7
-// //     //           : MediaQuery.of(context).size.height / 1.7,
-// //     //       child: player,
-// //     //     );
-// //     //   },
-// //     // );
-// //   }
-// // }
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';

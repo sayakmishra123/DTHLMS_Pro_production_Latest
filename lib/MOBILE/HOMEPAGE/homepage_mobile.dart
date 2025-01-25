@@ -698,7 +698,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                     SizedBox(
                                       width: 8,
                                     ),
-                                    Text('Last where you left',
+                                    Text('Start where you left',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -1480,6 +1480,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => MobileMeetingPage(
+                                            meeting: meeting,
                                                 meeting!.projectId.toString(),
                                                 meeting.sessionId.toString(),
                                                 getx.loginuserdata[0].nameId,

@@ -297,7 +297,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                           'TotalReCheckedMarks']
                                                       .toString())
                                                   : double.parse(
-                                                      value['TotalCheckedMarks']
+                                                      value['TotalObtainMarks']
                                                           .toString()),
                                               resultPublishedOn: formatDateTime(
                                                   value['ReportPublishDate']),

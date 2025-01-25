@@ -525,7 +525,7 @@ class _TestResultPageState extends State<TestResultPage> {
                                 ),
                                 Indicator(
                                   color: AppColors.contentColorBlue,
-                                  text: 'Remaining Marks',
+                                  text: 'emaining Marks',
                                   isSquare: true,
                                 ),
                                 SizedBox(

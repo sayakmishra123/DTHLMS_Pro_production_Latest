@@ -1,14 +1,7 @@
-import 'dart:developer';
-
-// import 'package:dlpencryptor_live/widget/teacherpoll.dart';
-
+import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inapi_core_sdk/inapi_core_sdk.dart';
-
-// import '../chat/groupchat.dart';
-// import '../vc_controller.dart';
-// import '../widget/chatwidget.dart';
 import 'chatwidget.dart';
 import 'teacherpoll.dart';
 import 'vc_controller.dart';
@@ -21,6 +14,7 @@ class MyCupertinoPopupMenu extends StatelessWidget {
   final String username;
   final String sessionId;
   final String userid;
+  final MeetingDeatils? meeting;
 
   const MyCupertinoPopupMenu({
     Key? key,
@@ -28,7 +22,9 @@ class MyCupertinoPopupMenu extends StatelessWidget {
     required this.vcController,
     required this.username,
     required this.sessionId,
-    required this.userid,
+    required this.userid, 
+    this.meeting,
+    
   }) : super(key: key);
 
   @override
@@ -57,49 +53,32 @@ class MyCupertinoPopupMenu extends StatelessWidget {
         title:  Text('Options ${sessionId} / ${userid}'),
         actions: <CupertinoActionSheetAction>[
           // CupertinoActionSheetAction(
-          //
-          //   onPressed: () async {
+          //   onPressed: () {
           //     Navigator.pop(context);
-          //     await inMeetClient.disablewebcamForAll();
+          //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //       return SafeArea(
+          //         child: Material(
+          //           color: Colors.transparent,
+          //           child: StudentPollPage(
+          //             teacherName: username,
+          //             sessionId: sessionId,
+          //           ),
+          //         ),
+          //       );
+          //     }));
           //     // Navigator.pop(context);
           //   },
-          //   child: const Text('Disable Webcam'),
+          //   child: const Text('Management'),
           // ),
-          // CupertinoActionSheetAction(
-          //   onPressed: () async {
-          //     Navigator.pop(context);
-          //     await inMeetClient.muteMicForAll();
-          //     // Navigator.pop(context);
-          //   },
-          //   child: const Text('Mute Mic'),
-          // ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SafeArea(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: StudentPollPage(
-                      teacherName: username,
-                      sessionId: sessionId,
-                    ),
-                  ),
-                );
-              }));
-              // Navigator.pop(context);
-            },
-            child: const Text('Management'),
-          ),
           CupertinoActionSheetAction(
             onPressed: () {
               // log(sessionId.toString());
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SafeArea(
+                return SafeArea( 
                     child: Material(
                   color: Colors.transparent,
-                  child: ChatUi(sessionId, userid, username
+                  child: ChatUi(sessionId, userid, username,meeting: meeting,
 
                       // username
                       ),

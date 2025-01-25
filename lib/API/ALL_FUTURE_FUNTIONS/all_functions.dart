@@ -272,7 +272,11 @@ Future<void> getMeetingList(BuildContext context) async {
           } else if (programStatus == 'Upcoming') {
             getx.upcomingmeeting.add(meeting);
           }
+
+           
         }
+
+      
 
         // Combine all lists into a single list if needed
 
@@ -2296,7 +2300,7 @@ Future<bool> gettheoryExamDataForTest2(
   }
 }
 
-Future unUploadedVideoInfoInsert(context, List videolist, String token) async {
+Future unUploadedVideoInfoInsert(context, List videolist, String token, bool isLive) async {
   // loader(context);
   try {
     Map data = {"tblStudentPackageHistory": videolist};
@@ -2316,9 +2320,12 @@ Future unUploadedVideoInfoInsert(context, List videolist, String token) async {
 
     var jsondata = jsonDecode(res.body);
 
+
     if (jsondata['isSuccess'] == true) {
-      updateUploadableVideoInfo();
-      // log("sucessfulli insert video  ${res.statusCode}");
+if(!isLive){
+        updateUploadableVideoInfo();
+}
+      log("sucessfulli insert video  ${res.statusCode}");
 
       // log(res.body);
 
@@ -2326,22 +2333,24 @@ Future unUploadedVideoInfoInsert(context, List videolist, String token) async {
 
       // Get.back();
     } else {
-      ClsErrorMsg.fnErrorDialog(
-          context,
-          'video insert',
-          jsondata['errorMessages']
-                  .toString()
-                  .replaceAll("[", "")
-                  .replaceAll("]", "") +
-              "${res.statusCode}",
-          "");
+      Get.back();
+      // ClsErrorMsg.fnErrorDialog(
+      //     context,
+      //     'video insert',
+      //     jsondata['errorMessages']
+      //             .toString()
+      //             .replaceAll("[", "")
+      //             .replaceAll("]", "") +
+      //         "${res.statusCode}",
+      //     "");
       return false;
       //
       // Get.back();
     }
   } catch (e) {
-    ClsErrorMsg.fnErrorDialog(context, 'video insert',
-        e.toString().replaceAll("[", "").replaceAll("]", ""), "");
+    Get.back();
+    // ClsErrorMsg.fnErrorDialog(context, 'video insert',
+    //     e.toString().replaceAll("[", "").replaceAll("]", ""), "");
     writeToFile(e, 'formatTimestamp');
     return false;
     // Get.back();

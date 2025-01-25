@@ -395,7 +395,7 @@ class _RankCompetitionMcqExamPageMobileState
                                                 height: 58 *
                                                         ((widget.mcqlist
                                                                     .length ~/
-                                                                4) +
+                                                                5) +
                                                             1) +
                                                     sectionWiseQuestionIdList
                                                             .length *
@@ -917,6 +917,7 @@ class _RankCompetitionMcqExamPageMobileState
                                                                       .mCQQuestionUrl)
                                                               ? Container(
                                                                   child: YoutubeLive(mcqData[qindex.value].mCQQuestionUrl, getx.loginuserdata[0].firstName, false)
+                                                                  // child: YoutubeLive(link:mcqData[qindex.value].mCQQuestionUrl ),
 
                                                                   // YQPlayer(
                                                                   //   key: ValueKey( mcqData[qindex.value]

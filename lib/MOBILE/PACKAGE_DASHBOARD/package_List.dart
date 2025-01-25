@@ -280,7 +280,14 @@ List<Widget> _buildIconStack(packageId) {
                   width: itemWidth, // Adjusted for wider card
                   margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    border: Border.all(color: Colors.black.withAlpha(100),
+                    width: 1
+                    ),
+                   color: Colors.white,
+                  //  gradient: LinearGradient(colors: [
+                  //   Colors.white.withAlpha(80),
+                  //   Colors.grey.withAlpha(200),
+                  //  ]),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(

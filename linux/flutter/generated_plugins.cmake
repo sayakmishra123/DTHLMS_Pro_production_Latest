@@ -11,12 +11,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_platform_alert
   flutter_secure_storage_linux
   flutter_webrtc
-  irondash_engine_context
   local_notifier
   media_kit_libs_linux
   media_kit_video
   sqlite3_flutter_libs
-  super_native_extensions
   url_launcher_linux
   window_size
 )

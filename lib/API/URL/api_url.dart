@@ -1,8 +1,8 @@
 class ClsUrlApi {
-  static const mainurl =
-      String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
+  // static const mainurl =
+  //     String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
 
-  // static const mainurl = "apipro20240709.dthlms.com";
+  static const mainurl = "apipro20240709.dthlms.com";
 
   static const loginEndpoint = '/api/auth/login';
   static const checkUserExitenceBeforeregister =
@@ -44,7 +44,7 @@ class ClsUrlApi {
   static const insertvideoTimeDetails =
       '/api/AuthDataGet/ExecuteJson/spAppApi/13';
   static const uploadVideoiInCloudeUrl = '/api/uploads';
-  static const askDoubteQuestion = '/api/AuthDataGet/ExecuteJson/spappapi/16';
+  static const askDoubteQuestion = '/api/AuthDataGet/ExecuteJson/spAppApi/16';
   static const uploadFile = '/api/uploads';
   static const changeProfileDetails = '/api/profile/changeuserdetail/';
   static const getUserImage = "/api/AuthDataGet/ExecuteJson/spAppApi/18";

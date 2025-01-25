@@ -2022,7 +2022,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                           unUploadedVideoInfoInsert(
                                               context,
                                               valueList,
-                                              getx.loginuserdata[0].token);
+                                              getx.loginuserdata[0].token,false);
                                         }
 
                                         getx.playingVideoId.value =
@@ -2411,7 +2411,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     Get.back();
                     fetchUploadableVideoInfo().then((valueList) async {
                       unUploadedVideoInfoInsert(
-                          context, valueList, getx.loginuserdata[0].token);
+                          context, valueList, getx.loginuserdata[0].token,false);
 
                       if (await isProcessRunning("dthlmspro_video_player") ==
                           false) {

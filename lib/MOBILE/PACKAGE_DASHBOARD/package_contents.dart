@@ -458,8 +458,9 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                     onTap: () {
                       paging(filteredList[index]['section']);
       
-                      if (getx.sectionListOfPackage[index]['section'] ==
-                          "Video") {
+                      if (filteredList[index]['section'] ==
+                          "Video" || filteredList[index]['section'] ==
+                          "PDF") {
                         resetTblLocalNavigationByOrderOnsection(1);
                         print(filteredList[index]['section'] + "wow mc");
       

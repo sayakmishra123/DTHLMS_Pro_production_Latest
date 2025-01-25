@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/mobile_pdf_viewer.dart';
@@ -2031,7 +2032,7 @@ class _LiveDashboardUIState extends State<LiveDashboardUI>
 
               // Duration Info
               Flexible(
-                child: RichText(
+                child: RichText( 
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   text: TextSpan(
@@ -2093,6 +2094,22 @@ class ExeRun {
     late String exePath;
     late String token;
     exePath = "exefiles/live/abc.exe";
+    print("exePath: $exePath");
+print("meetingDeatils.packageId: ${meetingDeatils.packageId.toString()}");
+print("User's Full Name: ${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}");
+print("User Name ID: ${getx.loginuserdata[0].nameId.toString()}");
+print("Meeting Details - Session ID: ${meetingDeatils.sessionId.toString()}");
+print("Meeting Details - Topic Name: ${meetingDeatils.topicName.toString()}");
+print("Meeting Details - Live URL: ${meetingDeatils.liveUrl.toString()}");
+print("Meeting Details - Video Category: ${meetingDeatils.videoCategory.toString()}");
+print("Database Path: ${getx.dbPath.value}");
+print("Meeting Details - Video ID: ${meetingDeatils.videoId}");
+print("User's Phone Number: ${getx.loginuserdata[0].phoneNumber}");
+print("User's Token: ${getx.loginuserdata[0].token}");
+print("Origin: $origin");
+print("API URL: https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}");
+print("Group Chat: ${meetingDeatils.groupChat!}");
+print("Personal Chat: ${meetingDeatils.personalChat!}");
 
     print(
         "${meetingDeatils.liveUrl.toString() + "   " + getx.loginuserdata[0].firstName.toString() + " " + getx.loginuserdata[0].lastName + getx.loginuserdata[0].nameId.toString() + "/// " + meetingDeatils.sessionId.toString() + "////// category  " + meetingDeatils.videoCategory.toString() + "  ////" + meetingDeatils.packageId.toString()}");
@@ -2113,6 +2130,16 @@ class ExeRun {
           meetingDeatils.topicName.toString(),
           meetingDeatils.liveUrl.toString(),
           meetingDeatils.videoCategory.toString(),
+          getx.dbPath.value,
+          meetingDeatils.videoId,
+          getx.loginuserdata[0].phoneNumber,
+          getx.loginuserdata[0].token,
+          origin,
+          "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
+         meetingDeatils.groupChat!,
+        meetingDeatils.personalChat!
+
+
         ],
         runInShell: true,
       );

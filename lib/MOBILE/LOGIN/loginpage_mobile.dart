@@ -79,6 +79,12 @@ class _MobileloginState extends State<Mobilelogin> {
 
   @override
   void initState() {
+
+     if (getx.loginuserdata.isNotEmpty) {
+      print("get login id and password");
+      loginemail.text = getx.loginuserdata[0].loginId;
+      loginpassword.text = getx.loginuserdata[0].password;
+    }
     // signupfirstname.text = "Rahul";
 
     super.initState();
