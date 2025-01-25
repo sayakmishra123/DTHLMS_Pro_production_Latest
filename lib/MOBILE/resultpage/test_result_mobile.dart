@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/PC/testresult/indicator.dart';
+import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:file_picker/file_picker.dart';
@@ -231,7 +232,7 @@ Future<void> downloadAnswerSheet(String url) async {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text("Answer Sheet Not Found"),
+        title: Text("Answer sheet not found"),
         // content: Column(
         //   mainAxisSize: MainAxisSize.min,
         //   children: <Widget>[
@@ -627,7 +628,22 @@ Future<void> downloadAnswerSheet(String url) async {
                                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 5,horizontal: 10)),
                                backgroundColor: WidgetStatePropertyAll(Colors.amber[700])),
                              onPressed: (){
-                              //  recheckAnswerSheetAlert();
+                              requestForRecheckAnswerSheet(
+                    context, getx.loginuserdata[0].token, widget.examId)
+                .then((value) {
+              if (value) {
+                onActionDialogBox("Requested", "Your request for Recheck answerSheet is send Successfully!",
+                    () {
+                  Navigator.of(context).pop();
+                  
+                }, context, true);
+              } else {
+                onActionDialogBox("Request Failed!!", "", () {
+                  Navigator.of(context).pop();
+                  
+                }, context, false);
+              }
+            });
                              }, child: Text('Recheck Answersheet',style: TextStyle(color: Colors.white),))
                           ],)
                         ],
