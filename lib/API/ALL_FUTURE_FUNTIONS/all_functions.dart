@@ -322,16 +322,19 @@ Future<String> getEncryptionKey(String token, BuildContext context) async {
       String encryptionKey = result['PDfEncryptionKey'] ?? "";
       String secretKey = result['EncryptionSecretKey'] ?? "";
       String franchiseName = result['FranchiseName'] ?? "";
+      String onesignalId = result['OneSignalId'] ?? "";
       print('PDF Encryption Key: $encryptionKey');
 
       print('PDF secret key Key: $secretKey');
       print('PDF secret key Key: $franchiseName');
+      print('onesignalId id  Key: $onesignalId');
 
       deleteDataFromTblSettings();
       insertTblSetting("OldSKey", secretKey);
       insertTblSetting("EncryptionKey", encryptionKey);
       insertTblSetting("FranchiseName", franchiseName);
       insertTblSetting("Origin", origin);
+      insertTblSetting("OneSignalId", onesignalId);
 
       // Return the encryption key
       return encryptionKey;
@@ -1734,7 +1737,7 @@ Future sendDocumentIdOfanswerSheets(
       body: jsonEncode(data),
     );
 
-    // print(res.body);
+    print(res.body);
 
     if (res.statusCode == 201) {
       var jsonResponse = jsonDecode(res.body);
@@ -1754,7 +1757,7 @@ Future sendDocumentIdOfanswerSheets(
       ClsErrorMsg.fnErrorDialog(
           context,
           res.statusCode.toString(),
-          res.statusCode.toString().replaceAll("[", "").replaceAll("]", ""),
+         "Something went wrong!",
           "");
       // Get.back();
 
