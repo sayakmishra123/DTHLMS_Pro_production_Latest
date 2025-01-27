@@ -52,7 +52,7 @@ class _MCQtypePageState extends State<MCQtypePage>
 
   RxList uniqueServicesList = [].obs;
   Future getMCQSetList() async {
-    mcqSetList.value =
+    mcqSetList.value = 
         await fetchMCQSetList(getx.selectedPackageId.value.toString());
     // print(mcqSetList.toString());
     Set<String> uniqueServices =
@@ -180,7 +180,7 @@ class _MCQtypePageState extends State<MCQtypePage>
                     builder: (_) {
                       // Check for the list data to display
                       // if (mcqSetList.isNotEmpty) {
-                      return McqListMobile(  
+                      return McqListMobile(   
                           mcqSetList, tabTitle, 'assets/quick.png', istype);
                       // } else {
                       // return ; // Show "No Set Found" if the list is empty

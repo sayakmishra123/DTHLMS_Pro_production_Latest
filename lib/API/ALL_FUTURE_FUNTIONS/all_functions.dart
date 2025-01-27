@@ -322,19 +322,12 @@ Future<String> getEncryptionKey(String token, BuildContext context) async {
       String encryptionKey = result['PDfEncryptionKey'] ?? "";
       String secretKey = result['EncryptionSecretKey'] ?? "";
       String franchiseName = result['FranchiseName'] ?? "";
-<<<<<<< HEAD
-      // print('PDF Encryption Key: $encryptionKey');
-
-      // print('PDF secret key Key: $secretKey');
-      // print('PDF secret key Key: $franchiseName');
-=======
       String onesignalId = result['OneSignalId'] ?? "";
       print('PDF Encryption Key: $encryptionKey');
 
       print('PDF secret key Key: $secretKey');
       print('PDF secret key Key: $franchiseName');
       print('onesignalId id  Key: $onesignalId');
->>>>>>> db2322c35778ef2c7d47caf1eba55e7463f55cc1
 
       deleteDataFromTblSettings();
       insertTblSetting("OldSKey", secretKey);
@@ -1236,12 +1229,19 @@ Future<bool> getMcqDataForTest(
         // Level 2: MCQSet Level
         if (package.containsKey('TblMasterMCQSet')) {
           List<dynamic> mcqSets = package['TblMasterMCQSet'];
+          print(mcqSets);
           for (var mcqSet in mcqSets) {
+            
             await inserTblMCQSet(
                 mcqSet['MCQSetId'].toString(),
                 mcqSet["PackageId"].toString(),
                 mcqSet['MCQSetName'].toString(),
-                mcqSet['ServicesTypeName'].toString());
+                mcqSet['ServicesTypeName'].toString(),
+                mcqSet['ServicesTypeName'].toString(),
+                mcqSet['ServicesTypeName'].toString(),
+
+                
+                );
 
             if (mcqSet.containsKey('TblMasterMCQPaper')) {
               List<dynamic> mcqPapers = mcqSet['TblMasterMCQPaper'];
@@ -1744,11 +1744,7 @@ Future sendDocumentIdOfanswerSheets(
       body: jsonEncode(data),
     );
 
-<<<<<<< HEAD
-    // // print(res.body);
-=======
     print(res.body);
->>>>>>> db2322c35778ef2c7d47caf1eba55e7463f55cc1
 
     if (res.statusCode == 201) {
       var jsonResponse = jsonDecode(res.body);

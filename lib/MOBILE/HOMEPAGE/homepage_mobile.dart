@@ -247,7 +247,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
     }
     // print("${lastVideoDetails} shubha video last played info");
     // print(
-        // "${lastVideoDetailsAllPackage} shubha video last played info all package details");
+    // "${lastVideoDetailsAllPackage} shubha video last played info all package details");
   }
 
   bool isTokenValid(String jwtToken) {
@@ -1480,7 +1480,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => MobileMeetingPage(
-                                            meeting: meeting,
+                                                meeting: meeting,
                                                 meeting!.projectId.toString(),
                                                 meeting.sessionId.toString(),
                                                 getx.loginuserdata[0].nameId,
@@ -3213,43 +3213,44 @@ class _HomePageMobileState extends State<HomePageMobile> {
         //   ],
         // ),
 
-        bottomNavigationBar: Container(
+        bottomNavigationBar: Container( 
           // decoration: const BoxDecoration(border: Border(top: BorderSide(width: 1,color: Colors.black45))),
           child: Obx(
             () => NavigationBar(
               elevation: 5,
               backgroundColor: const Color.fromARGB(255, 255, 254, 252),
               onDestinationSelected: (int newIndex) async {
-              if (_currentIndex.value == 1 && newIndex != 1) {
-             
-
-
-                 ArtSweetAlert.show(
-                  barrierDismissible: false,
-                  context: context,
-                  artDialogArgs: ArtDialogArgs(
-                    showCancelBtn: true,
-                    title: "Are you sure?",
-                    text: "Do you want to leave the Page?",
-                    confirmButtonText: "Yes",
-                    cancelButtonText: "No",
-                    onConfirm: () {
-                      Navigator.pop(context); // Close dialog
-                      _currentIndex.value = newIndex; // Update index
-                    },
-                    onCancel: () {
-                      Navigator.pop(context); // Just close dialog
-                    },
-                    type: ArtSweetAlertType.warning,
-                  ),
-                );
-
-               
-              } else {
-                // Change index if not at 1 or not switching from 1
-                _currentIndex.value = newIndex;
-              }
-            },
+                if (getx.isInsidePackage.value) {
+                  if (_currentIndex.value == 1 && newIndex != 1) {
+                    ArtSweetAlert.show(
+                      barrierDismissible: false,
+                      context: context,
+                      artDialogArgs: ArtDialogArgs(
+                        showCancelBtn: true,
+                        title: "Are you sure?",
+                        text: "Do you want to leave the Page?",
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No",
+                        onConfirm: () {
+                          getx.isInsidePackage.value = false;
+                          Navigator.pop(context); // Close dialog
+                          _currentIndex.value = newIndex; // Update index
+                        },
+                        onCancel: () {
+                          Navigator.pop(context); // Just close dialog
+                        },
+                        type: ArtSweetAlertType.warning,
+                      ),
+                    );
+                  } else {
+                    // Change index if not at 1 or not switching from 1
+                    _currentIndex.value = newIndex;
+                  }
+                } else {
+                  // Change index if not at 1 or not switching from 1
+                  _currentIndex.value = newIndex;
+                }
+              },
               indicatorColor: Colors.amberAccent.withAlpha(200),
               selectedIndex: _currentIndex.value,
               destinations: const <Widget>[

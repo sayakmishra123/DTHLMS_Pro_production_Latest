@@ -196,6 +196,7 @@ class Getx extends GetxController {
   RxString isLogout = "".obs;
   RxBool isFullscreen = true.obs;
   RxList<NotificationModel> notifications = <NotificationModel>[].obs;
+  RxBool isInsidePackage = false.obs;
   // List<Map<String, dynamic>> infoFetch = <Map<String, dynamic>>[];
 
   RxList<Map<String, dynamic>> booklist = <Map<String, dynamic>>[].obs;

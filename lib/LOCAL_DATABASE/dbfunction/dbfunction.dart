@@ -1707,7 +1707,9 @@ void createMCQSet() {
      SetId TEXT ,
      PackageId TEXT,
      SetName TEXT,
-     ServicesTypeName TEXT
+     ServicesTypeName TEXT,
+      StartDate TEXT,
+     EndDate TEXT
    
    );
   ''');
@@ -1716,14 +1718,15 @@ void createMCQSet() {
 }
 
 Future<void> inserTblMCQSet(String setId, String packageId, String setName,
-    String servicesTypeName) async {
+    String servicesTypeName,String startDate,
+    String EndDate) async {
   try {
     _db.execute(
       '''
-        INSERT INTO TblMCQSet (SetId, PackageId, SetName,ServicesTypeName)
-        VALUES (?, ?, ?,?)
+        INSERT INTO TblMCQSet (SetId, PackageId, SetName,ServicesTypeName,StartDate ,EndDate)
+        VALUES (?, ?, ?,?,?,?)
         ''',
-      [setId, packageId, setName, servicesTypeName],
+      [setId, packageId, setName, servicesTypeName,startDate,EndDate],
     );
   } catch (e) {
     writeToFile(e, 'insertMCQSet');
@@ -1750,9 +1753,6 @@ void createMCQPaper() {
      MCQPaperStartDate TEXT,
      IsNegativeMark TEXT,
      IsAnswerSheetShow TEXT
-
-   
-   
    );
   ''');
   // log()
@@ -2065,7 +2065,10 @@ Future<List<Map<String, dynamic>>> fetchMCQSetList(String packageId) async {
       'SetId': row['SetId'],
       'PackageId': row['PackageId'],
       'SetName': row['SetName'],
-      'ServicesTypeName': row['ServicesTypeName']
+      'ServicesTypeName': row['ServicesTypeName'],
+      'StartDate' : row['StartDate'],
+      'EndDate' : row['EndDate'],
+
     });
     //  print("Data get from whiteList for Appname: ${ row['AppBaseName']}.");
   }
