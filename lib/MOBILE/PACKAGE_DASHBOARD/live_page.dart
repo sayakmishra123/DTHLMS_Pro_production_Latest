@@ -4,7 +4,8 @@ import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -105,7 +106,7 @@ class _LivePageState extends State<LivePage> {
                             Get.to(
                                 transition: Transition.cupertino,
                                 () => MobileMeetingPage(
-                                meeting: meeting,
+                                      meeting: meeting,
                                       meeting.projectId.toString(),
                                       meeting.sessionId.toString(),
                                       getx.loginuserdata[0].nameId,
@@ -193,8 +194,7 @@ class _LivePageState extends State<LivePage> {
 }
 
 class TutorCard extends StatelessWidget {
-
-   final MeetingDeatils meeting;
+  final MeetingDeatils meeting;
   final String imageUrl;
   final String name;
   final String topicname;
@@ -321,8 +321,7 @@ class TutorCard extends StatelessWidget {
                     Get.to(
                         transition: Transition.cupertino,
                         () => MobileMeetingPage(
-
-                          meeting:meeting ,
+                              meeting: meeting,
                               projectId.toString(),
                               sessionId.toString(),
                               getx.loginuserdata[0].nameId,

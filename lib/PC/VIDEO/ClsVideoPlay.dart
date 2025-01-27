@@ -5,7 +5,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 class VideoPlayClass {
-  late final Player player= Player();
+  late final Player player = Player();
   late final VideoController controller;
   late Duration totalPlayTimeofVideo;
   late DateTime lastPlayTime;
@@ -13,10 +13,9 @@ class VideoPlayClass {
   late DateTime endclocktime;
   late bool _isPlaying;
   late double _lastPlaybackRate;
-    late String videoLink;
+  late String videoLink;
   VideoPlayClass() {
     try {
-
       totalPlayTimeofVideo = Duration.zero;
       lastPlayTime = DateTime.now();
       _lastPlaybackRate = 1.0;
@@ -25,11 +24,14 @@ class VideoPlayClass {
       endclocktime = DateTime.now();
       // player = Player();
       controller = VideoController(player);
-  
+
 // log(videoLink);
       player.open(
         Media(
-           !File(videoLink).existsSync()?"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4":videoLink),
+          !File(videoLink).existsSync()
+              ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              : videoLink,
+        ),
         play: false,
       );
     } catch (e) {}
@@ -39,18 +41,12 @@ class VideoPlayClass {
     // log(totalPlayTimeofVideo.inSeconds.toString());
   }
 
-   void updateVideoLink(String newLink) {
+  void updateVideoLink(String newLink) {
     videoLink = newLink;
 
     player.open(
-      
       // Playlist(),
-      Media(
-        
-        
-        
-        
-          !File(videoLink).existsSync()
+      Media(!File(videoLink).existsSync()
           ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
           : videoLink),
       play: false,
@@ -80,7 +76,7 @@ class VideoPlayClass {
     Duration playedTime = Duration();
     if (_isPlaying) {
       playedTime = DateTime.now().difference(lastPlayTime);
-      totalPlayTimeofVideo += playedTime ;
+      totalPlayTimeofVideo += playedTime;
       _isPlaying = false;
       endclocktime = DateTime.now();
     }
@@ -90,7 +86,7 @@ class VideoPlayClass {
   Duration get totalPlayTime {
     if (_isPlaying) {
       Duration playedTime = DateTime.now().difference(lastPlayTime);
-      return totalPlayTimeofVideo + (playedTime );
+      return totalPlayTimeofVideo + (playedTime);
     }
     return totalPlayTimeofVideo;
   }

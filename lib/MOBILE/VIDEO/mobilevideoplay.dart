@@ -12,7 +12,7 @@ import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
@@ -33,19 +33,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../../API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import '../../constants.dart';
 
 class MobileVideoPlayer extends StatefulWidget {
   final int Videoindex;
   final String videoLink;
   final String? packageId;
   final String? fileId;
+  final List? videoList;
 
   MobileVideoPlayer(
       {required this.videoLink,
       required this.Videoindex,
       super.key,
       this.packageId,
-      this.fileId});
+      this.fileId,
+      this.videoList});
 
   @override
   State<MobileVideoPlayer> createState() => _MobileVideoPlayerState();
@@ -322,8 +325,8 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
           //                       decoration: InputDecoration(
           //                         border: OutlineInputBorder(),
           //                         hintText: 'Typing somthing...',
-          //                       ),
-          //                       maxLines: 5,
+          // ),
+          //                          maxLines: 5,
           //                     ),
           //                   ),
           //                 ),

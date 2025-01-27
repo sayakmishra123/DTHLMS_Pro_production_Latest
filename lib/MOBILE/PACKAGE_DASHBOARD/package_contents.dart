@@ -13,7 +13,8 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../PC/PACKAGEDETAILS/packagedetails.dart';
-import '../../constants/constants.dart';
+import '../../constants.dart';
+import '../../constants.dart';
 
 class Mobile_Package_content extends StatefulWidget {
   final int packageid;
@@ -425,8 +426,6 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     return iconData['color2'];
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -453,23 +452,22 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           item['section'] != 'PDF' &&
                           item['section'] != 'YouTube')
                       .toList();
-      
+
                   return InkWell(
                     onTap: () {
                       paging(filteredList[index]['section']);
-      
-                      if (filteredList[index]['section'] ==
-                          "Video" || filteredList[index]['section'] ==
-                          "PDF") {
+
+                      if (filteredList[index]['section'] == "Video" ||
+                          filteredList[index]['section'] == "PDF") {
                         resetTblLocalNavigationByOrderOnsection(1);
                         print(filteredList[index]['section'] + "wow mc");
-      
+
                         insertTblLocalNavigation(
                                 "Section",
                                 widget.packageid.toString(),
                                 filteredList[index]["section"])
                             .whenComplete(() => null);
-      
+
                         getMainChapter(widget.packageid);
                         getLocalNavigationDetails();
                       }
@@ -492,7 +490,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           // zipTextColor: Colors.orange,
                           ),
                     ),
-      
+
                     //  Container(
                     //   margin:
                     //       EdgeInsets.symmetric(vertical: 8, horizontal: 10),

@@ -30,7 +30,7 @@ import 'package:dthlms/PC/LOGIN/login.dart';
 // import 'package:dthlms/GLOBAL_WIDGET/confirmActivationCode.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
@@ -47,7 +47,6 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:html/parser.dart';
 import '../../GLOBAL_WIDGET/confirmActivationCode.dart';
-
 
 Getx getx = Get.put(Getx());
 
@@ -272,11 +271,7 @@ Future<void> getMeetingList(BuildContext context) async {
           } else if (programStatus == 'Upcoming') {
             getx.upcomingmeeting.add(meeting);
           }
-
-           
         }
-
-      
 
         // Combine all lists into a single list if needed
 
@@ -322,19 +317,12 @@ Future<String> getEncryptionKey(String token, BuildContext context) async {
       String encryptionKey = result['PDfEncryptionKey'] ?? "";
       String secretKey = result['EncryptionSecretKey'] ?? "";
       String franchiseName = result['FranchiseName'] ?? "";
-<<<<<<< HEAD
-      // print('PDF Encryption Key: $encryptionKey');
-
-      // print('PDF secret key Key: $secretKey');
-      // print('PDF secret key Key: $franchiseName');
-=======
       String onesignalId = result['OneSignalId'] ?? "";
       print('PDF Encryption Key: $encryptionKey');
 
       print('PDF secret key Key: $secretKey');
       print('PDF secret key Key: $franchiseName');
       print('onesignalId id  Key: $onesignalId');
->>>>>>> db2322c35778ef2c7d47caf1eba55e7463f55cc1
 
       deleteDataFromTblSettings();
       insertTblSetting("OldSKey", secretKey);
@@ -474,8 +462,7 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
                   file.fileIdType ?? '',
                 ),
                 file.isEncrypted,
-                file.sortedOrder.toString()
-                )
+                file.sortedOrder.toString())
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);
@@ -574,7 +561,7 @@ Future<void> getPackageData(BuildContext context, String token) async {
       List<PackageData> packageList = packageJsonList
           .map((packageJson) => PackageData.fromJson(packageJson))
           .toList();
-  
+
       packageList.forEach((package) {
         insertOrUpdateTblPackageData(
             package.packageId,
@@ -1163,8 +1150,7 @@ Future<String> checkUserBeforeRegister(BuildContext context, String loginemail,
       activationkey = "";
     }
 // log(jsondata['result'].toString().contains('signup').toString());
-    if (responce.statusCode == 200 
-       ) {
+    if (responce.statusCode == 200) {
       // log('true');
       Get.back();
       return activationkey;
@@ -1744,11 +1730,7 @@ Future sendDocumentIdOfanswerSheets(
       body: jsonEncode(data),
     );
 
-<<<<<<< HEAD
-    // // print(res.body);
-=======
     print(res.body);
->>>>>>> db2322c35778ef2c7d47caf1eba55e7463f55cc1
 
     if (res.statusCode == 201) {
       var jsonResponse = jsonDecode(res.body);
@@ -1766,10 +1748,7 @@ Future sendDocumentIdOfanswerSheets(
       onTokenExpire(context);
     } else {
       ClsErrorMsg.fnErrorDialog(
-          context,
-          res.statusCode.toString(),
-         "Something went wrong!",
-          "");
+          context, res.statusCode.toString(), "Something went wrong!", "");
       // Get.back();
 
       // Handle other responses
@@ -2272,7 +2251,7 @@ Future<bool> gettheoryExamDataForTest2(
 
                   for (var theoryExam in theoryExams) {
                     // Insert data into the "paper" table (theory exam)
-                    await inserTblTheoryPaper( 
+                    await inserTblTheoryPaper(
                       theoryExam['TheoryExamId'].toString(),
 
                       examSet['TheoryExamSetId']
@@ -2314,7 +2293,8 @@ Future<bool> gettheoryExamDataForTest2(
   }
 }
 
-Future unUploadedVideoInfoInsert(context, List videolist, String token, bool isLive) async {
+Future unUploadedVideoInfoInsert(
+    context, List videolist, String token, bool isLive) async {
   // loader(context);
   try {
     Map data = {"tblStudentPackageHistory": videolist};
@@ -2334,11 +2314,10 @@ Future unUploadedVideoInfoInsert(context, List videolist, String token, bool isL
 
     var jsondata = jsonDecode(res.body);
 
-
     if (jsondata['isSuccess'] == true) {
-if(!isLive){
+      if (!isLive) {
         updateUploadableVideoInfo();
-}
+      }
       log("sucessfulli insert video  ${res.statusCode}");
 
       // log(res.body);
@@ -2520,7 +2499,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
           // Delete the old package data (if needed)
           deletePartularPackageData(newPackage.packageId.toString(), context);
           // print(
-              // 'Old package data for ${newPackage.packageId} has been deleted.');
+          // 'Old package data for ${newPackage.packageId} has been deleted.');
 
           getx.mcqdataList.value = await getMcqDataForTest(context,
               getx.loginuserdata[0].token, newPackage.packageId.toString());
@@ -2576,7 +2555,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
           if (oldLastUpdatedOn.toString() != newLastUpdatedOn.toString()) {
             if (isPackage) {
               // print(
-                  // 'LastUpdatedOn has changed for package ${newPackage.packageId}. Updating package...');
+              // 'LastUpdatedOn has changed for package ${newPackage.packageId}. Updating package...');
 
               // Insert or update the package data in the DB
               insertOrUpdateTblPackageData(
@@ -2592,13 +2571,13 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
                   newPackage.isDirectPlay.toString());
 
               // print(
-                  // 'Package ${newPackage.packageId} has been updated in the database.');
+              // 'Package ${newPackage.packageId} has been updated in the database.');
 
               // Delete the old package data (if needed)
               deletePartularPackageData(
                   newPackage.packageId.toString(), context);
               // print(
-                  // 'Old package data for ${newPackage.packageId} has been deleted.');
+              // 'Old package data for ${newPackage.packageId} has been deleted.');
             } else {
               getx.mcqdataList.value = await getMcqDataForTest(
                   context, getx.loginuserdata[0].token, packageId);
@@ -2610,11 +2589,11 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
             getx.theoryExamvalue.value = true;
 
             // print(
-                // 'No update needed for package ${newPackage.packageId} (LastUpdatedOn is the same).');
+            // 'No update needed for package ${newPackage.packageId} (LastUpdatedOn is the same).');
           }
         } else {
           // print(
-              // 'No matching new package found for old package ${oldPackage['packageId']}');
+          // 'No matching new package found for old package ${oldPackage['packageId']}');
         }
       }
       if (isPackage) {
@@ -2871,7 +2850,7 @@ Future<void> getMCQhistoryResult(
     Map obj = {};
 
     var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getRankMcqResult), 
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getRankMcqResult),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -3031,7 +3010,8 @@ Future<List> getMCQRankresultForIndividual(
   }
 }
 
-Future<Map> checkMCQRankStatus(BuildContext context, String token, String paperId) async {
+Future<Map> checkMCQRankStatus(
+    BuildContext context, String token, String paperId) async {
   try {
     Map obj = {
       "MCQExamHistory": {"MCQPaperId": paperId}
@@ -3120,7 +3100,7 @@ Future<Map> checkMCQRankStatus(BuildContext context, String token, String paperI
             if (question['AnswerOptions'] is List) {
               for (var option in question['AnswerOptions']) {
                 // print(
-                    // "Checking option: ${option['MCQOption']} with ID: ${option['MCQOptionId']}");
+                // "Checking option: ${option['MCQOption']} with ID: ${option['MCQOptionId']}");
 
                 // Add the MCQOptionId to the selectedAnswerIds list
                 selectedAnswerIds.add(option['MCQOptionId']);
@@ -3130,7 +3110,7 @@ Future<Map> checkMCQRankStatus(BuildContext context, String token, String paperI
             // Add to resultSet if there are selected answers
             if (selectedAnswerIds.isNotEmpty) {
               // print(
-                  // "Selected answers for question $questionId: $selectedAnswerIds");
+              // "Selected answers for question $questionId: $selectedAnswerIds");
               resultSet[questionId] = selectedAnswerIds;
             } else {
               // print("No selected answers for question $questionId");
@@ -3296,7 +3276,7 @@ Future<List<InfiniteMarqueeModel>> getInfiniteMarqueeDetails(
       onTokenExpire(context);
     } else {
       // print(
-          // 'Error: ${res.body} ////////////////// get infinite marquee details');
+      // 'Error: ${res.body} ////////////////// get infinite marquee details');
     }
   } catch (e) {
     // print("Error: $e ////////// get infinite marquee details");
@@ -3447,7 +3427,7 @@ Future<List> getNotificationDetails(
       onTokenExpire(context);
     } else {
       // print(
-          // 'Error: ${res.body} ////////////////// get Notifications details 401');
+      // 'Error: ${res.body} ////////////////// get Notifications details 401');
     }
   } catch (e) {
     // print("Error: $e ////////// get Notifications details exception");
@@ -3478,7 +3458,7 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
     if (!await notificationImagesDir.exists()) {
       await notificationImagesDir.create(recursive: true);
       // print(
-          // 'NotificationImages directory created at ${notificationImagesDir.path}');
+      // 'NotificationImages directory created at ${notificationImagesDir.path}');
     }
 
     // Save the path in SharedPreferences
@@ -3563,7 +3543,6 @@ Future<bool> requestForRecheckAnswerSheet(
   return returnValue;
 }
 
-
 Future<String> getAnswerSheetURLforStudent(
   BuildContext context,
   String token,
@@ -3582,7 +3561,7 @@ Future<String> getAnswerSheetURLforStudent(
       },
       body: jsonEncode(data),
     );
-print(res.body);
+    print(res.body);
     if (res.statusCode == 200) {
       Map<String, dynamic> response = jsonDecode(res.body);
 
@@ -3594,16 +3573,15 @@ print(res.body);
       Get.back();
 
       return result.toString();
-      
     } else if (res.statusCode == 401) {
-          Get.back();
+      Get.back();
       onTokenExpire(context);
     } else {
-          Get.back();
+      Get.back();
       // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
     }
   } catch (e) {
-        Get.back();
+    Get.back();
     // print("Error: $e ////////// get getAnswerSheetURLforStudent");
     writeToFile(e, 'getAnswerSheetURLforStudent');
   }

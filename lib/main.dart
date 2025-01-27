@@ -12,7 +12,7 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
@@ -50,13 +50,14 @@ void main(List<String> args) async {
 
     testSQLCipherOnWindows();
     if (Platform.isWindows) {
-      doWhenWindowReady(() {
+      doWhenWindowReady(
+        () {
           final win = appWindow;
           win.minSize = const Size(1300, 600);
           win.alignment = Alignment.topLeft;
           win.show();
-          },
-          );
+        },
+      );
     } else if (Platform.isAndroid) {
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
@@ -83,7 +84,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  pageRouter router = pageRouter(); 
+  pageRouter router = pageRouter();
   // late Future<void> userDetailsFuture;
 
   @override
@@ -114,7 +115,7 @@ class _MyAppState extends State<MyApp> {
 
   Getx getx = Get.put(Getx());
 
-  Future<void> checkDeveloperMode() async { 
+  Future<void> checkDeveloperMode() async {
     if (Platform.isAndroid) {
       getx.isAndroidDeveloperModeEnabled.value =
           await FlutterAndroidDeveloperMode.isAndroidDeveloperModeEnabled;
@@ -236,7 +237,7 @@ class _MyAppState extends State<MyApp> {
                                         element is Iterable) {
                                       return element.length < 10;
                                     }
-                                    return false; 
+                                    return false;
                                   });
                                 }
 
@@ -450,16 +451,14 @@ class EmulatorOnPage extends StatefulWidget {
   _EmulatorOnPageState createState() => _EmulatorOnPageState();
 }
 
- class _EmulatorOnPageState extends State<EmulatorOnPage> {
-
+class _EmulatorOnPageState extends State<EmulatorOnPage> {
   _showDeveloperDialog(BuildContext context) {
-
     Alert(
       context: context,
       type: AlertType.info,
       style: const AlertStyle(
         isOverlayTapDismiss: false,
-        animationType: AnimationType.fromTop, 
+        animationType: AnimationType.fromTop,
         titleStyle: TextStyle(
           color: Colors.red, // Set your custom color for the title
           fontWeight: FontWeight.bold,
@@ -518,57 +517,50 @@ class EmulatorOnPage extends StatefulWidget {
 // import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> initializeNotifications() async {
+  String osid = getEncryptionKeyFromTblSetting('OneSignalId');
 
-  String osid=getEncryptionKeyFromTblSetting('OneSignalId');
-
-
-  if(osid.isNotEmpty){
-
-     // Initialize OneSignal
-  OneSignal.Debug.setLogLevel(
-    OSLogLevel.none,
-  );
-
-
-
-  OneSignal.initialize(osid); // Replace with your OneSignal App ID
-
-  // Request notification permissions
-  OneSignal.Notifications.addPermissionObserver((state) {
-    // // print("Has permission: " + state.toString());
-  });
-
-  // Foreground notification listener
-  OneSignal.Notifications.addForegroundWillDisplayListener((event) async {
-    // print(
-        // 'NOTIFICATION WILL DISPLAY LISTENER CALLED WITH: ${event.notification.jsonRepresentation()}');
-
-    // Prevent default display to handle it manually
-    event.preventDefault();
-
-    // Extract notification details
-    String? title = event.notification.title ?? 'No title';
-    String? body = event.notification.body ?? 'No body';
-    String? img = event.notification.launchUrl ?? 'No image';
-    String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
-
-    // Create a notification model
-    NotificationModel newNotification = NotificationModel(
-      title: title,
-      body: body,
-      receivedAt: formattedTime,
-      img: img,
+  if (osid.isNotEmpty) {
+    // Initialize OneSignal
+    OneSignal.Debug.setLogLevel(
+      OSLogLevel.none,
     );
 
-    // Save the notification to SharedPreferences
-    await NotificationService.saveNotification(newNotification);
+    OneSignal.initialize(osid); // Replace with your OneSignal App ID
 
-    // Optionally, display the notification
-    event.notification.display();
+    // Request notification permissions
+    OneSignal.Notifications.addPermissionObserver((state) {
+      // // print("Has permission: " + state.toString());
+    });
 
-    // Optionally, handle further UI updates or state management here
-  });
+    // Foreground notification listener
+    OneSignal.Notifications.addForegroundWillDisplayListener((event) async {
+      // print(
+      // 'NOTIFICATION WILL DISPLAY LISTENER CALLED WITH: ${event.notification.jsonRepresentation()}');
 
+      // Prevent default display to handle it manually
+      event.preventDefault();
+
+      // Extract notification details
+      String? title = event.notification.title ?? 'No title';
+      String? body = event.notification.body ?? 'No body';
+      String? img = event.notification.launchUrl ?? 'No image';
+      String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
+      // Create a notification model
+      NotificationModel newNotification = NotificationModel(
+        title: title,
+        body: body,
+        receivedAt: formattedTime,
+        img: img,
+      );
+
+      // Save the notification to SharedPreferences
+      await NotificationService.saveNotification(newNotification);
+
+      // Optionally, display the notification
+      event.notification.display();
+
+      // Optionally, handle further UI updates or state management here
+    });
   }
- 
 }
