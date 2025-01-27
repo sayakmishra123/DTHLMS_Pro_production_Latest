@@ -1013,7 +1013,7 @@ Future getMainChapter(int packageId) async {
         getx.subjectDetails[0]['SubjectName']);
     // log("Subject added");
   } else {
-    log("Subject not found");
+    // log("Subject not found");
   }
 }
 
@@ -1399,6 +1399,43 @@ Future<void> getMCQListOfVideo(String packageId, String videoId) async {
   print("Details added in mcq list");
 }
 
+
+
+Future<void> getReviewQuestionListOfVideo(String packageId, String videoId) async {
+  final sql.ResultSet resultSet = _db.select('''
+  SELECT * 
+  FROM TblVideoComponents 
+  WHERE PackageId = ? AND VideoId = ? AND Category = ?
+  ''', [packageId, videoId, "REVIEW"]);
+
+  if (getx.reviewQuestionListOfVideo.isNotEmpty) {
+    getx.reviewQuestionListOfVideo.clear();
+  }
+
+  for (int item = 0; item < resultSet.length; item++) {
+    final details = {
+      "question": resultSet[item]['Names'],
+      "options": [resultSet[item]['Option1'], resultSet[item]['Option2'], resultSet[item]['Option3'], resultSet[item]['Option4']],
+
+
+
+
+      "mcqId": "${item + 1}",
+      "mcqType": "SimpleMcq",
+      // "mcqQuestion": resultSet[item]['Names'],
+      // "answer": resultSet[item]['Answer'],
+      // "options": [
+      //   {"optionName": resultSet[item]['Option1']},
+      //   {"optionName": resultSet[item]['Option2']},
+      //   {"optionName": resultSet[item]['Option3']},
+      //   {"optionName": resultSet[item]['Option4']}
+      // ]
+    };
+
+    getx.reviewQuestionListOfVideo.add(details);
+  }
+  print("Details added in mcq list");
+}
 Future<void> getPDFlistOfVideo(String packageId, String videoId) async {
   final sql.ResultSet resultSet = _db.select('''
   SELECT DocumentURL, DocumentId,Names,IsEncrypted

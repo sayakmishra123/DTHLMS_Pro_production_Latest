@@ -2536,7 +2536,7 @@ class _HoverListItemState extends State<HoverListItem> {
       }
 
       final file = File(filePath);
-      log(file.toString());
+      // log(file.toString());
       if (await file.exists()) {
         try {
           await file.delete();

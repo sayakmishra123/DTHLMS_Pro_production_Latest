@@ -116,7 +116,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
   @override
   void initState() {
     super.initState();
-    log('init state');
+    // log('init state');
     getFullBannerPackages(context, getx.loginuserdata[0].token);
 
     _isSelected = List.generate(
@@ -298,7 +298,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                 itemBuilder: (BuildContext context, int index) {
                   final data = style[index];
 
-                  log(data.packageBannerPathUrl);
+                  // log(data.packageBannerPathUrl);
 
                   return style[index].packageBannerPathUrl.isNotEmpty
                       ? MaterialButton(
@@ -391,7 +391,7 @@ class EpisodeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log(imageUrl + " index");
+    // log(imageUrl + " index");
     return Container(
       width: mode == 0 ? 300 : null,
       child: InkWell(

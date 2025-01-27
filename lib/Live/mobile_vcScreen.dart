@@ -211,9 +211,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
       await vcController.inMeetClient
           .join(sessionId: widget.sessionId.toString());
 
-      log(widget.sessionId.toString());
-      log(widget.userid.toString());
-      log(widget.username.toString());
+      // log(widget.sessionId.toString());
+      // log(widget.userid.toString());
+      // log(widget.username.toString());
 
       // await MeetingService.joinMeeting(widget.sessionId.toString(),
       //     widget.userid.toString(), widget.username);
@@ -852,7 +852,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                         onPressed:
                                                                             () async {
                                                                           try {
-                                                                            log(vcController.videoInputs.toString());
+                                                                            // log(vcController.videoInputs.toString());
                                                                             vcController.changeCameraSreamStatus(ButtonStatus.loading);
                                                                             if (vcController.localRenderer ==
                                                                                 null) {

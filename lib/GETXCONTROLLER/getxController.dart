@@ -56,10 +56,21 @@ class Getx extends GetxController {
   RxList<AllPackageDetails> packageDetailsdata = <AllPackageDetails>[].obs;
   RxString loginId = ''.obs;
   RxBool otplineshow = false.obs;
+
+
+
+
+
+  
+
+    RxList<String?> selectedAnswers = <String?>[].obs;  RxInt currentQuestionIndex = 0.obs;
   // RxBool otpshow = false.obs;
   RxBool loginpasswordshow = true.obs;
   RxBool signuppasswordshow = true.obs;
   RxBool activationkeyshow = false.obs;
+
+    
+
 
   RxString signupotp = ''.obs;
   RxBool forgetpassword1 = false.obs;
@@ -132,6 +143,7 @@ class Getx extends GetxController {
   RxList<Map<String, dynamic>> liveList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> tagListOfVideo = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> mcqListOfVideo = <Map<String, dynamic>>[].obs;
+   RxList<Map<String, dynamic>>reviewQuestionListOfVideo = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> pdfListOfVideo = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> bannerImageList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> videoHistory = <Map<String, dynamic>>[].obs;
@@ -237,7 +249,7 @@ class Getx extends GetxController {
   Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
     // setState(() {
     _connectionStatus = result;
-    log(_connectionStatus.toString());
+    // log(_connectionStatus.toString());
     networkcheckingsnakbar();
     // });
     // ignore: avoid_print

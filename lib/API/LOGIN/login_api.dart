@@ -251,7 +251,7 @@ Future signupApi(
         whatsappnumbercountryid,
         whatsappnumbercode);
 
-    log(signupdata.toString());
+    // log(signupdata.toString());
     final http.Response res = await http.post(
         Uri.https(ClsUrlApi.mainurl, '${ClsUrlApi.signupEndpoint}$key'),
         headers: <String, String>{
@@ -261,7 +261,7 @@ Future signupApi(
         },
         body: jsonEncode(signupdata));
     var jsondata = json.decode(res.body);
-    log(res.body);
+    // log(res.body);
 
     if (jsondata['isSuccess'] == true) {
       Get.back();
@@ -638,7 +638,7 @@ Future<void> getRunningBackgroundAppsAndKill(BuildContext context) async {
     getx.blackListProcess.value = await fetchBlackList();
     getx.whiteListProcess.value = await fetchWhiteList();
 
-    log("bcakground process running");
+    // log("bcakground process running");
 
     final List<String> blacklist = getx.blackListProcess
         .map((item) => item['ApplicationBaseName'].toString().toLowerCase())
@@ -683,7 +683,7 @@ Future<void> getRunningBackgroundAppsAndKill(BuildContext context) async {
             final killResult =
                 await Process.run('taskkill', ['/F', '/IM', '$app.exe']);
             if (killResult.exitCode == 0) {
-              log("Successfully killed process: $app.");
+              // log("Successfully killed process: $app.");
             } else {}
           } catch (e) {
             writeToFile(e, "failsed to kill process");
@@ -697,7 +697,7 @@ Future<void> getRunningBackgroundAppsAndKill(BuildContext context) async {
       }
 
       if (unlistedApps.isNotEmpty) {
-        log(unlistedApps.toString());
+        // log(unlistedApps.toString());
       }
 
       // Write the list of apps to a .dmj file

@@ -43,6 +43,7 @@ log(videoLink);
     videoLink = newLink;
 
     player.open(
+
       
       // Playlist(),
       Media(
@@ -64,7 +65,12 @@ log(videoLink);
 
   Future<void> playOrPause() async {
     await player.playOrPause();
+   
   }
+
+
+
+
 
   String startTrackingPlayTime() {
     if (!_isPlaying) {
@@ -98,5 +104,7 @@ log(videoLink);
   void seekTo(Duration position) {
     player.seek(position);
     print("goto $position");
+
+    
   }
 }
