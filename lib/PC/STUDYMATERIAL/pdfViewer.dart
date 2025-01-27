@@ -6,7 +6,7 @@ import 'package:dthlms/EditPdf/pdf_edit.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:file_picker/file_picker.dart';

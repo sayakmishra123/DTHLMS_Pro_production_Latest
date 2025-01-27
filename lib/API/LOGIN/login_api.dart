@@ -14,7 +14,7 @@ import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/project_setup.dart';
 

@@ -1,7 +1,9 @@
 import 'dart:io';
 
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'constants.dart';
 
 Future<void> writeToFile(e, functionname) async {
   try {
@@ -21,7 +23,8 @@ Future<void> writeToFile(e, functionname) async {
     //   _filePath = file.path;
     // });
 
-    print("File written successfully at: ${file.path} on function : $functionname ");
+    print(
+        "File written successfully at: ${file.path} on function : $functionname ");
   } catch (e) {
     print("Error writing to file: $e");
   }

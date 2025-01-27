@@ -3,7 +3,7 @@ import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -116,8 +116,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                                             //   width: 200,
                                             // ),
                                             Image(
-                                              image: AssetImage(
-                                                  logopath),
+                                              image: AssetImage(logopath),
                                               height: 70,
                                             )
                                           ],
@@ -211,11 +210,10 @@ class _ForgotScreenState extends State<ForgotScreen> {
                                         children: [
                                           OutlinedButton.icon(
                                             style: const ButtonStyle(
-                                                padding:
-                                                    WidgetStatePropertyAll(
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 20,
-                                                            horizontal: 95))),
+                                                padding: WidgetStatePropertyAll(
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 20,
+                                                        horizontal: 95))),
                                             onPressed: () async {
                                               final Uri gmailUrl = Uri(
                                                 scheme: 'https',

@@ -14,7 +14,7 @@ import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
@@ -834,7 +834,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                                   getx
                                                                       .loginuserdata[
                                                                           0]
-                                                                      .token,false);
+                                                                      .token,
+                                                                  false);
                                                             }
                                                             getx.playingVideoId
                                                                     .value =
@@ -1065,7 +1066,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                                     getx
                                                                         .loginuserdata[
                                                                             0]
-                                                                        .token,false);
+                                                                        .token,
+                                                                    false);
                                                               }
                                                               getx.playingVideoId
                                                                       .value =
@@ -1367,7 +1369,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           print(valueList);
           if (getx.isInternet.value) {
             unUploadedVideoInfoInsert(
-                context, valueList, getx.loginuserdata[0].token,false);
+                context, valueList, getx.loginuserdata[0].token, false);
           }
           if (await isProcessRunning("dthlmspro_video_player") == false) {
             run_Video_Player_exe(

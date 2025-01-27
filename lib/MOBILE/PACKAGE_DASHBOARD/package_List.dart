@@ -1,5 +1,5 @@
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_contents.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +7,7 @@ import '../../GETXCONTROLLER/getxController.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import '../../THEME_DATA/color/color.dart';
 import '../../THEME_DATA/font/font_family.dart';
+import '../../constants.dart';
 
 class Mobile_Package_List extends StatefulWidget {
   const Mobile_Package_List({super.key});
@@ -50,7 +51,6 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
       tabViews.add(buildFreeServicesListView(context));
     }
   }
-   
 
   @override
   Widget build(BuildContext context) {
@@ -106,54 +106,57 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
   //   }
   // }
 
-List<Widget> _buildIconStack(packageId) {
-  getSectionListOfPackage(packageId);
+  List<Widget> _buildIconStack(packageId) {
+    getSectionListOfPackage(packageId);
 
-  List<Widget> iconStack = [];
-  final filteredList = getx.sectionListOfPackage
-      .where((item) => item['section'] != 'PDF' && item['section'] != 'YouTube')
-      .toList();
+    List<Widget> iconStack = [];
+    final filteredList = getx.sectionListOfPackage
+        .where(
+            (item) => item['section'] != 'PDF' && item['section'] != 'YouTube')
+        .toList();
 
-  // Limit the number of items to 6
-  int maxItems = filteredList.length > 5 ? 5 : filteredList.length;
+    // Limit the number of items to 6
+    int maxItems = filteredList.length > 5 ? 5 : filteredList.length;
 
-  // Add the first 6 icons (or fewer if the list has less than 6 items)
-  for (int i = 0; i < maxItems; i++) {
-    iconStack.add(
-      Positioned(
-        left: i * 25.0, // Slight shift to the right for each successive icon
-        child: CircleAvatar(
-          radius: 20.0, // Radius of the CircleAvatar
-          backgroundColor: Colors.grey.shade200, // Background color for each avatar
-          child: getFolderIcon(filteredList[i], i),
+    // Add the first 6 icons (or fewer if the list has less than 6 items)
+    for (int i = 0; i < maxItems; i++) {
+      iconStack.add(
+        Positioned(
+          left: i * 25.0, // Slight shift to the right for each successive icon
+          child: CircleAvatar(
+            radius: 20.0, // Radius of the CircleAvatar
+            backgroundColor:
+                Colors.grey.shade200, // Background color for each avatar
+            child: getFolderIcon(filteredList[i], i),
+          ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  // If the list has more than 6 items, show the remaining count
-  if (filteredList.length > 5) {
-    iconStack.add(
-      Positioned(
-        left: 5 * 25.0, // Position the remaining count icon next to the 6th icon
-        child: CircleAvatar(
-          radius: 20.0, // Radius of the CircleAvatar
-          backgroundColor: Colors.grey.shade200, // Background color
-          child: Text(
-            '+${filteredList.length - 5}', // Show remaining count
-            style: TextStyle(
-              color: Colors.blue, // Color of the text
-              fontWeight: FontWeight.bold, // Make the text bold
-              fontSize: 14, // Size of the text
+    // If the list has more than 6 items, show the remaining count
+    if (filteredList.length > 5) {
+      iconStack.add(
+        Positioned(
+          left: 5 *
+              25.0, // Position the remaining count icon next to the 6th icon
+          child: CircleAvatar(
+            radius: 20.0, // Radius of the CircleAvatar
+            backgroundColor: Colors.grey.shade200, // Background color
+            child: Text(
+              '+${filteredList.length - 5}', // Show remaining count
+              style: TextStyle(
+                color: Colors.blue, // Color of the text
+                fontWeight: FontWeight.bold, // Make the text bold
+                fontSize: 14, // Size of the text
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  return iconStack;
-}
+    return iconStack;
+  }
 
   final List<Map<String, dynamic>> folderIcons = [
     {
@@ -280,14 +283,13 @@ List<Widget> _buildIconStack(packageId) {
                   width: itemWidth, // Adjusted for wider card
                   margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black.withAlpha(100),
-                    width: 1
-                    ),
-                   color: Colors.white,
-                  //  gradient: LinearGradient(colors: [
-                  //   Colors.white.withAlpha(80),
-                  //   Colors.grey.withAlpha(200),
-                  //  ]),
+                    border: Border.all(
+                        color: Colors.black.withAlpha(100), width: 1),
+                    color: Colors.white,
+                    //  gradient: LinearGradient(colors: [
+                    //   Colors.white.withAlpha(80),
+                    //   Colors.grey.withAlpha(200),
+                    //  ]),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(

@@ -12,7 +12,7 @@ import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 // import 'package:dthlms/android/login/dth_mob_login.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:flutter/services.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -84,11 +84,11 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
 
   getUserid() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-  
+
     loginemail.text = prefs.getString("LoginId") ?? '';
   }
 
-  Future getCountrycodeListFunction() async { 
+  Future getCountrycodeListFunction() async {
     countryCode.value = await getCountryId();
   }
 
@@ -1171,7 +1171,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                           if (desktop_key1.currentState!.validate() &&
                                                                               GetUtils.isEmail(signupemail.text)) {
                                                                             print("section 1 shubha");
-                                                                            print(activationkey.text); 
+                                                                            print(activationkey.text);
                                                                             await checkUserBeforeRegister(context, signupemail.text, signupphno.text, activationkey.text.toString()).then((activationKey) {
                                                                               if (activationKey != '') {
                                                                                 print("section 2 shubha");

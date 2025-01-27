@@ -11,7 +11,7 @@ import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/social_media_links_model.dart';
 import 'package:dthlms/PC/MCQ/PRACTICE/termandcondition.dart';
 import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_infinite_marquee/flutter_infinite_marquee.dart';
@@ -263,8 +263,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
     // getAllPackageListOfStudent().whenComplete(() {
 
     // });
-    getSocialMediaIcons(
-                            context, getx.loginuserdata[0].token);
+    getSocialMediaIcons(context, getx.loginuserdata[0].token);
     super.initState();
   }
 
@@ -277,9 +276,6 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
       getx.mcqdataList.value = true;
       getx.theoryExamvalue.value = true;
     }
-    
-
-
   }
 
   RxString version = "".obs;
@@ -498,78 +494,86 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                     const SizedBox(height: 20),
 
                     // Social Media Links
-                    
 
                     const SizedBox(height: 8),
                     FutureBuilder(
-  future: getAllTblImages(), 
-  builder: (context, snapshot) {
-    if (snapshot.hasData) {
-      // Filter the data for ImageType = socialmediaicons
-      final socialMediaIcons = snapshot.data!
-          .where((item) => item['ImageType'] == 'socialmediaicons')
-          .toList();
-      if (
-        socialMediaIcons.isEmpty) {
-        return const SizedBox();
-      }
-      return Column(
-        children: [
-          Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Follow Us',
-                            style: TextStyle(
-                                fontSize: 16, 
-                                fontWeight: FontWeight.bold,
-                                color: ColorPage.red),
-                          ),
-                                             ),
-          SizedBox(
-            height: 80,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(
-                socialMediaIcons.length,
-                (index) => InkWell(
-                  onTap: () async {
-                    final Uri url = Uri.parse(socialMediaIcons[index]['ImagePath']);
-          
-                    if (await canLaunchUrl(url)) {
-                      await launchUrl(url);
-                    } else {
-                      cantLaunchUrlAlert(context);
-                    }
-                  },
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: socialMediaIcons.length > 4 ? 20 : 35,
-                        width: socialMediaIcons.length > 4 ? 20 : 35,
-                        child: SvgPicture.string(
-                          socialMediaIcons[index]['ImageUrl'],
-                        ),
-                      ),
-                      Text(
-                        socialMediaIcons[index]['ImageId'],
-                        style: FontFamily.style.copyWith(
-                            fontSize: 14, color: Colors.grey),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    } else if (snapshot.hasError) {
-      return const Text("Error loading images.");
-    } else {
-      return const CircularProgressIndicator();
-    }
-  },
-),
+                      future: getAllTblImages(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          // Filter the data for ImageType = socialmediaicons
+                          final socialMediaIcons = snapshot.data!
+                              .where((item) =>
+                                  item['ImageType'] == 'socialmediaicons')
+                              .toList();
+                          if (socialMediaIcons.isEmpty) {
+                            return const SizedBox();
+                          }
+                          return Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Follow Us',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorPage.red),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 80,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: List.generate(
+                                    socialMediaIcons.length,
+                                    (index) => InkWell(
+                                      onTap: () async {
+                                        final Uri url = Uri.parse(
+                                            socialMediaIcons[index]
+                                                ['ImagePath']);
+
+                                        if (await canLaunchUrl(url)) {
+                                          await launchUrl(url);
+                                        } else {
+                                          cantLaunchUrlAlert(context);
+                                        }
+                                      },
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: socialMediaIcons.length > 4
+                                                ? 20
+                                                : 35,
+                                            width: socialMediaIcons.length > 4
+                                                ? 20
+                                                : 35,
+                                            child: SvgPicture.string(
+                                              socialMediaIcons[index]
+                                                  ['ImageUrl'],
+                                            ),
+                                          ),
+                                          Text(
+                                            socialMediaIcons[index]['ImageId'],
+                                            style: FontFamily.style.copyWith(
+                                                fontSize: 14,
+                                                color: Colors.grey),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else if (snapshot.hasError) {
+                          return const Text("Error loading images.");
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+                    ),
 
                     const SizedBox(height: 20),
 
@@ -2022,7 +2026,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                           unUploadedVideoInfoInsert(
                                               context,
                                               valueList,
-                                              getx.loginuserdata[0].token,false);
+                                              getx.loginuserdata[0].token,
+                                              false);
                                         }
 
                                         getx.playingVideoId.value =
@@ -2410,8 +2415,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     print("hello");
                     Get.back();
                     fetchUploadableVideoInfo().then((valueList) async {
-                      unUploadedVideoInfoInsert(
-                          context, valueList, getx.loginuserdata[0].token,false);
+                      unUploadedVideoInfoInsert(context, valueList,
+                          getx.loginuserdata[0].token, false);
 
                       if (await isProcessRunning("dthlmspro_video_player") ==
                           false) {

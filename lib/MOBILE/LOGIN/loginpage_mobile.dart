@@ -10,7 +10,7 @@ import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 // import 'package:dthlms/android/SigninOtp/OtpScreen.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 
 // import 'package:dthlms/getx/getxcontroller.dart';
 // import 'package:dthlms/utils/getpackagebyid.dart';
@@ -18,6 +18,8 @@ import 'package:dthlms/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../constants.dart';
 
 // import '../phone/siminformation.dart';
 
@@ -79,8 +81,7 @@ class _MobileloginState extends State<Mobilelogin> {
 
   @override
   void initState() {
-
-     if (getx.loginuserdata.isNotEmpty) {
+    if (getx.loginuserdata.isNotEmpty) {
       print("get login id and password");
       loginemail.text = getx.loginuserdata[0].loginId;
       loginpassword.text = getx.loginuserdata[0].password;

@@ -9,7 +9,7 @@ import 'package:dthlms/MOBILE/store/list/verticalcourselist.dart';
 
 // import 'package:dthlms/MOBILE/store/store_dashboard.dart';
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -225,7 +225,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                       for (int i = 0; i < getx.style[0].result.length; i++) ...[
                         // Full Banner Section
                         if (getx.style[0].result[i].imageType == 'Full Banner')
-                          Padding( 
+                          Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: HeadingBox(
                               mode: 1,
@@ -304,7 +304,9 @@ class _ListviewPackageState extends State<ListviewPackage> {
                       ? MaterialButton(
                           padding: const EdgeInsets.symmetric(horizontal: 2),
                           onPressed: () {
-                            Get.to( transition: Transition.cupertino,() => CoursePage(data));
+                            Get.to(
+                                transition: Transition.cupertino,
+                                () => CoursePage(data));
                           },
                           child: EpisodeCard(
                               imageUrl: data.packageBannerPathUrl,
@@ -354,7 +356,9 @@ class _ListviewPackageState extends State<ListviewPackage> {
                       ? MaterialButton(
                           padding: const EdgeInsets.symmetric(horizontal: 2),
                           onPressed: () {
-                            Get.to( transition: Transition.cupertino,() => CoursePage(data));
+                            Get.to(
+                                transition: Transition.cupertino,
+                                () => CoursePage(data));
                           },
                           child: EpisodeCard(
                             imageUrl: data.packageBannerPathUrl,
@@ -402,7 +406,7 @@ class EpisodeCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start, 
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
@@ -410,9 +414,8 @@ class EpisodeCard extends StatelessWidget {
                     height: mode == 0 ? 200 : 200,
                     width: MediaQuery.sizeOf(context).width - 20,
                     // height: ,
-                    child: Image.network( 
+                    child: Image.network(
                       imageUrl,
-              
                       fit: BoxFit.fill,
                       errorBuilder: (context, error, stackTrace) =>
                           Center(child: Image.asset(logopath)),
@@ -777,15 +780,13 @@ class _HeadingBoxState extends State<HeadingBox> {
   }
 }
 
-
-
 class HeadingBoxContent extends StatelessWidget {
   final String? date;
   final String? title;
   final String? desc;
   final Widget? trailing;
   final String imagePath;
-  final String imagePosition; 
+  final String imagePosition;
   final bool isImage;
   const HeadingBoxContent({
     super.key,
@@ -848,7 +849,7 @@ class HeadingBoxContent extends StatelessWidget {
                     )),
 
                 // Image at the end
-              ], 
+              ],
             );
     });
   }
