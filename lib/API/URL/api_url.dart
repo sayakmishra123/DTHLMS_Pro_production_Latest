@@ -3,13 +3,8 @@ class ClsUrlApi {
       String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
 
   // static const mainurl = "apipro20240709.dthlms.com";
-<<<<<<< HEAD
  
   static const loginEndpoint = '/api/auth/login'; 
-=======
-
-  static const loginEndpoint = '/api/auth/login';
->>>>>>> 24568f7cc64dfa4909704cf67f39bd3913b14e5a
   static const checkUserExitenceBeforeregister =
       '/api/AnonymousDataGet/ExecuteJson/spValidateexistingUser/1'; ////////////
   static const socialMediaIconsApi =

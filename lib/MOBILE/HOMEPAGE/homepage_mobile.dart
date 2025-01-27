@@ -3221,7 +3221,6 @@ class _HomePageMobileState extends State<HomePageMobile> {
               elevation: 5,
               backgroundColor: const Color.fromARGB(255, 255, 254, 252),
               onDestinationSelected: (int newIndex) async {
-<<<<<<< HEAD
                 if (getx.isInsidePackage.value) {
                   if (_currentIndex.value == 1 && newIndex != 1) {
                     ArtSweetAlert.show(
@@ -3248,28 +3247,6 @@ class _HomePageMobileState extends State<HomePageMobile> {
                     // Change index if not at 1 or not switching from 1
                     _currentIndex.value = newIndex;
                   }
-=======
-                if (_currentIndex.value == 1 && newIndex != 1) {
-                  ArtSweetAlert.show(
-                    barrierDismissible: false,
-                    context: context,
-                    artDialogArgs: ArtDialogArgs(
-                      showCancelBtn: true,
-                      title: "Are you sure?",
-                      text: "Do you want to leave the Page?",
-                      confirmButtonText: "Yes",
-                      cancelButtonText: "No",
-                      onConfirm: () {
-                        Navigator.pop(context); // Close dialog
-                        _currentIndex.value = newIndex; // Update index
-                      },
-                      onCancel: () {
-                        Navigator.pop(context); // Just close dialog
-                      },
-                      type: ArtSweetAlertType.warning,
-                    ),
-                  );
->>>>>>> 24568f7cc64dfa4909704cf67f39bd3913b14e5a
                 } else {
                   // Change index if not at 1 or not switching from 1
                   _currentIndex.value = newIndex;

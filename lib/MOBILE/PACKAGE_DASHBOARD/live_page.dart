@@ -321,12 +321,7 @@ class TutorCard extends StatelessWidget {
                     Get.to(
                         transition: Transition.cupertino,
                         () => MobileMeetingPage(
-<<<<<<< HEAD
-
-                          meeting:meeting,
-=======
                               meeting: meeting,
->>>>>>> 24568f7cc64dfa4909704cf67f39bd3913b14e5a
                               projectId.toString(),
                               sessionId.toString(),
                               getx.loginuserdata[0].nameId,
