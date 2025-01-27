@@ -7,7 +7,7 @@ import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/PC/STUDYMATERIAL/pdfViewer.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:file_picker/file_picker.dart';
@@ -18,6 +18,8 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import '../../constants.dart';
 
 Uint8List aesDecryptPdf(Uint8List encryptedData, String key) {
   try {
@@ -322,7 +324,7 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
                 IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
-                    log(widget.pdfUrl + "      $data ");
+                    // log(widget.pdfUrl + "      $data ");
                     Get.to(() => ImageEditorExample(
                           pdfName: this.title,
                           pdfPath: this.data,

@@ -159,7 +159,7 @@ dependencies:
   audioplayers: ^6.1.0
   # webview_windows: ^0.4.0
   flutter_inappwebview: ^6.1.5
-  youtube_player_iframe:
+  youtube_player_iframe: ^5.2.1
   webview_flutter: 
   flutter_image_stack: ^0.0.7
   pod_player: ^0.2.2
@@ -171,7 +171,7 @@ dependencies:
   
   
   # pdf: ^3.11.1
-
+ 
 
  
   # sqflite_sqlcipher: ^3.1.0+1
@@ -202,15 +202,15 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"                                                                                
-  image: assets/icons/AJC.png
-  branding: assets/icons/AJC.png
+  image: assets/icons/AAC_splash_screen.png
+  branding: assets/icons/AAC_splash_screen.png
 
   color_dark: "#FFFFFF"
-  image_dark: assets/icons/AJC.png
-  branding_dark: assets/icons/AJC.png
+  image_dark: assets/icons/AAC_splash_screen.png
+  branding_dark: assets/icons/AAC_splash_screen.png
 
   android_12:
-    image: assets/icons/AJC.png
+    image: assets/icons/AAC_splash_screen.png
     icon_background_color: "#FFFFFF" 
 
  
@@ -222,7 +222,7 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   
-  image_path: assets/icons/AJC.png
+  image_path: assets/icons/AAC.png
   min_sdk_android: 21 # android min sdk min:16, default 21
   # web:
   #   generate: true
@@ -231,7 +231,7 @@ flutter_launcher_icons:
   #   theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: assets/icons/AJC.png
+    image_path: assets/icons/AAC.png
     icon_size: 48 # min:48, max:256, default: 48
   # macos:
   #   generate: true

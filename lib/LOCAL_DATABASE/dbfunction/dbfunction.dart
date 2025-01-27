@@ -7,7 +7,8 @@ import 'package:dthlms/API/ERROR_MASSEGE/errorhandling.dart';
 
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 
 import 'package:flutter/material.dart';
@@ -457,7 +458,7 @@ Future<void> insertVideoplayInfo(
     String startClockTime,
     int playNo,
     int uploadflag,
-   { String type="video"}) async {
+    {String type = "video"}) async {
   try {
     // print(videoId.toString() + watchduration.toString());
 
@@ -722,24 +723,23 @@ Future<void> insertOrUpdateTblPackageData(
 
 // new added
 Future<void> insertPackageDetailsdata(
-  String packageId,
-  String packageName,
-  String fileIdType,
-  String fileId,
-  String fileIdName,
-  String chapterId,
-  String allowDuration,
-  String consumeDuration,
-  String consumeNos,
-  String allowNo,
-  String documentPath,
-  String scheduleOn,
-  String sessionId,
-  String videoDuration,
-  String DownloadedPath,
-  String isEncrypted,
-  String sortedOrder
-) async {
+    String packageId,
+    String packageName,
+    String fileIdType,
+    String fileId,
+    String fileIdName,
+    String chapterId,
+    String allowDuration,
+    String consumeDuration,
+    String consumeNos,
+    String allowNo,
+    String documentPath,
+    String scheduleOn,
+    String sessionId,
+    String videoDuration,
+    String DownloadedPath,
+    String isEncrypted,
+    String sortedOrder) async {
   _db.execute('''
        INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder) 
       VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder');
@@ -1744,7 +1744,9 @@ void createMCQSet() {
      SetId TEXT ,
      PackageId TEXT,
      SetName TEXT,
-     ServicesTypeName TEXT
+     ServicesTypeName TEXT,
+      StartDate TEXT,
+     EndDate TEXT
    
    );
   ''');
@@ -1753,14 +1755,15 @@ void createMCQSet() {
 }
 
 Future<void> inserTblMCQSet(String setId, String packageId, String setName,
-    String servicesTypeName) async {
+    String servicesTypeName,String startDate,
+    String EndDate) async {
   try {
     _db.execute(
       '''
-        INSERT INTO TblMCQSet (SetId, PackageId, SetName,ServicesTypeName)
-        VALUES (?, ?, ?,?)
+        INSERT INTO TblMCQSet (SetId, PackageId, SetName,ServicesTypeName,StartDate ,EndDate)
+        VALUES (?, ?, ?,?,?,?)
         ''',
-      [setId, packageId, setName, servicesTypeName],
+      [setId, packageId, setName, servicesTypeName,startDate,EndDate],
     );
   } catch (e) {
     writeToFile(e, 'insertMCQSet');
@@ -1787,9 +1790,6 @@ void createMCQPaper() {
      MCQPaperStartDate TEXT,
      IsNegativeMark TEXT,
      IsAnswerSheetShow TEXT
-
-   
-   
    );
   ''');
   // log()
@@ -2102,7 +2102,10 @@ Future<List<Map<String, dynamic>>> fetchMCQSetList(String packageId) async {
       'SetId': row['SetId'],
       'PackageId': row['PackageId'],
       'SetName': row['SetName'],
-      'ServicesTypeName': row['ServicesTypeName']
+      'ServicesTypeName': row['ServicesTypeName'],
+      'StartDate' : row['StartDate'],
+      'EndDate' : row['EndDate'],
+
     });
     //  print("Data get from whiteList for Appname: ${ row['AppBaseName']}.");
   }
@@ -2748,7 +2751,7 @@ Future<List<Map<String, dynamic>>> fetchTheorySetList(String packageId) async {
     tblMCQSetList.add({
       'SetId': row['SetId'],
       'PackageId': row['PackageId'],
-      'SetName': row['SetName'], 
+      'SetName': row['SetName'],
       'ServicesTypeId': row['ServicesTypeId'],
       'ServicesTypeName': row['ServicesTypeName']
     });
@@ -3008,7 +3011,7 @@ Future<dynamic> fetchUploadableVideoInfo() async {
       print(
           "${row['VideoId']}\n,${row['StartDuration']}\n,${row['EndDuration']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
       unUploadedVideoInfo.add({
-        'Type':row['Type'],
+        'Type': row['Type'],
         'VideoId': row['VideoId'],
         'StartDuration': row['StartDuration'],
         'EndDuration': row['EndDuration'],
@@ -3223,7 +3226,7 @@ Future infoTetch(packageId, type) async {
       // if (dateCheck(row['ScheduleOn'])) {
       //   getx.infoFetch.add(details);
       // }
-      log(row['ScheduleOn'].toString());
+      // log(row['ScheduleOn'].toString());
 
       switch (row['FileIdType']) {
         case 'Live':
@@ -3579,8 +3582,8 @@ Future<List<Map<String, dynamic>>> getAllTblImages() async {
     // Ensure '_db' is your initialized database instance
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblImages''');
-      print("shubha getAllTblImages");
-log(result.toString());
+    // print("shubha getAllTblImages");
+// log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {
     writeToFile(e, "getAllTblImages");
@@ -3694,5 +3697,3 @@ String getVideoPlayModeFromPackageId(String packageId) {
   //   // throw Exception('TotalPassMarks not found: $paperID');
   // }
 }
-
-

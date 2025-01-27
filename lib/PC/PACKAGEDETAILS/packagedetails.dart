@@ -20,7 +20,7 @@ import 'package:dthlms/PC/VIDEO/videoplayer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/THEORY_EXAM/theorySetList.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/test.dart';
 import 'package:dthlms/test1.dart';
@@ -2095,21 +2095,26 @@ class ExeRun {
     late String token;
     exePath = "exefiles/live/abc.exe";
     print("exePath: $exePath");
-print("meetingDeatils.packageId: ${meetingDeatils.packageId.toString()}");
-print("User's Full Name: ${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}");
-print("User Name ID: ${getx.loginuserdata[0].nameId.toString()}");
-print("Meeting Details - Session ID: ${meetingDeatils.sessionId.toString()}");
-print("Meeting Details - Topic Name: ${meetingDeatils.topicName.toString()}");
-print("Meeting Details - Live URL: ${meetingDeatils.liveUrl.toString()}");
-print("Meeting Details - Video Category: ${meetingDeatils.videoCategory.toString()}");
-print("Database Path: ${getx.dbPath.value}");
-print("Meeting Details - Video ID: ${meetingDeatils.videoId}");
-print("User's Phone Number: ${getx.loginuserdata[0].phoneNumber}");
-print("User's Token: ${getx.loginuserdata[0].token}");
-print("Origin: $origin");
-print("API URL: https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}");
-print("Group Chat: ${meetingDeatils.groupChat!}");
-print("Personal Chat: ${meetingDeatils.personalChat!}");
+    print("meetingDeatils.packageId: ${meetingDeatils.packageId.toString()}");
+    print(
+        "User's Full Name: ${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}");
+    print("User Name ID: ${getx.loginuserdata[0].nameId.toString()}");
+    print(
+        "Meeting Details - Session ID: ${meetingDeatils.sessionId.toString()}");
+    print(
+        "Meeting Details - Topic Name: ${meetingDeatils.topicName.toString()}");
+    print("Meeting Details - Live URL: ${meetingDeatils.liveUrl.toString()}");
+    print(
+        "Meeting Details - Video Category: ${meetingDeatils.videoCategory.toString()}");
+    print("Database Path: ${getx.dbPath.value}");
+    print("Meeting Details - Video ID: ${meetingDeatils.videoId}");
+    print("User's Phone Number: ${getx.loginuserdata[0].phoneNumber}");
+    print("User's Token: ${getx.loginuserdata[0].token}");
+    print("Origin: $origin");
+    print(
+        "API URL: https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}");
+    print("Group Chat: ${meetingDeatils.groupChat!}");
+    print("Personal Chat: ${meetingDeatils.personalChat!}");
 
     print(
         "${meetingDeatils.liveUrl.toString() + "   " + getx.loginuserdata[0].firstName.toString() + " " + getx.loginuserdata[0].lastName + getx.loginuserdata[0].nameId.toString() + "/// " + meetingDeatils.sessionId.toString() + "////// category  " + meetingDeatils.videoCategory.toString() + "  ////" + meetingDeatils.packageId.toString()}");
@@ -2136,10 +2141,8 @@ print("Personal Chat: ${meetingDeatils.personalChat!}");
           getx.loginuserdata[0].token,
           origin,
           "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
-         meetingDeatils.groupChat!,
-        meetingDeatils.personalChat!
-
-
+          meetingDeatils.groupChat!,
+          meetingDeatils.personalChat!
         ],
         runInShell: true,
       );
@@ -2200,9 +2203,6 @@ class _BookDashboardState extends State<BookDashboard>
       backgroundColor: Colors.white,
       // drawer: _buildSideNavigation(),
       appBar: AppBar(
-
-
-        
         automaticallyImplyLeading: false,
         leading: Platform.isAndroid
             ? IconButton(

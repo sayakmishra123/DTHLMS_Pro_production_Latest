@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

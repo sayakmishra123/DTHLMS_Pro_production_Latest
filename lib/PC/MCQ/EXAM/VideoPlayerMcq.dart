@@ -123,7 +123,7 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
           isPlaying = playing;
 
           if (playing) {
-            log('playing');
+            // log('playing');
            
             print(utcTime.millisecondsSinceEpoch);
             videoPlay.startTrackingPlayTime();

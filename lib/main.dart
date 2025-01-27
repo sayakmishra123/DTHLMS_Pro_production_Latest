@@ -12,13 +12,11 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/constants/constants.dart';
-import 'package:dthlms/firebase_options.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
 import 'package:dthlms/security.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_android_developer_mode/flutter_android_developer_mode.dart';
@@ -37,7 +35,6 @@ import 'package:sqlite3/open.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:no_screenshot/no_screenshot.dart';
-// import 'package:youtube_quality_player/initialized_function.dart';
 import 'notification_model.dart';
 
 void main(List<String> args) async {
@@ -104,7 +101,7 @@ class _MyAppState extends State<MyApp> {
       });
       if (getx.isTimerOn.value) {
         Timer.periodic(Duration(seconds: 10), (timer) async {
-          print(getx.blackListProcess.length);
+          // print(getx.blackListProcess.length);
           if (getx.blackListProcess.isNotEmpty && getx.isTimerOn.value) {
             getRunningBackgroundAppsAndKill(context);
           } else {
@@ -118,7 +115,7 @@ class _MyAppState extends State<MyApp> {
 
   Getx getx = Get.put(Getx());
 
-  Future<void> checkDeveloperMode() async { 
+  Future<void> checkDeveloperMode() async {
     if (Platform.isAndroid) {
       getx.isAndroidDeveloperModeEnabled.value =
           await FlutterAndroidDeveloperMode.isAndroidDeveloperModeEnabled;
@@ -142,7 +139,7 @@ class _MyAppState extends State<MyApp> {
     getx.userImageLocalPath.value = prefs.getString("LocalImagePath") ?? "";
 
     if (userdataJson != null) {
-      print("data found of login");
+      // print("data found of login");
       Map<String, dynamic> userdataMap = jsonDecode(userdataJson);
       DthloginUserDetails userdata = DthloginUserDetails(
           firstName: userdataMap['firstName'].toString(),
@@ -161,7 +158,7 @@ class _MyAppState extends State<MyApp> {
       getx.loginuserdata.add(userdata);
       getx.userImageOnlinePath.value = getx.loginuserdata[0].image;
     } else {
-      print("data not found of login");
+      // print("data not found of login");
     }
 
     // checkIfEmulator(context);
@@ -256,7 +253,7 @@ class _MyAppState extends State<MyApp> {
                                       : Mobilelogin();
                                   // : IntroductionDashBoard();
                                 }
-                              } else {
+                               } else {
                                 return const NoSim();
                               }
                             },
@@ -273,9 +270,9 @@ class _MyAppState extends State<MyApp> {
   void checkIfEmulator(BuildContext context) async {
     getx.isEmulator.value = await isEmulator();
     if (getx.isEmulator.value) {
-      print('Running on a Virtule Device');
+      // print('Running on a Virtule Device');
     } else {
-      print('Running on a Physical Device');
+      // print('Running on a Physical Device');
     }
   }
 }
@@ -303,7 +300,7 @@ Future<List> getSimCardsData(BuildContext context) async {
     }
   } on Exception catch (e) {
     Get.back();
-    print("error! code: $e - message: $e");
+    // print("error! code: $e - message: $e");
     return [];
   }
 }
@@ -317,9 +314,9 @@ Future<List> getSimCardsData(BuildContext context) async {
 singleInstance(args) async {
   await WindowsSingleInstance.ensureSingleInstance(args, "custom_identifier",
       bringWindowToFront: true, onSecondWindow: (args) {
-    print(args);
+    // print(args);
   });
-  print(args);
+  // print(args);
 }
 
 Future<bool> isEmulator() async {
@@ -436,7 +433,7 @@ class _DevelopermodeOnPageState extends State<DevelopermodeOnPage> {
   Widget build(BuildContext context) {
     return Material(
       child: WillPopScope(
-        onWillPop: () {     
+        onWillPop: () {
           exit(0);
         },
         child: const Scaffold(
@@ -455,7 +452,6 @@ class EmulatorOnPage extends StatefulWidget {
 }
 
 class _EmulatorOnPageState extends State<EmulatorOnPage> {
-  // Function to show the custom dialog
   _showDeveloperDialog(BuildContext context) {
     Alert(
       context: context,
@@ -491,7 +487,6 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showDeveloperDialog(context);
     });
@@ -522,57 +517,50 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
 // import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> initializeNotifications() async {
+  String osid = getEncryptionKeyFromTblSetting('OneSignalId');
 
-  String osid=getEncryptionKeyFromTblSetting('OneSignalId');
-
-
-  if(osid.isNotEmpty){
-
-     // Initialize OneSignal
-  OneSignal.Debug.setLogLevel(
-    OSLogLevel.none,
-  );
-
-
-
-  OneSignal.initialize(osid); // Replace with your OneSignal App ID
-
-  // Request notification permissions
-  OneSignal.Notifications.addPermissionObserver((state) {
-    print("Has permission: " + state.toString());
-  });
-
-  // Foreground notification listener
-  OneSignal.Notifications.addForegroundWillDisplayListener((event) async {
-    print(
-        'NOTIFICATION WILL DISPLAY LISTENER CALLED WITH: ${event.notification.jsonRepresentation()}');
-
-    // Prevent default display to handle it manually
-    event.preventDefault();
-
-    // Extract notification details
-    String? title = event.notification.title ?? 'No title';
-    String? body = event.notification.body ?? 'No body';
-    String? img = event.notification.launchUrl ?? 'No image';
-    String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
-
-    // Create a notification model
-    NotificationModel newNotification = NotificationModel(
-      title: title,
-      body: body,
-      receivedAt: formattedTime,
-      img: img,
+  if (osid.isNotEmpty) {
+    // Initialize OneSignal
+    OneSignal.Debug.setLogLevel(
+      OSLogLevel.none,
     );
 
-    // Save the notification to SharedPreferences
-    await NotificationService.saveNotification(newNotification);
+    OneSignal.initialize(osid); // Replace with your OneSignal App ID
 
-    // Optionally, display the notification
-    event.notification.display();
+    // Request notification permissions
+    OneSignal.Notifications.addPermissionObserver((state) {
+      // // print("Has permission: " + state.toString());
+    });
 
-    // Optionally, handle further UI updates or state management here
-  });
+    // Foreground notification listener
+    OneSignal.Notifications.addForegroundWillDisplayListener((event) async {
+      // print(
+      // 'NOTIFICATION WILL DISPLAY LISTENER CALLED WITH: ${event.notification.jsonRepresentation()}');
 
+      // Prevent default display to handle it manually
+      event.preventDefault();
+
+      // Extract notification details
+      String? title = event.notification.title ?? 'No title';
+      String? body = event.notification.body ?? 'No body';
+      String? img = event.notification.launchUrl ?? 'No image';
+      String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
+      // Create a notification model
+      NotificationModel newNotification = NotificationModel(
+        title: title,
+        body: body,
+        receivedAt: formattedTime,
+        img: img,
+      );
+
+      // Save the notification to SharedPreferences
+      await NotificationService.saveNotification(newNotification);
+
+      // Optionally, display the notification
+      event.notification.display();
+
+      // Optionally, handle further UI updates or state management here
+    });
   }
- 
 }

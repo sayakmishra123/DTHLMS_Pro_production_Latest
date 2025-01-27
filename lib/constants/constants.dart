@@ -1,7 +1,6 @@
-const String origin = 'com.dlp.tvs';
-
+const String origin = 'com.dlp.tvs'; 
 // const String logopath = 'assets/icons/valuation-school-logo.png';
-const String logopath = 'assets/icons/AAC.png';
+const String logopath = 'assets/TVS_logo3.png';
 
 // const String logopathSquare = 'assets/icons/logo.png';
 // const String logopathSquare = 'assets/icons/valuation-school-logo-square.png';
@@ -20,6 +19,7 @@ const String onesignalid =
 // const String onesignalId = "25a8c2e0-04c7-4265-8b91-42eac72f68fd"; //vgsh
 const String franchiseWebsiteLink = "";
 const String facebookPageLink = "";
+   
 const String dbPassword = "test";
 
 String webSiteLink = 'https://solutioninfotech.in';

@@ -21,7 +21,8 @@ import 'package:dthlms/MOBILE/VIDEO/mobilevideoplay.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/PC/VIDEO/scrollbarhide.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/notifications_screen.dart';
 import 'package:flutter/rendering.dart';
@@ -245,9 +246,9 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
       // Print formatted date
       print(formattedDate); // Output: 2 Dec 2024 4:18 PM
     }
-    print("${lastVideoDetails} shubha video last played info");
-    print(
-        "${lastVideoDetailsAllPackage} shubha video last played info all package details");
+    // print("${lastVideoDetails} shubha video last played info");
+    // print(
+    // "${lastVideoDetailsAllPackage} shubha video last played info all package details");
   }
 
   bool isTokenValid(String jwtToken) {
@@ -1480,7 +1481,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => MobileMeetingPage(
-                                            meeting: meeting,
+                                                meeting: meeting,
                                                 meeting!.projectId.toString(),
                                                 meeting.sessionId.toString(),
                                                 getx.loginuserdata[0].nameId,
@@ -3072,7 +3073,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
     final int? notificationCounter = prefs.getInt('notificationCounter');
 
     if (notificationCounter != null) {
-      log("${notificationCounter} notification counter");
+      // log("${notificationCounter} notification counter");
       if (notificationCounter <= 2) {
         var status = await Permission.notification.status;
         if (status.isDenied) {
@@ -3213,43 +3214,44 @@ class _HomePageMobileState extends State<HomePageMobile> {
         //   ],
         // ),
 
-        bottomNavigationBar: Container(
+        bottomNavigationBar: Container( 
           // decoration: const BoxDecoration(border: Border(top: BorderSide(width: 1,color: Colors.black45))),
           child: Obx(
             () => NavigationBar(
               elevation: 5,
               backgroundColor: const Color.fromARGB(255, 255, 254, 252),
               onDestinationSelected: (int newIndex) async {
-              if (_currentIndex.value == 1 && newIndex != 1) {
-             
-
-
-                 ArtSweetAlert.show(
-                  barrierDismissible: false,
-                  context: context,
-                  artDialogArgs: ArtDialogArgs(
-                    showCancelBtn: true,
-                    title: "Are you sure?",
-                    text: "Do you want to leave the Page?",
-                    confirmButtonText: "Yes",
-                    cancelButtonText: "No",
-                    onConfirm: () {
-                      Navigator.pop(context); // Close dialog
-                      _currentIndex.value = newIndex; // Update index
-                    },
-                    onCancel: () {
-                      Navigator.pop(context); // Just close dialog
-                    },
-                    type: ArtSweetAlertType.warning,
-                  ),
-                );
-
-               
-              } else {
-                // Change index if not at 1 or not switching from 1
-                _currentIndex.value = newIndex;
-              }
-            },
+                if (getx.isInsidePackage.value) {
+                  if (_currentIndex.value == 1 && newIndex != 1) {
+                    ArtSweetAlert.show(
+                      barrierDismissible: false,
+                      context: context,
+                      artDialogArgs: ArtDialogArgs(
+                        showCancelBtn: true,
+                        title: "Are you sure?",
+                        text: "Do you want to leave the Page?",
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No",
+                        onConfirm: () {
+                          getx.isInsidePackage.value = false;
+                          Navigator.pop(context); // Close dialog
+                          _currentIndex.value = newIndex; // Update index
+                        },
+                        onCancel: () {
+                          Navigator.pop(context); // Just close dialog
+                        },
+                        type: ArtSweetAlertType.warning,
+                      ),
+                    );
+                  } else {
+                    // Change index if not at 1 or not switching from 1
+                    _currentIndex.value = newIndex;
+                  }
+                } else {
+                  // Change index if not at 1 or not switching from 1
+                  _currentIndex.value = newIndex;
+                }
+              },
               indicatorColor: Colors.amberAccent.withAlpha(200),
               selectedIndex: _currentIndex.value,
               destinations: const <Widget>[

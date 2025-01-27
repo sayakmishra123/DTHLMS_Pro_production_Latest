@@ -14,7 +14,7 @@ import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
@@ -137,7 +137,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           isPlaying = playing;
 
           if (playing) {
-            log('playing');
+            // log('playing');
             videoPlay.startTrackingPlayTime();
 
             // Cancel any existing timer to avoid multiple timers running
@@ -145,7 +145,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
             // Start a new timer that triggers every 5 seconds
             _timer = Timer.periodic(Duration(seconds: 5), (timer) {
-              log(videoPlay.totalPlayTime.inSeconds.toString());
+              // log(videoPlay.totalPlayTime.inSeconds.toString());
 
               // insertVideoplayInfo(
               //   int.parse(getx.playingVideoId.value),
@@ -834,7 +834,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                                   getx
                                                                       .loginuserdata[
                                                                           0]
-                                                                      .token,false);
+                                                                      .token,
+                                                                  false);
                                                             }
                                                             getx.playingVideoId
                                                                     .value =
@@ -1065,7 +1066,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                                     getx
                                                                         .loginuserdata[
                                                                             0]
-                                                                        .token,false);
+                                                                        .token,
+                                                                    false);
                                                               }
                                                               getx.playingVideoId
                                                                       .value =
@@ -1367,7 +1369,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           print(valueList);
           if (getx.isInternet.value) {
             unUploadedVideoInfoInsert(
-                context, valueList, getx.loginuserdata[0].token,false);
+                context, valueList, getx.loginuserdata[0].token, false);
           }
           if (await isProcessRunning("dthlmspro_video_player") == false) {
             run_Video_Player_exe(
@@ -1518,8 +1520,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                 setState(() {
                                   videoPlay.pauseVideo();
                                 });
-                                log(videoPlay.totalPlayTime.inSeconds
-                                    .toString());
+                                // log(videoPlay.totalPlayTime.inSeconds
+                                //     .toString());
                               },
                               icon: Icon(
                                 Icons.pause,

@@ -15,7 +15,7 @@ import 'package:dthlms/Live/chatwidget.dart';
 import 'package:dthlms/Live/popupmenu.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/youtube/youtubelive.dart';
 import 'package:flutter/cupertino.dart';
@@ -225,7 +225,8 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
             context,
             [
               {
-                'VideoId': int.parse(widget.meeting!.videoId),
+                'VideoId': int.parse(
+                    widget.meeting!.videoId.toString().replaceAll(",", "")),
                 'StartDuration': "0",
                 'EndDuration': "0",
                 "Speed": "0",
@@ -237,7 +238,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
             true)
         .then((value) {
       insertVideoplayInfo(
-          int.parse(widget.meeting!.videoId),
+          int.parse(widget.meeting!.videoId.toString().replaceAll(",", "")),
           "0",
           "0",
           "0",
@@ -335,7 +336,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                         context,
                         [
                           {
-                            'VideoId': int.parse(widget.meeting!.videoId),
+                            'VideoId': int.parse(widget.meeting!.videoId
+                                .toString()
+                                .replaceAll(",", "")),
                             'StartDuration': "0",
                             'EndDuration': "0",
                             "Speed": "0",
@@ -349,7 +352,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                         true)
                     .then((value) {
                   insertVideoplayInfo(
-                      int.parse(widget.meeting!.videoId),
+                      int.parse(widget.meeting!.videoId
+                          .toString()
+                          .replaceAll(",", "")),
                       "0",
                       "0",
                       "0",
@@ -415,35 +420,35 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                 ? SingleChildScrollView(
                     child: Column(
                       children: [
-                        // YoutubeLive(widget.link, widget.username, true),
+                        YoutubeLive(widget.link, widget.username, true),
                         // YoutubeLive(link: widget.link!),
 
-                        Container(
-                          height: 300,
-                          width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.only(top: 30),
-                          child: YPlayer(
-                            aspectRatio: 20 / 9,
-                            loadingWidget: CircularProgressIndicator(
-                              color: ColorPage.colorbutton,
-                            ),
-                            placeholder: Image.asset(
-                              "assets/video.png",
-                              scale: 10,
-                            ),
+                        // Container(
+                        //   height: 300,
+                        //   width: MediaQuery.of(context).size.width,
+                        //   padding: const EdgeInsets.only(top: 30),
+                        //   child: YPlayer(
 
-                            bottomButtonBarMargin: EdgeInsets.all(8),
-                            seekBarMargin: EdgeInsets.all(10),
+                        //     aspectRatio: 20/9,
+                        //     loadingWidget: CircularProgressIndicator(color: ColorPage.colorbutton,),
+                        //     placeholder:Image.asset("assets/video.png",scale: 10,),
 
-                            fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
-                            fullscreenSeekBarMargin:
-                                EdgeInsets.only(bottom: 15),
-                            youtubeUrl: widget.link!,
-                            color: const Color.fromARGB(255, 54, 168,
-                                244), // New property for customizing controls color
-                            // materialProgressColors and cupertinoProgressColors are no longer available
-                          ),
-                        ),
+                        //     bottomButtonBarMargin: EdgeInsets.all(8),
+                        //     seekBarMargin: EdgeInsets.all(10),
+
+                        //     // onEnterFullScreen: (){
+                        //     //   getx.isFullscreen.value = true;
+                        //     // },
+                        //     // onExitFullScreen: (){
+                        //     //   getx.isFullscreen.value = false;
+                        //     // },
+                        //     fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
+                        //     fullscreenSeekBarMargin: EdgeInsets.only(bottom: 15),
+                        //     youtubeUrl: widget.link!,
+                        //     color: const Color.fromARGB(255, 54, 168, 244), // New property for customizing controls color
+                        //     // materialProgressColors and cupertinoProgressColors are no longer available
+                        //   ),
+                        // ),
                         SizedBox(
                           height: 30,
                         ),
@@ -925,6 +930,8 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                     .username,
                                                                 vcController:
                                                                     vcController,
+                                                                meeting:
+                                                                    meeting,
                                                               ),
                                                           ],
                                                         ),

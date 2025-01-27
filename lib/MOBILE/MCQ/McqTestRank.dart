@@ -4,17 +4,13 @@ import 'package:dthlms/MOBILE/MCQ/mockTestAns.dart';
 import 'package:dthlms/PC/MCQ/MOCKTEST/resultMcqTest.dart';
 import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
+import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:fl_chart/fl_chart.dart';
-// import 'package:dthlms/THEME_DATA/font/font_family.dart';
-// import 'package:dthlms/android/MCQ/mockTestAns.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-
 import '../../API/ALL_FUTURE_FUNTIONS/all_functions.dart';
-// import 'package:path/path.dart';
 
 class RankPage extends StatefulWidget {
   final String paperId;
@@ -44,11 +40,6 @@ class RankPage extends StatefulWidget {
 class _RankPageState extends State<RankPage>
     with SingleTickerProviderStateMixin {
   Getx getx = Get.put(Getx());
-  // final List<McqItem> mcqData = Get.arguments['mcqData'];
-  // final Map<int, int> userAns = Get.arguments['userAns'];
-  // final List<Map<int, int>> correctAnswers = Get.arguments['correctAnswers'];
-  // final int totalnomber = Get.arguments['totalnumber'];
-
   bool _isLottieVisible = true;
   late AnimationController _animationController;
 
@@ -134,7 +125,7 @@ class _RankPageState extends State<RankPage>
                 icon: Icon(Icons.arrow_back_ios_new_outlined)),
             title: Text(
               'Scoreboard',
-              style: TextStyle(color: Colors.white),
+              style: FontFamily.styleb.copyWith(color: Colors.white),
             ),
             actions: [
               IconButton(

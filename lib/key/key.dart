@@ -23,7 +23,7 @@ decryptPdf(encryptedPdfFile) async {
 
 Future<dynamic> writedata(List<int> encResult, String s) async {
   if (kDebugMode) {
-    print('Writting data');
+    // print('Writting data');
   }
   File f = File(s);
   await f.writeAsBytes(encResult);
@@ -32,7 +32,7 @@ Future<dynamic> writedata(List<int> encResult, String s) async {
 
 Future<Uint8List> readData(planstring) async {
   if (kDebugMode) {
-    print('reading encrypted file data.......');
+    // print('reading encrypted file data.......');
   }
   File f = File(planstring);
   return await f.readAsBytes();

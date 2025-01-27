@@ -13,7 +13,8 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../PC/PACKAGEDETAILS/packagedetails.dart';
-import '../../constants/constants.dart';
+import '../../constants.dart';
+import '../../constants.dart';
 
 class Mobile_Package_content extends StatefulWidget {
   final int packageid;
@@ -94,6 +95,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callData();
     });
+    getx.isInsidePackage.value = true;
 
     super.initState();
   }
@@ -235,47 +237,12 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     });
   }
 
-  // initState((){});
   @override
   void dispose() {
     getx.sectionListOfPackage.clear();
-    // getx.infoFetch.clear();
-    // TODO: implement dispose
+    getx.isInsidePackage.value = false;
     super.dispose();
   }
-
-  // static final List<List<Color>> gradientColorsList = [
-  //   [
-  //     // Light orange -> peach
-  //     const Color(0xFFFFF1D5),
-  //     const Color(0xFFFFE0AF),
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     const Color(0xFFFEE4F3),
-  //     const Color(0xFFFDD3E7),
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.blue.shade200,
-  //     Colors.blue.shade100
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.orange.shade200,
-  //     Colors.orange.shade100
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.green.shade200,
-  //     Colors.green.shade100
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.brown.shade200,
-  //     Colors.brown.shade100
-  //   ],
-  // ];
 
   final List<Map<String, dynamic>> folderIcons = [
     {
@@ -425,8 +392,6 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     return iconData['color2'];
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -453,23 +418,22 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           item['section'] != 'PDF' &&
                           item['section'] != 'YouTube')
                       .toList();
-      
+
                   return InkWell(
                     onTap: () {
                       paging(filteredList[index]['section']);
-      
-                      if (filteredList[index]['section'] ==
-                          "Video" || filteredList[index]['section'] ==
-                          "PDF") {
+
+                      if (filteredList[index]['section'] == "Video" ||
+                          filteredList[index]['section'] == "PDF") {
                         resetTblLocalNavigationByOrderOnsection(1);
                         print(filteredList[index]['section'] + "wow mc");
-      
+
                         insertTblLocalNavigation(
                                 "Section",
                                 widget.packageid.toString(),
                                 filteredList[index]["section"])
                             .whenComplete(() => null);
-      
+
                         getMainChapter(widget.packageid);
                         getLocalNavigationDetails();
                       }
@@ -492,7 +456,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           // zipTextColor: Colors.orange,
                           ),
                     ),
-      
+
                     //  Container(
                     //   margin:
                     //       EdgeInsets.symmetric(vertical: 8, horizontal: 10),

@@ -11,7 +11,7 @@ import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
@@ -32,19 +32,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../../API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import '../../constants.dart';
 
 class MobileVideoPlayer extends StatefulWidget {
   final int Videoindex;
   final String videoLink;
   final String? packageId;
   final String? fileId;
+  final List? videoList;
 
   MobileVideoPlayer(
       {required this.videoLink,
       required this.Videoindex,
       super.key,
       this.packageId,
-      this.fileId});
+      this.fileId,
+      this.videoList});
 
   @override
   State<MobileVideoPlayer> createState() => _MobileVideoPlayerState();
@@ -285,7 +288,116 @@ initialFunctionOfRightPlayer() {
       child: Scaffold(
 
         body: SafeArea(
+<<<<<<< HEAD
          
+=======
+          // child: MaterialDesktopVideoControlsTheme(
+          //   normal: MaterialDesktopVideoControlsThemeData(
+          //     bottomButtonBar: [MaterialDesktopPositionIndicator()],
+          //     topButtonBar: [
+          //       Obx(
+          //         () => MaterialDesktopCustomButton(
+          //           onPressed: () {
+          //             getx.videoplaylock.value = !getx.videoplaylock.value;
+          //             print(getx.videoplaylock.value);
+          //           },
+          //           icon: getx.videoplaylock.value
+          //               ? Icon(Icons.lock)
+          //               : Icon(Icons.lock_open),
+          //         ),
+          //       ),
+          //       const Spacer(),
+          //       MaterialDesktopCustomButton(
+          //         onPressed: () {
+          //           showDialog(
+          //             barrierDismissible: false,
+          //             context: context,
+          //             builder: (context) {
+          //               return AlertDialog(
+          //                 shadowColor: ColorPage.white,
+          //                 backgroundColor: ColorPage.white,
+          //                 surfaceTintColor: ColorPage.white,
+          //                 content: Card(
+          //                   child: SizedBox(
+          //                     width: 200,
+          //                     child: TextFormField(
+          //                       decoration: InputDecoration(
+          //                         border: OutlineInputBorder(),
+          //                         hintText: 'Typing somthing...',
+          // ),
+          //                          maxLines: 5,
+          //                     ),
+          //                   ),
+          //                 ),
+          //                 title: Text(
+          //                   'Write your tag',
+          //                   style: FontFamily.font,
+          //                 ),
+          //                 actions: [
+          //                   ElevatedButton(
+          //                     onPressed: () {
+          //                       Get.back();
+          //                     },
+          //                     child: Text(
+          //                       'Cancel',
+          //                       style: FontFamily.font3,
+          //                     ),
+          //                     style: ButtonStyle(
+          //                       backgroundColor:
+          //                           MaterialStatePropertyAll(ColorPage.red),
+          //                       shape: MaterialStatePropertyAll(
+          //                         ContinuousRectangleBorder(),
+          //                       ),
+          //                     ),
+          //                   ),
+          //                   ElevatedButton(
+          //                     onPressed: () {
+          //                       Get.back();
+          //                     },
+          //                     child: Text(
+          //                       'Save',
+          //                       style: FontFamily.font3,
+          //                     ),
+          //                     style: ButtonStyle(
+          //                       backgroundColor:
+          //                           MaterialStatePropertyAll(ColorPage.color1),
+          //                       shape: MaterialStatePropertyAll(
+          //                           ContinuousRectangleBorder()),
+          //                     ),
+          //                   ),
+          //                 ],
+          //               );
+          //             },
+          //           );
+          //         },
+          //         icon: Icon(Icons.edit_note),
+          //       ),
+          //     ],
+          //     controlsHoverDuration: Duration(seconds: 5),
+          //     primaryButtonBar: [
+          //       MaterialDesktopSkipPreviousButton(
+          //         iconSize: 80,
+          //         iconColor: ColorPage.red,
+          //       ),
+          //       MaterialDesktopPlayOrPauseButton(
+          //         iconSize: 80,
+          //       ),
+          //     ],
+          //     seekBarThumbColor: ColorPage.colorbutton,
+          //     seekBarPositionColor: ColorPage.colorbutton,
+          //     toggleFullscreenOnDoublePress: false,
+          //   ),
+          //   fullscreen: MaterialDesktopVideoControlsThemeData(),
+          //   child: Container(
+          //     height: 270,
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(8),
+          //     ),
+          //     padding: EdgeInsets.only(bottom: 40),
+          //     child: Video(controller: videoPlay.controller),
+          //   ),
+          // ),
+>>>>>>> c48a9f5ea1866b566c042f9f3c1d6880101f88a7
           child: MaterialVideoControlsTheme(
             normal: MaterialVideoControlsThemeData(
               controlsHoverDuration: Duration(seconds: 15),

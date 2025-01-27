@@ -14,7 +14,7 @@ import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/project_setup.dart';
 
@@ -64,7 +64,7 @@ Future loginApi(
       body: json.encode(logindata),
     );
     var jsondata = json.decode(res.body);
-    print(jsondata);
+    // print(jsondata);
 
     if (jsondata['isSuccess'] == true) {
       final jwt = JWT.decode(jsondata['result']['token']);
@@ -219,7 +219,7 @@ Future signupApi(
   String whatsappnumbercountryid,
   String whatsappnumbercode,
 ) async {
-  print(ClsUrlApi.signupEndpoint);
+  // print(ClsUrlApi.signupEndpoint);
   try {
     loader(context);
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -372,7 +372,7 @@ Future signupcodegenerate(
         getObj.otplineshow.value = true;
         return key;
       } else {
-        print(datacode);
+        // print(datacode);
         ClsErrorMsg.fnErrorDialog(
             context,
             'Sign up',
@@ -557,17 +557,17 @@ Future<void> backgroundlistApi(String token) async {
           await insertBlackList(
               blackList.map((app) => app as Map<String, dynamic>).toList());
         } else {
-          print('No whitelist entries found.');
+          // print('No whitelist entries found.');
         }
       } else {
-        print('Failed to get a successful response.');
+        // print('Failed to get a successful response.');
       }
     } else {
-      print('Failed to fetch data: ${res.statusCode}, ${res.body}');
+      // print('Failed to fetch data: ${res.statusCode}, ${res.body}');
     }
   } catch (e) {
     writeToFile(e, 'backgroundlistApi');
-    print('An error occurred: $e');
+    // print('An error occurred: $e');
   }
 }
 
@@ -591,7 +591,7 @@ Future<void> writeAppsToDMJFile(List<String> apps) async {
     // log("File contents: ${await file.readAsString()}");
   } catch (e) {
     writeToFile(e, 'writeAppsToDMJFile');
-    print("Failed to write to .dmj file: $e");
+    // print("Failed to write to .dmj file: $e");
   }
 }
 

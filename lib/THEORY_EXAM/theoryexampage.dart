@@ -1,6 +1,4 @@
 import 'dart:async';
-// import 'dart:js_interop';
-
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
@@ -471,6 +469,11 @@ class _TheoryExamPageState extends State<TheoryExamPage> {
   // late Timer _timer;
 
 //  ProfessionalUI()
+
+  Widget feedback() {
+    return Placeholder();
+  }
+
   @override
   Widget build(BuildContext context) {
     golablContext = context;
@@ -628,123 +631,206 @@ class _TheoryExamPageState extends State<TheoryExamPage> {
                                           itemCount: sheetNumber.toInt(),
                                           itemBuilder: (context, index) {
                                             if (index < _images.length) {
-                                              return Card(
-                                                elevation: 4,
-                                                child: Container(
-                                                  color: ColorPage.white,
-                                                  padding: EdgeInsets.all(6),
-                                                  child: GestureDetector(
-                                                    onTap: () => _selectImage(
-                                                        _images[index]),
-                                                    child: Stack(
-                                                      children: [
-                                                        ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(4),
-                                                          child: Image.file(
-                                                            _images[index],
-                                                            fit: BoxFit.cover,
-                                                            width:
-                                                                double.infinity,
-                                                            height:
-                                                                double.infinity,
+                                              return Draggable<int>(
+                                                data: index,
+                                                feedback: SizedBox(
+                                                  height: 150,
+                                                  width: 150,
+                                                  child: Card(
+                                                      elevation: 4,
+                                                      child: Container(
+                                                        color: Colors.white,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(6),
+                                                        child: GestureDetector(
+                                                          onTap: () =>
+                                                              _selectImage(
+                                                                  _images[
+                                                                      index]),
+                                                          child: Stack(
+                                                            children: [
+                                                              ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            4),
+                                                                child:
+                                                                    Image.file(
+                                                                  _images[
+                                                                      index],
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: double
+                                                                      .infinity,
+                                                                ),
+                                                              ),
+                                                              Positioned(
+                                                                right: 0,
+                                                                top: 0,
+                                                                child:
+                                                                    IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons 
+                                                                          .delete,
+                                                                      color: Colors
+                                                                          .red),
+                                                                  onPressed: () =>
+                                                                      _deleteImage(
+                                                                          _images[
+                                                                              index]),
+                                                                ),
+                                                              ),
+                                                              Positioned(
+                                                                left: 5,
+                                                                top:5,
+                                                                child: Text((index+1).toString(),style: FontFamily.styleb.copyWith(color: Colors.blueGrey),)),
+                                                                Positioned(
+                                                                  bottom: 5,
+                                                                  left: 5,
+                                                                  child: Icon(Icons.drag_handle_rounded,color: Colors.blueGrey,))
+
+                                                            ],
                                                           ),
                                                         ),
-                                                        Positioned(
-                                                          right: 0,
-                                                          top: 0,
-                                                          child: IconButton(
-                                                            icon: Icon(
-                                                                Icons.delete,
-                                                                color:
-                                                                    Colors.red),
-                                                            onPressed: () =>
-                                                                _deleteImage(
-                                                                    _images[
-                                                                        index]),
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
+                                                ),
+                                                childWhenDragging:
+                                                    const SizedBox(), // Placeholder when item is dragged
+                                                child: DragTarget<int>(
+                                                  onAcceptWithDetails:
+                                                      (fromIndex) {
+                                                    setState(() {
+                                                      final draggedItem =
+                                                          _images.removeAt(
+                                                              fromIndex.data);
+                                                      _images.insert(
+                                                          index, draggedItem);
+                                                    });
+                                                  },
+                                                  onWillAcceptWithDetails:
+                                                      (fromIndex) =>
+                                                          fromIndex !=
+                                                          index, // Avoid replacing with itself
+                                                  builder: (context,
+                                                      candidateData,
+                                                      rejectedData) {
+                                                    return Card(
+                                                      elevation: 4,
+                                                      child: Container(
+                                                        color: Colors.white,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(6),
+                                                        child: GestureDetector(
+                                                          onTap: () =>
+                                                              _selectImage(
+                                                                  _images[
+                                                                      index]),
+                                                          child: Stack(
+                                                            children: [
+                                                              ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            4),
+                                                                child:
+                                                                    Image.file(
+                                                                  _images[
+                                                                      index],
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: double
+                                                                      .infinity,
+                                                                ),
+                                                              ),
+                                                              Positioned(
+                                                                right: 0,
+                                                                top: 0,
+                                                                child:
+                                                                    IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .delete,
+                                                                      color: Colors
+                                                                          .red),
+                                                                  onPressed: () =>
+                                                                      _deleteImage(
+                                                                          _images[
+                                                                              index]),
+                                                                ),
+                                                              ),
+                                                              Positioned(
+                                                                left: 5,
+                                                                top:5,
+                                                                child: Text((index+1).toString(),style: FontFamily.styleb.copyWith(color: Colors.blueGrey),)),
+                                                                Positioned(
+                                                                  bottom: 5,
+                                                                  left: 5,
+                                                                  child: Icon(Icons.drag_handle_rounded,color: Colors.blueGrey,))
+
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
                                                 ),
                                               );
                                             } else {
                                               return Container(
-                                                  color: Colors.grey.shade100,
-                                                  child: Center(
-                                                    child: GestureDetector(
-                                                      onTap: _pickImage,
-                                                      child: Container(
-                                                        width: 150,
-                                                        height: 150,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(8),
-                                                          border: Border.all(
+                                                color: Colors.grey.shade100,
+                                                child: Center(
+                                                  child: GestureDetector(
+                                                    onTap: _pickImage,
+                                                    child: Container(
+                                                      width: 150,
+                                                      height: 150,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        border: Border.all(
+                                                            color: Colors
+                                                                .blueAccent,
+                                                            width: 2),
+                                                        color: Colors.white,
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          const Icon(Icons.add,
+                                                              size: 40,
+                                                              color: Colors
+                                                                  .blueAccent),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          const Text(
+                                                            "Select your Sheet",
+                                                            style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
                                                               color: Colors
                                                                   .blueAccent,
-                                                              width: 2),
-                                                          color: Colors.white,
-                                                        ),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(Icons.add,
-                                                                size: 40,
-                                                                color: Colors
-                                                                    .blueAccent),
-                                                            const SizedBox(
-                                                                height: 8),
-                                                            Text(
-                                                              "Select your Sheet",
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .blueAccent,
-                                                              ),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
                                                             ),
-                                                          ],
-                                                        ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                  ));
-
-                                              // GestureDetector(
-                                              //   onTap: _pickImage,
-                                              //   child: Container(
-                                              //     decoration: BoxDecoration(
-                                              //       color: Colors.grey[300],
-                                              //       borderRadius:
-                                              //           BorderRadius.circular(10),
-                                              //     ),
-                                              //     child: Column(
-                                              //       mainAxisAlignment:
-                                              //           MainAxisAlignment.center,
-                                              //       children: [
-                                              //         Icon(Icons.add,
-                                              //             size: 50,
-                                              //             color: Colors.grey[700]),
-                                              //         Text("Select your Sheet",
-                                              //             style: FontFamily.font3
-                                              //                 .copyWith(
-                                              //                     color: Colors
-                                              //                         .grey[700])),
-                                              //       ],
-                                              //     ),
-                                              //   ),
-                                              // );
+                                                  ),
+                                                ),
+                                              );
                                             }
                                           },
                                         ),

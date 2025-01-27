@@ -434,7 +434,7 @@ Future<void> downloadAnswerSheet(String url) async {
                            decoration: BoxDecoration(
                                color: Colors.white,
                                borderRadius: BorderRadius.circular(20)),
-                           child: Row(
+                           child: Column(
                              mainAxisAlignment: MainAxisAlignment.center,
                              children: [
                                SizedBox(
@@ -468,32 +468,37 @@ Future<void> downloadAnswerSheet(String url) async {
                                  ),
                                ),
                                SizedBox(
-                                 width: 40,
+                                 height: 10,
                                ),
-                              const Column(
-                                       mainAxisAlignment: MainAxisAlignment.end,
-                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                       children: <Widget>[
-                                  Indicator(
-                                    color: AppColors.contentColorBlue,
-                                    text: 'Remaining Marks',
-                                    isSquare: true,
-                                  ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
-                                  Indicator(
-                                    color: AppColors.contentColorYellow,
-                                    text: 'Obtain Marks',
-                                    isSquare: true,
-                                  ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
-                                 
-                                ],
-                                
-                                     ),
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                 children: [
+                                   Column(
+                                     
+                                           crossAxisAlignment: CrossAxisAlignment.center,
+                                           children: <Widget>[
+                                      Indicator(
+                                        color: AppColors.contentColorBlue,
+                                        text: 'Remaining Marks',
+                                        isSquare: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Indicator(
+                                        color: AppColors.contentColorYellow,
+                                        text: 'Obtain Marks',
+                                        isSquare: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                     
+                                    ],
+                                    
+                                         ),
+                                 ],
+                               ),
                              ],
                            ),
                          ),
