@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 // import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -40,7 +41,8 @@ class MobileVideoPlayer extends StatefulWidget {
   final String videoLink;
   final String? packageId;
   final String? fileId;
-  final List? videoList;
+  final List<dynamic> videoList;
+  final bool? singleplay;
 
   MobileVideoPlayer(
       {required this.videoLink,
@@ -48,7 +50,8 @@ class MobileVideoPlayer extends StatefulWidget {
       super.key,
       this.packageId,
       this.fileId,
-      this.videoList});
+      required this.videoList,
+      this.singleplay});
 
   @override
   State<MobileVideoPlayer> createState() => _MobileVideoPlayerState();
@@ -78,8 +81,13 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
     getx.playLink.value = widget.videoLink;
     //  log(getx.playLink.value);
     print(widget.videoLink + '///////////////////');
+    // log(5566666666666666666666.5);
+    print(
+        'object********************************************************************************************');
+    print(widget.singleplay);
     videoPlay = VideoPlayClass();
-    videoPlay.updateVideoLink(getx.playLink.value);
+    videoPlay.updateVideoLink(getx.playLink.value,
+        widget.singleplay == true ? widget.videoList : [getx.playLink.value]);
     initialFunctionOfRightPlayer();
     // initialFunctionOfRightPlayer();
     dio = Dio();
@@ -400,14 +408,20 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
           // ),
           child: MaterialVideoControlsTheme(
             normal: MaterialVideoControlsThemeData(
+              automaticallyImplySkipNextButton: true,
+              automaticallyImplySkipPreviousButton: true,
+
               controlsHoverDuration: Duration(seconds: 15),
               primaryButtonBar: [
                 MaterialSkipPreviousButton(
-                  iconSize: 80,
+                  iconSize: 40,
                 ),
                 MaterialPlayOrPauseButton(
                   iconSize: 80,
                 ),
+                MaterialSkipNextButton(
+                  iconSize: 40,
+                )
               ],
               seekBarThumbSize: 20,
               brightnessGesture: true,
@@ -415,6 +429,7 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
               buttonBarButtonSize: 20,
               seekBarThumbColor: Colors.blue,
               seekBarPositionColor: Colors.blue,
+
               // bottomButtonBar: [MaterialPositionIndicator()],
               topButtonBar: [
                 Obx(
@@ -566,8 +581,9 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
                 ),
               ],
             ),
-            fullscreen:
-                const MaterialVideoControlsThemeData(seekOnDoubleTap: true),
+            fullscreen: const MaterialVideoControlsThemeData(
+              seekOnDoubleTap: true,
+            ),
             child: Container(
               //  color: Colors.red,
               child: Column(

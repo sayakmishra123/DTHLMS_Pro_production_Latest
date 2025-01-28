@@ -112,8 +112,8 @@ void main(List<String> arguments) async {
   // Parse arguments from the terminal
   final appName = arguments[0];
   final appId = arguments[1];
-  final versionName = arguments[2];
-  final versionCode = int.tryParse(arguments[3]) ?? 1;
+  // final versionName = arguments[2];
+  // final versionCode = int.tryParse(arguments[3]) ?? 1;
   final logopath = arguments.length > 4
       ? arguments[4]
       : 'assets/icons/AAC.png'; // Optional argument for logopath
@@ -155,8 +155,8 @@ void main(List<String> arguments) async {
   print('Configuration loaded:');
   print('App Name: $appName');
   print('App ID: $appId');
-  print('Version Name: $versionName');
-  print('Version Code: $versionCode');
+  // print('Version Name: $versionName');
+  // print('Version Code: $versionCode');
 
   // Update Android build.gradle
   print('Updating Android build.gradle...');
@@ -167,19 +167,18 @@ void main(List<String> arguments) async {
   }
 
   String buildGradleContent = await buildGradleFile.readAsString();
-  buildGradleContent = buildGradleContent
-      .replaceAll(
-        RegExp(r'applicationId\s*=\s*".*"', caseSensitive: false),
-        'applicationId = "$appId"',
-      )
-      .replaceAll(
-        RegExp(r'versionName\s*=\s*".*"', caseSensitive: false),
-        'versionName = "$versionName"',
-      )
-      .replaceAll(
-        RegExp(r'versionCode\s*=\s*\d+', caseSensitive: false),
-        'versionCode = $versionCode',
-      );
+  buildGradleContent = buildGradleContent.replaceAll(
+    RegExp(r'applicationId\s*=\s*".*"', caseSensitive: false),
+    'applicationId = "$appId"',
+  );
+  // .replaceAll(
+  //   RegExp(r'versionName\s*=\s*".*"', caseSensitive: false),
+  //   'versionName = "$versionName"',
+  // )
+  // .replaceAll(
+  //   RegExp(r'versionCode\s*=\s*\d+', caseSensitive: false),
+  //   'versionCode = $versionCode',
+  // );
 
   // Write the updated content back to build.gradle
   await buildGradleFile.writeAsString(buildGradleContent);
@@ -202,12 +201,12 @@ void main(List<String> arguments) async {
       'VALUE "FileDescription", "$appName"');
   runnerRcContent = runnerRcContent.replaceAll(
       RegExp(r'VALUE "ProductName", ".*"'), 'VALUE "ProductName", "$appName"');
-  runnerRcContent = runnerRcContent.replaceAll(
-      RegExp(r'VALUE "FileVersion", ".*"'),
-      'VALUE "FileVersion", "$versionName"');
-  runnerRcContent = runnerRcContent.replaceAll(
-      RegExp(r'VALUE "ProductVersion", ".*"'),
-      'VALUE "ProductVersion", "$versionName"');
+  // runnerRcContent = runnerRcContent.replaceAll(
+  //     RegExp(r'VALUE "FileVersion", ".*"'),
+  //     'VALUE "FileVersion", "$versionName"');
+  // runnerRcContent = runnerRcContent.replaceAll(
+  //     RegExp(r'VALUE "ProductVersion", ".*"'),
+  //     'VALUE "ProductVersion", "$versionName"');
 
   await runnerRcFile.writeAsString(runnerRcContent);
   print('Windows runner.rc updated successfully.');

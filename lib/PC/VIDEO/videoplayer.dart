@@ -85,7 +85,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
       Tags(videoPlay: videoPlay), // Pass videoPlay instance here
       AskDoubt()
     ];
-    videoPlay.updateVideoLink(getx.playLink.value);
+    videoPlay.updateVideoLink(getx.playLink.value, []);
     initialFunctionOfRightPlayer();
     // initialFunctionOfRightPlayer();
     dio = Dio();
@@ -845,7 +845,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                             videoPlay
                                                                 .updateVideoLink(
                                                                     getx.playLink
-                                                                        .value);
+                                                                        .value,
+                                                                    []);
                                                             if (await isProcessRunning(
                                                                     "dthlmspro_video_player") ==
                                                                 false) {
@@ -1076,9 +1077,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                                                       [
                                                                       'FileId'];
                                                               videoPlay
-                                                                  .updateVideoLink(getx
-                                                                      .playLink
-                                                                      .value);
+                                                                  .updateVideoLink(
+                                                                      getx.playLink
+                                                                          .value,
+                                                                      []);
                                                               if (await isProcessRunning(
                                                                       "dthlmspro_video_player") ==
                                                                   false) {
@@ -1362,7 +1364,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
         _videoFilePath = savePath;
         getx.playingVideoId.value =
             getx.alwaysShowChapterfilesOfVideo[index]["FileId"];
-        videoPlay.updateVideoLink(savePath);
+        videoPlay.updateVideoLink(savePath, []);
         setState(() {});
 
         fetchUploadableVideoInfo().then((valueList) async {
