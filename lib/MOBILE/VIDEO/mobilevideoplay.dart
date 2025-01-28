@@ -288,9 +288,6 @@ initialFunctionOfRightPlayer() {
       child: Scaffold(
 
         body: SafeArea(
-<<<<<<< HEAD
-         
-=======
           // child: MaterialDesktopVideoControlsTheme(
           //   normal: MaterialDesktopVideoControlsThemeData(
           //     bottomButtonBar: [MaterialDesktopPositionIndicator()],
@@ -397,7 +394,6 @@ initialFunctionOfRightPlayer() {
           //     child: Video(controller: videoPlay.controller),
           //   ),
           // ),
->>>>>>> c48a9f5ea1866b566c042f9f3c1d6880101f88a7
           child: MaterialVideoControlsTheme(
             normal: MaterialVideoControlsThemeData(
               controlsHoverDuration: Duration(seconds: 15),
