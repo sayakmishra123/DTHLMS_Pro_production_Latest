@@ -668,7 +668,10 @@ Positioned(
               context,
               getxController.loginuserdata[0].token,
               int.parse(widget.paperId),
-              documentId);
+              documentId).then((value){
+                      if(value){ _onUploadSuccessFull(context);
+          print("Images uploaded: ${_images.length} images");}
+              });
           // Hide progress indicator
           Navigator.of(context).pop();
 
@@ -676,8 +679,7 @@ Positioned(
           print('Uploaded image IDs: $imageIds');
           isUploaded.value = true;
 
-          _onUploadSuccessFull(context);
-          print("Images uploaded: ${_images.length} images");
+   
         } catch (e) {
           writeToFile(e, "_uploadImageList");
           // Handle errors here

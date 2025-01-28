@@ -1744,6 +1744,9 @@ Future sendDocumentIdOfanswerSheets(
 
     if (res.statusCode == 201) {
       var jsonResponse = jsonDecode(res.body);
+      updateIsSubmittedOnTblTheoryPaperTable(paperid.toString(),"1",context);
+
+      return true;
 
 // Get.back();
 
@@ -1767,6 +1770,7 @@ Future sendDocumentIdOfanswerSheets(
     writeToFile(e, 'sendDocumentIdOfanswerSheets');
     // print("Error: $e+'sendDocumentIdOfanswerSheets'"); // Error handling
   }
+  return false;
 }
 
 Future getFullBannerPackages(BuildContext context, String token) async {
@@ -2277,6 +2281,7 @@ Future<bool> gettheoryExamDataForTest2(
                       examSet['SetUptoDate'].toString(),
 
                       examSet['SetFromDate'].toString(),
+                      "0"
                     );
                   }
                 }

@@ -2731,7 +2731,8 @@ void createTheoryPaper() {
      PassMarks TEXT,
    
      PaperEndDate TEXT,
-     PaperStartDate TEXT
+     PaperStartDate TEXT,
+     IsSubmitted TEXT
    
    
    
@@ -2753,12 +2754,13 @@ Future<void> inserTblTheoryPaper(
   String passMarks,
   String paperEndDate,
   String paperStartDate,
+  String isSubmited
 ) async {
   try {
     _db.execute(
       '''
-        INSERT INTO TblTheoryPaper (PaperId, SetId, PaperName,TotalMarks,TermAndCondition,Duration,DocumentUrl,StartTime,PassMarks,PaperEndDate,PaperStartDate)
-        VALUES (?, ?, ?,?,?,?,?,?,?,?,?)
+        INSERT INTO TblTheoryPaper (PaperId, SetId, PaperName,TotalMarks,TermAndCondition,Duration,DocumentUrl,StartTime,PassMarks,PaperEndDate,PaperStartDate,IsSubmitted)
+        VALUES (?, ?, ?,?,?,?,?,?,?,?,?,?)
         ''',
       [
         paperId,
@@ -2771,7 +2773,8 @@ Future<void> inserTblTheoryPaper(
         startTime,
         passMarks,
         paperEndDate,
-        paperStartDate
+        paperStartDate,
+        isSubmited
       ],
     );
     // log("insert Successfull   $paperId");
@@ -3739,3 +3742,18 @@ String getVideoPlayModeFromPackageId(String packageId) {
 }
 
 
+Future<void> updateIsSubmittedOnTblTheoryPaperTable(String paperId, 
+    String issubmited, BuildContext context) async {
+  try {
+    _db.execute('''
+      UPDATE TblTheoryPaper
+      SET IsSubmitted = ?
+      WHERE PaperId = ?;
+    ''', [issubmited, paperId]);
+
+ 
+  } catch (e) {
+    writeToFile(e, 'updateIsSubmittedOnTblTheoryPaperTable');
+    print('Failed to update details: ${e.toString()}');
+  }
+}

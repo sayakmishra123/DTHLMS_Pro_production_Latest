@@ -171,6 +171,7 @@ initialFunctionOfRightPlayer() {
           videoPlay.startclocktime.toString(),
           utcTime.millisecondsSinceEpoch,
           0,
+          type: "video"
         );
 
         updateVideoConsumeDuration(
@@ -515,7 +516,7 @@ initialFunctionOfRightPlayer() {
                                         videoPlay.player.state.rate.toString(),
                                         videoPlay.startclocktime.toString(),
                                         utcTime.millisecondsSinceEpoch,
-                                        0);
+                                        0,type: "video");
                                     videoPlay.totalPlayTimeofVideo =
                                         Duration.zero;
                                     // videoPlay.startTrackingPlayTime();
