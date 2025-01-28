@@ -45,11 +45,6 @@ class VideoPlayClass {
     videoLink = newLink;
 
     player.open(
-<<<<<<< HEAD
-
-      
-=======
->>>>>>> c48a9f5ea1866b566c042f9f3c1d6880101f88a7
       // Playlist(),
       Media(!File(videoLink).existsSync()
           ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
