@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:background_downloader/background_downloader.dart';
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
@@ -680,23 +682,140 @@ class _MobilePackageVideoDashboardState
 
     bool isDownloading = false;
 
+    // Future<void> startDownload(int index, String Link, String title) async {
+    //   if (Link == "0") {
+    //     print("ZVideo link is $Link");
+    //     return;
+    //   }
+
+    //   final appDocDir;
+    //   final cancelToken =
+    //       CancelToken(); // Create a new CancelToken for this download
+    //   cancelTokens[index] =
+    //       cancelToken; // Store the token to allow cancellation later
+
+    //   try {
+    //     var prefs = await SharedPreferences.getInstance();
+    //     final path = await getApplicationDocumentsDirectory();
+    //     appDocDir = path.path;
+
+    //     getx.defaultPathForDownloadVideo.value =
+    //         appDocDir + '/$origin' + '/Downloaded_videos';
+    //     prefs.setString("DefaultDownloadpathOfVieo",
+    //         appDocDir + '/$origin' + '/Downloaded_videos');
+    //     print(getx.userSelectedPathForDownloadVideo.value +
+    //         " it is user selected path");
+
+    //     String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
+    //         ? appDocDir + '/$origin' + '/Downloaded_videos' + '/$title'
+    //         : getx.userSelectedPathForDownloadVideo.value + '/$title';
+
+    //     String tempPath = appDocDir + '/temp' + '/$title';
+
+    //     await Directory(appDocDir + '/temp').create(recursive: true);
+
+    //     // Set a timeout duration (e.g., 60 seconds) for the download process
+    //     const downloadTimeout = Duration(hours: 2);
+    //     int previousProgress = 0;
+    //     DateTime lastProgressUpdate = DateTime.now();
+
+    //     await dio.download(
+    //       Link,
+    //       tempPath,
+    //       cancelToken:
+    //           cancelToken, // Pass the CancelToken to the download method
+    //       onReceiveProgress: (received, total) {
+    //         if (total != -1) {
+    //           double progress = (received / total * 100);
+    //           setState(() {
+    //             downloadProgress[index] = progress;
+    //           });
+
+    //           // Track the last time progress was updated
+    //           if (progress != previousProgress) {
+    //             lastProgressUpdate = DateTime.now();
+    //             previousProgress = progress.toInt();
+    //           }
+    //         }
+    //       },
+    //     ).timeout(downloadTimeout, onTimeout: () {
+    //       // If the download took longer than the timeout
+    //       cancelToken.cancel(); // Cancel the download
+    //       return Future.error('Download Timeout');
+    //     });
+
+    //     // Check if the download progress got stuck (e.g., progress hasn't updated in the last 10 seconds)
+    //     if (DateTime.now().difference(lastProgressUpdate) >
+    //         Duration(seconds: 30)) {
+    //       cancelToken.cancel(); // Cancel the download
+    //       showErrorDialog(context, 'Download Stuck',
+    //           'The download seems to be stuck. Please try again.');
+    //       return;
+    //     }
+
+    //     // After download is complete, copy the file to the final location
+    //     final tempFile = File(tempPath);
+    //     final finalFile = File(savePath);
+
+    //     await finalFile.parent.create(recursive: true);
+    //     await tempFile.copy(savePath);
+    //     await tempFile.delete();
+
+    //     // Success case: Update the progress to 100% and set the video file path
+    //     setState(() {
+    //       downloadProgress[index] = 100.0; // Mark the download as completed
+    //       _videoFilePath = savePath;
+    //       getx.playingVideoId.value = filteredvideoDetails[index]["FileId"];
+    //     });
+
+    //     print('$savePath video saved to this location');
+
+    //     await insertDownloadedFileData(filteredvideoDetails[index]["PackageId"],
+    //         filteredvideoDetails[index]["FileId"], savePath, 'Video', title);
+
+    //     insertVideoDownloadPath(
+    //       filteredvideoDetails[index]["FileId"],
+    //       filteredvideoDetails[index]["PackageId"],
+    //       savePath,
+    //       context,
+    //     );
+    //   } catch (e) {
+    //     writeToFile(e, "startDownload");
+    //     if (e is DioException && CancelToken.isCancel(e)) {
+    //       print("Download canceled for index $index");
+    //     } else {
+    //       print(e.toString() + " error on download");
+    //       setState(() {
+    //         // Reset progress to 0 if there's an error
+    //         downloadProgress[index] = 0;
+    //       });
+    //       // Only show error dialog if there's a failure in the download process
+    //       showErrorDialog(context, 'Download Failed',
+    //           'An error occurred during the download. Please try again.');
+    //     }
+    //   } finally {
+    //     cancelTokens.remove(
+    //         index); // Remove the CancelToken when the download completes or fails
+    //   }
+    // }
+
     Future<void> startDownload(int index, String Link, String title) async {
+      log('$title $Link Sayak');
       if (Link == "0") {
-        print("ZVideo link is $Link");
+        print("Video link is $Link");
         return;
       }
 
       final appDocDir;
-      final cancelToken =
-          CancelToken(); // Create a new CancelToken for this download
-      cancelTokens[index] =
-          cancelToken; // Store the token to allow cancellation later
-
       try {
         var prefs = await SharedPreferences.getInstance();
         final path = await getApplicationDocumentsDirectory();
         appDocDir = path.path;
 
+        // Log the directories to check where it's trying to save
+        print('App Document Directory: $appDocDir');
+
+        // Define paths
         getx.defaultPathForDownloadVideo.value =
             appDocDir + '/$origin' + '/Downloaded_videos';
         prefs.setString("DefaultDownloadpathOfVieo",
@@ -707,90 +826,133 @@ class _MobilePackageVideoDashboardState
         String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
             ? appDocDir + '/$origin' + '/Downloaded_videos' + '/$title'
             : getx.userSelectedPathForDownloadVideo.value + '/$title';
+        log('Save path: $savePath');
 
+        // Temporary path for download
         String tempPath = appDocDir + '/temp' + '/$title';
+        log('Temporary path: $tempPath');
 
-        await Directory(appDocDir + '/temp').create(recursive: true);
-
-        // Set a timeout duration (e.g., 60 seconds) for the download process
-        const downloadTimeout = Duration(seconds: 60);
-        int previousProgress = 0;
-        DateTime lastProgressUpdate = DateTime.now();
-
-        await dio.download(
-          Link,
-          tempPath,
-          cancelToken:
-              cancelToken, // Pass the CancelToken to the download method
-          onReceiveProgress: (received, total) {
-            if (total != -1) {
-              double progress = (received / total * 100);
-              setState(() {
-                downloadProgress[index] = progress;
-              });
-
-              // Track the last time progress was updated
-              if (progress != previousProgress) {
-                lastProgressUpdate = DateTime.now();
-                previousProgress = progress.toInt();
-              }
-            }
-          },
-        ).timeout(downloadTimeout, onTimeout: () {
-          // If the download took longer than the timeout
-          cancelToken.cancel(); // Cancel the download
-          return Future.error('Download Timeout');
-        });
-
-        // Check if the download progress got stuck (e.g., progress hasn't updated in the last 10 seconds)
-        if (DateTime.now().difference(lastProgressUpdate) >
-            Duration(seconds: 30)) {
-          cancelToken.cancel(); // Cancel the download
-          showErrorDialog(context, 'Download Stuck',
-              'The download seems to be stuck. Please try again.');
-          return;
+        // Ensure temp directory exists
+        final tempDir = await Directory(appDocDir + '/temp');
+        if (!await tempDir.exists()) {
+          await tempDir.create(recursive: true);
+          print("Temporary directory created: ${tempDir.path}");
         }
 
-        // After download is complete, copy the file to the final location
-        final tempFile = File(tempPath);
-        final finalFile = File(savePath);
-
-        await finalFile.parent.create(recursive: true);
-        await tempFile.copy(savePath);
-        await tempFile.delete();
-
-        // Success case: Update the progress to 100% and set the video file path
-        setState(() {
-          downloadProgress[index] = 100.0; // Mark the download as completed
-          _videoFilePath = savePath;
-          getx.playingVideoId.value = filteredvideoDetails[index]["FileId"];
-        });
-
-        print('$savePath video saved to this location');
-
-        await insertDownloadedFileData(filteredvideoDetails[index]["PackageId"],
-            filteredvideoDetails[index]["FileId"], savePath, 'Video', title);
-
-        insertVideoDownloadPath(
-          filteredvideoDetails[index]["FileId"],
-          filteredvideoDetails[index]["PackageId"],
-          savePath,
-          context,
+        // Define the download task
+        final task = DownloadTask(
+          url: Link,
+          baseDirectory: BaseDirectory.applicationDocuments,
+          // baseDirectory: BaseDirectory.applicationDocuments,
+          directory: '/temp', // Download to the temp folder
+          filename: title,
+          updates: Updates.statusAndProgress,
+          allowPause: true,
+          metaData: 'Video download for $title',
         );
-      } catch (e) {
-        writeToFile(e, "startDownload");
-        if (e is DioException && CancelToken.isCancel(e)) {
-          print("Download canceled for index $index");
+
+        // Configure notification for all tasks
+        FileDownloader().configureNotification(
+          tapOpensFile: true,
+          running: TaskNotification('Downloading', 'Downloading: $title'),
+          complete: TaskNotification(
+              'Download finished', 'Download completed: $title'),
+          progressBar: true,
+          paused: TaskNotification(title, 'Download Paused'),
+        );
+
+        // Start the download and wait for the result
+        final result = await FileDownloader().download(
+          task,
+          onProgress: (progress) {
+            setState(() {
+              downloadProgress[index] =
+                  progress * 100; // Update the download progress
+            });
+            print('Progress: ${progress * 100}%');
+          },
+          onStatus: (status) {
+            switch (status) {
+              case TaskStatus.complete:
+                print('Download Complete!');
+                break;
+              case TaskStatus.canceled:
+                print('Download was canceled');
+                break;
+              case TaskStatus.paused:
+                print('Download was paused');
+                break;
+              default:
+                print('Download in progress');
+                break;
+            }
+          },
+        );
+
+        // Check if download was successful
+        if (result.status == TaskStatus.complete) {
+          // Check if the file exists in the temp directory before moving
+          final tempFile = File(tempPath);
+          final finalFile = File(savePath);
+
+          if (!await tempFile.exists()) {
+            print('Error: Temporary file not found at $tempPath');
+            showErrorDialog(context, 'Download Failed',
+                'The temporary file does not exist.');
+            return;
+          }
+
+          // Ensure the parent directory exists for the final file
+          await finalFile.parent.create(recursive: true);
+          print("Final directory created: ${finalFile.parent.path}");
+
+          // Move the file to the final destination
+          await tempFile.copy(savePath);
+          await tempFile.delete(); // Delete the temporary file
+          print('Moved file from $tempPath to $savePath');
+
+          // Success case: Update the progress to 100% and set the video file path
+          setState(() {
+            downloadProgress[index] = 100.0; // Mark the download as completed
+            _videoFilePath = savePath;
+            getx.playingVideoId.value = filteredvideoDetails[index]["FileId"];
+          });
+
+          print('$savePath video saved to this location');
+
+          await insertDownloadedFileData(
+            filteredvideoDetails[index]["PackageId"],
+            filteredvideoDetails[index]["FileId"],
+            savePath,
+            'Video',
+            title,
+          );
+
+          insertVideoDownloadPath(
+            filteredvideoDetails[index]["FileId"],
+            filteredvideoDetails[index]["PackageId"],
+            savePath,
+            context,
+          );
         } else {
-          print(e.toString() + " error on download");
+          print('Download not successful: ${result.status}');
           setState(() {
             // Reset progress to 0 if there's an error
             downloadProgress[index] = 0;
           });
-          // Only show error dialog if there's a failure in the download process
-          showErrorDialog(context, 'Download Failed',
-              'An error occurred during the download. Please try again.');
         }
+      } catch (e) {
+        writeToFile(e, "startDownload");
+        print(e.toString() + " error on download");
+        if (!mounted) {
+          setState(() {
+            // Reset progress to 0 if there's an error
+            downloadProgress[index] = 0;
+          });
+        }
+        // Show error dialog if download fails
+        showErrorDialog(context, 'Download Failed',
+            'An error occurred during the download. Please try again.');
       } finally {
         cancelTokens.remove(
             index); // Remove the CancelToken when the download completes or fails
@@ -1009,6 +1171,9 @@ class _MobilePackageVideoDashboardState
                                                     ['FileId']
                                                 .toString()),
                                     videoList: filteredvideoDetails,
+                                    singleplay: filteredvideoDetails.length > 1
+                                        ? true
+                                        : false,
                                   ));
                             },
                             icon: Icon(

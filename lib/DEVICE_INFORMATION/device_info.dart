@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:advertising_id/advertising_id.dart';
@@ -8,7 +9,6 @@ import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 
 import '../THEME_DATA/color/color.dart';
 
@@ -82,7 +82,7 @@ class ClsDeviceInfo {
       var info = await android.androidInfo;
       bool istablet = (MediaQuery.of(context).size.shortestSide >= 600);
       typeKind = istablet ? 'Tablet' : 'Mobile';
-
+      log(advertisingId.toString());
       return {
         'DeviceId1': advertisingId,
         'DeviceId2': info.id,

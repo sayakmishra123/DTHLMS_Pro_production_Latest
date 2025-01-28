@@ -822,8 +822,11 @@ class ShowResultPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Answer Sheet'),
       ),
-      body: SfPdfViewer.file(
-        File(filePath), // Display the PDF from the file path
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: SfPdfViewer.file(
+          File(filePath), // Display the PDF from the file path
+        ),
       ),
     );
   }

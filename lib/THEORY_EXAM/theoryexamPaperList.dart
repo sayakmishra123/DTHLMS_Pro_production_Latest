@@ -133,12 +133,10 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                   ));
                         }
                         if (examcode == 300) {
-                          _showDialogSubmited(context, "Already Submited!",
-                              "your exam is already submited.", () {
-                            Navigator.pop(context);
-                          }, () {
+
+                          
                             if (getx.isInternet.value) {
-                              Navigator.pop(context);
+                           
                               getTheryExamResultForIndividual(context,
                                       getx.loginuserdata[0].token, theoryPaperList[index]['PaperId']
                                         .toString())
@@ -180,6 +178,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                             theoryExamAnswerId: '12',
                                             examId: theoryPaperList[index]['PaperId']
                                         .toString(),
+                                        pdfurl:  value['CheckedDocumentUrl'].toString(),
                                           ));
                                 }
                               });
@@ -190,7 +189,11 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                 Navigator.pop(context);
                               }, false);
                             }
-                          });
+                          // _showDialogSubmited(context, "Already Submited!",
+                          //     "your exam is already submited.", () {
+                          //   Navigator.pop(context);
+                          // }, () {
+                          // });
                         }
                         if (examcode == 400) {
                           _showDialogoferror(context, "Time is Over!",

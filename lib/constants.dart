@@ -4,6 +4,6 @@ const String logopath = 'assets/icons/GBC.png';
 
 const String franchiseWebsiteLink = 'http://myfranchise.com';
 const String facebookPageLink = 'http://facebook.com/myapp';
-const String dbPassword = 'newPassword123';
+const String dbPassword = 'test';
 
 String webSiteLink = 'https://myapp.com';

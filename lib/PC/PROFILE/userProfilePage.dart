@@ -3734,6 +3734,9 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                         examId: snapshot
                                                                 .data![index]
                                                             ['TheoryExamId'],
+                                                            pdfurl:snapshot.data![
+                                                                    index][
+                                                                'CheckedDocumentUrl'] ,
                                                       ));
                                             })
                                         : Text("Result not publish ")))

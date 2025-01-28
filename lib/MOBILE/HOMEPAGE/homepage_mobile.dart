@@ -748,6 +748,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                                         'FileIdName'])
                                             .existsSync()) {
                                           Get.to(() => MobileVideoPlayer(
+                                                videoList: [],
                                                 videoLink: getx.playLink.value,
                                                 Videoindex: 0,
                                                 packageId:
@@ -1372,6 +1373,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       .toString();
 
                               Get.to(() => MobileVideoPlayer(
+                                    videoList: [],
                                     videoLink: getx.playLink.value,
                                     Videoindex: 0,
                                     packageId: (appointment.resourceIds![0]
@@ -1874,6 +1876,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               Get.back();
 
               Get.to(() => MobileVideoPlayer(
+                    videoList: [],
                     videoLink: getx.playLink.value,
                     Videoindex: 0,
                     packageId: packageId,

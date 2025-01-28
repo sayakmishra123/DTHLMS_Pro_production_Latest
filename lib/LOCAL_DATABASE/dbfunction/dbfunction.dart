@@ -47,7 +47,6 @@ void testSQLCipherOnWindows() async {
     );
     print("Database password set: $dbPassword");
   }
-  createsayak();
 
   getVersion();
 

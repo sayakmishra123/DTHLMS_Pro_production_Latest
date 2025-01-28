@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 // import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -39,7 +40,8 @@ class MobileVideoPlayer extends StatefulWidget {
   final String videoLink;
   final String? packageId;
   final String? fileId;
-  final List? videoList;
+  final List<dynamic> videoList;
+  final bool? singleplay;
 
   MobileVideoPlayer(
       {required this.videoLink,
@@ -47,7 +49,8 @@ class MobileVideoPlayer extends StatefulWidget {
       super.key,
       this.packageId,
       this.fileId,
-      this.videoList});
+      required this.videoList,
+      this.singleplay});
 
   @override
   State<MobileVideoPlayer> createState() => _MobileVideoPlayerState();
@@ -77,15 +80,18 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
     getx.playLink.value = widget.videoLink;
     //  log(getx.playLink.value);
     print(widget.videoLink + '///////////////////');
+    // log(5566666666666666666666.5);
+    print(
+        'object********************************************************************************************');
+    print(widget.singleplay);
     videoPlay = VideoPlayClass();
-    videoPlay.updateVideoLink(getx.playLink.value);
+    videoPlay.updateVideoLink(getx.playLink.value,
+        widget.singleplay == true ? widget.videoList : [getx.playLink.value]);
     initialFunctionOfRightPlayer();
     // initialFunctionOfRightPlayer();
     dio = Dio();
 
     super.initState();
-
-   
 
     _motionTabBarController = MotionTabBarController(
       initialIndex: 0,
@@ -113,11 +119,9 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
       getMCQListOfVideo(
           getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["PackageId"],
           getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["FileId"]);
-          getReviewQuestionListOfVideo(
+      getReviewQuestionListOfVideo(
           getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["PackageId"],
           getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["FileId"]);
-
-
 
       getPDFlistOfVideo(
           getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["PackageId"],
@@ -144,56 +148,55 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
 
   bool isPlaying = false;
   Timer? _timer;
-initialFunctionOfRightPlayer() {
-  creatTableVideoplayInfo();
+  initialFunctionOfRightPlayer() {
+    creatTableVideoplayInfo();
 
-  videoPlay.player.stream.playing.listen((bool playing) {
-    if (mounted) {
-      setState(() {
-        isPlaying = playing;
-      });
-    }
+    videoPlay.player.stream.playing.listen((bool playing) {
+      if (mounted) {
+        setState(() {
+          isPlaying = playing;
+        });
+      }
 
-    if (playing) {
-      videoPlay.startTrackingPlayTime();
+      if (playing) {
+        videoPlay.startTrackingPlayTime();
 
-      // Cancel any existing timer to avoid multiple timers running
-      _timer?.cancel();
+        // Cancel any existing timer to avoid multiple timers running
+        _timer?.cancel();
 
-      // Start a new timer that triggers every 5 seconds
-      _timer = Timer.periodic(Duration(seconds: 5), (timer) {
-        // Insert video play information
-        insertVideoplayInfo(
-          int.parse(getx.playingVideoId.value),
-          videoPlay.player.state.position.toString(),
-          videoPlay.totalPlayTime.inSeconds.toString(),
-          videoPlay.player.state.rate.toString(),
-          videoPlay.startclocktime.toString(),
-          utcTime.millisecondsSinceEpoch,
-          0,
-          type: "video"
-        );
+        // Start a new timer that triggers every 5 seconds
+        _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+          // Insert video play information
+          insertVideoplayInfo(
+              int.parse(getx.playingVideoId.value),
+              videoPlay.player.state.position.toString(),
+              videoPlay.totalPlayTime.inSeconds.toString(),
+              videoPlay.player.state.rate.toString(),
+              videoPlay.startclocktime.toString(),
+              utcTime.millisecondsSinceEpoch,
+              0,
+              type: "video");
 
-        updateVideoConsumeDuration(
-          getx.playingVideoId.value,
-          getx.selectedPackageId.value.toString(),
-          videoPlay.totalPlayTime.inSeconds.toString(),
-        );
-      });
-    } else {
-      videoPlay.stopTrackingPlayTime();
+          updateVideoConsumeDuration(
+            getx.playingVideoId.value,
+            getx.selectedPackageId.value.toString(),
+            videoPlay.totalPlayTime.inSeconds.toString(),
+          );
+        });
+      } else {
+        videoPlay.stopTrackingPlayTime();
 
-      // Stop the timer when the video is paused/stopped
-      _timer?.cancel();
-    }
-  });
+        // Stop the timer when the video is paused/stopped
+        _timer?.cancel();
+      }
+    });
 
-  // Listen for video completion (i.e., when the video ends)
-  videoPlay.player.stream.completed.listen((completed) {
-    if (completed) {
-      // Show the feedback dialog only when the video is completed
-      showFeedbackDialog(context,getx.reviewQuestionListOfVideo
-      
+    // Listen for video completion (i.e., when the video ends)
+    videoPlay.player.stream.completed.listen((completed) {
+      if (completed) {
+        // Show the feedback dialog only when the video is completed
+        showFeedbackDialog(context, getx.reviewQuestionListOfVideo
+
 //       [
 //   {
 //     "question": "What is your favorite color?",
@@ -215,11 +218,10 @@ initialFunctionOfRightPlayer() {
 //   // More questions...
 // ]
 
-);
-    }
-  });
-}
-
+            );
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -233,7 +235,6 @@ initialFunctionOfRightPlayer() {
 
   List<String> tabfield = const ["PDF", "MCQ", "TAG", "Ask doubt"];
   // Getx getx = Get.put(Getx());
-
 
   String pdflink = '';
 
@@ -287,7 +288,6 @@ initialFunctionOfRightPlayer() {
         return true;
       },
       child: Scaffold(
-
         body: SafeArea(
           // child: MaterialDesktopVideoControlsTheme(
           //   normal: MaterialDesktopVideoControlsThemeData(
@@ -397,14 +397,19 @@ initialFunctionOfRightPlayer() {
           // ),
           child: MaterialVideoControlsTheme(
             normal: MaterialVideoControlsThemeData(
+              automaticallyImplySkipNextButton: true,
+              automaticallyImplySkipPreviousButton: true,
               controlsHoverDuration: Duration(seconds: 15),
               primaryButtonBar: [
                 MaterialSkipPreviousButton(
-                  iconSize: 80,
+                  iconSize: 40,
                 ),
                 MaterialPlayOrPauseButton(
                   iconSize: 80,
                 ),
+                MaterialSkipNextButton(
+                  iconSize: 40,
+                )
               ],
               seekBarThumbSize: 20,
               brightnessGesture: true,
@@ -412,7 +417,6 @@ initialFunctionOfRightPlayer() {
               buttonBarButtonSize: 20,
               seekBarThumbColor: Colors.blue,
               seekBarPositionColor: Colors.blue,
-            
               topButtonBar: [
                 Obx(
                   () => MaterialCustomButton(
@@ -516,7 +520,8 @@ initialFunctionOfRightPlayer() {
                                         videoPlay.player.state.rate.toString(),
                                         videoPlay.startclocktime.toString(),
                                         utcTime.millisecondsSinceEpoch,
-                                        0,type: "video");
+                                        0,
+                                        type: "video");
                                     videoPlay.totalPlayTimeofVideo =
                                         Duration.zero;
                                     // videoPlay.startTrackingPlayTime();
@@ -530,8 +535,6 @@ initialFunctionOfRightPlayer() {
                                     // videoPlay.startTrackingPlayTime();
                                   });
                                   videoPlay.startTrackingPlayTime();
-
-                               
                                 },
                               ),
                               Text('${speed}x'),
@@ -554,8 +557,9 @@ initialFunctionOfRightPlayer() {
                 ),
               ],
             ),
-            fullscreen:
-                const MaterialVideoControlsThemeData(seekOnDoubleTap: true),
+            fullscreen: const MaterialVideoControlsThemeData(
+              seekOnDoubleTap: true,
+            ),
             child: Container(
               //  color: Colors.red,
               child: Column(
@@ -595,7 +599,6 @@ initialFunctionOfRightPlayer() {
                           SizedBox(
                             height: 5,
                           ),
-                    
                           Row(
                             children: [
                               Text("Uploaded on: ",
@@ -679,11 +682,8 @@ initialFunctionOfRightPlayer() {
     );
   }
 
-
   bool x = false;
   @override
-
-
   late Directory filelocationpath;
 //
 
@@ -837,11 +837,6 @@ initialFunctionOfRightPlayer() {
       ],
     ).show();
   }
-
-
-
-
-
 }
 
 class Tags extends StatefulWidget {
@@ -902,8 +897,6 @@ class _TagsState extends State<Tags> {
   }
 }
 
-
-
 class Pdf extends StatefulWidget {
   const Pdf({super.key});
 
@@ -939,7 +932,6 @@ class _PdfState extends State<Pdf> with SingleTickerProviderStateMixin {
 
   Future getPdf(int index) async {
     if (getx.pdfListOfVideo.isNotEmpty) {
-      
       final pdfDetails = getx.pdfListOfVideo[index];
       if (pdfDetails['Encrypted'].toString() == "true") {
         getx.encryptedpdffile.value = await downloadAndSavePdf(
@@ -962,8 +954,6 @@ class _PdfState extends State<Pdf> with SingleTickerProviderStateMixin {
       }
     }
   }
-
-
 
   Future<Directory> getDeviceDocumentDirectory() async {
     try {
@@ -1641,26 +1631,21 @@ class Option {
   }
 }
 
-
-
 class FeedbackController extends GetxController {
   RxInt currentQuestionIndex = 0.obs;
-  RxString userAnswer="Not answerd".obs;
+  RxString userAnswer = "Not answerd".obs;
   RxList<String?> selectedAnswers = <String?>[].obs;
   TextEditingController feedbackController = TextEditingController();
 
   // Initialize selectedAnswers based on the number of questions.
   void initializeAnswers(int questionCount) {
     selectedAnswers.value = List.generate(questionCount, (index) => null);
-     currentQuestionIndex.value = 0;
+    currentQuestionIndex.value = 0;
   }
 
   void nextQuestion() {
-    
-
-    if (currentQuestionIndex.value < selectedAnswers.length ) {
+    if (currentQuestionIndex.value < selectedAnswers.length) {
       currentQuestionIndex.value++;
-
     }
   }
 
@@ -1672,18 +1657,17 @@ class FeedbackController extends GetxController {
 
   void updateAnswer(String? answer) {
     selectedAnswers[currentQuestionIndex.value] = answer;
-    userAnswer.value=answer??"Not answer";
+    userAnswer.value = answer ?? "Not answer";
   }
 
   void submitFeedback() {
     String feedback = feedbackController.text;
     print("Feedback: $feedback");
-    feedbackController.text="";
+    feedbackController.text = "";
     print("Selected Answers: ${selectedAnswers.join(', ')}");
     Get.back(); // Close the dialog after submission
   }
 }
-
 
 class QuestionWidget extends StatelessWidget {
   final Map<String, dynamic> question;
@@ -1694,8 +1678,8 @@ class QuestionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> options = List<String>.from(question["options"]);
-    return Obx(()=>
-       Column(
+    return Obx(
+      () => Column(
         children: [
           Text(
             question["question"],
@@ -1706,7 +1690,8 @@ class QuestionWidget extends StatelessWidget {
             return RadioListTile<String>(
               title: Text(option),
               value: option,
-              groupValue: controller.selectedAnswers[controller.currentQuestionIndex.value],
+              groupValue: controller
+                  .selectedAnswers[controller.currentQuestionIndex.value],
               onChanged: (value) {
                 controller.updateAnswer(value);
                 print("Selected Answer: $value");
@@ -1718,7 +1703,6 @@ class QuestionWidget extends StatelessWidget {
     );
   }
 }
-
 
 class PersonalFeedbackWidget extends StatelessWidget {
   final FeedbackController controller;
@@ -1749,12 +1733,13 @@ class PersonalFeedbackWidget extends StatelessWidget {
   }
 }
 
-void showFeedbackDialog(BuildContext context, List<Map<String, dynamic>> questions) {
+void showFeedbackDialog(
+    BuildContext context, List<Map<String, dynamic>> questions) {
   final feedbackController = Get.put(FeedbackController());
 
-
- 
-  feedbackController.initializeAnswers(questions.length,);
+  feedbackController.initializeAnswers(
+    questions.length,
+  );
 
   var alertStyle = AlertStyle(
     animationType: AnimationType.fromTop,
@@ -1793,7 +1778,8 @@ void showFeedbackDialog(BuildContext context, List<Map<String, dynamic>> questio
     }),
     buttons: [
       DialogButton(
-        child: Text("Cancel", style: TextStyle(color: Colors.white, fontSize: 15)),
+        child:
+            Text("Cancel", style: TextStyle(color: Colors.white, fontSize: 15)),
         onPressed: () {
           Get.back(); // Close the dialog
         },
@@ -1801,36 +1787,49 @@ void showFeedbackDialog(BuildContext context, List<Map<String, dynamic>> questio
         radius: BorderRadius.circular(5.0),
       ),
       // Show Next button if there are more questions
-     
-        DialogButton(
-          child: Obx(()=> Text(feedbackController.currentQuestionIndex.value < questions.length ?"Next":"Submit", style: TextStyle(color: Colors.white, fontSize: 15))),
-          onPressed: () {
 
-            if(feedbackController.currentQuestionIndex.value < questions.length){
-              insertTblStudentFeedback( questions[feedbackController.currentQuestionIndex.value]["componentId"], questions[feedbackController.currentQuestionIndex.value]["packageId"] ,feedbackController.userAnswer.value, "0", questions[feedbackController.currentQuestionIndex.value]["videoId"]).then((value){
-                 feedbackController.userAnswer.value="Not Answer";
-                   feedbackController.nextQuestion();
+      DialogButton(
+        child: Obx(() => Text(
+            feedbackController.currentQuestionIndex.value < questions.length
+                ? "Next"
+                : "Submit",
+            style: TextStyle(color: Colors.white, fontSize: 15))),
+        onPressed: () {
+          if (feedbackController.currentQuestionIndex.value <
+              questions.length) {
+            insertTblStudentFeedback(
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["componentId"],
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["packageId"],
+                    feedbackController.userAnswer.value,
+                    "0",
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["videoId"])
+                .then((value) {
+              feedbackController.userAnswer.value = "Not Answer";
+              feedbackController.nextQuestion();
+            });
+          } else {
+            insertTblStudentFeedback(
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["componentId"],
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["packageId"],
+                    feedbackController.feedbackController.text,
+                    "0",
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["videoId"])
+                .then((value) {
+              feedbackController.userAnswer.value = "Not Answer";
+            });
 
-
-
-              });
-              
-
-             
-               
-
-            }
-           else{
-             insertTblStudentFeedback( questions[feedbackController.currentQuestionIndex.value]["componentId"], questions[feedbackController.currentQuestionIndex.value]["packageId"] ,feedbackController.feedbackController.text, "0", questions[feedbackController.currentQuestionIndex.value]["videoId"]).then((value){
-                 feedbackController.userAnswer.value="Not Answer";});
-
-            
             feedbackController.submitFeedback();
-          }},
-          color: Colors.blue,
-          radius: BorderRadius.circular(5.0),
-        )
-    
+          }
+        },
+        color: Colors.blue,
+        radius: BorderRadius.circular(5.0),
+      )
     ],
   ).show();
 }
