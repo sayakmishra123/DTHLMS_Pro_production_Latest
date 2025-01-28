@@ -129,10 +129,8 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                 ));
                           }
                           if (examcode == 300) {
-                            _showDialogoferror(context, "Already Submited!",
-                                "your exam is already submited.", () {
-                              if (getx.isInternet.value) {
-                                // Navigator.pop(context);
+                             if (getx.isInternet.value) {
+                              
                                 getTheryExamResultForIndividual(context,
                                         getx.loginuserdata[0].token, theoryPaperList[index]['PaperId']
                                       .toString(),)
@@ -176,7 +174,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                               // theoryExamAnswerId: '12',
                                               examId: theoryPaperList[index]['PaperId']
                                       .toString(),
-                                      pdfUrl: theoryPaperList[index]['CheckedDocumentUrl']
+                                      pdfUrl: value["CheckedDocumentUrl"]
                                       .toString(),
                                             ));
                                   }
@@ -188,7 +186,15 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                   Navigator.pop(context);
                                 }, false);
                               }
-                            }, false);
+                            
+
+
+
+
+                            // _showDialogoferror(context, "Already Submited!",
+                            //     "your exam is already submited.", () {
+                             
+                            // }, false);
                           }
                           if (examcode == 400) {
                             _showDialogoferror(context, "Time is Over!",

@@ -6,11 +6,16 @@ import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/constants/constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../CUSTOMDIALOG/customdialog.dart';
 
@@ -119,85 +124,81 @@ String formatDate(DateTime dateTime) {
 String pass='';
 bool isPass = false;
 String downloadedFilePath = '';
-   Future<String?> getSavePath() async {
-    // Open a file picker dialog
+  Future<String?> getSavePath() async {
+  try {
     String? result = await FilePicker.platform.saveFile(
       dialogTitle: "Save Answer Sheet",
-      fileName: "answer_sheet.pdf", // default file name
+      fileName: "answer_sheet.pdf",
     );
 
-    if (result != null) { 
-      return result; // Return the file path selected by the user
+    if (result != null && result.isNotEmpty) {
+      return result;
+    } else {
+      debugPrint("File picker returned null or empty path.");
+      return null;
     }
-    return null; // Return null if the user cancels the file picker
+  } catch (e) {
+    debugPrint("Error in file picker: $e");
+    return null;
   }
+}
+
+
 double downloadProgress = 0.0;
-  CancelToken cancelToken = CancelToken();
+CancelToken cancelToken = CancelToken();
 
-RxBool    isDownloading = false.obs;
-Future<void> downloadAnswerSheet(String url) async {
-    Dio dio = Dio();
+RxBool isDownloading = false.obs;
+Future<void> downloadAnswerSheet(String url, String examId) async {
+  Dio dio = Dio();
+Directory appDocDir = await getApplicationDocumentsDirectory();
 
-    String? filePath = await getSavePath();
-    if (filePath == null) {
-      return; // If user cancels file selection, stop the process
-    }
+  Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
+        if (!await dthLmsDir.exists()) {
+          await dthLmsDir.create(recursive: true);
+        }
 
-    try {
-      
-        isDownloading.value = true;
-     
-
-      // Start downloading the file
-      await dio.download(
-        url,
-        filePath,
-        onReceiveProgress: (received, total) {
-          if (total != -1) {
-            setState(() {
-              downloadProgress = (received / total);
-            });
-          }
-        },
-        cancelToken: cancelToken,
-      );
-
-      setState(() {
-        isDownloading.value = false;
-        downloadedFilePath = filePath;
-      });
-
-      // Show dialog to inform the user that download is complete
-      showDownloadCompleteDialog();
-    } catch (e) {
-    
-        isDownloading.value = false;
-    
-
-      // Show error dialog if the download fails
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text("Download Failed"),
-          content: Text("There was an error downloading the file."),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      );
-    }
+          var prefs = await SharedPreferences.getInstance();
+        getx.defaultPathForDownloadFile.value = dthLmsDir.path;
+        prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
+  String? filePath =getx.userSelectedPathForDownloadFile.value.isEmpty
+            ? '${dthLmsDir.path}/$examId'
+            : getx.userSelectedPathForDownloadFile.value +
+                "/$examId";
+  if (filePath == null) {
+    debugPrint("No file path selected. Cancelling download.");
+    return;
   }
 
+  try {
+    isDownloading.value = true;
 
-    void cancelDownload() {
-    cancelToken.cancel();
-    setState(() {
-      isDownloading.value = false;
-    });
+    await dio.download(
+      url,
+      filePath,
+      onReceiveProgress: (received, total) {
+        if (total != -1) {
+          downloadProgress = received / total;
+        }
+      },
+      cancelToken: cancelToken,
+    );
+
+    isDownloading.value = false;
+    debugPrint("Download complete: $filePath");
+
+    showDownloadCompleteDialog();
+  } catch (e) {
+    isDownloading.value = false;
+    debugPrint("Error downloading file: $e");
+    // showErrorDialog("Download Failed", "An error occurred while downloading the file.");
   }
+}
+
+
+void cancelDownload() {
+  cancelToken.cancel();
+  isDownloading.value = false;
+}
 
  void showDownloadCompleteDialog() {
     showDialog(
@@ -212,7 +213,10 @@ Future<void> downloadAnswerSheet(String url) async {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                showPdfDialog(downloadedFilePath);
+               Get.to( ()=>  ShowResultPage(filePath:   getx.userSelectedPathForDownloadFile.value.isEmpty
+            ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+            : getx.userSelectedPathForDownloadFile.value +
+                "/${widget.examId}",));
               },
               child: Text("Show PDF"),
             ),
@@ -263,7 +267,7 @@ Future<void> downloadAnswerSheet(String url) async {
       context: context,
       builder: (_) => Dialog(
         child: Container(
-          width: MediaQuery.of(context).size.width*0.7,
+          width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height*0.9,
           child: SfPdfViewer.file(File(filePath)), // Using spfpdfviewer to display PDF
         ),
@@ -683,14 +687,30 @@ Future<void> downloadAnswerSheet(String url) async {
                       ? null
                       : () async{
 
+                        if(File(getx.userSelectedPathForDownloadFile.value.isEmpty
+            ? '${  getx.defaultPathForDownloadFile.value}/${widget.examId}'
+            : getx.userSelectedPathForDownloadFile.value +
+                "/${widget.examId}").existsSync()){
+
+              Get.to( ()=>  ShowResultPage(filePath:   getx.userSelectedPathForDownloadFile.value.isEmpty
+            ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+            : getx.userSelectedPathForDownloadFile.value +
+                "/${widget.examId}",));
+
+                }
+                else{
+                     if(widget.pdfUrl.isNotEmpty){
+                           downloadAnswerSheet(widget.pdfUrl,widget.examId);
+                        }
+
+                }
+
                         // showDownloadCompleteDialog();
                       // await  getAnswerSheetURLforStudent(context,getx.loginuserdata[0].token,widget.examId).then((answerUrl){
                       //   print(answerUrl);
                       //   print(answerUrl);
 
-                        if(widget.pdfUrl.isNotEmpty){
-                           downloadAnswerSheet(widget.pdfUrl);
-                        }
+                     
 
 
                       // });
@@ -699,7 +719,10 @@ Future<void> downloadAnswerSheet(String url) async {
 
 
                          
-                        }, child: Text('Download Answer Sheet',style: TextStyle(color: Colors.white),)),
+                        }, child: Text(File(getx.userSelectedPathForDownloadFile.value.isEmpty
+            ? '${  getx.defaultPathForDownloadFile.value}/${widget.examId}'
+            : getx.userSelectedPathForDownloadFile.value +
+                "/${widget.examId}").existsSync()?"Show Answer Sheet":'Download Answer Sheet',style: TextStyle(color: Colors.white),)),
                                       
                                                 ],),
                                                 SizedBox(height: 50,)
@@ -785,4 +808,23 @@ class AppColors {
   static const Color contentColorPink = Color(0xFFFF3AF2);
   static const Color contentColorRed = Color(0xFFE80054);
   static const Color contentColorCyan = Color(0xFF50E4FF);
+}
+
+
+class ShowResultPage extends StatelessWidget {
+  final String filePath;
+
+  const ShowResultPage({Key? key, required this.filePath}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Answer Sheet'),
+      ),
+      body: SfPdfViewer.file(
+        File(filePath), // Display the PDF from the file path
+      ),
+    );
+  }
 }
