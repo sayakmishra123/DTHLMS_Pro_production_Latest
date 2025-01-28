@@ -23,6 +23,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
   final String sheduletime;
   final String documnetPath;
   final String paperId;
+  
 
   bool windowsddevice = Platform.isWindows ? true : false;
 
