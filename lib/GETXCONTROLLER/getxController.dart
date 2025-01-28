@@ -40,6 +40,7 @@ class Getx extends GetxController {
   RxBool isWhatsAppOtpRequired = false.obs;
   RxBool isloadChatUrl = true.obs;
   RxBool show = false.obs;
+  RxString appVersion="".obs;
   RxList rankerList = [].obs;
   RxMap userRankDetails = {}.obs;
   RxInt ButtonControllerIndex = 0.obs;

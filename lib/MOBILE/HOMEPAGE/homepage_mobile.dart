@@ -2224,16 +2224,12 @@ class HomePageDrawer extends StatefulWidget {
 class _HomePageDrawerState extends State<HomePageDrawer> {
   @override
   void initState() {
-    appVersionGet();
+   version.value= appVersionGet();
     super.initState();
   }
 
   RxString version = "".obs;
 
-  appVersionGet() async {
-    pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
-    version.value = packageInfo.version;
-  }
 
   logOut() async {
     ArtDialogResponse? response = await ArtSweetAlert.show(

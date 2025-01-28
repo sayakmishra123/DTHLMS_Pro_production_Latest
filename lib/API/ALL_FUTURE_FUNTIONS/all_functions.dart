@@ -40,6 +40,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
+import 'package:package_info_plus/package_info_plus.dart' as pinfo;
+import 'package:package_info_plus/package_info_plus.dart';
 // import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -3643,3 +3645,15 @@ Future<bool> uploadStudentFeedBack(
   }
   return false;
 }
+
+
+  appVersionGet() async {
+ try{
+     pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
+   
+  getx.appVersion.value= packageInfo.version;
+ }
+ catch(e){
+  writeToFile(e, "appVersionGet");
+ }
+  }
