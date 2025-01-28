@@ -1,6 +1,6 @@
-const String origin = 'com.myapp.od';
+const String origin = 'com.dlp.tvs';
 // const String logopath = 'assets/icons/new_logo.png';
-const String logopath = 'assets/icons/new_logo.png';
+const String logopath = 'assets/icons/GBC.png';
 
 const String franchiseWebsiteLink = 'http://myfranchise.com';
 const String facebookPageLink = 'http://facebook.com/myapp';

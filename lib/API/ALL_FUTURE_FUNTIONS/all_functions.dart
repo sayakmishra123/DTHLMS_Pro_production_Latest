@@ -637,7 +637,7 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
   // loader(context);
   Map data = packageId == "" ? {} : {"PackageId": packageId};
 
-  try {
+  // try {
     var res = await http.post(
         Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
         headers: <String, String>{
@@ -655,6 +655,7 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
           resultList.map((item) => VideoComponents.fromJson(item)).toList();
       videoResults.forEach((item) {
         insertTblVideoComponents(
+           item.componentId.toString(),
           item.packageId.toString(),
           item.videoId.toString(),
           item.names,
@@ -682,6 +683,7 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
             item.documentId.toString(),
           ),
           item.isEncrypted,
+         
         );
       });
 
@@ -692,10 +694,10 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
     } else {
       // Get.back();
     }
-  } catch (p) {
-    writeToFile(p, 'getVideoComponents');
-    // print("error:$p files2 video component");
-  }
+  // } catch (p) {
+  //   writeToFile(p, 'getVideoComponents');
+  //   // print("error:$p files2 video component");
+  // }
 }
 
 Future<String> uploadImage(
@@ -3592,4 +3594,52 @@ Future<String> getAnswerSheetURLforStudent(
     writeToFile(e, 'getAnswerSheetURLforStudent');
   }
   return returnValue;
+}
+
+
+
+
+Future<bool> uploadStudentFeedBack(
+  BuildContext context,
+  String token,
+  String feedBackList,
+) async {
+  loader(context);
+  Map<String, dynamic> data = {"ExamId": feedBackList};
+
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadStudentFeedback),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+   
+      Get.back();
+
+      return true;
+    } else if (res.statusCode == 401) {
+      Get.back();
+      onTokenExpire(context);
+    } else {
+      Get.back();
+      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+    }
+  } catch (e) {
+    Get.back();
+    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    writeToFile(e, 'uploadStudentFeedBack');
+  }
+  return false;
 }

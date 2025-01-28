@@ -1644,6 +1644,7 @@ class Option {
 
 class FeedbackController extends GetxController {
   RxInt currentQuestionIndex = 0.obs;
+  RxString userAnswer="Not answerd".obs;
   RxList<String?> selectedAnswers = <String?>[].obs;
   TextEditingController feedbackController = TextEditingController();
 
@@ -1654,8 +1655,11 @@ class FeedbackController extends GetxController {
   }
 
   void nextQuestion() {
+    
+
     if (currentQuestionIndex.value < selectedAnswers.length ) {
       currentQuestionIndex.value++;
+
     }
   }
 
@@ -1667,6 +1671,7 @@ class FeedbackController extends GetxController {
 
   void updateAnswer(String? answer) {
     selectedAnswers[currentQuestionIndex.value] = answer;
+    userAnswer.value=answer??"Not answer";
   }
 
   void submitFeedback() {
@@ -1748,7 +1753,7 @@ void showFeedbackDialog(BuildContext context, List<Map<String, dynamic>> questio
 
 
  
-  feedbackController.initializeAnswers(questions.length);
+  feedbackController.initializeAnswers(questions.length,);
 
   var alertStyle = AlertStyle(
     animationType: AnimationType.fromTop,
@@ -1799,8 +1804,28 @@ void showFeedbackDialog(BuildContext context, List<Map<String, dynamic>> questio
         DialogButton(
           child: Obx(()=> Text(feedbackController.currentQuestionIndex.value < questions.length ?"Next":"Submit", style: TextStyle(color: Colors.white, fontSize: 15))),
           onPressed: () {
-           feedbackController.currentQuestionIndex.value < questions.length? feedbackController.nextQuestion(): feedbackController.submitFeedback();
-          },
+
+            if(feedbackController.currentQuestionIndex.value < questions.length){
+              insertTblStudentFeedback( questions[feedbackController.currentQuestionIndex.value]["componentId"], questions[feedbackController.currentQuestionIndex.value]["packageId"] ,feedbackController.userAnswer.value, "0", questions[feedbackController.currentQuestionIndex.value]["videoId"]).then((value){
+                 feedbackController.userAnswer.value="Not Answer";
+                   feedbackController.nextQuestion();
+
+
+
+              });
+              
+
+             
+               
+
+            }
+           else{
+             insertTblStudentFeedback( questions[feedbackController.currentQuestionIndex.value]["componentId"], questions[feedbackController.currentQuestionIndex.value]["packageId"] ,feedbackController.feedbackController.text, "0", questions[feedbackController.currentQuestionIndex.value]["videoId"]).then((value){
+                 feedbackController.userAnswer.value="Not Answer";});
+
+            
+            feedbackController.submitFeedback();
+          }},
           color: Colors.blue,
           radius: BorderRadius.circular(5.0),
         )

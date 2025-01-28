@@ -55,6 +55,7 @@ void testSQLCipherOnWindows() async {
   createtblMCQhistory();
   creatTableVideoplayInfo();
   createTblSetting();
+  createTblStudentFeedback();
   createTblPackageData();
 
   createtblSectionFilesDetails();
@@ -92,6 +93,7 @@ void createTblVideoComponents() {
   // Create a table and insert some data
   _db.execute('''
    CREATE TABLE IF NOT EXISTS TblVideoComponents( 
+   ComponentId TEXT,
      PackageId TEXT ,
      VideoId TEXT,
      Names TEXT,
@@ -121,6 +123,7 @@ void createTblVideoComponents() {
 }
 
 Future<void> insertTblVideoComponents(
+  String componentId,
     String packageId,
     String videoId,
     String names,
@@ -144,8 +147,8 @@ Future<void> insertTblVideoComponents(
     String downloadedPath,
     String isEncrypted) async {
   _db.execute('''
-       INSERT INTO TblVideoComponents(PackageId, VideoId, Names,Option1,Option2,Option3,Option4,VideoTime,Answer,Category,TagName,DocumentId,DocumentURL,IsVideoCompulsory,IsChapterCompulsory,PreviousVideoId,MinimumVideoDuration,PreviousChapterId,SessionId,FranchiseId,DownloadedPath,IsEncrypted) 
-      VALUES ('$packageId', '$videoId', '$names','$option1','$option2','$option3','$option4','$videoTime','$answer','$category','$tagName','$documentId','$documentURL','$isVideoCompulsory','$isChapterCompulsory','$previousVideoId','$minimumVideoDuration','$previousChapterId','$sessionId','$franchiseId','$downloadedPath','$isEncrypted');
+       INSERT INTO TblVideoComponents(PackageId, VideoId, Names,Option1,Option2,Option3,Option4,VideoTime,Answer,Category,TagName,DocumentId,DocumentURL,IsVideoCompulsory,IsChapterCompulsory,PreviousVideoId,MinimumVideoDuration,PreviousChapterId,SessionId,FranchiseId,DownloadedPath,IsEncrypted,ComponentId) 
+      VALUES ('$packageId', '$videoId', '$names','$option1','$option2','$option3','$option4','$videoTime','$answer','$category','$tagName','$documentId','$documentURL','$isVideoCompulsory','$isChapterCompulsory','$previousVideoId','$minimumVideoDuration','$previousChapterId','$sessionId','$franchiseId','$downloadedPath','$isEncrypted','$componentId');
     ''');
 }
 
@@ -189,6 +192,44 @@ void createtblSession() {
   ''');
   // log()
 }
+
+
+void createTblStudentFeedback() {
+  // Create a table and insert some data
+  _db.execute('''
+   CREATE TABLE IF NOT EXISTS TblStudentFeedback(
+   ComponentId TEXT,
+   VideoId TEXT,
+   PackageId TEXT,
+   Answer TEXT,
+   UploadFlag TEXT
+ );
+  ''');
+  // log()
+}
+
+Future<void> insertTblStudentFeedback(
+    String componentId,
+    String packageId,
+    String answer,
+    String uploadflag,
+    String videoId
+  ) async {
+  _db.execute('''
+        INSERT INTO TblStudentFeedback (
+          ComponentId, PackageId, Answer,VideoId, UploadFlag
+        ) VALUES (?, ?, ?, ?,?);
+      ''', [
+        componentId,
+        packageId,
+        answer,
+        videoId,
+        
+        uploadflag,
+      
+      ]);
+}
+
 
 Future<void> insertTblSession(
     String loginId,
@@ -1414,14 +1455,16 @@ Future<void> getReviewQuestionListOfVideo(String packageId, String videoId) asyn
 
   for (int item = 0; item < resultSet.length; item++) {
     final details = {
+      "videoId":videoId,
+      "packageId":packageId,
+      "componentId":resultSet[item]['ComponentId'],
       "question": resultSet[item]['Names'],
       "options": [resultSet[item]['Option1'], resultSet[item]['Option2'], resultSet[item]['Option3'], resultSet[item]['Option4']],
 
 
 
 
-      "mcqId": "${item + 1}",
-      "mcqType": "SimpleMcq",
+   
       // "mcqQuestion": resultSet[item]['Names'],
       // "answer": resultSet[item]['Answer'],
       // "options": [
