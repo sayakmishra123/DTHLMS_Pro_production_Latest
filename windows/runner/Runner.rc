@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.myapp.od"
-            VALUE "FileDescription", "MyApp"
+            VALUE "CompanyName", "com.dlp.gbc"
+            VALUE "FileDescription", "GBC Pro"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "aac" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.dlp.anurag. All rights reserved." "\0"
             VALUE "OriginalFilename", "dthlms.exe" "\0"
-            VALUE "ProductName", "MyApp"
+            VALUE "ProductName", "GBC Pro"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
