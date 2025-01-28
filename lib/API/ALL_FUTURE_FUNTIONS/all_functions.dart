@@ -1230,8 +1230,7 @@ Future<bool> getMcqDataForTest(
                 mcqSet["PackageId"].toString(),
                 mcqSet['MCQSetName'].toString(),
                 mcqSet['ServicesTypeName'].toString(),
-                mcqSet['ServicesTypeName'].toString(),
-                mcqSet['ServicesTypeName'].toString(),
+           
 
                 
                 );
