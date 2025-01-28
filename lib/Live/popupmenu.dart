@@ -75,30 +75,7 @@ class MyCupertinoPopupMenu extends StatelessWidget {
               // log(sessionId.toString());
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-<<<<<<< HEAD
-                return SafeArea(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: StudentPollPage(
-                      teacherName: username,
-                      sessionId: sessionId,
-                    ),
-                  ),
-                );
-              }));
-              // Navigator.pop(context);
-            },
-            child: const Text('Management'),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              // log(sessionId.toString());
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SafeArea(
-=======
                 return SafeArea( 
->>>>>>> c48a9f5ea1866b566c042f9f3c1d6880101f88a7
                     child: Material(
                   color: Colors.transparent,
                   child: ChatUi(sessionId, userid, username,meeting: meeting,
