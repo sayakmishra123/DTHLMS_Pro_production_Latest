@@ -25,7 +25,7 @@ class _LivePageState extends State<LivePage> {
       itemCount: getx.todaymeeting.length,
       itemBuilder: (context, index) {
         MeetingDeatils meeting = getx.todaymeeting[index];
-        return TutorCard(
+        return TutorCard( 
           meeting: meeting,
           imageUrl: meeting.videoCategory == 'YouTube'
               ? 'assets/youtube.png'

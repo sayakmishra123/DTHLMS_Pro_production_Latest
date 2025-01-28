@@ -95,7 +95,7 @@ BEGIN
             VALUE "InternalName", "aac" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.dlp.anurag. All rights reserved." "\0"
             VALUE "OriginalFilename", "dthlms.exe" "\0"
-            VALUE "ProductName", "MyApp"
+            VALUE "ProductName", "GBC Pro"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

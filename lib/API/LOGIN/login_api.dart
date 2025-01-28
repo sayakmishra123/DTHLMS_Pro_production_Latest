@@ -697,7 +697,7 @@ Future<void> getRunningBackgroundAppsAndKill(BuildContext context) async {
       }
 
       if (unlistedApps.isNotEmpty) {
-        log(unlistedApps.toString());
+        // log(unlistedApps.toString());
       }
 
       // Write the list of apps to a .dmj file

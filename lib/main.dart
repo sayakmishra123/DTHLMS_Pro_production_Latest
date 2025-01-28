@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/API/LOGIN/login_api.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
@@ -91,6 +92,15 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
+=======
+    appVersionGet();
+
+// A
+// lue.toString() +
+//         "");
+
+>>>>>>> 084999c8731b48dd2032ead725c61f0ca4d26ace
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setWindowDisplayAffinity();
@@ -249,7 +259,7 @@ class _MyAppState extends State<MyApp> {
                                       : Mobilelogin();
                                   // : IntroductionDashBoard();
                                 }
-                              } else {
+                               } else {
                                 return const NoSim();
                               }
                             },

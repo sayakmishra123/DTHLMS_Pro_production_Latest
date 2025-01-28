@@ -40,6 +40,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
+import 'package:package_info_plus/package_info_plus.dart' as pinfo;
+import 'package:package_info_plus/package_info_plus.dart';
 // import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -637,65 +639,66 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
   // loader(context);
   Map data = packageId == "" ? {} : {"PackageId": packageId};
 
-  try {
-    var res = await http.post(
-        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-          'Origin': origin,
-        },
-        body: jsonEncode(data));
+  // try {
+  var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'Origin': origin,
+      },
+      body: jsonEncode(data));
 
-    if (res.statusCode == 200) {
-      var responseBody = jsonDecode(res.body);
-      // // print(responseBody.toString());
-      List<dynamic> resultList = jsonDecode(responseBody['result']);
-      List<VideoComponents> videoResults =
-          resultList.map((item) => VideoComponents.fromJson(item)).toList();
-      videoResults.forEach((item) {
-        insertTblVideoComponents(
+  if (res.statusCode == 200) {
+    var responseBody = jsonDecode(res.body);
+    // // print(responseBody.toString());
+    List<dynamic> resultList = jsonDecode(responseBody['result']);
+    List<VideoComponents> videoResults =
+        resultList.map((item) => VideoComponents.fromJson(item)).toList();
+    videoResults.forEach((item) {
+      insertTblVideoComponents(
+        item.componentId.toString(),
+        item.packageId.toString(),
+        item.videoId.toString(),
+        item.names,
+        item.option1,
+        item.option2,
+        item.option3,
+        item.option4,
+        item.videoTime,
+        item.answer,
+        item.category,
+        item.tagName,
+        item.documentId.toString(),
+        item.documentURL,
+        item.isVideoCompulsory.toString(),
+        item.isChapterCompulsory.toString(),
+        item.previousVideoId.toString(),
+        item.minimumVideoDuration.toString(),
+        item.previousChapterId.toString(),
+        item.sessionId,
+        item.franchiseId.toString(),
+        getDownloadedPathOfFileOfVideo(
           item.packageId.toString(),
           item.videoId.toString(),
-          item.names,
-          item.option1,
-          item.option2,
-          item.option3,
-          item.option4,
-          item.videoTime,
-          item.answer,
           item.category,
-          item.tagName,
           item.documentId.toString(),
-          item.documentURL,
-          item.isVideoCompulsory.toString(),
-          item.isChapterCompulsory.toString(),
-          item.previousVideoId.toString(),
-          item.minimumVideoDuration.toString(),
-          item.previousChapterId.toString(),
-          item.sessionId,
-          item.franchiseId.toString(),
-          getDownloadedPathOfFileOfVideo(
-            item.packageId.toString(),
-            item.videoId.toString(),
-            item.category,
-            item.documentId.toString(),
-          ),
-          item.isEncrypted,
-        );
-      });
+        ),
+        item.isEncrypted,
+      );
+    });
 
-      // Get.back();
-    } else if (res.statusCode == 401) {
-      onTokenExpire(context);
-      // print("Error: in user components");
-    } else {
-      // Get.back();
-    }
-  } catch (p) {
-    writeToFile(p, 'getVideoComponents');
-    // print("error:$p files2 video component");
+    // Get.back();
+  } else if (res.statusCode == 401) {
+    onTokenExpire(context);
+    // print("Error: in user components");
+  } else {
+    // Get.back();
   }
+  // } catch (p) {
+  //   writeToFile(p, 'getVideoComponents');
+  //   // print("error:$p files2 video component");
+  // }
 }
 
 Future<String> uploadImage(
@@ -1222,12 +1225,14 @@ Future<bool> getMcqDataForTest(
         // Level 2: MCQSet Level
         if (package.containsKey('TblMasterMCQSet')) {
           List<dynamic> mcqSets = package['TblMasterMCQSet'];
+          print(mcqSets);
           for (var mcqSet in mcqSets) {
             await inserTblMCQSet(
-                mcqSet['MCQSetId'].toString(),
-                mcqSet["PackageId"].toString(),
-                mcqSet['MCQSetName'].toString(),
-                mcqSet['ServicesTypeName'].toString());
+              mcqSet['MCQSetId'].toString(),
+              mcqSet["PackageId"].toString(),
+              mcqSet['MCQSetName'].toString(),
+              mcqSet['ServicesTypeName'].toString(),
+            );
 
             if (mcqSet.containsKey('TblMasterMCQPaper')) {
               List<dynamic> mcqPapers = mcqSet['TblMasterMCQPaper'];
@@ -1734,6 +1739,9 @@ Future sendDocumentIdOfanswerSheets(
 
     if (res.statusCode == 201) {
       var jsonResponse = jsonDecode(res.body);
+      updateIsSubmittedOnTblTheoryPaperTable(paperid.toString(), "1", context);
+
+      return true;
 
 // Get.back();
 
@@ -1757,6 +1765,7 @@ Future sendDocumentIdOfanswerSheets(
     writeToFile(e, 'sendDocumentIdOfanswerSheets');
     // print("Error: $e+'sendDocumentIdOfanswerSheets'"); // Error handling
   }
+  return false;
 }
 
 Future getFullBannerPackages(BuildContext context, String token) async {
@@ -2252,22 +2261,19 @@ Future<bool> gettheoryExamDataForTest2(
                   for (var theoryExam in theoryExams) {
                     // Insert data into the "paper" table (theory exam)
                     await inserTblTheoryPaper(
-                      theoryExam['TheoryExamId'].toString(),
-
-                      examSet['TheoryExamSetId']
-                          .toString(), // Linking TheoryExamId with TheoryExamSetId
-                      theoryExam['TheoryExamName'].toString(),
-                      theoryExam['TotalMarks'].toString(),
-                      examSet['DefaultExamInstructions'].toString(),
-                      theoryExam['ExamDuration'].toString(),
-                      theoryExam['QuestionDocumentUrl'].toString(),
-                      theoryExam['TheoryExamDate'].toString(),
-
-                      theoryExam['PassMarks'].toString(),
-                      examSet['SetUptoDate'].toString(),
-
-                      examSet['SetFromDate'].toString(),
-                    );
+                        theoryExam['TheoryExamId'].toString(),
+                        examSet['TheoryExamSetId']
+                            .toString(), // Linking TheoryExamId with TheoryExamSetId
+                        theoryExam['TheoryExamName'].toString(),
+                        theoryExam['TotalMarks'].toString(),
+                        examSet['DefaultExamInstructions'].toString(),
+                        theoryExam['ExamDuration'].toString(),
+                        theoryExam['QuestionDocumentUrl'].toString(),
+                        theoryExam['TheoryExamDate'].toString(),
+                        theoryExam['PassMarks'].toString(),
+                        examSet['SetUptoDate'].toString(),
+                        examSet['SetFromDate'].toString(),
+                        "0");
                   }
                 }
               }
@@ -3586,4 +3592,57 @@ Future<String> getAnswerSheetURLforStudent(
     writeToFile(e, 'getAnswerSheetURLforStudent');
   }
   return returnValue;
+}
+
+Future<bool> uploadStudentFeedBack(
+  BuildContext context,
+  String token,
+  String feedBackList,
+) async {
+  loader(context);
+  Map<String, dynamic> data = {"ExamId": feedBackList};
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadStudentFeedback),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+      Get.back();
+
+      return true;
+    } else if (res.statusCode == 401) {
+      Get.back();
+      onTokenExpire(context);
+    } else {
+      Get.back();
+      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+    }
+  } catch (e) {
+    Get.back();
+    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    writeToFile(e, 'uploadStudentFeedBack');
+  }
+  return false;
+}
+
+appVersionGet() async {
+  try {
+    pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
+
+    getx.appVersion.value = packageInfo.version;
+  } catch (e) {
+    writeToFile(e, "appVersionGet");
+  }
 }

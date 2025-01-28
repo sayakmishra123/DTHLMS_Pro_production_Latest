@@ -969,7 +969,7 @@ class _PollState extends State<Poll> {
                   ),
                   Obx(() => InkWell(
                         onTap: () {
-                          log(option.id);
+                          // log(option.id);
                           _voteForOption(option.id);
                         },
                         child: Row(
@@ -977,7 +977,7 @@ class _PollState extends State<Poll> {
                             const SizedBox(width: 5),
                             IconButton(
                               onPressed: () {
-                                log(option.id);
+                                // log(option.id);
                                 _voteForOption(option.id);
                               },
                               icon: Icon(

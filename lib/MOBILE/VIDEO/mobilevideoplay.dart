@@ -7,8 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
-// import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
-// import 'package:dthlms/PC/MCQ/modelclass.dart';
+
 import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
@@ -94,9 +93,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
 
     super.initState();
 
-    // super.initState();
-    //  player.open(Media('http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'));
-
     _motionTabBarController = MotionTabBarController(
       initialIndex: 0,
       length: 4,
@@ -121,6 +117,9 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
       functionVideoDetails(widget.fileId, widget.packageId);
     } else {
       getMCQListOfVideo(
+          getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["PackageId"],
+          getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["FileId"]);
+      getReviewQuestionListOfVideo(
           getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["PackageId"],
           getx.alwaysShowChapterfilesOfVideo[widget.Videoindex]["FileId"]);
 
@@ -149,81 +148,77 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
 
   bool isPlaying = false;
   Timer? _timer;
-
   initialFunctionOfRightPlayer() {
     creatTableVideoplayInfo();
+
     videoPlay.player.stream.playing.listen((bool playing) {
       if (mounted) {
         setState(() {
           isPlaying = playing;
-
-          if (playing) {
-            print(utcTime.millisecondsSinceEpoch);
-            videoPlay.startTrackingPlayTime();
-
-            // Cancel any existing timer to avoid multiple timers running
-            _timer?.cancel();
-
-            // Start a new timer that triggers every 5 seconds
-            _timer = Timer.periodic(Duration(seconds: 5), (timer) {
-              insertVideoplayInfo(
-                  int.parse(getx.playingVideoId.value),
-                  videoPlay.player.state.position.toString(),
-                  videoPlay.totalPlayTime.inSeconds.toString(),
-                  videoPlay.player.state.rate.toString(),
-                  videoPlay.startclocktime.toString(),
-                  utcTime.millisecondsSinceEpoch,
-                  0);
-              updateVideoConsumeDuration(
-                getx.playingVideoId.value,
-                getx.selectedPackageId.value.toString(),
-                videoPlay.totalPlayTime.inSeconds.toString(),
-              );
-
-              readTblvideoPlayInfo();
-            });
-          } else {
-            videoPlay.stopTrackingPlayTime();
-            print('Playing Video ID: ${int.parse(getx.playingVideoId.value)}');
-            print(
-                'Current Position: ${videoPlay.player.state.position.toString()}');
-            print(
-                'Total Play Time (in seconds): ${videoPlay.totalPlayTime.inSeconds.toString()}');
-            print('Playback Rate: ${videoPlay.player.state.rate.toString()}');
-            print('Start Clock Time: ${videoPlay.startclocktime.toString()}');
-            print(
-                'UTC Time (milliseconds since epoch): ${utcTime.millisecondsSinceEpoch}');
-            try {
-              insertVideoplayInfo(
-                  int.parse(getx.playingVideoId.value),
-                  videoPlay.player.state.position.toString(),
-                  videoPlay.totalPlayTime.inSeconds.toString(),
-                  videoPlay.player.state.rate.toString(),
-                  videoPlay.startclocktime.toString(),
-                  utcTime.millisecondsSinceEpoch,
-                  0);
-            } catch (e) {
-              print(e.toString());
-            }
-            videoPlay.totalPlayTimeofVideo = Duration.zero;
-            utcTime = DateTime.now();
-
-            // if(getx.isInternet.value){
-            //       videoInfo(
-            //                   context,
-            //                   videoPlay.player.state.position.toString(),
-            //                  getx.playingVideoId.value,
-            //                   videoPlay.totalPlayTime.inSeconds.toString(),
-            //                   videoPlay.player.state.rate.toString(),
-            //                   videoPlay.startclocktime.toString(),
-            //                   getx.token.value,
-            //                   utcTime.millisecondsSinceEpoch);
-
-            // }
-
-            _timer?.cancel();
-          }
         });
+      }
+
+      if (playing) {
+        videoPlay.startTrackingPlayTime();
+
+        // Cancel any existing timer to avoid multiple timers running
+        _timer?.cancel();
+
+        // Start a new timer that triggers every 5 seconds
+        _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+          // Insert video play information
+          insertVideoplayInfo(
+              int.parse(getx.playingVideoId.value),
+              videoPlay.player.state.position.toString(),
+              videoPlay.totalPlayTime.inSeconds.toString(),
+              videoPlay.player.state.rate.toString(),
+              videoPlay.startclocktime.toString(),
+              utcTime.millisecondsSinceEpoch,
+              0,
+              type: "video");
+
+          updateVideoConsumeDuration(
+            getx.playingVideoId.value,
+            getx.selectedPackageId.value.toString(),
+            videoPlay.totalPlayTime.inSeconds.toString(),
+          );
+        });
+      } else {
+        videoPlay.stopTrackingPlayTime();
+
+        // Stop the timer when the video is paused/stopped
+        _timer?.cancel();
+      }
+    });
+
+    // Listen for video completion (i.e., when the video ends)
+    videoPlay.player.stream.completed.listen((completed) {
+      if (completed) {
+        // Show the feedback dialog only when the video is completed
+        showFeedbackDialog(context, getx.reviewQuestionListOfVideo
+
+//       [
+//   {
+//     "question": "What is your favorite color?",
+//     "options": ["Red", "Blue", "Green", "Yellow"],
+//   },
+//   {
+//     "question": "How often do you watch videos?",
+//     "options": ["Daily", "Weekly", "Rarely"],
+//   },
+
+//    {
+//     "question": "How often do you watch videos?2",
+//     "options": ["Daily", "Weekly", "Rarely"],
+//   },
+//    {
+//     "question": "How often do you watch videos?3",
+//     "options": ["Daily", "Weekly", "Rarely"],
+//   },
+//   // More questions...
+// ]
+
+            );
       }
     });
   }
@@ -241,10 +236,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
   List<String> tabfield = const ["PDF", "MCQ", "TAG", "Ask doubt"];
   // Getx getx = Get.put(Getx());
 
-  // List pdf = [];
-  // List mcq = [];
-  // List tag = [];
-  // List review = [];
   String pdflink = '';
 
   final List<double> speeds = [0.5, 1.0, 1.5, 2.0];
@@ -297,8 +288,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
         return true;
       },
       child: Scaffold(
-        // resizeToAvoidBottomInset:
-        //     false, // Prevents resizing when keyboard opens
         body: SafeArea(
           // child: MaterialDesktopVideoControlsTheme(
           //   normal: MaterialDesktopVideoControlsThemeData(
@@ -410,7 +399,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
             normal: MaterialVideoControlsThemeData(
               automaticallyImplySkipNextButton: true,
               automaticallyImplySkipPreviousButton: true,
-
               controlsHoverDuration: Duration(seconds: 15),
               primaryButtonBar: [
                 MaterialSkipPreviousButton(
@@ -429,8 +417,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
               buttonBarButtonSize: 20,
               seekBarThumbColor: Colors.blue,
               seekBarPositionColor: Colors.blue,
-
-              // bottomButtonBar: [MaterialPositionIndicator()],
               topButtonBar: [
                 Obx(
                   () => MaterialCustomButton(
@@ -534,7 +520,8 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
                                         videoPlay.player.state.rate.toString(),
                                         videoPlay.startclocktime.toString(),
                                         utcTime.millisecondsSinceEpoch,
-                                        0);
+                                        0,
+                                        type: "video");
                                     videoPlay.totalPlayTimeofVideo =
                                         Duration.zero;
                                     // videoPlay.startTrackingPlayTime();
@@ -548,17 +535,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
                                     // videoPlay.startTrackingPlayTime();
                                   });
                                   videoPlay.startTrackingPlayTime();
-
-                                  // videoPlay.startTrackingPlayTime();
-                                  //     insertVideoplayInfo(
-                                  // int.parse(getx.playingVideoId.value),
-                                  //     videoPlay.player.state.position.toString(),
-                                  //     videoPlay.totalPlayTime.inSeconds.toString(),
-                                  //     videoPlay.player.state.rate.toString(),
-                                  //     videoPlay.startclocktime.toString(),
-                                  //   utcTime.millisecondsSinceEpoch,
-
-                                  //   );
                                 },
                               ),
                               Text('${speed}x'),
@@ -623,11 +599,6 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
                           SizedBox(
                             height: 5,
                           ),
-                          // Row(
-                          //   children: [
-                          //     Text("Video duration consumed: ${videoDetails["ConsumeDuration"]}",style:  FontFamily.style.copyWith(fontSize: 13,color: Colors.amber)),
-                          //   ],
-                          // ),
                           Row(
                             children: [
                               Text("Uploaded on: ",
@@ -711,77 +682,8 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
     );
   }
 
-  // String ur2 =
-  //     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-  // Future downloadcretevideo(url, Directory d, filename, bool check) async {
-  //   showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return const Material(
-  //           child: Center(
-  //               child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   CircularProgressIndicator(),
-  //                 ],
-  //               ),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [Text('Video Downloading..')],
-  //               )
-  //             ],
-  //           )),
-  //         );
-  //       });
-
-  //   if (check == true) {
-  //     print('Data downloading......');
-  //     var res = await http.get(Uri.parse(url));
-  //     List<int> encResult = await encryptPdf(res.bodyBytes);
-  //     String p = await writedata(encResult, "${d.path}/$filename.aes");
-  //     print('file encryption successfully $p');
-  //   } else {
-  //     final File file = File(url);
-  //     final List<int> bytes = await file.readAsBytes();
-  //     final List<int> encryptedBytes = await decryptPdf(bytes);
-  //     // final File encryptedFile = File();
-  //     String p = await writedata(encryptedBytes, "${d.path}/$filename.aes");
-  //     print('File encrypted successfully: $p');
-  //   }
-  //   Navigator.pop(context);
-  //   print('${d.path}/$filename.aes');
-  // }
-
-  // Uint8List decryptedvideoData = Uint8List(0);
-  // convertdecryptfile(Directory d, filename) async {
-  //   loader(context);
-  //   // showDialog(
-  //   //     context: context,
-  //   //     builder: (context) {
-  //   //       return const Center(child: CircularProgressIndicator());
-  //   //     });
-  //   Uint8List encdata = await readData("${d.path}/$filename.aes");
-  //   decryptedvideoData = await decryptPdf(encdata);
-  //   // String p = await _writeData(plaindata, "${d.path}/$filename");
-
-  //   print('file decrypted successfully.......$decryptedvideoData ');
-  //   setState(() {});
-  //   Navigator.pop(context);
-  //   //  getx.videoplayer.value = false;
-  // }
-
   bool x = false;
   @override
-  // void initState() {
-  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //     permission();
-  //   });
-  //   super.initState();
-  // }
-
   late Directory filelocationpath;
 //
 
@@ -995,150 +897,6 @@ class _TagsState extends State<Tags> {
   }
 }
 
-// class Pdf extends StatefulWidget {
-//   const Pdf({super.key});
-
-//   @override
-//   State<Pdf> createState() => _PdfState();
-// }
-
-// class _PdfState extends State<Pdf> {
-//   String encryptionKey = '';
-//   @override
-//   void initState() {
-//     getEncryptionKey(getx.loginuserdata[0].token, context).then((value) {
-//       encryptionKey = value;
-//     });
-//     getPdf().whenComplete(() {
-//       setState(() {
-
-//         print("object");
-//       });
-//       // log(getx.pdffile.value.replaceAll('\\', '/') +"on whencomplete");
-//     });
-
-//     // TODO: implement initState
-//     super.initState();
-//   }
-
-//   Future getPdf() async {
-//    try{
-//      if (getx.pdfListOfVideo.isNotEmpty) {
-//       getx.encryptedpdffile.value = await downloadAndSavePdf(
-//           getx.pdfListOfVideo[0]['DocumentURL'],
-//           getx.pdfListOfVideo[0]['Names'],
-//           getx.pdfListOfVideo[0]['PackageId'],
-//           getx.pdfListOfVideo[0]['DocumentId'],
-//           getx.pdfListOfVideo[0]['VideoId'],
-//           getx.pdfListOfVideo[0]['Catagory']);
-// // log(getx.pdffile.value.replaceAll('\\', '/'));
-//     }
-//     else{
-
-//     }
-//    }
-//    catch(e){
-//     // print(e.toString()+"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
-
-//    }
-//   }
-
-//   Future<Uint8List> downloadAndSavePdf(String pdfUrl, String title,
-//       String packageId, String documentId, String fileId, String type) async {
-//     final data = getDownloadedPathOfFileOfVideo(
-//        packageId,
-//       fileId,
-//       type,
-//       documentId,
-//         );
-// //  print("$data ///////////////////////////////////////////////////////////////////////////////////////////");
-//     if (!File(data).existsSync()) {
-//       print("$data");
-//       try {
-//         // Get the application's document directory
-//         Directory appDocDir = await getApplicationDocumentsDirectory();
-
-//         // Create the folder structure: com.si.dthLive/notes
-//         Directory dthLmsDir =
-//             Directory('${appDocDir.path}/$origin/notes');
-//         if (!await dthLmsDir.exists()) {
-//           await dthLmsDir.create(recursive: true);
-//         }
-//         var prefs = await SharedPreferences.getInstance();
-//         getx.defaultPathForDownloadFile.value = dthLmsDir.path;
-//         prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
-
-//         // Correct file path to save the PDF
-//         String filePath = getx.userSelectedPathForDownloadFile.isEmpty
-//             ? '${dthLmsDir.path}/$title'
-//             : getx.userSelectedPathForDownloadFile.value +
-//                 "/$title"; // Make sure to add .pdf extension if needed
-
-//         // Download the PDF using Dio
-//         Dio dio = Dio();
-//         await dio.download(pdfUrl, filePath,
-//             onReceiveProgress: (received, total) {
-//           if (total != -1) {
-//             print(
-//                 'Downloading: ${(received / total * 100).toStringAsFixed(0)}%');
-//           }
-//         });
-//         insertDownloadedFileDataOfVideo(
-//             packageId, fileId, documentId, filePath, type, title);
-//         insertPdfDownloadPath(fileId, packageId, filePath, documentId, context);
-
-//         print('PDF downloaded and saved to: $filePath');
-//         getx.pdfFilePath.value = filePath;
-//         final encryptedBytes = await readEncryptedPdfFromFile(filePath);
-//         final decryptedPdfBytes = aesDecryptPdf(encryptedBytes, encryptionKey);
-
-//         return decryptedPdfBytes;
-//       } catch (e) {
-//         print('Error downloading or saving the PDF: $e');
-//         return Uint8List(0);
-//       }
-//     } else {
-//       getx.pdfFilePath.value = data;
-
-//       final encryptedBytes = await readEncryptedPdfFromFile(data);
-//       final decryptedPdfBytes = aesDecryptPdf(encryptedBytes, encryptionKey);
-//       return decryptedPdfBytes;
-//     }
-//   }
-
-//   Future<Uint8List> readEncryptedPdfFromFile(String filePath) async {
-//     final file = File(filePath);
-//     return file.readAsBytes();
-//   }
-
-//   Uint8List aesDecryptPdf(Uint8List encryptedData, String key) {
-//     final keyBytes = encrypt.Key.fromUtf8(key.padRight(16)); // 128-bit key
-//     final iv = encrypt.IV(encryptedData.sublist(0, 16)); // Extract IV
-//     final encrypter =
-//         encrypt.Encrypter(encrypt.AES(keyBytes, mode: encrypt.AESMode.cbc));
-
-//     final encryptedBytes =
-//         encryptedData.sublist(16); // Extract actual encrypted data
-//     final decrypted =
-//         encrypter.decryptBytes(encrypt.Encrypted(encryptedBytes), iv: iv);
-
-//     return Uint8List.fromList(decrypted);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     //  log(getx.pdffile.value.replaceAll('\\', '/') +"on widgt");
-//     return Obx(
-//       () => SizedBox(
-//         // height: 800,
-//         child: getx.encryptedpdffile.value.isNotEmpty &&  getx.encryptedpdffile.value!=""
-//             ? SfPdfViewer.memory(getx.encryptedpdffile.value)
-//             : Center(child: Text("No PDF Found")),
-//       ),
-//     );
-//   }
-// }
-
 class Pdf extends StatefulWidget {
   const Pdf({super.key});
 
@@ -1174,7 +932,6 @@ class _PdfState extends State<Pdf> with SingleTickerProviderStateMixin {
 
   Future getPdf(int index) async {
     if (getx.pdfListOfVideo.isNotEmpty) {
-      // print("////////////////////////////////////////////////////////////////"+getx.pdfListOfVideo.length.toString());
       final pdfDetails = getx.pdfListOfVideo[index];
       if (pdfDetails['Encrypted'].toString() == "true") {
         getx.encryptedpdffile.value = await downloadAndSavePdf(
@@ -1197,9 +954,6 @@ class _PdfState extends State<Pdf> with SingleTickerProviderStateMixin {
       }
     }
   }
-
-//   import 'dart:io';
-// import 'package:path_provider/path_provider.dart';
 
   Future<Directory> getDeviceDocumentDirectory() async {
     try {
@@ -1875,4 +1629,207 @@ class Option {
       optionName: json['optionName'],
     );
   }
+}
+
+class FeedbackController extends GetxController {
+  RxInt currentQuestionIndex = 0.obs;
+  RxString userAnswer = "Not answerd".obs;
+  RxList<String?> selectedAnswers = <String?>[].obs;
+  TextEditingController feedbackController = TextEditingController();
+
+  // Initialize selectedAnswers based on the number of questions.
+  void initializeAnswers(int questionCount) {
+    selectedAnswers.value = List.generate(questionCount, (index) => null);
+    currentQuestionIndex.value = 0;
+  }
+
+  void nextQuestion() {
+    if (currentQuestionIndex.value < selectedAnswers.length) {
+      currentQuestionIndex.value++;
+    }
+  }
+
+  void previousQuestion() {
+    if (currentQuestionIndex.value > 0) {
+      currentQuestionIndex.value--;
+    }
+  }
+
+  void updateAnswer(String? answer) {
+    selectedAnswers[currentQuestionIndex.value] = answer;
+    userAnswer.value = answer ?? "Not answer";
+  }
+
+  void submitFeedback() {
+    String feedback = feedbackController.text;
+    print("Feedback: $feedback");
+    feedbackController.text = "";
+    print("Selected Answers: ${selectedAnswers.join(', ')}");
+    Get.back(); // Close the dialog after submission
+  }
+}
+
+class QuestionWidget extends StatelessWidget {
+  final Map<String, dynamic> question;
+  final FeedbackController controller;
+
+  QuestionWidget({required this.question, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    List<String> options = List<String>.from(question["options"]);
+    return Obx(
+      () => Column(
+        children: [
+          Text(
+            question["question"],
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          ...options.map((option) {
+            return RadioListTile<String>(
+              title: Text(option),
+              value: option,
+              groupValue: controller
+                  .selectedAnswers[controller.currentQuestionIndex.value],
+              onChanged: (value) {
+                controller.updateAnswer(value);
+                print("Selected Answer: $value");
+              },
+            );
+          }).toList(),
+        ],
+      ),
+    );
+  }
+}
+
+class PersonalFeedbackWidget extends StatelessWidget {
+  final FeedbackController controller;
+
+  PersonalFeedbackWidget({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 30),
+        Text(
+          "Write your feedback...",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10),
+        TextFormField(
+          controller: controller.feedbackController,
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+            hintText: "Your comments...",
+            border: OutlineInputBorder(),
+          ),
+          maxLines: 5,
+        ),
+      ],
+    );
+  }
+}
+
+void showFeedbackDialog(
+    BuildContext context, List<Map<String, dynamic>> questions) {
+  final feedbackController = Get.put(FeedbackController());
+
+  feedbackController.initializeAnswers(
+    questions.length,
+  );
+
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: true,
+    isOverlayTapDismiss: true,
+    alertPadding: EdgeInsets.only(top: 200),
+    descStyle: TextStyle(fontWeight: FontWeight.bold),
+    animationDuration: Duration(milliseconds: 400),
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      side: BorderSide(color: Colors.grey),
+    ),
+    titleStyle: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+    constraints: BoxConstraints.expand(width: 500),
+    overlayColor: Color(0x55000000),
+    alertElevation: 0,
+    alertAlignment: Alignment.center,
+  );
+
+  Alert(
+    context: context,
+    style: alertStyle,
+    title: "Feedback",
+    content: Obx(() {
+      int currentIndex = feedbackController.currentQuestionIndex.value;
+
+      // Show the question widget or feedback form based on current index
+      if (currentIndex < questions.length) {
+        return QuestionWidget(
+          question: questions[currentIndex],
+          controller: feedbackController,
+        );
+      } else {
+        return PersonalFeedbackWidget(controller: feedbackController);
+      }
+    }),
+    buttons: [
+      DialogButton(
+        child:
+            Text("Cancel", style: TextStyle(color: Colors.white, fontSize: 15)),
+        onPressed: () {
+          Get.back(); // Close the dialog
+        },
+        color: Colors.red,
+        radius: BorderRadius.circular(5.0),
+      ),
+      // Show Next button if there are more questions
+
+      DialogButton(
+        child: Obx(() => Text(
+            feedbackController.currentQuestionIndex.value < questions.length
+                ? "Next"
+                : "Submit",
+            style: TextStyle(color: Colors.white, fontSize: 15))),
+        onPressed: () {
+          if (feedbackController.currentQuestionIndex.value <
+              questions.length) {
+            insertTblStudentFeedback(
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["componentId"],
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["packageId"],
+                    feedbackController.userAnswer.value,
+                    "0",
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["videoId"])
+                .then((value) {
+              feedbackController.userAnswer.value = "Not Answer";
+              feedbackController.nextQuestion();
+            });
+          } else {
+            insertTblStudentFeedback(
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["componentId"],
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["packageId"],
+                    feedbackController.feedbackController.text,
+                    "0",
+                    questions[feedbackController.currentQuestionIndex.value]
+                        ["videoId"])
+                .then((value) {
+              feedbackController.userAnswer.value = "Not Answer";
+            });
+
+            feedbackController.submitFeedback();
+          }
+        },
+        color: Colors.blue,
+        radius: BorderRadius.circular(5.0),
+      )
+    ],
+  ).show();
 }

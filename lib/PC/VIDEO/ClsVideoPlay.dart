@@ -109,7 +109,12 @@ class VideoPlayClass {
 
   Future<void> playOrPause() async {
     await player.playOrPause();
+   
   }
+
+
+
+
 
   String startTrackingPlayTime() {
     if (!_isPlaying) {
@@ -143,5 +148,7 @@ class VideoPlayClass {
   void seekTo(Duration position) {
     player.seek(position);
     print("goto $position");
+
+    
   }
 }

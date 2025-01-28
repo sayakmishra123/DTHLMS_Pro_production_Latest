@@ -95,4 +95,6 @@ class ClsUrlApi {
       "/api/AuthDataGet/ExecuteJson/spAppApi/39";
   static const getanswerSheetUrlOfStudent =
       "/api/AuthDataGet/ExecuteJson/spAppApi/55";
+  static const uploadStudentFeedback =
+      "/api/AuthDataGet/ExecuteJson/spAppApi/56";
 }

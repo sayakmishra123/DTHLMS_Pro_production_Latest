@@ -95,6 +95,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callData();
     });
+    getx.isInsidePackage.value = true;
 
     super.initState();
   }
@@ -236,47 +237,12 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     });
   }
 
-  // initState((){});
   @override
   void dispose() {
     getx.sectionListOfPackage.clear();
-    // getx.infoFetch.clear();
-    // TODO: implement dispose
+    getx.isInsidePackage.value = false;
     super.dispose();
   }
-
-  // static final List<List<Color>> gradientColorsList = [
-  //   [
-  //     // Light orange -> peach
-  //     const Color(0xFFFFF1D5),
-  //     const Color(0xFFFFE0AF),
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     const Color(0xFFFEE4F3),
-  //     const Color(0xFFFDD3E7),
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.blue.shade200,
-  //     Colors.blue.shade100
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.orange.shade200,
-  //     Colors.orange.shade100
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.green.shade200,
-  //     Colors.green.shade100
-  //   ],
-  //   [
-  //     // Light pink -> soft pink
-  //     Colors.brown.shade200,
-  //     Colors.brown.shade100
-  //   ],
-  // ];
 
   final List<Map<String, dynamic>> folderIcons = [
     {

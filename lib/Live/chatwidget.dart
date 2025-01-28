@@ -32,7 +32,11 @@ class _ChatUiState extends State<ChatUi> {
 
   @override
   void initState() {
-    initializeWebView();
+    initializeWebView().then((v){
+      setState(() {
+        
+      });
+    });
     chattype = [
       GroupChatScreen(
         sessionId: widget.sessionId.toString(),
@@ -63,14 +67,14 @@ class _ChatUiState extends State<ChatUi> {
       onHttpError: (HttpResponseError error) {},
       onWebResourceError: (WebResourceError error) {},
       onNavigationRequest: (NavigationRequest request) {
-        if (request.url.startsWith('https://www.youtube.com/')) {
+        if (request.url.startsWith('https://www.google.co.in/')) {
           return NavigationDecision.prevent;
         }
         return NavigationDecision.navigate;
       },
     ),
   )
-  ..loadRequest(Uri?.parse('https://www.youtube.com/'));
+  ..loadRequest(Uri?.parse('https://www.google.co.in/'));
 
 Future<void> initializeWebView() async {
   try {

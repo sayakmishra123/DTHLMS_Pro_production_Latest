@@ -42,7 +42,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
       tabs.add(Text("Packages", style: FontFamily.font2));
       tabViews.add(buildPackageListView(context));
     }
-
+ 
     // Check for "Free" availability
     final freePackages =
         getx.studentPackage.where((pkg) => pkg['IsFree'] == 'true').toList();
@@ -246,7 +246,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
     // Return the showDetails widget with the appropriate icon and foldername
     return Icon(
       iconData['icon'],
-      color: iconData['color'],
+      color: iconData['color'], 
     );
   }
 

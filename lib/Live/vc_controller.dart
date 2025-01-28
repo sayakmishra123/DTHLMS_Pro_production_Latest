@@ -98,7 +98,7 @@ class VcController extends GetxController {
       const platform = MethodChannel('inMeetChannel');
       final result =
           await platform.invokeMethod('startInMeetScreenShareService');
-      log('result is $result');
+      // log('result is $result');
     }
     await Future.delayed(const Duration(milliseconds: 800), () async {
       try {
@@ -124,7 +124,7 @@ class VcController extends GetxController {
       const platform = MethodChannel('inMeetChannel');
       final result =
           await platform.invokeMethod('stopInMeetScreenShareService');
-      log(result);
+      // log(result);
     }
     inMeetClient.stopScreenShare();
     update();
@@ -232,7 +232,7 @@ class VcController extends GetxController {
     if (breakoutData.isNotEmpty) {
       isBreakoutStarted = true;
     }
-    log('breakout room data $breakoutData');
+    // log('breakout room data $breakoutData');
   }
 
   void addingParticipantToBRroom(
