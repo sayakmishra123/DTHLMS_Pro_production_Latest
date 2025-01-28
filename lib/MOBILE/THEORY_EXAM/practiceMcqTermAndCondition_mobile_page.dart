@@ -317,6 +317,8 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                       .toString()),
                                               // theoryExamAnswerId: '12',
                                               examId: paperId,
+                                              pdfUrl: value['CheckedDocumentUrl'].toString() ,
+
                                             ));
                                   }
                                 });

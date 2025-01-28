@@ -125,6 +125,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                       .toString(),
                                   paperId: theoryPaperList[index]['PaperId']
                                       .toString(),
+                                    
                                 ));
                           }
                           if (examcode == 300) {
@@ -174,6 +175,8 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                                       .toString()),
                                               // theoryExamAnswerId: '12',
                                               examId: theoryPaperList[index]['PaperId']
+                                      .toString(),
+                                      pdfUrl: theoryPaperList[index]['CheckedDocumentUrl']
                                       .toString(),
                                             ));
                                   }

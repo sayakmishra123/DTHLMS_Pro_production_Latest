@@ -23,9 +23,10 @@ class TestResultPageMobile extends StatefulWidget {
   final double obtain;
   final double totalMarksRequired;
   final String examId;
+  final String pdfUrl;
 
 
-  const TestResultPageMobile({super.key, required this.studentName, required this.examName, required this.submitedOn, required this.resultPublishedOn, required this.totalMarks, required this.obtain, required this.totalMarksRequired, required this.examId,});
+  const TestResultPageMobile({super.key,required this.pdfUrl, required this.studentName, required this.examName, required this.submitedOn, required this.resultPublishedOn, required this.totalMarks, required this.obtain, required this.totalMarksRequired, required this.examId,});
 
   @override
   State<TestResultPageMobile> createState() => _TestResultPageMobileState();
@@ -198,55 +199,25 @@ Future<void> downloadAnswerSheet(String url) async {
     });
   }
 
-//  void showDownloadCompleteDialog() {
-//     showDialog(
-//       context: context,
-//       builder: (_) => AlertDialog(
-//         title: Text("Download Complete"),
-//         content: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: <Widget>[
-//             Text("The answer sheet has been downloaded."),
-//             SizedBox(height: 10),
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//                 showPdfDialog(downloadedFilePath);
-//               },
-//               child: Text("Show PDF"),
-//             ),
-//           ],
-//         ),
-//         actions: <Widget>[
-//           TextButton(
-//             child: Text("Close"),
-//             onPressed: () => Navigator.of(context).pop(),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-
  void showDownloadCompleteDialog() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text("Answer sheet not found"),
-        // content: Column(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: <Widget>[
-        //     Text("The answer sheet has been downloaded."),
-        //     SizedBox(height: 10),
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         Navigator.of(context).pop();
-        //         showPdfDialog(downloadedFilePath);
-        //       },
-        //       child: Text("Show PDF"),
-        //     ),
-        //   ],
-        // ),
+        title: Text("Download Complete"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("The answer sheet has been downloaded."),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                showPdfDialog(downloadedFilePath);
+              },
+              child: Text("Show PDF"),
+            ),
+          ],
+        ),
         actions: <Widget>[
           TextButton(
             child: Text("Close"),
@@ -256,6 +227,36 @@ Future<void> downloadAnswerSheet(String url) async {
       ),
     );
   }
+
+
+//  void showDownloadCompleteDialog() {
+//     showDialog(
+//       context: context,
+//       builder: (_) => AlertDialog(
+//         title: Text("Answer sheet not found"),
+//         // content: Column(
+//         //   mainAxisSize: MainAxisSize.min,
+//         //   children: <Widget>[
+//         //     Text("The answer sheet has been downloaded."),
+//         //     SizedBox(height: 10),
+//         //     ElevatedButton(
+//         //       onPressed: () {
+//         //         Navigator.of(context).pop();
+//         //         showPdfDialog(downloadedFilePath);
+//         //       },
+//         //       child: Text("Show PDF"),
+//         //     ),
+//         //   ],
+//         // ),
+//         actions: <Widget>[
+//           TextButton(
+//             child: Text("Close"),
+//             onPressed: () => Navigator.of(context).pop(),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 
    void showPdfDialog(String filePath) {
     showDialog(
@@ -682,14 +683,14 @@ Future<void> downloadAnswerSheet(String url) async {
                       ? null
                       : () async{
 
-                        showDownloadCompleteDialog();
+                        // showDownloadCompleteDialog();
                       // await  getAnswerSheetURLforStudent(context,getx.loginuserdata[0].token,widget.examId).then((answerUrl){
                       //   print(answerUrl);
                       //   print(answerUrl);
 
-                      //   if(answerUrl.isNotEmpty){
-                      //      downloadAnswerSheet("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf");
-                      //   }
+                        if(widget.pdfUrl.isNotEmpty){
+                           downloadAnswerSheet(widget.pdfUrl);
+                        }
 
 
                       // });
