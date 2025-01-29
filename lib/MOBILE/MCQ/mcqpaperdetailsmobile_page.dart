@@ -62,7 +62,7 @@ class _McqPaperDetailsMobileState extends State<McqPaperDetailsMobile> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
-        title: Text('MCQ Papers', style: TextStyle(color: Colors.black)),
+        title: Text('MCQ Papers', style: FontFamily.styleb.copyWith(color: Colors.blueGrey)),
       ),
       body: SingleChildScrollView(
         child: Obx(

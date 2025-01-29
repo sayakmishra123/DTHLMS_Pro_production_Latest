@@ -227,7 +227,7 @@ class _MyAppState extends State<MyApp> {
 
                                 bool isDataLengthValid = false;
 
-                                if (snapshot.hasData &&
+                                if (snapshot.hasData && 
                                     snapshot.data != null &&
                                     snapshot.data is List) {
                                   // Safely cast snapshot.data to a List and check the condition

@@ -14,11 +14,12 @@ class ClsUrlApi {
   static const getNotificationsDetailsApi =
       "/api/AuthDataGet/ExecuteJson/spAppApi/52";
   static const getIconDataApi = "/api/AuthDataGet/ExecuteJson/spAppApi/49";
-  static const signupEndpoint = "/api/auth/studentregister/";
+  static const signupEndpoint = "/api/auth/studentregister/";  
   static const getUserConfirmationTypeEndpoint =
       "/api/auth/getUserConfirmationType";
   static const generateSRCode = "/api/auth/generateSRCode";
   static const generateCodeEndpoint = '/api/auth/generateCode';
+  
   static const studentVideoreviewlink = '/api/auth/studentVideoreview';
   static const resendOtp = '/api/auth/resendOtp';
   static const allpackage = '/api/AuthDataGet/ExecuteJson/sptblPackage/4';
