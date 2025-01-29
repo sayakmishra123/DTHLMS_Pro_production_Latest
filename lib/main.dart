@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/API/LOGIN/login_api.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
@@ -12,7 +14,7 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/constants.dart';
+// import 'package:dthlms/constants.dart';
 import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
@@ -59,6 +61,7 @@ void main(List<String> args) async {
         },
       );
     } else if (Platform.isAndroid) {
+      disableScreenshot();
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
     }
@@ -72,7 +75,6 @@ void main(List<String> args) async {
   runApp(
     MyApp(args),
   );
-  disableScreenshot();
 }
 
 class MyApp extends StatefulWidget {
@@ -90,6 +92,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    appVersionGet();
 
 // A
 // lue.toString() +
@@ -517,6 +520,7 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
 // import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> initializeNotifications() async {
+  // testSQLCipherOnWindows();
   String osid = getEncryptionKeyFromTblSetting('OneSignalId');
 
   if (osid.isNotEmpty) {
@@ -526,7 +530,10 @@ Future<void> initializeNotifications() async {
     );
 
     OneSignal.initialize(osid); // Replace with your OneSignal App ID
+    final userid = await OneSignal.User.getOnesignalId();
+    // final userid = await OneSignal.User.pushSubscription.id;
 
+    log("user id of one signal :$userid");
     // Request notification permissions
     OneSignal.Notifications.addPermissionObserver((state) {
       // // print("Has permission: " + state.toString());

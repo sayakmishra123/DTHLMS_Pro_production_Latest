@@ -7,8 +7,7 @@ import 'package:dthlms/API/ERROR_MASSEGE/errorhandling.dart';
 
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
-import 'package:dthlms/constants.dart';
-import 'package:dthlms/constants.dart';
+import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
 
 import 'package:flutter/material.dart';
@@ -48,7 +47,6 @@ void testSQLCipherOnWindows() async {
     );
     print("Database password set: $dbPassword");
   }
-  createsayak();
 
   getVersion();
 
@@ -56,6 +54,7 @@ void testSQLCipherOnWindows() async {
   createtblMCQhistory();
   creatTableVideoplayInfo();
   createTblSetting();
+  createTblStudentFeedback();
   createTblPackageData();
 
   createtblSectionFilesDetails();
@@ -93,6 +92,7 @@ void createTblVideoComponents() {
   // Create a table and insert some data
   _db.execute('''
    CREATE TABLE IF NOT EXISTS TblVideoComponents( 
+   ComponentId TEXT,
      PackageId TEXT ,
      VideoId TEXT,
      Names TEXT,
@@ -122,6 +122,7 @@ void createTblVideoComponents() {
 }
 
 Future<void> insertTblVideoComponents(
+  String componentId,
     String packageId,
     String videoId,
     String names,
@@ -145,8 +146,8 @@ Future<void> insertTblVideoComponents(
     String downloadedPath,
     String isEncrypted) async {
   _db.execute('''
-       INSERT INTO TblVideoComponents(PackageId, VideoId, Names,Option1,Option2,Option3,Option4,VideoTime,Answer,Category,TagName,DocumentId,DocumentURL,IsVideoCompulsory,IsChapterCompulsory,PreviousVideoId,MinimumVideoDuration,PreviousChapterId,SessionId,FranchiseId,DownloadedPath,IsEncrypted) 
-      VALUES ('$packageId', '$videoId', '$names','$option1','$option2','$option3','$option4','$videoTime','$answer','$category','$tagName','$documentId','$documentURL','$isVideoCompulsory','$isChapterCompulsory','$previousVideoId','$minimumVideoDuration','$previousChapterId','$sessionId','$franchiseId','$downloadedPath','$isEncrypted');
+       INSERT INTO TblVideoComponents(PackageId, VideoId, Names,Option1,Option2,Option3,Option4,VideoTime,Answer,Category,TagName,DocumentId,DocumentURL,IsVideoCompulsory,IsChapterCompulsory,PreviousVideoId,MinimumVideoDuration,PreviousChapterId,SessionId,FranchiseId,DownloadedPath,IsEncrypted,ComponentId) 
+      VALUES ('$packageId', '$videoId', '$names','$option1','$option2','$option3','$option4','$videoTime','$answer','$category','$tagName','$documentId','$documentURL','$isVideoCompulsory','$isChapterCompulsory','$previousVideoId','$minimumVideoDuration','$previousChapterId','$sessionId','$franchiseId','$downloadedPath','$isEncrypted','$componentId');
     ''');
 }
 
@@ -190,6 +191,44 @@ void createtblSession() {
   ''');
   // log()
 }
+
+
+void createTblStudentFeedback() {
+  // Create a table and insert some data
+  _db.execute('''
+   CREATE TABLE IF NOT EXISTS TblStudentFeedback(
+   ComponentId TEXT,
+   VideoId TEXT,
+   PackageId TEXT,
+   Answer TEXT,
+   UploadFlag TEXT
+ );
+  ''');
+  // log()
+}
+
+Future<void> insertTblStudentFeedback(
+    String componentId,
+    String packageId,
+    String answer,
+    String uploadflag,
+    String videoId
+  ) async {
+  _db.execute('''
+        INSERT INTO TblStudentFeedback (
+          ComponentId, PackageId, Answer,VideoId, UploadFlag
+        ) VALUES (?, ?, ?, ?,?);
+      ''', [
+        componentId,
+        packageId,
+        answer,
+        videoId,
+        
+        uploadflag,
+      
+      ]);
+}
+
 
 Future<void> insertTblSession(
     String loginId,
@@ -458,7 +497,7 @@ Future<void> insertVideoplayInfo(
     String startClockTime,
     int playNo,
     int uploadflag,
-    {String type = "video"}) async {
+   { String type="video"}) async {
   try {
     // print(videoId.toString() + watchduration.toString());
 
@@ -723,23 +762,24 @@ Future<void> insertOrUpdateTblPackageData(
 
 // new added
 Future<void> insertPackageDetailsdata(
-    String packageId,
-    String packageName,
-    String fileIdType,
-    String fileId,
-    String fileIdName,
-    String chapterId,
-    String allowDuration,
-    String consumeDuration,
-    String consumeNos,
-    String allowNo,
-    String documentPath,
-    String scheduleOn,
-    String sessionId,
-    String videoDuration,
-    String DownloadedPath,
-    String isEncrypted,
-    String sortedOrder) async {
+  String packageId,
+  String packageName,
+  String fileIdType,
+  String fileId,
+  String fileIdName,
+  String chapterId,
+  String allowDuration,
+  String consumeDuration,
+  String consumeNos,
+  String allowNo,
+  String documentPath,
+  String scheduleOn,
+  String sessionId,
+  String videoDuration,
+  String DownloadedPath,
+  String isEncrypted,
+  String sortedOrder
+) async {
   _db.execute('''
        INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder) 
       VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder');
@@ -1399,6 +1439,45 @@ Future<void> getMCQListOfVideo(String packageId, String videoId) async {
   print("Details added in mcq list");
 }
 
+
+
+Future<void> getReviewQuestionListOfVideo(String packageId, String videoId) async {
+  final sql.ResultSet resultSet = _db.select('''
+  SELECT * 
+  FROM TblVideoComponents 
+  WHERE PackageId = ? AND VideoId = ? AND Category = ?
+  ''', [packageId, videoId, "REVIEW"]);
+
+  if (getx.reviewQuestionListOfVideo.isNotEmpty) {
+    getx.reviewQuestionListOfVideo.clear();
+  }
+
+  for (int item = 0; item < resultSet.length; item++) {
+    final details = {
+      "videoId":videoId,
+      "packageId":packageId,
+      "componentId":resultSet[item]['ComponentId'],
+      "question": resultSet[item]['Names'],
+      "options": [resultSet[item]['Option1'], resultSet[item]['Option2'], resultSet[item]['Option3'], resultSet[item]['Option4']],
+
+
+
+
+   
+      // "mcqQuestion": resultSet[item]['Names'],
+      // "answer": resultSet[item]['Answer'],
+      // "options": [
+      //   {"optionName": resultSet[item]['Option1']},
+      //   {"optionName": resultSet[item]['Option2']},     
+      //   {"optionName": resultSet[item]['Option3']},
+      //   {"optionName": resultSet[item]['Option4']}
+      // ]
+    };
+
+    getx.reviewQuestionListOfVideo.add(details);
+  }
+  print("Details added in mcq list");
+}
 Future<void> getPDFlistOfVideo(String packageId, String videoId) async {
   final sql.ResultSet resultSet = _db.select('''
   SELECT DocumentURL, DocumentId,Names,IsEncrypted
@@ -1707,9 +1786,7 @@ void createMCQSet() {
      SetId TEXT ,
      PackageId TEXT,
      SetName TEXT,
-     ServicesTypeName TEXT,
-      StartDate TEXT,
-     EndDate TEXT
+     ServicesTypeName TEXT
    
    );
   ''');
@@ -1718,15 +1795,14 @@ void createMCQSet() {
 }
 
 Future<void> inserTblMCQSet(String setId, String packageId, String setName,
-    String servicesTypeName,String startDate,
-    String EndDate) async {
+    String servicesTypeName) async {
   try {
     _db.execute(
       '''
-        INSERT INTO TblMCQSet (SetId, PackageId, SetName,ServicesTypeName,StartDate ,EndDate)
-        VALUES (?, ?, ?,?,?,?)
+        INSERT INTO TblMCQSet (SetId, PackageId, SetName,ServicesTypeName)
+        VALUES (?, ?, ?,?)
         ''',
-      [setId, packageId, setName, servicesTypeName,startDate,EndDate],
+      [setId, packageId, setName, servicesTypeName],
     );
   } catch (e) {
     writeToFile(e, 'insertMCQSet');
@@ -1753,6 +1829,9 @@ void createMCQPaper() {
      MCQPaperStartDate TEXT,
      IsNegativeMark TEXT,
      IsAnswerSheetShow TEXT
+
+   
+   
    );
   ''');
   // log()
@@ -2065,10 +2144,7 @@ Future<List<Map<String, dynamic>>> fetchMCQSetList(String packageId) async {
       'SetId': row['SetId'],
       'PackageId': row['PackageId'],
       'SetName': row['SetName'],
-      'ServicesTypeName': row['ServicesTypeName'],
-      'StartDate' : row['StartDate'],
-      'EndDate' : row['EndDate'],
-
+      'ServicesTypeName': row['ServicesTypeName']
     });
     //  print("Data get from whiteList for Appname: ${ row['AppBaseName']}.");
   }
@@ -2654,7 +2730,8 @@ void createTheoryPaper() {
      PassMarks TEXT,
    
      PaperEndDate TEXT,
-     PaperStartDate TEXT
+     PaperStartDate TEXT,
+     IsSubmitted TEXT
    
    
    
@@ -2676,12 +2753,13 @@ Future<void> inserTblTheoryPaper(
   String passMarks,
   String paperEndDate,
   String paperStartDate,
+  String isSubmited
 ) async {
   try {
     _db.execute(
       '''
-        INSERT INTO TblTheoryPaper (PaperId, SetId, PaperName,TotalMarks,TermAndCondition,Duration,DocumentUrl,StartTime,PassMarks,PaperEndDate,PaperStartDate)
-        VALUES (?, ?, ?,?,?,?,?,?,?,?,?)
+        INSERT INTO TblTheoryPaper (PaperId, SetId, PaperName,TotalMarks,TermAndCondition,Duration,DocumentUrl,StartTime,PassMarks,PaperEndDate,PaperStartDate,IsSubmitted)
+        VALUES (?, ?, ?,?,?,?,?,?,?,?,?,?)
         ''',
       [
         paperId,
@@ -2694,7 +2772,8 @@ Future<void> inserTblTheoryPaper(
         startTime,
         passMarks,
         paperEndDate,
-        paperStartDate
+        paperStartDate,
+        isSubmited
       ],
     );
     // log("insert Successfull   $paperId");
@@ -2714,7 +2793,7 @@ Future<List<Map<String, dynamic>>> fetchTheorySetList(String packageId) async {
     tblMCQSetList.add({
       'SetId': row['SetId'],
       'PackageId': row['PackageId'],
-      'SetName': row['SetName'],
+      'SetName': row['SetName'], 
       'ServicesTypeId': row['ServicesTypeId'],
       'ServicesTypeName': row['ServicesTypeName']
     });
@@ -2974,7 +3053,7 @@ Future<dynamic> fetchUploadableVideoInfo() async {
       print(
           "${row['VideoId']}\n,${row['StartDuration']}\n,${row['EndDuration']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
       unUploadedVideoInfo.add({
-        'Type': row['Type'],
+        'Type':row['Type'],
         'VideoId': row['VideoId'],
         'StartDuration': row['StartDuration'],
         'EndDuration': row['EndDuration'],
@@ -3189,7 +3268,7 @@ Future infoTetch(packageId, type) async {
       // if (dateCheck(row['ScheduleOn'])) {
       //   getx.infoFetch.add(details);
       // }
-      // log(row['ScheduleOn'].toString());
+      log(row['ScheduleOn'].toString());
 
       switch (row['FileIdType']) {
         case 'Live':
@@ -3545,8 +3624,8 @@ Future<List<Map<String, dynamic>>> getAllTblImages() async {
     // Ensure '_db' is your initialized database instance
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblImages''');
-    // print("shubha getAllTblImages");
-// log(result.toString());
+      print("shubha getAllTblImages");
+log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {
     writeToFile(e, "getAllTblImages");
@@ -3659,4 +3738,21 @@ String getVideoPlayModeFromPackageId(String packageId) {
   // else {
   //   // throw Exception('TotalPassMarks not found: $paperID');
   // }
+}
+
+
+Future<void> updateIsSubmittedOnTblTheoryPaperTable(String paperId, 
+    String issubmited, BuildContext context) async {
+  try {
+    _db.execute('''
+      UPDATE TblTheoryPaper
+      SET IsSubmitted = ?
+      WHERE PaperId = ?;
+    ''', [issubmited, paperId]);
+
+ 
+  } catch (e) {
+    writeToFile(e, 'updateIsSubmittedOnTblTheoryPaperTable');
+    print('Failed to update details: ${e.toString()}');
+  }
 }

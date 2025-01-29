@@ -341,6 +341,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
                                                 value['PassMarks'].toString()),
                                             theoryExamAnswerId: '12',
                                             examId: paperId,
+                                            pdfurl: "no",
                                           ));
                                 }
                               });

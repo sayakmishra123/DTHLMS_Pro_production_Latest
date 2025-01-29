@@ -1,4 +1,5 @@
 class VideoComponents {
+  final String componentId;
   final int packageId;
   final int videoId;
   final String names;
@@ -21,7 +22,8 @@ class VideoComponents {
   final int franchiseId;
   final String isEncrypted;
 
-  VideoComponents({
+  VideoComponents(  {
+    required this.componentId,
     required this.packageId,
     required this.videoId,
     required this.names,
@@ -43,10 +45,13 @@ class VideoComponents {
     required this.sessionId,
     required this.franchiseId,
     required this.isEncrypted,
+
   });
 
   factory VideoComponents.fromJson(Map<String, dynamic> json) {
     return VideoComponents(
+     componentId :json['VideoDetailsId'].toString(),
+
       packageId: json['PackageId'],
       videoId: json['VideoId'],
       names: json['Names'],
@@ -67,7 +72,8 @@ class VideoComponents {
       previousChapterId: json['PreviousChapterId'],
       sessionId: json['SessionId'],
       franchiseId: json['FranchiseId'],
-      isEncrypted: json['IsEncrypted'].toString()
+      isEncrypted: json['IsEncrypted'].toString(),
+      
     );
   }
 

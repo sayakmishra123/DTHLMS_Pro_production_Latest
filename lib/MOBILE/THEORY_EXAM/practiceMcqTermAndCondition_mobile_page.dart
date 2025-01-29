@@ -23,6 +23,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
   final String sheduletime;
   final String documnetPath;
   final String paperId;
+  
 
   bool windowsddevice = Platform.isWindows ? true : false;
 
@@ -316,6 +317,8 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                       .toString()),
                                               // theoryExamAnswerId: '12',
                                               examId: paperId,
+                                              pdfUrl: value['CheckedDocumentUrl'].toString() ,
+
                                             ));
                                   }
                                 });

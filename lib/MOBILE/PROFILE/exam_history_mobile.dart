@@ -597,6 +597,7 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                 totalMarksRequired: double.parse( snapshot.data![index]['PassMarks'].toString()),
                                              
                                                 examId: "121",
+                                                pdfUrl: "hh",
                                               ));
                                         })
                                     : Text("Result not publish ")))

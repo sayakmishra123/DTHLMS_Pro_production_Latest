@@ -218,7 +218,7 @@ class _MessageUiState extends State<MessageUi> {
   Color greencolor = const Color(0Xff15E8D8);
   @override
   void initState() {
-    log(widget.userid);
+    // log(widget.userid);
     // getemail().whenComplete(() => null);
 
     super.initState();

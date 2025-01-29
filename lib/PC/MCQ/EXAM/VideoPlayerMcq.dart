@@ -43,10 +43,10 @@ class VideoPlayerMcq extends StatefulWidget {
   State<VideoPlayerMcq> createState() => _VideoPlayerMcqState();
 }
 
-class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
+class _VideoPlayerMcqState extends State<VideoPlayerMcq> {
   void dispose() {
     print("close the app");
-   
+
     _timer?.cancel();
 
     // TODO: implement dispose
@@ -74,34 +74,30 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
   bool isPlaying = false;
   TextEditingController timeController = TextEditingController();
   Timer? _timer;
-  int playno=0;
-   var utcTime=DateTime.now();
+  int playno = 0;
+  var utcTime = DateTime.now();
 
   @override
   void initState() {
-   
-    
     videoPlay = VideoPlayClass();
-  
-  //   FlutterWindowClose.setWindowShouldCloseHandler(() async {
 
-  //       // insertVideoplayInfo(
-  //       //     int.parse(getx.playingVideoId.value),
-  //       //         videoPlay.player.state.position.toString(),
-  //       //         videoPlay.totalPlayTime.inSeconds.toString(),
-  //       //         videoPlay.player.state.rate.toString(),
-  //       //         videoPlay.startclocktime.toString(),
-  //       //       utcTime.millisecondsSinceEpoch,
+    //   FlutterWindowClose.setWindowShouldCloseHandler(() async {
 
-  //       //       );
-  //       //        updateVideoConsumeDuration(getx.playingVideoId.value,getx.selectedPackageId.value.toString(), videoPlay.totalPlayTime.inSeconds.toString(),);
+    //       // insertVideoplayInfo(
+    //       //     int.parse(getx.playingVideoId.value),
+    //       //         videoPlay.player.state.position.toString(),
+    //       //         videoPlay.totalPlayTime.inSeconds.toString(),
+    //       //         videoPlay.player.state.rate.toString(),
+    //       //         videoPlay.startclocktime.toString(),
+    //       //       utcTime.millisecondsSinceEpoch,
 
-  //  return true;
-    
+    //       //       );
+    //       //        updateVideoConsumeDuration(getx.playingVideoId.value,getx.selectedPackageId.value.toString(), videoPlay.totalPlayTime.inSeconds.toString(),);
 
-      
-  //   });
-    videoPlay.updateVideoLink(widget.videoLink);
+    //  return true;
+
+    //   });
+    videoPlay.updateVideoLink(widget.videoLink, []);
     initialFunctionOfRightPlayer();
     // initialFunctionOfRightPlayer();
     dio = Dio();
@@ -111,8 +107,6 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
   }
 
   List<Widget> page = [];
-
-  
 
   initialFunctionOfRightPlayer() {
     // creatTableVideoplayInfo();
@@ -124,20 +118,14 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
 
           if (playing) {
             // log('playing');
-           
+
             print(utcTime.millisecondsSinceEpoch);
             videoPlay.startTrackingPlayTime();
 
             // Cancel any existing timer to avoid multiple timers running
             // _timer?.cancel();
-
-          
           } else {
-       
-            
             videoPlay.stopTrackingPlayTime();
-             
-
 
             // if(getx.isInternet.value){
             //       videoInfo(
@@ -149,9 +137,9 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
             //                   videoPlay.startclocktime.toString(),
             //                   getx.token.value,
             //                   utcTime.millisecondsSinceEpoch);
-                              
+
             // }
-              
+
             _timer?.cancel();
           }
         });
@@ -161,43 +149,13 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
 
   @override
   Widget build(BuildContext context) {
-    return 
-        
-        
-             SingleChildScrollView(child: videoPlayerRightMcq());
-          
-    
-      
-    
+    return SingleChildScrollView(child: videoPlayerRightMcq());
   }
-
-
-
-
-
-
-  
-
-
-
-
-  
-  
-
-
- 
-  
-
-  
 
   Widget videoPlayerRightMcq() {
     return Container(
       child: Column(
         children: [
-         
-          
-          
-          
           Card(
             surfaceTintColor: Colors.white,
             color: Colors.white,
@@ -217,13 +175,13 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
                 seekBarThumbColor: ColorPage.colorbutton,
                 seekBarPositionColor: ColorPage.colorbutton,
                 seekBarHeight: 5,
-            // buttonBarHeight: 10,
-            seekBarMargin: EdgeInsets.all(10),
+                // buttonBarHeight: 10,
+                seekBarMargin: EdgeInsets.all(10),
                 toggleFullscreenOnDoublePress: false,
               ),
               fullscreen: MaterialDesktopVideoControlsThemeData(),
               child: Container(
-               height:Platform.isAndroid?280:  390,
+                height: Platform.isAndroid ? 280 : 390,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -232,19 +190,14 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq>  {
               ),
             ),
           ),
-          SizedBox(height: 10,)
-            
-          
-          
-          
+          SizedBox(
+            height: 10,
+          )
         ],
       ),
     );
   }
 
-  
-  
-  
   void showGotoDialog(BuildContext context) {
     double hours = 0;
     double minutes = 0;

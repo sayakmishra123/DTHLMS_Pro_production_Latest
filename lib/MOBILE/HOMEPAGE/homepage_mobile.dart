@@ -748,6 +748,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
                                                         'FileIdName'])
                                             .existsSync()) {
                                           Get.to(() => MobileVideoPlayer(
+                                                videoList: [],
                                                 videoLink: getx.playLink.value,
                                                 Videoindex: 0,
                                                 packageId:
@@ -1372,6 +1373,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       .toString();
 
                               Get.to(() => MobileVideoPlayer(
+                                    videoList: [],
                                     videoLink: getx.playLink.value,
                                     Videoindex: 0,
                                     packageId: (appointment.resourceIds![0]
@@ -1874,6 +1876,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               Get.back();
 
               Get.to(() => MobileVideoPlayer(
+                    videoList: [],
                     videoLink: getx.playLink.value,
                     Videoindex: 0,
                     packageId: packageId,
@@ -2224,16 +2227,12 @@ class HomePageDrawer extends StatefulWidget {
 class _HomePageDrawerState extends State<HomePageDrawer> {
   @override
   void initState() {
-    appVersionGet();
+   version.value= appVersionGet();
     super.initState();
   }
 
   RxString version = "".obs;
 
-  appVersionGet() async {
-    pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
-    version.value = packageInfo.version;
-  }
 
   logOut() async {
     ArtDialogResponse? response = await ArtSweetAlert.show(

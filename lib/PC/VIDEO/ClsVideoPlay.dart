@@ -14,7 +14,7 @@ class VideoPlayClass {
   late bool _isPlaying;
   late double _lastPlaybackRate;
   late String videoLink;
-  VideoPlayClass() {
+  VideoPlayClass({List<dynamic> videoList = const []}) {
     try {
       totalPlayTimeofVideo = Duration.zero;
       lastPlayTime = DateTime.now();
@@ -24,15 +24,39 @@ class VideoPlayClass {
       endclocktime = DateTime.now();
       // player = Player();
       controller = VideoController(player);
-
+      log(videoList[0]['DownloadedPath']);
 // log(videoLink);
       player.open(
-        Media(
-          !File(videoLink).existsSync()
-              ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-              : videoLink,
+        // videoList.length > 1
+        //     ?
+        Playlist(
+          // for (int i = 0; i < videoList.length; i++) ...[
+          // Media(videoList[0]['DownloadedPath']),
+          // Media(videoList[0]['DownloadedPath'])
+          // ]
+
+          [
+            Media(
+                'https://user-images.githubusercontent.com/28951144/229373695-22f88f13-d18f-4288-9bf1-c3e078d83722.mp4'),
+            Media(
+                'https://user-images.githubusercontent.com/28951144/229373709-603a7a89-2105-4e1b-a5a5-a6c3567c9a59.mp4'),
+            Media(
+                'https://user-images.githubusercontent.com/28951144/229373716-76da0a4e-225a-44e4-9ee7-3e9006dbc3e3.mp4'),
+            Media(
+                'https://user-images.githubusercontent.com/28951144/229373718-86ce5e1d-d195-45d5-baa6-ef94041d0b90.mp4'),
+            Media(
+                'https://user-images.githubusercontent.com/28951144/229373720-14d69157-1a56-4a78-a2f4-d7a134d7c3e9.mp4'),
+
+            // Declare the starting position.
+          ],
+          index: 0,
         ),
-        play: false,
+        // : Media(
+        //     !File(videoLink).existsSync()
+        //         ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        //         : videoLink,
+        //   ),
+        play: true,
       );
     } catch (e) {}
   }
@@ -41,14 +65,39 @@ class VideoPlayClass {
     // log(totalPlayTimeofVideo.inSeconds.toString());
   }
 
-  void updateVideoLink(String newLink) {
+  void updateVideoLink(String newLink, List videoList) {
     videoLink = newLink;
-
+    log(videoList.toString() + "dsfsd");
     player.open(
-      // Playlist(),
-      Media(!File(videoLink).existsSync()
-          ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-          : videoLink),
+      videoList.length == 1
+          ? Playlist(
+              [
+                for (int i = 0; i < videoList.length; i++) ...[
+                  Media(videoList[i]),
+
+                  // ]
+                ],
+                // [
+                //   Media(
+                //       'https://user-images.githubusercontent.com/28951144/229373695-22f88f13-d18f-4288-9bf1-c3e078d83722.mp4'),
+                //   Media(
+                //       'https://user-images.githubusercontent.com/28951144/229373709-603a7a89-2105-4e1b-a5a5-a6c3567c9a59.mp4'),
+                //   Media(
+                //       'https://user-images.githubusercontent.com/28951144/229373716-76da0a4e-225a-44e4-9ee7-3e9006dbc3e3.mp4'),
+                //   Media(
+                //       'https://user-images.githubusercontent.com/28951144/229373718-86ce5e1d-d195-45d5-baa6-ef94041d0b90.mp4'),
+                //   Media(
+                //       'https://user-images.githubusercontent.com/28951144/229373720-14d69157-1a56-4a78-a2f4-d7a134d7c3e9.mp4'),
+
+                //   // Declare the starting position.
+              ],
+              index: 0,
+            )
+          :
+          // Playlist(),
+          Media(!File(videoLink).existsSync()
+              ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              : videoLink),
       play: false,
     );
   }
@@ -60,7 +109,12 @@ class VideoPlayClass {
 
   Future<void> playOrPause() async {
     await player.playOrPause();
+   
   }
+
+
+
+
 
   String startTrackingPlayTime() {
     if (!_isPlaying) {
@@ -94,5 +148,7 @@ class VideoPlayClass {
   void seekTo(Duration position) {
     player.seek(position);
     print("goto $position");
+
+    
   }
 }
