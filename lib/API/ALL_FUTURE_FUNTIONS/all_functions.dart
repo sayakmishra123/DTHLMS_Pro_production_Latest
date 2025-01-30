@@ -200,7 +200,8 @@ Future packactivationKey(
       deleteVideoComponents();
       getPackageData(context, token);
       getAllFolders(context, token, "");
-      getAllFiles(context, token, "");
+      getAllFiles(context, token, ""); 
+      getAllFreeFiles(context,token,"");
       getVideoComponents(context, token, "");
 
       deleteSessionDetails();
@@ -485,6 +486,90 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
   }
 }
 
+
+Future getAllFreeFiles(BuildContext context, token, String packageId) async {
+  // loader(context);
+  Map data = packageId == "" ? {} : {'PackageId': packageId};
+
+  try {
+    var res =
+        await http.post(Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getFreePackageFiles),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+              'Origin': origin,
+            },
+            body: jsonEncode(data));
+
+    if (res.statusCode == 200) {
+      var responseBody = jsonDecode(res.body);
+
+      // log(responseBody['result'].toString());
+
+      List<AllPackageDetails> resultData =
+          AllPackageDetails.fromJsonList(responseBody['result']);
+
+      resultData.forEach((file) async {
+        AllPackageDetails details = AllPackageDetails(
+            packageId: file.packageId,
+            packageName: file.packageName,
+            fileIdType: file.fileIdType,
+            fileId: file.fileId,
+            fileIdName: file.fileIdName,
+            chapterId: file.chapterId,
+            allowDuration: file.allowDuration,
+            consumeDuration: file.consumeDuration,
+            allowNo: file.allowNo,
+            consumeNos: file.consumeNos,
+            documentPath: file.documentPath,
+            scheduleOn: file.scheduleOn,
+            sessionId: file.sessionId,
+            videoDuration: file.videoDuration,
+            DownloadedPath: "0",
+            isEncrypted: file.isEncrypted,
+            sortedOrder: file.sortedOrder);
+        await insertPackageDetailsdata(
+                file.packageId.toString(),
+                file.packageName ?? '',
+                file.fileIdType ?? '',
+                file.fileId.toString(),
+                file.fileIdName ?? '',
+                file.chapterId.toString(),
+                file.allowDuration.toString(),
+                file.consumeDuration.toString(),
+                file.allowNo.toString(),
+                file.consumeNos.toString(),
+                file.documentPath.toString(),
+                file.scheduleOn.toString(),
+                file.sessionId.toString(),
+                file.videoDuration.toString(),
+                getDownloadedPathOfFile(
+                  file.packageId.toString(),
+                  file.fileId.toString(),
+                  file.fileIdType ?? '',
+                ),
+                file.isEncrypted,
+                file.sortedOrder.toString())
+            .whenComplete(() {
+          // log('Inserted');
+          getx.packageDetailsdata.add(details);
+        });
+      });
+      await readPackageDetailsdata();
+
+      // Get.back();
+    } else if (res.statusCode == 401) {
+      onTokenExpire(context);
+      // print("Error: in user files");
+    } else {
+      // Get.back();
+    }
+  } catch (p) {
+    writeToFile(p, 'getAllFiles');
+    // print("error:$p files2");
+  }
+}
+
 String formatTimestamp(String timestamp) {
   // Split the string by the period
   List<String> parts = timestamp.split('.');
@@ -639,7 +724,7 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
   // loader(context);
   Map data = packageId == "" ? {} : {"PackageId": packageId};
 
-  // try {
+  try {
   var res = await http.post(
       Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
       headers: <String, String>{
@@ -695,10 +780,10 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
   } else {
     // Get.back();
   }
-  // } catch (p) {
-  //   writeToFile(p, 'getVideoComponents');
-  //   // print("error:$p files2 video component");
-  // }
+  } catch (p) {
+    writeToFile(p, 'getVideoComponents');
+    // print("error:$p files2 video component");
+  }
 }
 
 Future<String> uploadImage(

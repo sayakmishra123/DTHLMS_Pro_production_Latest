@@ -29,17 +29,6 @@ class TheoryExamPageMobile extends StatefulWidget {
       required this.issubmit});
 
 
-  // final String documentUrl;
-  // final String paperId;
-  // final String duration;
-  // final bool issubmit;
-  // const TheoryExamPageMobile(
-  //     {super.key,
-  //     required this.documentUrl,
-  //     required this.paperId,
-  //     required this.duration,
-  //     required this.issubmit});
-
   @override
   State<TheoryExamPageMobile> createState() => _TheoryExamPageMobileState();
 }

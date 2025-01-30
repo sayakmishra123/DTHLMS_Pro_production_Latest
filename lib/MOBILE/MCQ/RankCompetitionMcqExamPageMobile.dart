@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:collection/equality.dart';
+import 'package:collection/collection.dart';
+
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
@@ -31,6 +32,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:y_player/y_player.dart';
 // import 'package:youtube_quality_player/youtube_quality_player.dart';
 
 import '../../API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -916,18 +918,13 @@ class _RankCompetitionMcqExamPageMobileState
                                                                   mcqData[qindex.value]
                                                                       .mCQQuestionUrl)
                                                               ? Container(
-                                                                  child: YoutubeLive(mcqData[qindex.value].mCQQuestionUrl, getx.loginuserdata[0].firstName, false)
+                                                                  child: YPlayer( key: ValueKey(mcqData[qindex.value]
+                                                                      .mCQQuestionUrl),  youtubeUrl:mcqData[qindex.value]
+                                                                      .mCQQuestionUrl ,)
+                                                                  
                                                                   // child: YoutubeLive(link:mcqData[qindex.value].mCQQuestionUrl ),
 
-                                                                  // YQPlayer(
-                                                                  //   key: ValueKey( mcqData[qindex.value]
-                                                                  //                                                           .mCQQuestionUrl),
-
-                                                                  //   videoLink: mcqData[qindex.value]
-                                                                  //                                                           .mCQQuestionUrl,
-                                                                  //   primaryColor: Colors.blue,
-                                                                  //   secondaryColor: Colors.redAccent,
-                                                                  // ),
+                                                                
                                                                   )
                                                               : VideoPlayerMcq(mcqData[qindex.value].mCQQuestionUrl)),
                                                 if (mcqData[qindex.value]

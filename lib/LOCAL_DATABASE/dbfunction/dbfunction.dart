@@ -268,7 +268,7 @@ Future<void> readTblSession() async {
 }
 
 void deleteSessionDetails() {
-  _db.execute('DELETE FROM TblSession');
+  _db.execute('DELETE FROM TblSession');             
   getx.sessionData.clear();
 
   print("Session data cleared");
@@ -3152,6 +3152,7 @@ void deletePartularPackageData(String packageId, BuildContext context) {
     gettheoryExamDataForTest2(context, getx.loginuserdata[0].token, packageId);
     getAllFolders(context, getx.loginuserdata[0].token, packageId);
     getAllFiles(context, getx.loginuserdata[0].token, packageId);
+    getAllFreeFiles(context,getx.loginuserdata[0].token,packageId);
     getVideoComponents(context, getx.loginuserdata[0].token, packageId);
   } catch (e) {
     writeToFile(e, "deletePartularPackageData");

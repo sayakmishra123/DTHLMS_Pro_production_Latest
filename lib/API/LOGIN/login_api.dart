@@ -144,6 +144,7 @@ Future loginApi(
       getPackageData(context, jsondata['result']['token']);
       getAllFolders(context, jsondata['result']['token'], "");
       getAllFiles(context, jsondata['result']['token'], "");
+      getAllFreeFiles(context,jsondata['result']['token'],"");
       getVideoComponents(context, jsondata['result']['token'], "");
       getMCQExamHistory(context, jsondata['result']['token']);
       getVideowatchHistory(context, jsondata['result']['token']);
@@ -302,9 +303,9 @@ Future signupApi(
     }
   } catch (e) {
     writeToFile(e, 'signupApi');
-    // Get.back();
+    Get.back();
     ClsErrorMsg.fnErrorDialog(context, 'Signup error',
-        e.toString().replaceAll("[", "").replaceAll("]", ""), e);
+      "Something Went Wrong!", e);
   }
 }
 
