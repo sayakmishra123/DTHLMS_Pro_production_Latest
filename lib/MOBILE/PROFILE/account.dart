@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
+import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/PROFILE/app_settings.dart';
 import 'package:dthlms/MOBILE/PROFILE/contact_us.dart';
 import 'package:dthlms/MOBILE/PROFILE/devicehistorymobile.dart';
@@ -9,9 +12,11 @@ import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../HOMEPAGE/homepage_mobile.dart';
 
 class MyAccountScreen extends StatefulWidget {
@@ -86,6 +91,27 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
     }
   }
 
+  Map<String, String> infoList = {};
+    
+    String qrData = '';
+
+  @override
+  void initState() {
+      
+
+    infoList = {
+      'Name': getx.loginuserdata[0].firstName + " " +getx.loginuserdata[0].lastName,
+      'Phone': getx.loginuserdata[0].phoneNumber,
+      'Email': getx.loginuserdata[0].email,
+      'UserId': getx.loginuserdata[0].nameId,
+      'FranchaiseId': getx.loginuserdata[0].franchiseeId,
+    };  
+    setState(() {
+    qrData = jsonEncode(infoList);
+      
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,19 +136,86 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: ListTile(
-                leading: CircleAvatar(
-                  child: Text(
-                    '${getx.loginuserdata[0].firstName[0]}${getx.loginuserdata[0].lastName[0]}'
-                        .toUpperCase(),
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Row(
+           
+                  children: [CircleAvatar(
+                                    child: Text(
+                  '${getx.loginuserdata[0].firstName[0]}${getx.loginuserdata[0].lastName[0]}'
+                      .toUpperCase(),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    // backgroundImage: AssetImage("assets/sorojda.png"),
+                                  ),
+                                  SizedBox(width: 10,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(getx.loginuserdata[0].firstName +
+                        " " +
+                        getx.loginuserdata[0].lastName),
+                     Text(getx.loginuserdata[0].email),
+
+                    ],
                   ),
-                  // backgroundImage: AssetImage("assets/sorojda.png"),
+                  Expanded(child: SizedBox()),
+
+
+                  SizedBox( 
+          height: 100,
+          width: 100,
+          child: InkWell(
+            onTap: () {
+              // Show a larger QR code when tapped
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Scan QR Code",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 20),
+                          QrImageView(
+                            data: qrData,
+                            version: QrVersions.auto,
+                            size: 300, // Bigger QR Code
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text("Close",style: TextStyle(color: Colors.red,),)
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            child: QrImageView(
+              data: qrData,
+              version: QrVersions.auto,
+              size: 100, // Small QR Code
+            ),
+          ),
+        ),
+                  
+                  ],
                 ),
-                title: Text(getx.loginuserdata[0].firstName +
-                    " " +
-                    getx.loginuserdata[0].lastName),
-                subtitle: Text(getx.loginuserdata[0].email),
+              
+             
               ),
             ),
             SectionHeader(title: 'General'),

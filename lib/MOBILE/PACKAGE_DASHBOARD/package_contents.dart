@@ -1,6 +1,5 @@
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
-// import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/EMPTY_PAGE/emptypage.dart';
 import 'package:dthlms/MOBILE/MCQ/MCQTYPE/mcqtypepage.dart';
@@ -13,7 +12,6 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../PC/PACKAGEDETAILS/packagedetails.dart';
-import '../../constants.dart';
 import '../../constants.dart';
 
 class Mobile_Package_content extends StatefulWidget {
@@ -81,24 +79,75 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
   }
 
   String pagename = '';
+  int submitedExamsCount = 0;
 
   @override
   void initState() {
-    // setState(() {
-    // infoTetch(widget.packageid.toString(), 'Video');
-
-    // });
-
-    // await initialfunction(
-    //
-    //                       getx.studentPackage[index]['packageId']);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callData();
     });
     getx.isInsidePackage.value = true;
-
+    // gtCount();
+getVideoCount();
     super.initState();
   }
+
+
+  // Video section data
+ RxBool hasData = false.obs;
+int videoCountData = 0;
+RxInt allowedDuration = 0.obs;
+RxString formattedDuration = ''.obs;
+
+
+
+  getVideoCount()async {
+   var data =  await getAllPackageDetailsForVideoCount(widget.packageid.toString());
+
+   if(data.isNotEmpty){
+    hasData.value =false;
+   for(var i in data){
+    if(i['AllowDuration'] != ""){
+allowedDuration.value = allowedDuration.value + int.parse(i['AllowDuration']) ;
+    }
+
+   }
+   videoCountData = data.length;
+
+   int seconds = allowedDuration.value ;
+int minutes = seconds ~/ 60;
+int hours = minutes ~/ 60;
+
+// Format as "X hours Y minutes" or "Y minutes" if less than an hour
+ formattedDuration.value = hours > 0 
+    ? "$hours hours ${minutes % 60} minutes" 
+    : "$minutes minutes";
+   }
+   print(videoCountData);
+  }
+
+  //   gtCount() async {
+  //   submitedExamsCount = await getSubmittedExamCount();
+  //   setState(() {});
+  // }
+
+  // Future<int> getSubmittedExamCount() async {
+  //   int count = 0;
+
+  //   for (var exam in mcqPaperList) {
+  //     var checking = await checkMCQRankStatus(
+  //         context, getx.loginuserdata[0].token, exam['PaperId'].toString());
+
+  //     if (checking.isNotEmpty &&
+  //         (checking['StatusCode'] == 400 || checking['StatusCode'] == 440)) {
+  //       count++;
+  //     }
+  //   }
+
+  //   return count;
+  // }
+
+
 
   callData() async {
     initialfunction(widget.packageid.toString()).whenComplete(() {
@@ -260,7 +309,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       "section": "Live",
       "icon": Icons.live_tv,
       "color": Colors.red,
-      "subtitle": "Join live streaming sessions",
+      "subtitle": "Join live streaming\nsessions",
       'color2': [
         // Light orange -> peach
         const Color(0xFFFFF1D5),
@@ -439,7 +488,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                       }
                       getx.selectedPackageId.value = widget.packageid;
                     },
-                    child: Padding(
+                    child: Padding( 
                       padding: const EdgeInsets.all(8.0),
                       child: _buildOfferCard(
                           title: filteredList[index]['section'],
@@ -451,7 +500,9 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           arrowColor: Colors.orange,
                           icon: getFolderIcon(filteredList[index], index),
                           iconcolor:
-                              getFolderIconColor(filteredList[index], index)
+                              getFolderIconColor(filteredList[index], index),
+                              videoCount: videoCountData.toString(),
+                              allowedDurationVideo: formattedDuration.value,
                           // zipText: 'ZIP',
                           // zipTextColor: Colors.orange,
                           ),
@@ -486,7 +537,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       );
     });
   }
-
+ 
   static Widget _buildOfferCard(
       {required String title,
       required String subtitle,
@@ -494,15 +545,17 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       required Color arrowBackground,
       required Color arrowColor,
       required Icon icon,
-      required Color iconcolor
+      required Color iconcolor,
+      required String videoCount,
+      required String allowedDurationVideo
+
 
       // required String zipText,
       // required Color zipTextColor,
       }) {
     return Container(
       width: 100,
-      // Set a fixed height for the card
-      height: 170, // <-- Adjust this value as needed
+      height: 170,
       // margin: const EdgeInsets.only(right: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -520,42 +573,73 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Container(
-                  // margin: EdgeInsets.all(5),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: const Color.fromARGB(255, 231, 242, 250),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.all(10),
+                          // decoration: BoxDecoration(
+                          //   borderRadius: BorderRadius.circular(50),
+                          //   color: const Color.fromARGB(255, 231, 242, 250),
+                          // ),
+                          child: Icon(
+                            icon.icon,
+                            color: iconcolor,
+                          )),
+                           Text(
+                    title == 'Video'? 'Recorded' :title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  child: Icon(
-                    icon.icon,
-                    color: iconcolor,
-                  ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  // Title
+                 
+                  SizedBox(
+                    height: 8,
+                  ),
+                  title == 'Video' ? Text('Duration: ${allowedDurationVideo}',style: FontFamily.style.copyWith(fontSize: 12),) :  SizedBox(),
+                  // SizedBox(
+                  //   height: 4,
+                  // ),
+                  // title == 'Video' ? Text('View Time: 20 hours',style: FontFamily.style.copyWith(fontSize: 12),) :  SizedBox()
+
+                ],
+              ),
+              
+              Row(
+                children: [
+                 title == 'Video' && videoCount != '0' ?  CircleAvatar(child: Text(videoCount,style: FontFamily.style.copyWith(fontSize: 15),)) : SizedBox(),
+SizedBox(width: 10,),
+                  Image.asset(logopath, width: 45),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 6),
           // Subtitle
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 14,
-              color: const Color.fromARGB(255, 49, 49, 49).withOpacity(0.7),
-            ),
-          ),
-          const Spacer(),
-          // Bottom row: Circular arrow on the left, ZIP text on the right
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(logopath, width: 45),
-              // Circular arrow icon
+              Expanded(
+                child: Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color:
+                        const Color.fromARGB(255, 49, 49, 49).withAlpha(170),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
@@ -563,23 +647,64 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.arrow_forward,
+                  Icons.arrow_forward,    
                   color: arrowColor,
                   size: 20,
                 ),
               ),
-              // Image.asset(logopath, width: 45),
-              // ZIP or ZIP EMI text
-              // Text(
-              //   zipText,
-              //   style: TextStyle(
-              //     fontSize: 18,
-              //     fontWeight: FontWeight.bold,
-              //     color: zipTextColor,
-              //   ),
-              // ),
             ],
           ),
+          const Spacer(),
+          // Bottom row: Circular arrow on the left, ZIP text on the right
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: [
+          //     // Container(
+          //     //     // margin: EdgeInsets.all(5),
+          //     //     padding: EdgeInsets.all(10),
+          //     //     decoration: BoxDecoration(
+          //     //       borderRadius: BorderRadius.circular(50),
+          //     //       color: const Color.fromARGB(255, 231, 242, 250),
+          //     //     ),
+          //     //     child: Icon(
+          //     //       icon.icon,
+          //     //       color: iconcolor,
+          //     //     )),
+          //       // title == 'MCQ' ?  Expanded(
+          //       //     child: Padding(
+          //       //       padding: const EdgeInsets.symmetric(horizontal: 10),
+          //       //       child: FAProgressBar(
+          //       //                   animatedDuration: Duration(milliseconds: 1000),
+          //       //                   currentValue:100,
+          //       //                   displayText: '%',
+          //       //                 ),
+          //       //     ),
+          //       //   ) : SizedBox(),
+          //     // Circular arrow icon
+          //     Container(
+          //       padding: const EdgeInsets.all(8),
+          //       decoration: BoxDecoration(
+          //         color: arrowBackground,
+          //         shape: BoxShape.circle,
+          //       ),
+          //       child: Icon(
+          //         Icons.arrow_forward,
+          //         color: arrowColor,
+          //         size: 20,
+          //       ),
+          //     ),
+          //     // Image.asset(logopath, width: 45),
+          //     // ZIP or ZIP EMI text
+          //     // Text(
+          //     //   zipText,
+          //     //   style: TextStyle(
+          //     //     fontSize: 18,
+          //     //     fontWeight: FontWeight.bold,
+          //     //     color: zipTextColor,
+          //     //   ),
+          //     // ),
+          //   ],
+          // ),
         ],
       ),
     );

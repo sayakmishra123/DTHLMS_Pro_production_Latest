@@ -11,8 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../HOMEPAGE/homepage_mobile.dart';
-
 class DetailsPageMobile extends StatefulWidget {
   const DetailsPageMobile({super.key});
 

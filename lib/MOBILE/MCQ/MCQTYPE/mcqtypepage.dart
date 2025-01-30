@@ -99,8 +99,6 @@ class _MCQtypePageState extends State<MCQtypePage>
                           Tab(
                             text: uniqueServicesList[i],
                           ),
-                        // Tab(text: 'Comprehensive'),
-                        // Tab(text: 'Ranked Competition'),
                       ],
                     ),
                   ),
@@ -178,13 +176,10 @@ class _MCQtypePageState extends State<MCQtypePage>
                   // If the mcqSetList is not empty, show the McqList, else show "No Set Found"
                   return MaterialPageRoute(
                     builder: (_) {
-                      // Check for the list data to display
-                      // if (mcqSetList.isNotEmpty) {
-                      return McqListMobile(   
-                          mcqSetList, tabTitle, 'assets/quick.png', istype);
-                      // } else {
-                      // return ; // Show "No Set Found" if the list is empty
-                      // }
+                      
+                      return McqListMobile(    
+                          mcqSetList, tabTitle, istype);
+                      
                     },
                   );
                 }
