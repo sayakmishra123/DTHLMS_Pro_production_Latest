@@ -24,6 +24,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -2133,8 +2134,25 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   @override
   void initState() {
+          infoList = {
+      'Name': getx.loginuserdata[0].firstName + " " +getx.loginuserdata[0].lastName,
+      'Phone': getx.loginuserdata[0].phoneNumber,
+      'Email': getx.loginuserdata[0].email,
+      'UserId': getx.loginuserdata[0].nameId,
+      'FranchaiseId': getx.loginuserdata[0].franchiseeId,
+    }; 
+        setState(() {
+    qrData = jsonEncode(infoList);
+      
+    });
     super.initState();
   }
+  Map<String, String> infoList = {};
+
+    
+    
+    String qrData = '';
+
 
   void _changeName() {
     showDialog(
@@ -2186,18 +2204,77 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 ],
               ),
 
-              Column(
-                mainAxisSize: MainAxisSize.min,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  DetailsHeader(title: 'Name'),
-                  DetailsItem(
-                icon: Icons.person,
-                title: getx.loginuserdata[0].firstName +
-                    " " +
-                    getx.loginuserdata[0].lastName,
-                type: "name",
-                isEditable: false,
-              ),
+                  SizedBox(
+                    width: 200,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DetailsHeader(title: 'Name'),
+                        DetailsItem(
+                      icon: Icons.person,
+                      title: getx.loginuserdata[0].firstName +
+                          " " +
+                          getx.loginuserdata[0].lastName,
+                      type: "name",
+                      isEditable: false,
+                    ),
+                      ],
+                    ),
+                  ),
+                  Row(children: [
+                     SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: InkWell(
+                              onTap: () {
+                                // Show a larger QR code when tapped
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Scan QR Code",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 20),
+                          QrImageView(
+                            data: qrData,
+                            version: QrVersions.auto,
+                            size: 300, // Bigger QR Code
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text("Close",style: TextStyle(color: Colors.red,),)
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                                  },
+                                );
+                              },
+                              child: QrImageView(
+                                data: qrData,
+                                version: QrVersions.auto,
+                                size: 100, // Small QR Code
+                              ),
+                            ),
+                          ),
+                  ],)
                 ],
               ),
               
