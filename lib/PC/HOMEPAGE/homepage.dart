@@ -337,7 +337,10 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                         Tab(text: 'Packages'),
                         Tab(text: 'Free'),
                       ],
-                      indicatorColor: ColorPage.color1,
+                      indicatorColor: Colors.blueGrey.shade400.withOpacity(0.4),
+                      labelStyle: TextStyle(color: const Color.fromARGB(255, 3, 32, 125),fontWeight: FontWeight.bold),
+                      unselectedLabelColor: Colors.black54,
+
 
                       dividerColor: Colors.transparent,
                       // labelColor: ColorPage.color1,
@@ -356,6 +359,11 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                   final paidPackages = getx.studentPackage
                       .where((pkg) => pkg['IsFree'] == 'false')
                       .toList();
+
+
+
+
+
 
                   return Expanded(
                     child: TabBarView(
