@@ -146,7 +146,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                 if (value.isEmpty) {
                                   _showDialogoferror(context, "Not publish!!",
                                       "The result is not published yet.", () {
-                                    Navigator.pop(context);
+                                    // Navigator.pop(context);
                                     Navigator.pop(context);
                                   }, false);
                                 } else {
@@ -385,7 +385,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
     //     ),
     //   ],
     // ).show();
-    await ArtSweetAlert.show(
+  ArtDialogResponse? response=   await ArtSweetAlert.show(
         barrierDismissible: false,
         context: context,
         artDialogArgs: ArtDialogArgs(
@@ -394,11 +394,17 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
             text: desc,
             showCancelBtn: false,
             confirmButtonText: "Ok",
-            onConfirm: ontap,
+            // onConfirm: ontap,
             confirmButtonColor: Colors.red,
 
             // onCancel: onCancelTap,
             type: ArtSweetAlertType.info));
+            if (response != null && response.isTapConfirmButton) {
+          Get.back(); // Close the dialog after the OK button is pressed
+          return; // Exit the function
+        }
+
+
   }
 
   _onTermDeniey(context) {

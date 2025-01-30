@@ -2287,7 +2287,7 @@ logoutConfirmationBox(context) async {
 
           onConfirm: () async {
             await handleLogoutProcess(context).then((v) {
-              if (Platform.isAndroid) {
+              if (Platform.isIOS) {
                 Navigator.pop(context);
               }
             });
@@ -2404,7 +2404,7 @@ Future<void> _performLogout(BuildContext context) async {
       'DefaultDownloadpathOfVieo',
       'LoginId',
     ], getx.loginuserdata[0].loginId.toString());
-      Platform.isAndroid
+      Platform.isIOS
           ? Get.offAll(() => Mobilelogin())
           : Get.offAll(() => DthLmsLogin());
     }

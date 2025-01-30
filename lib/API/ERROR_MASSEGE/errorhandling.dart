@@ -5,7 +5,7 @@ import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 
 class ClsErrorMsg {
   static fnErrorDialog(BuildContext context, title, error, res) async {
-    if(Platform.isWindows){ await FlutterPlatformAlert.playAlertSound();}
+    if(Platform.isMacOS){ await FlutterPlatformAlert.playAlertSound();}
    
 
     // ignore: unused_local_variable

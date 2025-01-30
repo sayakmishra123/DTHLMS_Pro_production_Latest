@@ -1152,7 +1152,7 @@ Future<void> getChapterFiles(String fileType, String packageId,
       if (getx.alwaysShowChapterDetailsOfVideo.length == 0 &&
           getx.alwaysShowFileDetailsOfpdf.length == 0 &&
           getx.alwaysShowChapterfilesOfVideo.length != 0) {
-        Platform.isWindows
+        Platform.isMacOS
             ? Get.to(
                 transition: Transition.cupertino,
                 () => VideoPlayer(isPathExitsOnVideoList()))
@@ -1183,7 +1183,7 @@ Future<void> getChapterFiles(String fileType, String packageId,
       if (getx.podcastFileList.length == 0 &&
           getx.podcastFileList.length == 0 &&
           getx.podcastFileList.length != 0) {
-        Platform.isWindows
+        Platform.isMacOS
             ? Get.to(
                 transition: Transition.cupertino,
                 () => VideoPlayer(isPathExitsOnVideoList()))

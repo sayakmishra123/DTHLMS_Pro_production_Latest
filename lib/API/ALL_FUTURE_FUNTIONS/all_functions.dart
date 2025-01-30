@@ -208,7 +208,7 @@ Future packactivationKey(
       await confirmActivationCode(context, 'Package activated', true);
       Get.back();
 
-      Platform.isAndroid
+      Platform.isIOS
           ? Get.offAll(() => HomePageMobile())
           : Get.offAll(() => DthDashboard());
     } else if (res.statusCode == 401) {
@@ -911,7 +911,7 @@ Future<void> getHomePageBannerImage(BuildContext context, String token) async {
       for (var item in resultData) {
         Map<String, dynamic> bannerData = Map<String, dynamic>.from(item);
         String imgUrl = await downloadBannerAndSave(bannerData['DocumentUrl']);
-        imgUrl = Platform.isWindows
+        imgUrl = Platform.isMacOS
             ? imgUrl.replaceAll('/', '\\')
             : imgUrl.replaceAll('\\', '/');
         // log(imgUrl+ " this is downloaded banner image shubha");

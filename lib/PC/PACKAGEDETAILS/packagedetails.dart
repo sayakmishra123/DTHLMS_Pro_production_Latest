@@ -2204,7 +2204,7 @@ class _BookDashboardState extends State<BookDashboard>
       // drawer: _buildSideNavigation(),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: Platform.isAndroid
+        leading: Platform.isIOS
             ? IconButton(
                 onPressed: () {
                   Get.back();
@@ -2427,7 +2427,7 @@ class _HoverListItemState extends State<HoverListItem> {
               ),
               onPressed: () {
                 // Example: Open PDF
-                if (Platform.isAndroid) {
+                if (Platform.isIOS) {
                   Get.to(
                     transition: Transition.cupertino,
                     () => ShowChapterPDFMobile(

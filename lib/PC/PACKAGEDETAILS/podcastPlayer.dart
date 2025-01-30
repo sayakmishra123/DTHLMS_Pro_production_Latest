@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
@@ -55,8 +56,8 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
     prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
 
     String savePath = getx.userSelectedPathForDownloadFile.isEmpty
-        ? dthLmsDir.path + '\\Podcast\\$fileName'
-        : getx.userSelectedPathForDownloadFile.value + '\\Podcast\\$fileName';
+        ? dthLmsDir.path +'/Podcast/$fileName.mp3'
+        : getx.userSelectedPathForDownloadFile.value + '/Podcast/$fileName.mp3';
 
     try {
       downloadingIndexes.add(index);
@@ -82,63 +83,47 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
   }
 
   void _playPodcast(String filePath) async {
-    // First, make sure the file actually exists before trying to play it.
-    if (!File(filePath).existsSync()) {
-      Get.snackbar(
-        "Error",
-        "The selected podcast file does not exist.",
+  log("Original Path: $filePath");
+
+  // Fix incorrect path formatting
+  filePath = filePath.replaceAll('\\', '/');
+  log("Fixed Path: $filePath");
+
+  if (!File(filePath).existsSync()) {
+    Get.snackbar("Error", "Podcast file does not exist: $filePath",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
-      return;
-    }
+        colorText: Colors.white);
+    return;
+  }
 
-    try {
-      // Attempt to play the file
-      await audioPlayer
-          .play(DeviceFileSource(filePath, mimeType: 'mp3'))
-          .onError(
-        (error, stackTrace) {
-          // This callback fires if play() returns a Future error
-          writeToFile(error, '_playPodcast_onError');
-          print('Error playing podcast: $error');
-
-          Get.snackbar(
-            "Playback Error",
-            "An error occurred while playing the podcast: $error",
+  try {
+    await audioPlayer.play(DeviceFileSource('$filePath')).onError(
+      (error, stackTrace) {
+        writeToFile(error, '_playPodcast_onError');
+        log('Error playing podcast: $error');
+        Get.snackbar("Playback Error", "Error: $error",
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.redAccent,
-            colorText: Colors.white,
-          );
-        },
-      );
-    } on PlatformException catch (e, stackTrace) {
-      // Specifically catch platform exceptions (e.g., Windows audio errors)
-      writeToFile(e, '_playPodcast_PlatformException');
-      print('PlatformException: $e\nStackTrace: $stackTrace');
-
-      Get.snackbar(
-        "Playback Error",
-        "Unsupported audio file or format. Please check the file and try again.",
+            colorText: Colors.white);
+      },
+    );
+  } on PlatformException catch (e, stackTrace) {
+    writeToFile(e, '_playPodcast_PlatformException');
+    log('PlatformException: $e\nStackTrace: $stackTrace');
+    Get.snackbar("Playback Error", "Unsupported audio format.",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
-    } catch (e, stackTrace) {
-      // Catch any other types of errors
-      writeToFile(e, '_playPodcast_CatchAll');
-      print('Unknown error playing podcast: $e\nStackTrace: $stackTrace');
-
-      Get.snackbar(
-        "Error",
-        "An unknown error occurred while playing the podcast.",
+        colorText: Colors.white);
+  } catch (e, stackTrace) {
+    writeToFile(e, '_playPodcast_CatchAll');
+    log('Unknown error playing podcast: $e\nStackTrace: $stackTrace');
+    Get.snackbar("Error", "Unknown error occurred.",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
-    }
+        colorText: Colors.white);
   }
+}
 
   @override
   void dispose() {
@@ -165,9 +150,9 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
                   final isDownloaded = File(getx
                               .userSelectedPathForDownloadFile.isEmpty
                           ? getx.defaultPathForDownloadFile +
-                              '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
                           : getx.userSelectedPathForDownloadFile.value +
-                              '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
                       .existsSync();
 
                   print(isDownloaded.toString());
@@ -179,25 +164,25 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
                       color: playingPodcastPath.value ==
                               (getx.userSelectedPathForDownloadFile.isEmpty
                                   ? getx.defaultPathForDownloadFile +
-                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
                                   : getx.userSelectedPathForDownloadFile.value +
-                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
                           ? Colors.blue[100]
                           : Colors.white,
                       child: ListTile(
                         onTap: () {
                           if (File(getx.userSelectedPathForDownloadFile.isEmpty
                                   ? getx.defaultPathForDownloadFile +
-                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
                                   : getx.userSelectedPathForDownloadFile.value +
-                                      '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
                               .existsSync()) {
                             playingPodcastPath.value = getx
                                     .userSelectedPathForDownloadFile.isEmpty
                                 ? getx.defaultPathForDownloadFile +
-                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
                                 : getx.userSelectedPathForDownloadFile.value +
-                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}';
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}';
                             _playPodcast(playingPodcastPath.value);
                           }
                         },
@@ -219,20 +204,20 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
                               )
                             : File(getx.userSelectedPathForDownloadFile.isEmpty
                                         ? getx.defaultPathForDownloadFile +
-                                            '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
                                         : getx.userSelectedPathForDownloadFile
                                                 .value +
-                                            '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
                                     .existsSync()
                                 ? IconButton(
                                     icon: playingPodcastPath.value ==
                                             (getx.userSelectedPathForDownloadFile
                                                     .isEmpty
                                                 ? getx.defaultPathForDownloadFile +
-                                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+                                                    '/Podcast/${getx.podcastFileList[index]['FileIdName']}'
                                                 : getx.userSelectedPathForDownloadFile
                                                         .value +
-                                                    '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}')
+                                                    '/Podcast/${getx.podcastFileList[index]['FileIdName']}')
                                         ? Icon(Icons.pause)
                                         : Icon(Icons.play_arrow),
                                     onPressed: () {
@@ -240,10 +225,10 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
                                               .userSelectedPathForDownloadFile
                                               .isEmpty
                                           ? getx.defaultPathForDownloadFile +
-                                              '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}'
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
                                           : getx.userSelectedPathForDownloadFile
                                                   .value +
-                                              '\\Podcast\\${getx.podcastFileList[index]['FileIdName']}';
+'/Podcast/${getx.podcastFileList[index]['FileIdName']}';
                                       _playPodcast(playingPodcastPath.value);
                                     },
                                   )

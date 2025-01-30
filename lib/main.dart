@@ -35,7 +35,7 @@ import 'package:sqlcipher_library_windows/sqlcipher_library_windows.dart';
 import 'package:sqlite3/open.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:no_screenshot/no_screenshot.dart';
+// import 'package:no_screenshot/no_screenshot.dart';
 import 'notification_model.dart';
 
 void main(List<String> args) async {
@@ -47,10 +47,10 @@ void main(List<String> args) async {
   Get.put(OnlineAudioPlayerController());
 
   function() async {
-    open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
+    // open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
 
     testSQLCipherOnWindows();
-    if (Platform.isWindows) {
+    if (Platform.isMacOS) {
       doWhenWindowReady(
         () {
           final win = appWindow;
@@ -59,8 +59,8 @@ void main(List<String> args) async {
           win.show();
         },
       );
-    } else if (Platform.isAndroid) {
-      disableScreenshot();
+    } else if (Platform.isIOS) {
+      // disableScreenshot();
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
     }
@@ -97,21 +97,21 @@ class _MyAppState extends State<MyApp> {
 // lue.toString() +
 //         "");
 
-    if (Platform.isWindows && kReleaseMode) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setWindowDisplayAffinity();
-      });
-      if (getx.isTimerOn.value) {
-        Timer.periodic(Duration(seconds: 10), (timer) async {
-          // print(getx.blackListProcess.length);
-          if (getx.blackListProcess.isNotEmpty && getx.isTimerOn.value) {
-            getRunningBackgroundAppsAndKill(context);
-          } else {
-            getx.blackListProcess.value = await fetchBlackList();
-            getx.whiteListProcess.value = await fetchWhiteList();
-          }
-        });
-      }
+    if (Platform.isMacOS && kReleaseMode) {
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   // setWindowDisplayAffinity();
+      // });
+      // if (getx.isTimerOn.value) {
+      //   Timer.periodic(Duration(seconds: 10), (timer) async {
+      //     // print(getx.blackListProcess.length);
+      //     if (getx.blackListProcess.isNotEmpty && getx.isTimerOn.value) {
+      //       getRunningBackgroundAppsAndKill(context);
+      //     } else {
+      //       getx.blackListProcess.value = await fetchBlackList();
+      //       getx.whiteListProcess.value = await fetchWhiteList();
+      //     }
+      //   });
+      // }
     }
   }
 
@@ -175,7 +175,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: Color.fromARGB(255, 234, 237, 248),
         fontFamily: 'AmazonEmber',
-        textTheme: !Platform.isAndroid
+        textTheme: !Platform.isIOS
             ? GoogleFonts.outfitTextTheme(
                 TextTheme(
                   bodyLarge: TextStyle(fontSize: 12),
@@ -211,7 +211,7 @@ class _MyAppState extends State<MyApp> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return Platform.isAndroid
+            return Platform.isIOS
                 ? getx.isEmulator.value
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
@@ -324,13 +324,7 @@ singleInstance(args) async {
 Future<bool> isEmulator() async {
   final deviceInfo = DeviceInfoPlugin();
 
-  if (Platform.isAndroid) {
-    final androidInfo = await deviceInfo.androidInfo;
-    return androidInfo.isPhysicalDevice == false ||
-        androidInfo.brand.toLowerCase() == 'generic' ||
-        androidInfo.product.toLowerCase().contains('sdk') ||
-        androidInfo.model.contains('Emulator');
-  } else if (Platform.isIOS) {
+if (Platform.isIOS) {
     final iosInfo = await deviceInfo.iosInfo;
     return iosInfo.isPhysicalDevice == false ||
         iosInfo.model.toLowerCase().contains('simulator') ||
@@ -370,15 +364,15 @@ void _showEmulatorDialog(BuildContext context) {
   );
 }
 
-final _noScreenshot = NoScreenshot.instance;
-void disableScreenshot() async {
-  try {
-    bool result = await _noScreenshot.screenshotOff();
-    debugPrint('Screenshot Off: $result');
-  } catch (e) {
-    debugPrint('Error: $e');
-  }
-}
+// final _noScreenshot = NoScreenshot.instance;
+// void disableScreenshot() async {
+//   try {
+//     bool result = await _noScreenshot.screenshotOff();
+//     debugPrint('Screenshot Off: $result');
+//   } catch (e) {
+//     debugPrint('Error: $e');
+//   }
+// }
 
 class DevelopermodeOnPage extends StatefulWidget {
   @override
