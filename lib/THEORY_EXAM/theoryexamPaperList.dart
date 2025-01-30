@@ -146,8 +146,8 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                 if (value.isEmpty) {
                                   _showDialogoferror(context, "Not publish!!",
                                       "The result is not published yet.", () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
+                                    // Navigator.pop(context);
+                                  Get.back();
                                   }, false);
                                 } else {
                                   Get.to(

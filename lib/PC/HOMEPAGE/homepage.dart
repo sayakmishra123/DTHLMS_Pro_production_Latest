@@ -226,7 +226,7 @@ class DashboardSlideBar extends StatefulWidget {
   State<DashboardSlideBar> createState() => _DashboardSlideBarState();
 }
 
-class _DashboardSlideBarState extends State<DashboardSlideBar> {
+class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerProviderStateMixin {
   Getx getx = Get.find<Getx>();
   // List<Color> colors = [
   //   Colors.blue,
@@ -245,8 +245,12 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
 
   int hoverIndex = -1;
 
+   late TabController _tabController;
+
+
   @override
   void initState() {
+     _tabController = TabController(length: 2, vsync: this);
 // while(getx.studentPackage.length==0)
 
 // {
@@ -278,12 +282,6 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
     }
   }
 
-  RxString version = "".obs;
-
-  appVersionGet() async {
-    pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
-    version.value = packageInfo.version;
-  }
 
   cantLaunchUrlAlert(BuildContext context) async {
     await ArtSweetAlert.show(
@@ -302,7 +300,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     return Scaffold(
       backgroundColor: ColorPage.white,
       body: Drawer(
@@ -313,15 +311,9 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
               // Header Section
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                // decoration: BoxDecoration(
-                //   color: ColorPage.white,
-                //   borderRadius:
-                //       BorderRadius.vertical(bottom: Radius.circular(20)),
-                // ),
                 child: Column(
                   children: [
                     DrawerHeader(
-                      // decoration: BoxDecoration(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Image.asset(logopath), // App logo or user avatar
@@ -331,9 +323,24 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                     const Text(
                       "Welcome to Our App",
                       style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: ColorPage.color1),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: ColorPage.color1,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Tab Bar
+                    TabBar(
+                      controller: _tabController,
+                      tabs: const [
+                        Tab(text: 'Packages'),
+                        Tab(text: 'Free'),
+                      ],
+                      indicatorColor: ColorPage.color1,
+
+                      dividerColor: Colors.transparent,
+                      // labelColor: ColorPage.color1,
                     ),
                   ],
                 ),
@@ -351,118 +358,110 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                       .toList();
 
                   return Expanded(
-                    child: ListView(
+                    child: TabBarView(
+                      controller: _tabController,
                       children: [
-                        if (paidPackages.isNotEmpty) ...[
-                          // const Padding(
-                          //   padding: EdgeInsets.symmetric(
-                          //       horizontal: 16, vertical: 8),
-                          //   child: Text(
-                          //     'Paid Packages',
-                          //     style: TextStyle(
-                          //         fontSize: 16, fontWeight: FontWeight.bold),
-                          //   ),
-                          // ),
-                          for (int i = 0; i < paidPackages.length; i++)
-                            buttonWidget(
-                              paidPackages[i]['packageName']!,
-                              paidPackages[i]['CourseName'],
-                              () async {
-                                getx.currentPackageName.value =
-                                    paidPackages[i]['packageName'];
-                                getx.selectedPackageId.value =
-                                    int.parse(paidPackages[i]['packageId']);
+                        // Paid Packages Tab
+                        paidPackages.isNotEmpty?
+                          ListView.builder(
+                            itemCount: paidPackages.length,
+                            itemBuilder: (context, i) {
+                              return buttonWidget(
+                                paidPackages[i]['packageName']!,
+                                paidPackages[i]['CourseName'],
+                                () async {
+                                  getx.currentPackageName.value =
+                                      paidPackages[i]['packageName'];
+                                  getx.selectedPackageId.value =
+                                      int.parse(paidPackages[i]['packageId']);
 
-                                resetTblLocalNavigation();
-                                await insertTblLocalNavigation(
-                                  "Package",
-                                  paidPackages[i]['packageId'],
-                                  paidPackages[i]['packageName'],
-                                );
-                                getLocalNavigationDetails();
-
-                                widget.onItemSelected(i);
-
-                                initialfunction(paidPackages[i]['packageId']);
-
-                                Get.to(
-                                  () => PackageDetailsPage(
+                                  resetTblLocalNavigation();
+                                  await insertTblLocalNavigation(
+                                    "Package",
+                                    paidPackages[i]['packageId'],
                                     paidPackages[i]['packageName'],
-                                    int.parse(paidPackages[i]['packageId']),
-                                    ExpiryDate: paidPackages[i]['ExpiryDate'],
-                                  ),
-                                  transition: Transition.cupertino,
-                                  duration: const Duration(milliseconds: 500),
-                                );
-                              },
-                              widget.selectedIndex == i,
-                              hoverIndex == i,
-                              i,
-                            ),
-                        ],
-                        if (freePackages.isNotEmpty) ...[
-                          Container(
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: Text(
-                                'Free',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          for (int i = 0; i < freePackages.length; i++)
-                            buttonWidget(
-                              freePackages[i]['packageName']!,
-                              freePackages[i]['CourseName'],
-                              () async {
-                                getx.currentPackageName.value =
-                                    freePackages[i]['packageName'];
-                                getx.selectedPackageId.value =
-                                    int.parse(freePackages[i]['packageId']);
+                                  );
+                                  getLocalNavigationDetails();
 
-                                resetTblLocalNavigation();
-                                await insertTblLocalNavigation(
-                                  "Package",
-                                  freePackages[i]['packageId'],
-                                  freePackages[i]['packageName'],
-                                );
-                                getLocalNavigationDetails();
+                                  widget.onItemSelected(i);
 
-                                widget.onItemSelected(i);
+                                  initialfunction(paidPackages[i]['packageId']);
 
-                                initialfunction(freePackages[i]['packageId']);
+                                  Get.to(
+                                    () => PackageDetailsPage(
+                                      paidPackages[i]['packageName'],
+                                      int.parse(paidPackages[i]['packageId']),
+                                      ExpiryDate: paidPackages[i]['ExpiryDate'],
+                                    ),
+                                    transition: Transition.cupertino,
+                                    duration: const Duration(milliseconds: 500),
+                                  );
+                                },
+                                widget.selectedIndex == i,
+                                hoverIndex == i,
+                                i,
+                              );
+                            },
+                          ):Text("No Package Avileble"),
+                        
+                        // Free Packages Tab
+                       freePackages.isNotEmpty?
+                          ListView.builder(
+                            itemCount: freePackages.length,
+                            itemBuilder: (context, i) {
+                              return buttonWidget(
+                                freePackages[i]['packageName']!,
+                                freePackages[i]['CourseName'],
+                                () async {
+                                  getx.currentPackageName.value =
+                                      freePackages[i]['packageName'];
+                                  getx.selectedPackageId.value =
+                                      int.parse(freePackages[i]['packageId']);
 
-                                Get.to(
-                                  () => PackageDetailsPage(
+                                  resetTblLocalNavigation();
+                                  await insertTblLocalNavigation(
+                                    "Package",
+                                    freePackages[i]['packageId'],
                                     freePackages[i]['packageName'],
-                                    int.parse(freePackages[i]['packageId']),
-                                    ExpiryDate: freePackages[i]['ExpiryDate'],
-                                  ),
-                                  transition: Transition.cupertino,
-                                  duration: const Duration(milliseconds: 500),
-                                );
-                              },
-                              widget.selectedIndex == i,
-                              hoverIndex == i,
-                              i,
-                            ),
-                        ],
+                                  );
+                                  getLocalNavigationDetails();
+
+                                  widget.onItemSelected(i);
+
+                                  initialfunction(freePackages[i]['packageId']);
+
+                                  Get.to(
+                                    () => PackageDetailsPage(
+                                      freePackages[i]['packageName'],
+                                      int.parse(freePackages[i]['packageId']),
+                                      ExpiryDate: freePackages[i]['ExpiryDate'],
+                                    ),
+                                    transition: Transition.cupertino,
+                                    duration: const Duration(milliseconds: 500),
+                                  );
+                                },
+                                widget.selectedIndex == i,
+                                hoverIndex == i,
+                                i,
+                              );
+                            },
+                          ):Text("No packages available at the moment."),
+                        
+                        // If there are no paid or free packages, show a message
+                        // if (paidPackages.isEmpty && freePackages.isEmpty) ...[
+                        //   const Center(
+                        //     child: Text('No packages available at the moment.'),
+                        //   ),
+                        // ],
                       ],
                     ),
                   );
                 },
               ),
-// Footer Section
+
+              // Footer Section
               Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                // decoration: BoxDecoration(
-                //   color: Colors.grey[100],
-                //   borderRadius:
-                //       BorderRadius.vertical(top: Radius.circular(20)),
-                // ),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                 child: Column(
                   children: [
                     // Logout Button
@@ -473,7 +472,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                           logoutConfirmationBox(context);
                         },
                         shape: ContinuousRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         tileColor: const Color.fromARGB(255, 255, 212, 199),
                         leading: const Icon(
                           Icons.logout_rounded,
@@ -486,24 +486,19 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 16),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                         dense: true,
                       ),
                     ),
                     const SizedBox(height: 20),
-
                     // Social Media Links
-
                     const SizedBox(height: 8),
                     FutureBuilder(
                       future: getAllTblImages(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          // Filter the data for ImageType = socialmediaicons
                           final socialMediaIcons = snapshot.data!
-                              .where((item) =>
-                                  item['ImageType'] == 'socialmediaicons')
+                              .where((item) => item['ImageType'] == 'socialmediaicons')
                               .toList();
                           if (socialMediaIcons.isEmpty) {
                             return const SizedBox();
@@ -515,24 +510,21 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                                 child: Text(
                                   'Follow Us',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: ColorPage.red),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: ColorPage.red,
+                                  ),
                                 ),
                               ),
                               SizedBox(
                                 height: 80,
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: List.generate(
                                     socialMediaIcons.length,
                                     (index) => InkWell(
                                       onTap: () async {
-                                        final Uri url = Uri.parse(
-                                            socialMediaIcons[index]
-                                                ['ImagePath']);
-
+                                        final Uri url = Uri.parse(socialMediaIcons[index]['ImagePath']);
                                         if (await canLaunchUrl(url)) {
                                           await launchUrl(url);
                                         } else {
@@ -542,23 +534,17 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                                       child: Column(
                                         children: [
                                           SizedBox(
-                                            height: socialMediaIcons.length > 4
-                                                ? 20
-                                                : 35,
-                                            width: socialMediaIcons.length > 4
-                                                ? 20
-                                                : 35,
+                                            height: socialMediaIcons.length > 4 ? 20 : 35,
+                                            width: socialMediaIcons.length > 4 ? 20 : 35,
                                             child: SvgPicture.string(
-                                              socialMediaIcons[index]
-                                                  ['ImageUrl'],
+                                              socialMediaIcons[index]['ImageUrl'],
                                             ),
                                           ),
                                           Text(
                                             socialMediaIcons[index]['ImageId'],
                                             style: FontFamily.style.copyWith(
-                                                fontSize: 14,
-                                                color: Colors.grey),
-                                          )
+                                                fontSize: 14, color: Colors.grey),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -576,22 +562,16 @@ class _DashboardSlideBarState extends State<DashboardSlideBar> {
                     ),
 
                     const SizedBox(height: 20),
-
                     // Version Info
                     Obx(
                       () => Opacity(
                         opacity: 0.6,
                         child: Column(
                           children: [
-                            // Image.asset(
-                            //   logopath,
-                            //   height: 30,
-                            // ),
                             const SizedBox(height: 5),
                             Text(
-                              "Version ${version.value}",
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey),
+                              "Version ${getx.appVersion.value}",
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),

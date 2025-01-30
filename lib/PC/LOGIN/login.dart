@@ -1669,6 +1669,11 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                       ),
                                     ),
                                   ),
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 100),
+                                    child: Text("Version :${getx.appVersion}"),
+                                  ),
                                 ],
                               ),
                             ),

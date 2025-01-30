@@ -268,7 +268,7 @@ Future<void> readTblSession() async {
 }
 
 void deleteSessionDetails() {
-  _db.execute('DELETE FROM TblSession');
+  _db.execute('DELETE FROM TblSession');             
   getx.sessionData.clear();
 
   print("Session data cleared");

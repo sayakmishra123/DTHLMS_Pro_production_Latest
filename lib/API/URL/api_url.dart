@@ -32,7 +32,8 @@ class ClsUrlApi {
   static const tblpackage = "/api/AuthDataGet/ExecuteJson/spAppApi/5";
   static const logoutapi = '/api/auth/logout';
 
-  static const getFileData = "/api/AuthDataGet/ExecuteJson/spAppApi/6";
+  static const getFileData = "/api/AuthDataGet/ExecuteJson/spAppApi/6";   
+  static const getFreePackageFiles = "/api/AuthDataGet/ExecuteJson/spAppApi/3"; 
   static const getFolderData = "/api/AuthDataGet/ExecuteJson/spAppApi/12";
   static const getPackageData = "/api/AuthDataGet/ExecuteJson/spAppApi/14";
   static const getVideoComponents = "/api/AuthDataGet/ExecuteJson/spAppApi/15";
