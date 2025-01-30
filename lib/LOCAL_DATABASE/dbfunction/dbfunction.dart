@@ -3137,6 +3137,7 @@ void deletePartularPackageData(String packageId, BuildContext context) {
     gettheoryExamDataForTest2(context, getx.loginuserdata[0].token, packageId);
     getAllFolders(context, getx.loginuserdata[0].token, packageId);
     getAllFiles(context, getx.loginuserdata[0].token, packageId);
+    getAllFreeFiles(context,getx.loginuserdata[0].token,packageId);
     getVideoComponents(context, getx.loginuserdata[0].token, packageId);
   } catch (e) {
     writeToFile(e, "deletePartularPackageData");

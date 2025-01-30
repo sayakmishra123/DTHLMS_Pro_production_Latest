@@ -14,7 +14,6 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-// import 'package:dthlms/constants.dart';
 import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
@@ -230,7 +229,7 @@ class _MyAppState extends State<MyApp> {
 
                                 bool isDataLengthValid = false;
 
-                                if (snapshot.hasData &&
+                                if (snapshot.hasData && 
                                     snapshot.data != null &&
                                     snapshot.data is List) {
                                   // Safely cast snapshot.data to a List and check the condition

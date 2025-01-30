@@ -75,7 +75,7 @@ class _McqPaperDetailsState extends State<McqPaperDetails> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
-        title: Text('MCQ Papers', style: TextStyle(color: Colors.black)),
+        title: Text('MCQ Papers', style: FontFamily.styleb),
       ),
       body: SingleChildScrollView(
         child: Obx(

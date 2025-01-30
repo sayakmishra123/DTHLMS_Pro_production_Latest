@@ -1,18 +1,19 @@
-import 'dart:developer';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/MOBILE/MCQ/mcqCondition.dart';
 import 'package:dthlms/MOBILE/MCQ/McqTestRank.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 
 class McqPaperDetailsMobile extends StatefulWidget {
-  Map paperNames = {};
-  RxList mcqSetList;
-  bool istype;
+  final Map paperNames;
+  final RxList mcqSetList;
+  final bool istype;
   McqPaperDetailsMobile(this.paperNames, this.mcqSetList, this.istype,
       {super.key});
 
@@ -62,7 +63,7 @@ class _McqPaperDetailsMobileState extends State<McqPaperDetailsMobile> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
-        title: Text('MCQ Papers', style: TextStyle(color: Colors.black)),
+        title: Text('MCQ Papers', style: FontFamily.styleb.copyWith(color: Colors.blueGrey)),
       ),
       body: SingleChildScrollView(
         child: Obx(
@@ -383,50 +384,51 @@ else if(checking['StatusCode']==440){
                         child: Container(
                           width: itemWidth,
                           child: Card(
-                            elevation: 0,
+                            elevation: 4,
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.indigo),
                                 borderRadius: BorderRadius.circular(10)),
+
                             child: Padding(
-                              padding: EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              padding: EdgeInsets.all(12),
+                              child: Row(
                                 children: [
                                   CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage:
-                                        AssetImage('assets/mcq_set.png'),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    mcqPaperList[index]['PaperName'] ??
-                                        'Unnamed Paper',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    "Start Exam: ${formatDateWithOrdinal(mcqPaperList[index]['MCQPaperStartDate'])}",
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                  Text(
-                                    "End Exam: ${formatDateWithOrdinal(mcqPaperList[index]['MCQPaperEndDate'])}",
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                  Text(
-                                    "Duration: ${int.parse(mcqPaperList[index]['Duration'].toString())/60} min",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold),
+                                        radius: 30,
+                                        backgroundImage: 
+                                            AssetImage('assets/mcq_set.png'),
+                                      ),
+                                  SizedBox(width: 10,),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          mcqPaperList[index]['PaperName'] ??
+                                              'Unnamed Paper',
+                                          style: FontFamily.styleb,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          "Start Exam: ${formatDateWithOrdinal(mcqPaperList[index]['MCQPaperStartDate'])}",
+                                          style: FontFamily.style.copyWith(fontSize: 14)
+                                        ),
+                                        Text(
+                                          "End Exam: ${formatDateWithOrdinal(mcqPaperList[index]['MCQPaperEndDate'])}",
+                                                                                   style: FontFamily.style.copyWith(fontSize: 14)
+
+                                        ),
+                                        Text(
+                                          "Duration: ${int.parse(mcqPaperList[index]['Duration'].toString())/60} min",
+                                                                                    style: FontFamily.style.copyWith(fontSize: 14)
+
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -450,6 +452,26 @@ else if(checking['StatusCode']==440){
       ),
     );
   }
+
+//   String formatDateWithOrdinal1(String dateTimeString) {
+//   print(dateTimeString);
+//   try {
+//     // Parsing the input date with the expected format
+//     DateTime dateTime = DateFormat("dd-MM-yyyy HH:mm").parse(dateTimeString);
+
+//     // Get the day of the month to add the ordinal suffix
+//     int day = dateTime.day;
+//     // String dayWithSuffix = _getDayWithSuffix1(day);
+
+//     // Formatting the date with ordinal and keeping the same structure
+//     String formattedDate = '${DateFormat("MM-yyyy HH:mm").format(dateTime)}';
+
+//     return formattedDate;
+//   } catch (e) {
+//     writeToFile(e, "formatDateWithOrdinal");
+//     return "No datetime found";
+//   }
+// }
 
  _onAlredySubmited(context, String title, String desc, VoidCallback ontap,
     VoidCallback onCancelTap) async {
