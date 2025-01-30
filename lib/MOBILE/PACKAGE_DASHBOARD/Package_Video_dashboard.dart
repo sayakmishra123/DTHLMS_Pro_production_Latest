@@ -2,16 +2,13 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:art_sweetalert/art_sweetalert.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/mobile_pdf_viewer.dart';
-// import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
 import 'package:dthlms/MOBILE/VIDEO/mobilevideoplay.dart';
-import 'package:dthlms/PC/STUDYMATERIAL/pdfViewer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/constants.dart';
@@ -23,8 +20,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../constants.dart';
 
 Map<int, CancelToken> cancelTokens =
     {}; // Map to hold CancelTokens for each download
@@ -88,6 +83,7 @@ class _MobilePackageVideoDashboardState
       }
     });
     //  _filteredItems = _combineAndTagItems();
+    loade();
     super.initState();
   }
 
@@ -174,10 +170,6 @@ class _MobilePackageVideoDashboardState
 
   Getx getx = Get.put(Getx());
 
-  // Future getListStructure() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   getx.isFolderview.value = prefs.getBool("folderview") ?? false;
-  // }
   Future getListStructure() async {
     print('object541541541541');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -188,10 +180,6 @@ class _MobilePackageVideoDashboardState
     } else {
       print("abhoy is null");
     }
-
-    //  getMainChapter(getx.selectedPackageId.value);
-
-    // print(getx.subjectDetails[0]['SubjectName'] + "sayak");
 
     await getChapterContents(startParentId);
     getChapterFiles(
@@ -226,9 +214,17 @@ class _MobilePackageVideoDashboardState
   }
 
   int selectedIndex = -1;
-  List<Map<String, dynamic>> _filteredItems = [];
 
   search(value) {}
+
+  RxBool isLoading = false.obs;
+  loade()async{
+    isLoading.value = true;
+
+    await Future.delayed(Duration(seconds: 1));
+    isLoading.value = false;
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +238,8 @@ class _MobilePackageVideoDashboardState
                 denyButtonText: "Cancel",
                 title: "Are you sure?",
                 text: "You want to exite.",
-                confirmButtonText: "Ok",
+                confirmButtonText: "   Ok",
+                
                 onConfirm: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
@@ -280,253 +277,197 @@ class _MobilePackageVideoDashboardState
                     getx.subjectDetails.isNotEmpty
                         ? getx.subjectDetails[0]["SubjectName"]
                         : "Subject Name",
-                    style: FontFamily.style.copyWith(color: Colors.white)),
+                    style: FontFamily.style.copyWith(color: Colors.white,fontSize: 16)),
               ),
             ),
-          ),
+          ), 
           body: Obx(
-            () => Column(
+            () => isLoading.value ?
+       Center(child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: SizedBox(
+          height: 30,
+          width: 30,
+          child: CircularProgressIndicator(
+            
+          ),
+        ),
+      )) :
+     Column(
               children: [
                 // new added
-                Row(
+                Row(   
                   children: [
                     Expanded(
-                      child: Obx(() {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (scrollControllerofNavigateBar.hasClients) {
-                            scrollControllerofNavigateBar.jumpTo(
-                                scrollControllerofNavigateBar
-                                    .position.maxScrollExtent);
-                          }
+  child: Obx(() {
+    // Show loading indicator when navigation list is empty or still loading
+    if (isLoading.value) {
+      return Center(child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: SizedBox(
+          height: 30,
+          width: 30,
+          child: CircularProgressIndicator(
+            
+          ),
+        ),
+      ));
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollControllerofNavigateBar.hasClients) {
+        scrollControllerofNavigateBar.jumpTo(
+            scrollControllerofNavigateBar.position.maxScrollExtent);
+      }
+    });
+
+    return SingleChildScrollView(
+      controller: scrollControllerofNavigateBar,
+      scrollDirection: Axis.horizontal, // Enables horizontal scrolling
+      child: Row(
+        children: [
+          for (var i = 0; i < getx.navigationList.length; i++)
+            getx.navigationList.isEmpty
+                ? Text("Blank")
+                : InkWell(
+                    onTap: () {
+                      if (i == 0) {
+                        // nothing
+                      } else if (i == 1 || i == 2) {
+                        print('press in video');
+                        resetTblLocalNavigationByOrder(2);
+
+                        getStartParentId(int.parse(
+                                getx.navigationList[1]['NavigationId']))
+                            .then((value) {
+                          print(value);
+                          getChapterContents(int.parse(value.toString()));
+                          getChapterFiles(
+                              parentId: int.parse(value.toString()),
+                              'Video',
+                              getx.selectedPackageId.value.toString());
+                          getChapterFiles(
+                              parentId: int.parse(value.toString()),
+                              'PDF',
+                              getx.selectedPackageId.value.toString());
                         });
-                        return SingleChildScrollView(
-                          controller: scrollControllerofNavigateBar,
-                          scrollDirection:
-                              Axis.horizontal, // Enables horizontal scrolling
-                          child: Row(
-                            children: [
-                              for (var i = 0;
-                                  i < getx.navigationList.length;
-                                  i++)
-                                getx.navigationList.isEmpty
-                                    ? Text("Blank")
-                                    : InkWell(
-                                        onTap: () {
-                                          // resetTblLocalNavigationByOrder(i);
-                                          // insertTblLocalNavigation(navigationtype, navigationId, navigationName)
-                                          if (i == 0) {
-                                            //nothing
-                                          }
-
-                                          if (i == 1) {
-                                            print('press in video');
-
-                                            resetTblLocalNavigationByOrder(2);
-
-                                            getStartParentId(int.parse(
-                                                    getx.navigationList[1]
-                                                        ['NavigationId']))
-                                                .then((value) {
-                                              print(value);
-                                              getChapterContents(
-                                                  int.parse(value.toString()));
-                                              getChapterFiles(
-                                                  parentId: int.parse(
-                                                      value.toString()),
-                                                  'Video',
-                                                  getx.selectedPackageId.value
-                                                      .toString());
-                                              getChapterFiles(
-                                                  parentId: int.parse(
-                                                      value.toString()),
-                                                  'PDF',
-                                                  getx.selectedPackageId.value
-                                                      .toString());
-                                            });
-                                            getLocalNavigationDetails();
-                                          }
-                                          if (i == 2) {
-                                            print('press in video');
-
-                                            resetTblLocalNavigationByOrder(2);
-
-                                            getStartParentId(int.parse(
-                                                    getx.navigationList[1]
-                                                        ['NavigationId']))
-                                                .then((value) {
-                                              print(value);
-                                              getChapterContents(
-                                                  int.parse(value.toString()));
-                                              getChapterFiles(
-                                                  parentId: int.parse(
-                                                      value.toString()),
-                                                  'Video',
-                                                  getx.selectedPackageId.value
-                                                      .toString());
-                                              getChapterFiles(
-                                                  parentId: int.parse(
-                                                      value.toString()),
-                                                  'PDF',
-                                                  getx.selectedPackageId.value
-                                                      .toString());
-                                            });
-                                            getLocalNavigationDetails();
-                                          }
-                                          if (i > 2) {
-                                            resetTblLocalNavigationByOrder(i);
-
-                                            insertTblLocalNavigation(
-                                              "ParentId",
-                                              getx.navigationList[i]
-                                                  ['NavigationId'],
-                                              getx.navigationList[i]
-                                                  ["NavigationName"],
-                                            );
-
-                                            getChapterContents(int.parse(
-                                                getx.navigationList[i]
-                                                    ['NavigationId']));
-                                            getChapterFiles(
-                                                parentId: int.parse(
-                                                    getx.navigationList[i]
-                                                        ['NavigationId']),
-                                                'Video',
-                                                getx.selectedPackageId.value
-                                                    .toString());
-                                            getLocalNavigationDetails();
-                                            getChapterFiles(
-                                                parentId: int.parse(
-                                                    getx.navigationList[i]
-                                                        ['NavigationId']),
-                                                'PDF',
-                                                getx.selectedPackageId.value
-                                                    .toString());
-                                            getLocalNavigationDetails();
-                                          }
-
-                                          print(getx
-                                              .alwaysShowChapterDetailsOfVideo
-                                              .length);
-
-                                          setState(() {
-                                            filteredChapterDetails = getx
-                                                .alwaysShowChapterDetailsOfVideo;
-
-                                            filteredPdfDetails =
-                                                getx.alwaysShowFileDetailsOfpdf;
-                                            filteredvideoDetails = getx
-                                                .alwaysShowChapterfilesOfVideo;
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          child: Row(children: [
-                                            if (i != 0) ...[
-                                              ClipPath(
-                                                clipper: NavigationClipper1(),
-                                                child: Container(
-                                                  height: 30,
-                                                  width: 20,
-                                                  color: i ==
-                                                          getx.navigationList
-                                                                  .length -
-                                                              1
-                                                      ? Colors.blue
-                                                      : Colors.white,
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 50),
-                                                ),
-                                              ),
-                                              ClipPath(
-                                                child: Container(
-                                                  width: (() {
-                                                    int nameLength = getx
-                                                        .navigationList[i]
-                                                            ["NavigationName"]
-                                                        .length;
-
-                                                    if (nameLength >= 16) {
-                                                      return 210.0;
-                                                    } else if (nameLength >=
-                                                        13) {
-                                                      return 190.0;
-                                                    } else if (nameLength >=
-                                                        10) {
-                                                      return 170.0;
-                                                    } else if (nameLength >=
-                                                        7) {
-                                                      return 150.0;
-                                                    } else {
-                                                      return 100.0;
-                                                    }
-                                                  })(),
-
-                                                  decoration: BoxDecoration(
-                                                    color: i ==
-                                                            getx.navigationList
-                                                                    .length -
-                                                                1
-                                                        ? Colors.blue
-                                                        : Colors.white,
-
-                                                    // border: Border.all(color: Colors.amber)
-                                                  ),
-                                                  height: 30,
-                                                  // width: 150,
-
-                                                  child: Center(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 10),
-                                                      child: Text(
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          getx.navigationList[i]
-                                                              [
-                                                              "NavigationName"],
-                                                          style: FontFamily
-                                                              .styleb
-                                                              .copyWith(
-                                                                  fontSize: 14,
-                                                                  color: i ==
-                                                                          getx.navigationList.length -
-                                                                              1
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black54)),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              ClipPath(
-                                                clipper: NavigationClipper(),
-                                                child: Container(
-                                                  height: 30,
-                                                  width: 20,
-                                                  color: i ==
-                                                          getx.navigationList
-                                                                  .length -
-                                                              1
-                                                      ? Colors.blue
-                                                      : Colors.white,
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 50),
-                                                ),
-                                              ),
-                                            ],
-                                          ]),
-                                        ),
-                                      ),
-                            ],
-                          ),
+                        getLocalNavigationDetails();
+                      } else if (i > 2) {
+                        resetTblLocalNavigationByOrder(i);
+                        insertTblLocalNavigation(
+                          "ParentId",
+                          getx.navigationList[i]['NavigationId'],
+                          getx.navigationList[i]["NavigationName"],
                         );
-                      }),
+
+                        getChapterContents(int.parse(
+                            getx.navigationList[i]['NavigationId']));
+                        getChapterFiles(
+                            parentId: int.parse(
+                                getx.navigationList[i]['NavigationId']),
+                            'Video',
+                            getx.selectedPackageId.value.toString());
+                        getLocalNavigationDetails();
+                        getChapterFiles(
+                            parentId: int.parse(
+                                getx.navigationList[i]['NavigationId']),
+                            'PDF',
+                            getx.selectedPackageId.value.toString());
+                        getLocalNavigationDetails();
+                      }
+
+                      print(getx.alwaysShowChapterDetailsOfVideo.length);
+
+                      setState(() {
+                        filteredChapterDetails =
+                            getx.alwaysShowChapterDetailsOfVideo;
+                        filteredPdfDetails =
+                            getx.alwaysShowFileDetailsOfpdf;
+                        filteredvideoDetails =
+                            getx.alwaysShowChapterfilesOfVideo;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          if (i != 0) ...[
+                            ClipPath(
+                              clipper: NavigationClipper1(),
+                              child: Container(
+                                height: 30,
+                                width: 20,
+                                color: i == getx.navigationList.length - 1
+                                    ? Colors.blue
+                                    : Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 50),
+                              ),
+                            ),
+                            ClipPath(
+                              child: Container(
+                                width: (() {
+                                  int nameLength = getx.navigationList[i]
+                                          ["NavigationName"]
+                                      .length;
+                                  if (nameLength >= 16) {
+                                    return 210.0;
+                                  } else if (nameLength >= 13) {
+                                    return 190.0;
+                                  } else if (nameLength >= 10) {
+                                    return 170.0;
+                                  } else if (nameLength >= 7) {
+                                    return 150.0;
+                                  } else {
+                                    return 100.0;
+                                  }
+                                })(),
+                                decoration: BoxDecoration(
+                                  color: i == getx.navigationList.length - 1
+                                      ? Colors.blue
+                                      : Colors.white,
+                                ),
+                                height: 30,
+                                child: Center(
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 10),
+                                    child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        getx.navigationList[i]["NavigationName"],
+                                        style: FontFamily.styleb.copyWith(
+                                            fontSize: 14,
+                                            color: i ==
+                                                    getx.navigationList.length - 1
+                                                ? Colors.white
+                                                : Colors.black54)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ClipPath(
+                              clipper: NavigationClipper(),
+                              child: Container(
+                                height: 30,
+                                width: 20,
+                                color: i == getx.navigationList.length - 1
+                                    ? Colors.blue
+                                    : Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 50),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
+                  ),
+        ],
+      ),
+    );
+  }),
+),
+
                   ],
                 ),
                 Padding(
@@ -681,123 +622,6 @@ class _MobilePackageVideoDashboardState
     String? _videoFilePath;
 
     bool isDownloading = false;
-
-    // Future<void> startDownload(int index, String Link, String title) async {
-    //   if (Link == "0") {
-    //     print("ZVideo link is $Link");
-    //     return;
-    //   }
-
-    //   final appDocDir;
-    //   final cancelToken =
-    //       CancelToken(); // Create a new CancelToken for this download
-    //   cancelTokens[index] =
-    //       cancelToken; // Store the token to allow cancellation later
-
-    //   try {
-    //     var prefs = await SharedPreferences.getInstance();
-    //     final path = await getApplicationDocumentsDirectory();
-    //     appDocDir = path.path;
-
-    //     getx.defaultPathForDownloadVideo.value =
-    //         appDocDir + '/$origin' + '/Downloaded_videos';
-    //     prefs.setString("DefaultDownloadpathOfVieo",
-    //         appDocDir + '/$origin' + '/Downloaded_videos');
-    //     print(getx.userSelectedPathForDownloadVideo.value +
-    //         " it is user selected path");
-
-    //     String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
-    //         ? appDocDir + '/$origin' + '/Downloaded_videos' + '/$title'
-    //         : getx.userSelectedPathForDownloadVideo.value + '/$title';
-
-    //     String tempPath = appDocDir + '/temp' + '/$title';
-
-    //     await Directory(appDocDir + '/temp').create(recursive: true);
-
-    //     // Set a timeout duration (e.g., 60 seconds) for the download process
-    //     const downloadTimeout = Duration(hours: 2);
-    //     int previousProgress = 0;
-    //     DateTime lastProgressUpdate = DateTime.now();
-
-    //     await dio.download(
-    //       Link,
-    //       tempPath,
-    //       cancelToken:
-    //           cancelToken, // Pass the CancelToken to the download method
-    //       onReceiveProgress: (received, total) {
-    //         if (total != -1) {
-    //           double progress = (received / total * 100);
-    //           setState(() {
-    //             downloadProgress[index] = progress;
-    //           });
-
-    //           // Track the last time progress was updated
-    //           if (progress != previousProgress) {
-    //             lastProgressUpdate = DateTime.now();
-    //             previousProgress = progress.toInt();
-    //           }
-    //         }
-    //       },
-    //     ).timeout(downloadTimeout, onTimeout: () {
-    //       // If the download took longer than the timeout
-    //       cancelToken.cancel(); // Cancel the download
-    //       return Future.error('Download Timeout');
-    //     });
-
-    //     // Check if the download progress got stuck (e.g., progress hasn't updated in the last 10 seconds)
-    //     if (DateTime.now().difference(lastProgressUpdate) >
-    //         Duration(seconds: 30)) {
-    //       cancelToken.cancel(); // Cancel the download
-    //       showErrorDialog(context, 'Download Stuck',
-    //           'The download seems to be stuck. Please try again.');
-    //       return;
-    //     }
-
-    //     // After download is complete, copy the file to the final location
-    //     final tempFile = File(tempPath);
-    //     final finalFile = File(savePath);
-
-    //     await finalFile.parent.create(recursive: true);
-    //     await tempFile.copy(savePath);
-    //     await tempFile.delete();
-
-    //     // Success case: Update the progress to 100% and set the video file path
-    //     setState(() {
-    //       downloadProgress[index] = 100.0; // Mark the download as completed
-    //       _videoFilePath = savePath;
-    //       getx.playingVideoId.value = filteredvideoDetails[index]["FileId"];
-    //     });
-
-    //     print('$savePath video saved to this location');
-
-    //     await insertDownloadedFileData(filteredvideoDetails[index]["PackageId"],
-    //         filteredvideoDetails[index]["FileId"], savePath, 'Video', title);
-
-    //     insertVideoDownloadPath(
-    //       filteredvideoDetails[index]["FileId"],
-    //       filteredvideoDetails[index]["PackageId"],
-    //       savePath,
-    //       context,
-    //     );
-    //   } catch (e) {
-    //     writeToFile(e, "startDownload");
-    //     if (e is DioException && CancelToken.isCancel(e)) {
-    //       print("Download canceled for index $index");
-    //     } else {
-    //       print(e.toString() + " error on download");
-    //       setState(() {
-    //         // Reset progress to 0 if there's an error
-    //         downloadProgress[index] = 0;
-    //       });
-    //       // Only show error dialog if there's a failure in the download process
-    //       showErrorDialog(context, 'Download Failed',
-    //           'An error occurred during the download. Please try again.');
-    //     }
-    //   } finally {
-    //     cancelTokens.remove(
-    //         index); // Remove the CancelToken when the download completes or fails
-    //   }
-    // }
 
     Future<void> startDownload(int index, String Link, String title) async {
       log('$title $Link Sayak');
