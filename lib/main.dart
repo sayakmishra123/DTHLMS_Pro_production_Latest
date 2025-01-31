@@ -229,7 +229,7 @@ class _MyAppState extends State<MyApp> {
 
                                 bool isDataLengthValid = false;
 
-                                if (snapshot.hasData && 
+                                if (snapshot.hasData &&
                                     snapshot.data != null &&
                                     snapshot.data is List) {
                                   // Safely cast snapshot.data to a List and check the condition
@@ -255,7 +255,7 @@ class _MyAppState extends State<MyApp> {
                                       : Mobilelogin();
                                   // : IntroductionDashBoard();
                                 }
-                               } else {
+                              } else {
                                 return const NoSim();
                               }
                             },
@@ -521,7 +521,7 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
 Future<void> initializeNotifications() async {
   // testSQLCipherOnWindows();
   String osid = getEncryptionKeyFromTblSetting('OneSignalId');
-
+  log("user id of one signal :$osid");
   if (osid.isNotEmpty) {
     // Initialize OneSignal
     OneSignal.Debug.setLogLevel(

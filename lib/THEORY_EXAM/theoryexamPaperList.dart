@@ -13,7 +13,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 // import 'MOCKTEST/resultmocktest.dart';
-// import 'MOCKTEST/termandcondition.dart'; 
+// import 'MOCKTEST/termandcondition.dart';
 
 class TheoryExamPapes extends StatefulWidget {
   Map paperNames = {};
@@ -40,7 +40,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
   getData() async {
     // log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
     theoryPaperList.clear();
-    theoryPaperList.value = 
+    theoryPaperList.value =
         await fetchTheoryPapertList(widget.paperNames['SetId']);
     // log(theoryPaperList.toString() + " type");
   }
@@ -66,7 +66,10 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
-        title: Text('Theory Papers', style: FontFamily.styleb,),
+        title: Text(
+          'Theory Paperss',
+          style: FontFamily.styleb,
+        ),
       ),
       body: Obx(
         () => theoryPaperList.isNotEmpty
@@ -79,67 +82,65 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                     return InkWell(
                       onTap: () async {
                         if (getx.isInternet.value) {
-
-                          
-                        var examcode = await getExamStatus(
-                            context, getx.loginuserdata[0].token, theoryPaperList[index]['PaperId']
-                                        .toString());
-                        if (examcode == 200) {
-                          Get.to(
-                              transition: Transition.cupertino,
-                              () => TheoryExamTermAndCondition(
-                                    termAndCondition: theoryPaperList[index]
-                                            ['TermAndCondition']
-                                        .toString(),
-                                    documnetPath: theoryPaperList[index] 
-                                            ['DocumentUrl'] 
-                                        .toString(),
-                                        
-                                    duration: theoryPaperList[index]['Duration']
-                                        .toString(),
-                                    paperName: theoryPaperList[index]
-                                            ['PaperName']
-                                        .toString(),
-                                    sheduletime: theoryPaperList[index]
-                                            ['StartTime']
-                                        .toString(),
-                                    paperId: theoryPaperList[index]['PaperId']
-                                        .toString(), 
-                                        isEncrypted: false,
-                                  ));
-                        }
-                        if (examcode == 250) {
-                          Get.to(
-                              transition: Transition.cupertino,
-                              () =>  TheoryExamTermAndCondition(
-                                    termAndCondition: theoryPaperList[index]
-                                            ['TermAndCondition']
-                                        .toString(),
-                                    documnetPath: theoryPaperList[index] 
-                                            ['DocumentUrl'] 
-                                        .toString(),
-                                        
-                                    duration: theoryPaperList[index]['Duration']
-                                        .toString(),
-                                    paperName: theoryPaperList[index]
-                                            ['PaperName']
-                                        .toString(),
-                                    sheduletime: theoryPaperList[index]
-                                            ['StartTime']
-                                        .toString(),
-                                    paperId: theoryPaperList[index]['PaperId']
-                                        .toString(), 
-                                        isEncrypted: false,
-                                  ));
-                        }
-                        if (examcode == 300) {
-
-                          
+                          var examcode = await getExamStatus(
+                              context,
+                              getx.loginuserdata[0].token,
+                              theoryPaperList[index]['PaperId'].toString());
+                          if (examcode == 200) {
+                            Get.to(
+                                transition: Transition.cupertino,
+                                () => TheoryExamTermAndCondition(
+                                      termAndCondition: theoryPaperList[index]
+                                              ['TermAndCondition']
+                                          .toString(),
+                                      documnetPath: theoryPaperList[index]
+                                              ['DocumentUrl']
+                                          .toString(),
+                                      duration: theoryPaperList[index]
+                                              ['Duration']
+                                          .toString(),
+                                      paperName: theoryPaperList[index]
+                                              ['PaperName']
+                                          .toString(),
+                                      sheduletime: theoryPaperList[index]
+                                              ['StartTime']
+                                          .toString(),
+                                      paperId: theoryPaperList[index]['PaperId']
+                                          .toString(),
+                                      isEncrypted: false,
+                                    ));
+                          }
+                          if (examcode == 250) {
+                            Get.to(
+                                transition: Transition.cupertino,
+                                () => TheoryExamTermAndCondition(
+                                      termAndCondition: theoryPaperList[index]
+                                              ['TermAndCondition']
+                                          .toString(),
+                                      documnetPath: theoryPaperList[index]
+                                              ['DocumentUrl']
+                                          .toString(),
+                                      duration: theoryPaperList[index]
+                                              ['Duration']
+                                          .toString(),
+                                      paperName: theoryPaperList[index]
+                                              ['PaperName']
+                                          .toString(),
+                                      sheduletime: theoryPaperList[index]
+                                              ['StartTime']
+                                          .toString(),
+                                      paperId: theoryPaperList[index]['PaperId']
+                                          .toString(),
+                                      isEncrypted: false,
+                                    ));
+                          }
+                          if (examcode == 300) {
                             if (getx.isInternet.value) {
-                           
-                              getTheryExamResultForIndividual(context,
-                                      getx.loginuserdata[0].token, theoryPaperList[index]['PaperId']
-                                        .toString())
+                              getTheryExamResultForIndividual(
+                                      context,
+                                      getx.loginuserdata[0].token,
+                                      theoryPaperList[index]['PaperId']
+                                          .toString())
                                   .then((value) {
                                 print(value);
 
@@ -147,7 +148,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                   _showDialogoferror(context, "Not publish!!",
                                       "The result is not published yet.", () {
                                     // Navigator.pop(context);
-                                  Get.back();
+                                    Get.back();
                                   }, false);
                                 } else {
                                   Get.to(
@@ -176,9 +177,11 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                             totalMarksRequired: double.parse(
                                                 value['PassMarks'].toString()),
                                             theoryExamAnswerId: '12',
-                                            examId: theoryPaperList[index]['PaperId']
-                                        .toString(),
-                                        pdfurl:  value['CheckedDocumentUrl'].toString(),
+                                            examId: theoryPaperList[index]
+                                                    ['PaperId']
+                                                .toString(),
+                                            pdfurl: value['CheckedDocumentUrl']
+                                                .toString(),
                                           ));
                                 }
                               });
@@ -189,39 +192,18 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                 Navigator.pop(context);
                               }, false);
                             }
-                          // _showDialogSubmited(context, "Already Submited!",
-                          //     "your exam is already submited.", () {
-                          //   Navigator.pop(context);
-                          // }, () {
-                          // });
-                        }
-                        if (examcode == 400) {
-                          _showDialogoferror(context, "Time is Over!",
-                              "your exam is already ended.", () {
-                            Navigator.pop(context);
-                          }, false);
-                        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                            // _showDialogSubmited(context, "Already Submited!",
+                            //     "your exam is already submited.", () {
+                            //   Navigator.pop(context);
+                            // }, () {
+                            // });
+                          }
+                          if (examcode == 400) {
+                            _showDialogoferror(context, "Time is Over!",
+                                "your exam is already ended.", () {
+                              // Navigator.pop(context);
+                            }, false);
+                          }
 
                           // Get.to(
                           //     transition: Transition.cupertino,
@@ -229,10 +211,10 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                           //           termAndCondition: theoryPaperList[index]
                           //                   ['TermAndCondition']
                           //               .toString(),
-                          //           documnetPath: theoryPaperList[index] 
-                          //                   ['DocumentUrl'] 
+                          //           documnetPath: theoryPaperList[index]
+                          //                   ['DocumentUrl']
                           //               .toString(),
-                                        
+
                           //           duration: theoryPaperList[index]['Duration']
                           //               .toString(),
                           //           paperName: theoryPaperList[index]
@@ -242,7 +224,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                           //                   ['StartTime']
                           //               .toString(),
                           //           paperId: theoryPaperList[index]['PaperId']
-                          //               .toString(), 
+                          //               .toString(),
                           //               isEncrypted: false,
                           //         ));
                         } else {
@@ -428,7 +410,6 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
     ).show();
   }
 
-
   _showDialogSubmited(
     context,
     String title,
@@ -485,4 +466,3 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
             type: ArtSweetAlertType.info));
   }
 }
-

@@ -1,5 +1,5 @@
 const String origin = 'com.dlp.tvs';
-// const String logopath = 'assets/icons/new_logo.png';
+// const String logopath = 'assets/icons/AAC2.png';
 const String logopath = 'assets/icons/AAC2.png';
 
 const String franchiseWebsiteLink = 'http://myfranchise.com';
