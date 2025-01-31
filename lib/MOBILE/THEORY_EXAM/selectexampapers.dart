@@ -144,7 +144,7 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
   }
 
   void _uploadImages(BuildContext context) {
-    if (_images.length == sheetNumber) {
+    if (_images.length == sheetNumber) { 
       _uploadImageList(_images, context);
       // _onUploadSuccessFull(globalContext);
       print("Images uploaded: ${_images.length} images");
@@ -654,12 +654,12 @@ Positioned(
         try {
           // Map each image to an uploadImage Future
           List<Future<String>> uploadFutures = images
-              .map((image) => uploadSheet(
-                  image, getx.loginuserdata[0].token, key, "AnswerSheet"))
+              .map((image) => uploadSheet(  
+                  image, getx.loginuserdata[0].token, key, "AnswerSheet",context))
               .toList();
-
+ 
           // Wait for all uploads to complete and collect the IDs
-          List<String> imageIds = await Future.wait(uploadFutures);
+          List<String> imageIds = await Future.wait(uploadFutures); 
           print(imageIds);
           String documentId =
               imageIds.toString().replaceAll("[", "").replaceAll("]", "");
@@ -694,6 +694,7 @@ Positioned(
           "Access Key not found");
     }
   }
+  
 }
 
 _exitConfirmetionBox(context, VoidCallback ontap) {

@@ -9,7 +9,7 @@ import 'package:lottie/lottie.dart';
 
 class LivePage extends StatefulWidget {
   const LivePage({super.key});
-
+ 
   @override
   State<LivePage> createState() => _LivePageState();
 }
@@ -17,7 +17,7 @@ class LivePage extends StatefulWidget {
 class _LivePageState extends State<LivePage> {
   Widget _buildGridView() {
     return ListView.builder(
-      shrinkWrap: true,
+      shrinkWrap: true, 
       physics: NeverScrollableScrollPhysics(),
       itemCount: getx.todaymeeting.length,
       itemBuilder: (context, index) {

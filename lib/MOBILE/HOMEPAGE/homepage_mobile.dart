@@ -14,6 +14,7 @@ import 'package:dthlms/Live/mobile_vcScreen.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/bannerInfoPage.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/chat/chat_page.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/fab_visibility.dart';
+import 'package:dthlms/MOBILE/HOMEPAGE/forumn_page.dart';
 import 'package:dthlms/MOBILE/LOGIN/loginpage_mobile.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_List.dart';
 import 'package:dthlms/MOBILE/PROFILE/account.dart';
@@ -2987,6 +2988,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
       DashBoardMobile(),
       const Mobile_Package_List(),
       ListviewPackage(),
+      ForumPage(),
       MyAccountScreen(
         fromDrawer: false,
       ),
@@ -3196,6 +3198,11 @@ class _HomePageMobileState extends State<HomePageMobile> {
                   selectedIcon: Icon(Icons.shopping_cart),
                   icon: Icon(Icons.shopping_cart_outlined),
                   label: 'Store',
+                ),
+                NavigationDestination(
+                  selectedIcon: Icon(Icons.forum_rounded),
+                  icon: Icon(Icons.forum_outlined),
+                  label: 'Forum',
                 ),
                 NavigationDestination(
                   selectedIcon: Icon(Icons.person),

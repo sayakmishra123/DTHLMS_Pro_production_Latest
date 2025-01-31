@@ -13,6 +13,7 @@ import 'package:dthlms/DEVICE_INFORMATION/device_info.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/Live/url.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 // import 'package:dthlms/MODEL_CLASS/Icon_model.dart';
@@ -1699,103 +1700,189 @@ _onUploadSuccessFull(context, VoidCallback ontap) {
 }
 
 Future<String> uploadSheet(
-    File file, String token, String key, String folderPath) async {
+    File file, String token, String key, String folderPath,context) async {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+  ); 
   try {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String fileName = basename(file.path);
-    String mimeType = lookupMimeType(file.path) ?? 'jpg';
+    String mimeType = lookupMimeType(file.path) ?? '.jpg';
 
-    // Create a multipart request
-    var request = http.MultipartRequest('POST',
-        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
-
-    // Add headers
+    var request = http.MultipartRequest(
+        'POST', Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
     request.headers['Authorization'] = 'Bearer $token';
     request.headers['accept'] = 'text/plain';
 
-    getx.uploadProgress.value = 0.0;
-
-    // Create a ByteStream to track progress
     var byteStream = http.ByteStream(
       file.openRead().transform(
         StreamTransformer.fromHandlers(
           handleData: (data, sink) {
             sink.add(data);
-            getx.uploadProgress.value += data.length / file.lengthSync();
+            // setState(() {
+            //   uploadProgress += data.length / file.lengthSync();
+            // });
           },
         ),
       ),
     );
 
-    // Add the file
-    request.files.add(
-      http.MultipartFile(
-        'FileDetails',
-        byteStream,
-        file.lengthSync(),
-        filename: fileName,
-        contentType: MediaType.parse(mimeType),
-      ),
+// Update the request
+    request.files.add(http.MultipartFile(
+      'FileDetails',
+      byteStream,
+      file.lengthSync(),
+      filename: fileName,
+      contentType: MediaType.parse(mimeType),
+    ));
+
+    request.fields['folderPath'] = folderPath;
+    request.fields['DocumentTitle'] = fileName;
+
+    // Send the request with a 10-minute timeout
+    var response = await request.send().timeout(
+      const Duration(minutes: 50), // Set the timeout duration here
+      onTimeout: () {
+        // You can handle the timeout separately if needed
+        // ClsErrorMsg.fnErrorDialog(context, '', 'File upload timed out after 10 minutes', "");
+        return http.StreamedResponse(
+          const Stream.empty(),
+          408, // HTTP status code for timeout
+        );
+      },
     );
 
-    // Add other form fields
-    request.fields['folderPath'] = "folderPath";
-    request.fields['DocumentTitle'] = fileName;
-    request.fields['key'] = key;
-
-    // Send the request
-    var response = await request.send();
-
-    var responseData = await response.stream.bytesToString();
-    var jsonResponse = json.decode(responseData);
-    // Check the response
     if (response.statusCode == 200) {
-      // print('sheet uploaded successfully! ${jsonResponse["result"]} $file');
+      var responseData = await response.stream.bytesToString();
+      var jsonResponse = jsonDecode(responseData);
       var json = jsonDecode(jsonResponse["result"]);
-
+      print(json.toString());
       String documentId = json['DocumentId'].toString();
-      String documentPath = json['returnPath'];
-      // SettingsStorage storage = SettingsStorage();
-      String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
 
-      // rename video name add by Sayak Mishra
-
-      // renameVideoFile(videoFile.path, documentId, currentTime)
-      //     .then((bool isrename) async {
-
-      //   if (isrename) {
-
+      Get.back();
+      // NoticationDialog.noticationDialogsuccess(context, description: '');
       return documentId;
-      // }
-      // f.uploadProgress.value = 1.0;
-      // });
-
-      // return
-      // Ensure progress is set to 100% on success
     } else {
-      // ClsErrorMsg.fnErrorDialog(
-      // context,
-      // 'Failed',
-      // "Failed to upload video. Status code: ${response.statusCode}".toString()
-      //       .replaceAll("[", "")
-      //       .replaceAll("]", ""),
-      // "");
-      // print('Failed to upload video. Status code: ${response.statusCode}');
+      var responseData = await response.stream.bytesToString();
+      var jsonResponse = jsonDecode(responseData.toString());
+      log(jsonResponse['errorMessages'].toString());
+      Get.back();
+      // NoticationDialog.noticationDialogerror(context,
+      //     description: jsonResponse['errorMessages'].toString());
+      ClsErrorMsg.fnErrorDialog(context, '', 'Failed to upload Images. Status code: ${response.statusCode}', "");
       return "";
     }
   } catch (e) {
-    writeToFile(e, 'uploadSheet');
+    Get.back();
+    // ClsErrorMsg.fnErrorDialog(context, '', e.toString(), "");
     return '';
-    //  ClsErrorMsg.fnErrorDialog(
-    //     context,
-    //     '',
-    //    e. toString()
-    //           .replaceAll("[", "")
-    //           .replaceAll("]", ""),
-    //     "");
   }
 }
+// Future<String> uploadSheet(
+//     File file, String token, String key, String folderPath,context) async {
+//   try {
+//     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+//     String fileName = basename(file.path);
+//     String mimeType = lookupMimeType(file.path) ?? 'jpg';
+
+//     // Create a multipart request
+//     var request = http.MultipartRequest('POST',
+//         Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
+
+//     // Add headers
+//     request.headers['Authorization'] = 'Bearer $token';
+//     request.headers['accept'] = 'text/plain';
+
+//     getx.uploadProgress.value = 0.0;
+
+//     // Create a ByteStream to track progress
+//     var byteStream = http.ByteStream(
+//       file.openRead().transform(
+//         StreamTransformer.fromHandlers(
+//           handleData: (data, sink) {
+//             sink.add(data);
+//             getx.uploadProgress.value += data.length / file.lengthSync();
+//           },
+//         ),
+//       ),
+//     );
+
+//     // Add the file
+//     request.files.add(
+//       http.MultipartFile(
+//         'FileDetails',
+//         byteStream,
+//         file.lengthSync(),
+//         filename: fileName,
+//         contentType: MediaType.parse(mimeType),
+//       ),
+//     );
+
+//     // Add other form fields
+//     request.fields['folderPath'] = "folderPath";
+//     request.fields['DocumentTitle'] = fileName;
+//     request.fields['key'] = key;
+
+//     // Send the request
+//     var response = await request.send();
+//     log(response.statusCode.toString());
+
+//     var responseData = await response.stream.bytesToString();
+//     var jsonResponse = json.decode(responseData);
+//     // Check the response
+//     if (response.statusCode == 200) {
+//       // print('sheet uploaded successfully! ${jsonResponse["result"]} $file');
+//       var json = jsonDecode(jsonResponse["result"]);
+
+//       String documentId = json['DocumentId'].toString();
+
+//       String documentPath = json['returnPath'];
+//       // SettingsStorage storage = SettingsStorage();
+//       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
+//       // rename video name add by Sayak Mishra
+
+//       // renameVideoFile(videoFile.path, documentId, currentTime)
+//       //     .then((bool isrename) async {
+
+//       //   if (isrename) {
+// log(documentId);
+//       return documentId;
+//       // }
+//       // f.uploadProgress.value = 1.0;
+//       // });
+
+//       // return
+//       // Ensure progress is set to 100% on success
+//     } else {
+//       ClsErrorMsg.fnErrorDialog(
+//         context
+// ,
+//       'Failed',
+//       "Failed to upload video. Status code: ${response.statusCode}".toString()
+//             .replaceAll("[", "")
+//             .replaceAll("]", ""),
+//       "");
+//       print('Failed to upload video. Status code: ${response.statusCode}');
+//       return "";
+//     }
+//   } catch (e) {
+//     writeToFile(e, 'uploadSheet');
+//     return '';
+//     //  ClsErrorMsg.fnErrorDialog(
+//     //     context,
+//     //     '',
+//     //    e. toString()
+//     //           .replaceAll("[", "")
+//     //           .replaceAll("]", ""),
+//     //     "");
+//   }
+// }
 
 Future sendDocumentIdOfanswerSheets(
     BuildContext context, String token, int paperid, String documentId) async {

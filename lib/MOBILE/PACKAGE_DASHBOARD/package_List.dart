@@ -1,3 +1,4 @@
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_contents.dart';
 import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +23,16 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
 
   @override
   void initState() {
-    super.initState();
-    getAllPackageListOfStudent().whenComplete(() {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getMeetingList(context);
+    });
+        getAllPackageListOfStudent().whenComplete(() {
       setState(() {
         updateTabs();
       });
     });
+    super.initState();
+
   }
 
   void updateTabs() {

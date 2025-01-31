@@ -2541,7 +2541,7 @@ class _AskDoubtState extends State<AskDoubt> {
                           context, getx.loginuserdata[0].token);
                       if (key != "") {
                         uploadSheet(_selectedImage!,
-                                getx.loginuserdata[0].token, key, "AskDoubt")
+                                getx.loginuserdata[0].token, key, "AskDoubt",context)
                             .then((documentId) {
                           if (documentId == "") {
                             setState(() {

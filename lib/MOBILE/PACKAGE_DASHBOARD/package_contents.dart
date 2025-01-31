@@ -11,6 +11,8 @@ import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import '../../PC/PACKAGEDETAILS/packagedetails.dart';
 import '../../constants.dart';
 
@@ -87,67 +89,47 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       callData();
     });
     getx.isInsidePackage.value = true;
-    // gtCount();
-getVideoCount();
+    getVideoCount();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getMeetingList(context);
+    });
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getChapterFiles(
+          parentId: 0, "Book", getx.selectedPackageId.value.toString());
+    });
     super.initState();
   }
 
-
   // Video section data
- RxBool hasData = false.obs;
-int videoCountData = 0;
-RxInt allowedDuration = 0.obs;
-RxString formattedDuration = ''.obs;
+  RxBool hasData = false.obs;
+  int videoCountData = 0;
+  RxInt allowedDuration = 0.obs;
+  RxString formattedDuration = ''.obs;
 
+  getVideoCount() async {
+    var data =
+        await getAllPackageDetailsForVideoCount(widget.packageid.toString());
 
+    if (data.isNotEmpty) {
+      hasData.value = false;
+      for (var i in data) {
+        if (i['AllowDuration'] != "") {
+          allowedDuration.value =
+              allowedDuration.value + int.parse(i['AllowDuration']);
+        }
+      }
+      videoCountData = data.length;
 
-  getVideoCount()async {
-   var data =  await getAllPackageDetailsForVideoCount(widget.packageid.toString());
+      int seconds = allowedDuration.value;
+      int minutes = seconds ~/ 60;
+      int hours = minutes ~/ 60;
 
-   if(data.isNotEmpty){
-    hasData.value =false;
-   for(var i in data){
-    if(i['AllowDuration'] != ""){
-allowedDuration.value = allowedDuration.value + int.parse(i['AllowDuration']) ;
+      formattedDuration.value = hours > 0
+          ? "$hours hours ${minutes % 60} minutes"
+          : "$minutes minutes";
     }
-
-   }
-   videoCountData = data.length;
-
-   int seconds = allowedDuration.value ;
-int minutes = seconds ~/ 60;
-int hours = minutes ~/ 60;
-
-// Format as "X hours Y minutes" or "Y minutes" if less than an hour
- formattedDuration.value = hours > 0 
-    ? "$hours hours ${minutes % 60} minutes" 
-    : "$minutes minutes";
-   }
-   print(videoCountData);
+    print(videoCountData);
   }
-
-  //   gtCount() async {
-  //   submitedExamsCount = await getSubmittedExamCount();
-  //   setState(() {});
-  // }
-
-  // Future<int> getSubmittedExamCount() async {
-  //   int count = 0;
-
-  //   for (var exam in mcqPaperList) {
-  //     var checking = await checkMCQRankStatus(
-  //         context, getx.loginuserdata[0].token, exam['PaperId'].toString());
-
-  //     if (checking.isNotEmpty &&
-  //         (checking['StatusCode'] == 400 || checking['StatusCode'] == 440)) {
-  //       count++;
-  //     }
-  //   }
-
-  //   return count;
-  // }
-
-
 
   callData() async {
     initialfunction(widget.packageid.toString()).whenComplete(() {
@@ -176,35 +158,6 @@ int hours = minutes ~/ 60;
     // }
     // Get.back();
   }
-
-  // Widget getFolderIcon(Map<String, dynamic> foldername, index) {
-  //   switch (foldername['section']) {
-  //     case "Video":
-  //       return showDetails(Icon(Icons.video_library, color: Colors.blue),
-  //           foldername: foldername);
-
-  //     // return Icon(Icons.video_library, color: Colors.blue);
-  //     case "Live":
-  //       return showDetails(Icon(Icons.live_tv, color: Colors.red),
-  //           foldername: foldername);
-
-  //     case "VideosBackup":
-  //       return showDetails(Icon(Icons.backup, color: Colors.orange),
-  //           foldername: foldername);
-  //     case "MCQ":
-  //       return showDetails(Icon(Icons.question_answer, color: Colors.green),
-  //           foldername: foldername);
-  //     case "Theory":
-  //       return showDetails(Icon(Icons.book, color: Colors.purple),
-  //           foldername: foldername);
-  //     case "Book":
-  //       return showDetails(Icon(Icons.library_books, color: Colors.brown),
-  //           foldername: foldername);
-  //     default:
-  //       return showDetails(Icon(Icons.folder, color: Colors.blue),
-  //           foldername: foldername);
-  //   }
-  // }
 
   Widget showDetails(Icon icon, {Map<String, dynamic>? foldername}) {
     infoTetch(widget.packageid.toString(), foldername?['section'] ?? 'no');
@@ -488,24 +441,23 @@ int hours = minutes ~/ 60;
                       }
                       getx.selectedPackageId.value = widget.packageid;
                     },
-                    child: Padding( 
+                    child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: _buildOfferCard(
-                          title: filteredList[index]['section'],
-                          subtitle:
-                              getFolderSubtitle(filteredList[index], index),
-                          gradientColors:
-                              gradientColorsList(filteredList[index], index),
-                          arrowBackground: Colors.orange.shade100,
-                          arrowColor: Colors.orange,
-                          icon: getFolderIcon(filteredList[index], index),
-                          iconcolor:
-                              getFolderIconColor(filteredList[index], index),
-                              videoCount: videoCountData.toString(),
-                              allowedDurationVideo: formattedDuration.value,
-                          // zipText: 'ZIP',
-                          // zipTextColor: Colors.orange,
-                          ),
+                        title: filteredList[index]['section'],
+                        subtitle: getFolderSubtitle(filteredList[index], index),
+                        gradientColors:
+                            gradientColorsList(filteredList[index], index),
+                        arrowBackground: Colors.orange.shade100,
+                        arrowColor: Colors.orange,
+                        icon: getFolderIcon(filteredList[index], index),
+                        iconcolor:
+                            getFolderIconColor(filteredList[index], index),
+                        videoCount: videoCountData.toString(),
+                        allowedDurationVideo: formattedDuration.value,
+                        // zipText: 'ZIP',
+                        // zipTextColor: Colors.orange,
+                      ),
                     ),
 
                     //  Container(
@@ -537,7 +489,34 @@ int hours = minutes ~/ 60;
       );
     });
   }
- 
+
+  // static Widget _count(title, videoCount) {
+
+  // Getx getx = Get.put(Getx());
+
+  //   return Row(
+  //     children: [
+  //       title == 'Video' && videoCount != '0'
+  //           ? CircleAvatar(
+  //               child: Text(
+  //               videoCount,
+  //               style: FontFamily.style.copyWith(fontSize: 15),
+  //             ))
+  //           : title == 'Live'
+  //               ? CircleAvatar(
+  //                   child: Text(
+  //                   getx.todaymeeting.length.toString(),
+  //                   style: FontFamily.style.copyWith(fontSize: 15),
+  //                 ))
+  //               : SizedBox(),
+  //       SizedBox(
+  //         width: 10,
+  //       ),
+  //       Image.asset(logopath, width: 45),
+  //     ],
+  //   );
+  // }
+
   static Widget _buildOfferCard(
       {required String title,
       required String subtitle,
@@ -547,16 +526,12 @@ int hours = minutes ~/ 60;
       required Icon icon,
       required Color iconcolor,
       required String videoCount,
-      required String allowedDurationVideo
+      required String allowedDurationVideo}) {
+    Getx getx = Get.put(Getx());
 
-
-      // required String zipText,
-      // required Color zipTextColor,
-      }) {
     return Container(
       width: 100,
       height: 170,
-      // margin: const EdgeInsets.only(right: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -581,44 +556,106 @@ int hours = minutes ~/ 60;
                       Container(
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           padding: EdgeInsets.all(10),
-                          // decoration: BoxDecoration(
-                          //   borderRadius: BorderRadius.circular(50),
-                          //   color: const Color.fromARGB(255, 231, 242, 250),
-                          // ),
                           child: Icon(
                             icon.icon,
                             color: iconcolor,
                           )),
-                           Text(
-                    title == 'Video'? 'Recorded' :title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                      Text(
+                        title == 'Video' ? 'Recorded' : title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(
                     height: 8,
                   ),
                   // Title
-                 
                   SizedBox(
                     height: 8,
                   ),
-                  title == 'Video' ? Text('Duration: ${allowedDurationVideo}',style: FontFamily.style.copyWith(fontSize: 12),) :  SizedBox(),
+                  title == 'Video'
+                      ? Text(
+                          'Duration: ${allowedDurationVideo}',
+                          style: FontFamily.style.copyWith(fontSize: 12),
+                        )
+                      : SizedBox(),
                   // SizedBox(
                   //   height: 4,
                   // ),
                   // title == 'Video' ? Text('View Time: 20 hours',style: FontFamily.style.copyWith(fontSize: 12),) :  SizedBox()
-
                 ],
               ),
-              
               Row(
                 children: [
-                 title == 'Video' && videoCount != '0' ?  CircleAvatar(child: Text(videoCount,style: FontFamily.style.copyWith(fontSize: 15),)) : SizedBox(),
-SizedBox(width: 10,),
+                  title == 'Video' && videoCount != '0'
+                      ? CircleAvatar(
+                          child: Text(
+                          videoCount,
+                          style: FontFamily.style.copyWith(fontSize: 15),
+                        ))
+                      : title == 'Live'
+                          ? Obx(() {
+                              String todayDate = DateFormat('yyyy-MM-dd')
+                                  .format(DateTime.now());
+
+                              int liveCount = getx.todaymeeting
+                                  .where((meeting) =>
+                                      meeting.scheduledOn != null &&
+                                      DateFormat('yyyy-MM-dd')
+                                              .format(meeting.scheduledOn) ==
+                                          todayDate)
+                                  .length;
+
+                              return Stack(
+                                clipBehavior: Clip
+                                    .none, // Ensures the Positioned widget is not clipped
+                                children: [
+                                  // Live Animation
+                                  Lottie.asset(
+                                    'assets/liveanimation.json',
+                                    width: 70,
+                                    height: 70,
+                                  ),
+
+                                  // Only show if liveCount is greater than 1
+                                  if (liveCount > 1)
+                                    Positioned(
+                                      top:
+                                          0, // Position it slightly above the animation
+                                      right: 0, // Align it to the right corner
+                                      child: CircleAvatar(
+                                        radius:
+                                            15.0, // Reduced radius for better proportion
+                                        backgroundColor: Colors
+                                            .white, // Light background for visibility
+                                        child: Text(
+                                          '+${liveCount - 1}', // Show remaining count
+                                          style: TextStyle(
+                                            color: Colors
+                                                .red, // Red to indicate urgency/attention
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                12, // Reduced font size for better fit
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ); 
+                            })
+                          : title == 'Book' ? CircleAvatar(
+                          child: Obx(
+                            ()=> Text(
+                            getx.booklist.length.toString(),
+                            style: FontFamily.style.copyWith(fontSize: 15),
+                                                    ),
+                          )) : SizedBox(),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Image.asset(logopath, width: 45),
                 ],
               ),
@@ -634,8 +671,7 @@ SizedBox(width: 10,),
                   subtitle,
                   style: TextStyle(
                     fontSize: 14,
-                    color:
-                        const Color.fromARGB(255, 49, 49, 49).withAlpha(170),
+                    color: const Color.fromARGB(255, 49, 49, 49).withAlpha(170),
                   ),
                 ),
               ),
@@ -647,7 +683,7 @@ SizedBox(width: 10,),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.arrow_forward,    
+                  Icons.arrow_forward,
                   color: arrowColor,
                   size: 20,
                 ),
@@ -655,56 +691,6 @@ SizedBox(width: 10,),
             ],
           ),
           const Spacer(),
-          // Bottom row: Circular arrow on the left, ZIP text on the right
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: [
-          //     // Container(
-          //     //     // margin: EdgeInsets.all(5),
-          //     //     padding: EdgeInsets.all(10),
-          //     //     decoration: BoxDecoration(
-          //     //       borderRadius: BorderRadius.circular(50),
-          //     //       color: const Color.fromARGB(255, 231, 242, 250),
-          //     //     ),
-          //     //     child: Icon(
-          //     //       icon.icon,
-          //     //       color: iconcolor,
-          //     //     )),
-          //       // title == 'MCQ' ?  Expanded(
-          //       //     child: Padding(
-          //       //       padding: const EdgeInsets.symmetric(horizontal: 10),
-          //       //       child: FAProgressBar(
-          //       //                   animatedDuration: Duration(milliseconds: 1000),
-          //       //                   currentValue:100,
-          //       //                   displayText: '%',
-          //       //                 ),
-          //       //     ),
-          //       //   ) : SizedBox(),
-          //     // Circular arrow icon
-          //     Container(
-          //       padding: const EdgeInsets.all(8),
-          //       decoration: BoxDecoration(
-          //         color: arrowBackground,
-          //         shape: BoxShape.circle,
-          //       ),
-          //       child: Icon(
-          //         Icons.arrow_forward,
-          //         color: arrowColor,
-          //         size: 20,
-          //       ),
-          //     ),
-          //     // Image.asset(logopath, width: 45),
-          //     // ZIP or ZIP EMI text
-          //     // Text(
-          //     //   zipText,
-          //     //   style: TextStyle(
-          //     //     fontSize: 18,
-          //     //     fontWeight: FontWeight.bold,
-          //     //     color: zipTextColor,
-          //     //   ),
-          //     // ),
-          //   ],
-          // ),
         ],
       ),
     );

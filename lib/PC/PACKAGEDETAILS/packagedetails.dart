@@ -270,7 +270,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
         getx.isBookDashBoard.value = false;
         getx.isMCQDashBoard.value = false;
         getx.isBackupDashBoard.value = false;
-        getx.isPDFDashBoard.value = false;
+        getx.isPDFDashBoard.value = false;    
         getx.isPodcastDashboard.value = false;
         break;
       case 'VideosBackup':
