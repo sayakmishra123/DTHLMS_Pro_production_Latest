@@ -192,19 +192,26 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                                       SizedBox(height: 20),
                                       QrImageView(
                                         data: qrData,
+
                                         version: QrVersions.auto,
                                         size: 300, // Bigger QR Code
                                       ),
                                       SizedBox(height: 20),
-                                      ElevatedButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: Text(
-                                            "Close",
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          )),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          ElevatedButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: Text(
+                                                "Close",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              )),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ),
