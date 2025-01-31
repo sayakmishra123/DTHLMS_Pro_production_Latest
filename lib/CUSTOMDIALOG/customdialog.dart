@@ -1,32 +1,5 @@
+import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Tutor Profiles"),
-          backgroundColor: Colors.deepPurple,
-        ),
-        body: CustomDialog(
-          OnCancell: () {},
-          OnConfirm: () {},
-          description: 'kuguhuf kehfeh kjsfhes',
-          title: 'kuhui',
-          btn1: 'Ok',
-          btn2: 'Cancel',
-          linkText: '',
-        ),
-      ),
-    );
-  }
-}
 
 class CustomDialog extends StatefulWidget {
   final String title;
