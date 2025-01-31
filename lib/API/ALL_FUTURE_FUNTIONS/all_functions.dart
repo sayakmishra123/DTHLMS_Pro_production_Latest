@@ -2539,7 +2539,7 @@ Future<Map<String, dynamic>> getTheryExamResultForIndividual(
     };
 
     var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getExamResultForIndividual),
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getExamResultForIndividual), 
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -3685,13 +3685,17 @@ Future<bool> requestForRecheckAnswerSheet(
   BuildContext context,
   String token,
   String examid,
-) async {
-  Map<String, dynamic> data = {"ExamId": examid};
+  String reson
+) async { 
+  Map<String, dynamic> data = {
+    "ExamId": examid,
+    "ReviewReason" : reson,
+    };
   bool returnValue = false;
 
   try {
     var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.answerSheetRecheckRequestForTest),
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.answerSheetRecheckRequestForTest), 
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

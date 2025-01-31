@@ -52,6 +52,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
   TextStyle headerStyle = TextStyle(color: Colors.blue, fontSize: 12);
   TextStyle studentTitleStyle = TextStyle(fontSize: 17, color: Colors.black);
   TextStyle studentNameStyle = TextStyle(fontSize: 17, color: Colors.blue);
+  
   void recheckAnswerSheetAlert() {
     showDialog(
       context: context,
@@ -296,6 +297,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
       pass = "Fail";
     }
   }
+  TextEditingController reasonController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -657,58 +659,8 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                           : Colors.amber)),
                             ]),
                           ),
-                          ElevatedButton(
-                              style: ButtonStyle(
-                                  padding: WidgetStatePropertyAll(
-                                      EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 10)),
-                                  backgroundColor: WidgetStatePropertyAll(
-                                      Colors.amber[700])),
-                              onPressed: () {
-                                requestForRecheckAnswerSheet(
-                                        context,
-                                        getx.loginuserdata[0].token,
-                                        widget.examId)
-                                    .then((value) {
-                                  if (value) {
-                                    onActionDialogBox("Requested",
-                                        "Your request for Recheck answerSheet is send Successfully!",
-                                        () {
-                                      Navigator.of(context).pop();
-                                    }, context, true);
-                                  } else {
-                                    onActionDialogBox("Request Failed!!", "",
-                                        () {
-                                      Navigator.of(context).pop();
-                                    }, context, false);
-                                  }
-                                });
-                              },
-                              child: Text(
-                                'Recheck Answersheet',
-                                style: TextStyle(color: Colors.white),
-                              ))
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ]),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  //                         ElevatedButton(
-                  //  style: ButtonStyle(
-                  //          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
-                  //          backgroundColor: WidgetStatePropertyAll(Colors.blueGrey)),
-                  //  onPressed: (){
-                  //   //  DownloadQuestionPaperAlert();
-                  //  }, child: Text('Download Question Paper',style: TextStyle(color: Colors.white),)),
-
-                  ElevatedButton(
+                          widget.pdfUrl != 'null' ?
+                           ElevatedButton(
                       style: ButtonStyle(
                           padding: WidgetStatePropertyAll(EdgeInsets.symmetric(
                               vertical: 10, horizontal: 10)),
@@ -735,7 +687,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                     ));
                               } else {
                                 if (widget.pdfUrl.isNotEmpty) {
-                                  downloadAnswerSheet(
+                                  downloadAnswerSheet( 
                                       widget.pdfUrl, widget.examId);
                                 }
                               }
@@ -757,7 +709,149 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                             ? "Show Answer Sheet"
                             : 'Download Answer Sheet',
                         style: TextStyle(color: Colors.white),
-                      )),
+                      )) : SizedBox()
+                        
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ]),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  //                         ElevatedButton(
+                  //  style: ButtonStyle(
+                  //          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
+                  //          backgroundColor: WidgetStatePropertyAll(Colors.blueGrey)),
+                  //  onPressed: (){
+                  //   //  DownloadQuestionPaperAlert();
+                  //  }, child: Text('Download Question Paper',style: TextStyle(color: Colors.white),)),
+Container(
+  margin: EdgeInsets.only(right: 20),
+  decoration: BoxDecoration(
+    color: Colors.blueGrey,
+    borderRadius: BorderRadius.circular(20),
+  ),
+  child: IconButton(
+    icon: Icon(Icons.settings_backup_restore_rounded),
+    color: Colors.white,
+    onPressed: () { 
+      // Open Bottom Sheet
+      Get.bottomSheet(
+    Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Request Answer Sheet Recheck?",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 15),
+          Text(
+            "Please enter the reason for the recheck:",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14),
+          ),
+          SizedBox(height: 10),
+          TextField(
+            controller: reasonController,
+            maxLines: 2,
+            decoration: InputDecoration(
+              hintText: "Enter your reason...",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                onPressed: () {
+                  String reason = reasonController.text.trim(); // Get reason input
+
+                  if (reason.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "Please enter a reason before proceeding.",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  // Close BottomSheet
+                  Get.back();
+
+                  // Call API Function with the reason
+                  requestForRecheckAnswerSheet( 
+                    context,
+                    getx.loginuserdata[0].token,
+                    widget.examId,
+                    reason, // Pass reason here
+                  ).then((value) {
+                    if (value) {
+                      onActionDialogBox(
+                        "Requested",
+                        "Your request for Recheck answerSheet is sent Successfully!",
+                        () {
+                          Navigator.of(context).pop();
+                        },
+                        context,
+                        true,
+                      );
+                    } else {
+                      onActionDialogBox(
+                        "Request Failed!!",
+                        "Please try again later.",
+                        () {
+                          Navigator.of(context).pop();
+                        },
+                        context,
+                        false,
+                      );
+                    }
+                  });
+                },
+                child: Text("Submit Request",style: TextStyle(color: Colors.white),),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                onPressed: () {
+                  Get.back(); // Close Bottom Sheet
+                },
+                child: Text("Cancel",style: TextStyle(color: Colors.white),),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+    isDismissible: true,
+  );
+    },
+  ),
+)
+                 
                 ],
               ),
               SizedBox(
