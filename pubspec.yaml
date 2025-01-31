@@ -167,6 +167,7 @@ dependencies:
   background_downloader: 8.6.0
   qr_flutter: ^4.1.0
   flutter_animation_progress_bar: ^2.3.1
+  
 
   
 

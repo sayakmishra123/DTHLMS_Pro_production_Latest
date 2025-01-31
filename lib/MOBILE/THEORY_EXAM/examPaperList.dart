@@ -27,9 +27,9 @@ class _TheoryExamPaperListofMobileState
 
   RxList uniqueServicesList = [].obs;
 
-  // Fetch theory set list and unique services 
+  // Fetch theory set list and unique services
   Future getTheorySetList() async {
-    theorySetList.value = 
+    theorySetList.value =
         await fetchTheorySetList(getx.selectedPackageId.value.toString());
     Set<String> uniqueServices =
         theorySetList.map((item) => item['ServicesTypeName'] as String).toSet();
@@ -110,7 +110,7 @@ class _TheoryExamPaperListofMobileState
                 if (settings.name == '/$tabTitle') {
                   return MaterialPageRoute(
                     builder: (_) {
-                      return TheoryPaperListMobile( 
+                      return TheoryPaperListMobile(
                           theorySetList, tabTitle, 'assets/exam.png', true);
                     },
                   );

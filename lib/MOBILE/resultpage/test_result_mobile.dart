@@ -11,8 +11,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,8 +28,18 @@ class TestResultPageMobile extends StatefulWidget {
   final String examId;
   final String pdfUrl;
 
-
-  const TestResultPageMobile({super.key,required this.pdfUrl, required this.studentName, required this.examName, required this.submitedOn, required this.resultPublishedOn, required this.totalMarks, required this.obtain, required this.totalMarksRequired, required this.examId,});
+  const TestResultPageMobile({
+    super.key,
+    required this.pdfUrl,
+    required this.studentName,
+    required this.examName,
+    required this.submitedOn,
+    required this.resultPublishedOn,
+    required this.totalMarks,
+    required this.obtain,
+    required this.totalMarksRequired,
+    required this.examId,
+  });
 
   @override
   State<TestResultPageMobile> createState() => _TestResultPageMobileState();
@@ -40,167 +48,162 @@ class TestResultPageMobile extends StatefulWidget {
 class _TestResultPageMobileState extends State<TestResultPageMobile> {
   int touchedIndex = -1;
 
-
-
-
-
 //  TextStyle _textStyle = TextStyle(fontSize: 25);
-TextStyle headerStyle = TextStyle(color: Colors.blue,fontSize: 12);
-TextStyle studentTitleStyle = TextStyle(fontSize: 17,color: Colors.black);
-TextStyle studentNameStyle = TextStyle(fontSize: 17,color: Colors.blue);
+  TextStyle headerStyle = TextStyle(color: Colors.blue, fontSize: 12);
+  TextStyle studentTitleStyle = TextStyle(fontSize: 17, color: Colors.black);
+  TextStyle studentNameStyle = TextStyle(fontSize: 17, color: Colors.blue);
   void recheckAnswerSheetAlert() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return CustomDialog(
-        title: 'Recheck Answer Sheet',
-        description:
-            'Are you sure you want to submit the answer sheet for rechecking? Additional fees may apply for this process.',
-        OnCancell: () {
-          Navigator.of(context).pop();
-        },
-        OnConfirm: () {
-          Navigator.of(context).pop();
-          // Add logic for rechecking the answer sheet
-        },
-        btn1: 'Cancel',
-        btn2: 'Submit',
-        linkText: 'Learn more about rechecking',
-      );
-    },
-  );
-}
-
-void DownloadAnswerSheetAlert() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return CustomDialog(
-        title: 'Download Answer Sheet',
-        description:
-            'Are you sure you want to download your answer sheet? Ensure sufficient storage is available on your device.',
-        OnCancell: () {
-          Navigator.of(context).pop();
-        },
-        OnConfirm: () {
-          Navigator.of(context).pop();
-          // Add logic for downloading the answer sheet
-        },
-        btn1: 'Cancel',
-        btn2: 'Download',
-        linkText: 'Learn more about downloading',
-      );
-    },
-  );
-}
-
-void DownloadQuestionPaperAlert() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return CustomDialog(
-        title: 'Download Question Paper',
-        description:
-            'Are you sure you want to download the question paper? Please note that downloading may require a stable internet connection.',
-        OnCancell: () {
-          Navigator.of(context).pop();
-        },
-        OnConfirm: () {
-          Navigator.of(context).pop();
-          // Add logic for downloading the question paper
-        },
-        btn1: 'Cancel',
-        btn2: 'Download',
-        linkText: 'Learn more about question papers',
-      );
-    }, 
-  );
-}
-
-String formatDate(DateTime dateTime) {
-  final DateFormat formatter = DateFormat('d MMM yyyy'); // "17 Jul 2023" format
-  return formatter.format(dateTime);
-}
-String pass='';
-bool isPass = false;
-String downloadedFilePath = '';
-  Future<String?> getSavePath() async {
-  try {
-    String? result = await FilePicker.platform.saveFile(
-      dialogTitle: "Save Answer Sheet",
-      fileName: "answer_sheet.pdf",
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: 'Recheck Answer Sheet',
+          description:
+              'Are you sure you want to submit the answer sheet for rechecking? Additional fees may apply for this process.',
+          OnCancell: () {
+            Navigator.of(context).pop();
+          },
+          OnConfirm: () {
+            Navigator.of(context).pop();
+            // Add logic for rechecking the answer sheet
+          },
+          btn1: 'Cancel',
+          btn2: 'Submit',
+          linkText: 'Learn more about rechecking',
+        );
+      },
     );
+  }
 
-    if (result != null && result.isNotEmpty) {
-      return result;
-    } else {
-      debugPrint("File picker returned null or empty path.");
+  void DownloadAnswerSheetAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: 'Download Answer Sheet',
+          description:
+              'Are you sure you want to download your answer sheet? Ensure sufficient storage is available on your device.',
+          OnCancell: () {
+            Navigator.of(context).pop();
+          },
+          OnConfirm: () {
+            Navigator.of(context).pop();
+            // Add logic for downloading the answer sheet
+          },
+          btn1: 'Cancel',
+          btn2: 'Download',
+          linkText: 'Learn more about downloading',
+        );
+      },
+    );
+  }
+
+  void DownloadQuestionPaperAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: 'Download Question Paper',
+          description:
+              'Are you sure you want to download the question paper? Please note that downloading may require a stable internet connection.',
+          OnCancell: () {
+            Navigator.of(context).pop();
+          },
+          OnConfirm: () {
+            Navigator.of(context).pop();
+            // Add logic for downloading the question paper
+          },
+          btn1: 'Cancel',
+          btn2: 'Download',
+          linkText: 'Learn more about question papers',
+        );
+      },
+    );
+  }
+
+  String formatDate(DateTime dateTime) {
+    final DateFormat formatter =
+        DateFormat('d MMM yyyy'); // "17 Jul 2023" format
+    return formatter.format(dateTime);
+  }
+
+  String pass = '';
+  bool isPass = false;
+  String downloadedFilePath = '';
+  Future<String?> getSavePath() async {
+    try {
+      String? result = await FilePicker.platform.saveFile(
+        dialogTitle: "Save Answer Sheet",
+        fileName: "answer_sheet.pdf",
+      );
+
+      if (result != null && result.isNotEmpty) {
+        return result;
+      } else {
+        debugPrint("File picker returned null or empty path.");
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Error in file picker: $e");
       return null;
     }
-  } catch (e) {
-    debugPrint("Error in file picker: $e");
-    return null;
-  }
-}
-
-
-double downloadProgress = 0.0;
-CancelToken cancelToken = CancelToken();
-
-RxBool isDownloading = false.obs;
-Future<void> downloadAnswerSheet(String url, String examId) async {
-  Dio dio = Dio();
-Directory appDocDir = await getApplicationDocumentsDirectory();
-
-  Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
-        if (!await dthLmsDir.exists()) {
-          await dthLmsDir.create(recursive: true);
-        }
-
-          var prefs = await SharedPreferences.getInstance();
-        getx.defaultPathForDownloadFile.value = dthLmsDir.path;
-        prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
-  String? filePath =getx.userSelectedPathForDownloadFile.value.isEmpty
-            ? '${dthLmsDir.path}/$examId'
-            : getx.userSelectedPathForDownloadFile.value +
-                "/$examId";
-  if (filePath == null) {
-    debugPrint("No file path selected. Cancelling download.");
-    return;
   }
 
-  try {
-    isDownloading.value = true;
+  double downloadProgress = 0.0;
+  CancelToken cancelToken = CancelToken();
 
-    await dio.download(
-      url,
-      filePath,
-      onReceiveProgress: (received, total) {
-        if (total != -1) {
-          downloadProgress = received / total;
-        }
-      },
-      cancelToken: cancelToken,
-    );
+  RxBool isDownloading = false.obs;
+  Future<void> downloadAnswerSheet(String url, String examId) async {
+    Dio dio = Dio();
+    Directory appDocDir = await getApplicationDocumentsDirectory();
 
+    Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
+    if (!await dthLmsDir.exists()) {
+      await dthLmsDir.create(recursive: true);
+    }
+
+    var prefs = await SharedPreferences.getInstance();
+    getx.defaultPathForDownloadFile.value = dthLmsDir.path;
+    prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
+    String? filePath = getx.userSelectedPathForDownloadFile.value.isEmpty
+        ? '${dthLmsDir.path}/$examId'
+        : getx.userSelectedPathForDownloadFile.value + "/$examId";
+    if (filePath == null) {
+      debugPrint("No file path selected. Cancelling download.");
+      return;
+    }
+
+    try {
+      isDownloading.value = true;
+
+      await dio.download(
+        url,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            downloadProgress = received / total;
+          }
+        },
+        cancelToken: cancelToken,
+      );
+
+      isDownloading.value = false;
+      debugPrint("Download complete: $filePath");
+
+      showDownloadCompleteDialog();
+    } catch (e) {
+      isDownloading.value = false;
+      debugPrint("Error downloading file: $e");
+      // showErrorDialog("Download Failed", "An error occurred while downloading the file.");
+    }
+  }
+
+  void cancelDownload() {
+    cancelToken.cancel();
     isDownloading.value = false;
-    debugPrint("Download complete: $filePath");
-
-    showDownloadCompleteDialog();
-  } catch (e) {
-    isDownloading.value = false;
-    debugPrint("Error downloading file: $e");
-    // showErrorDialog("Download Failed", "An error occurred while downloading the file.");
   }
-}
 
-
-void cancelDownload() {
-  cancelToken.cancel();
-  isDownloading.value = false;
-}
-
- void showDownloadCompleteDialog() {
+  void showDownloadCompleteDialog() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -213,10 +216,13 @@ void cancelDownload() {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-               Get.to( ()=>  ShowResultPage(filePath:   getx.userSelectedPathForDownloadFile.value.isEmpty
-            ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
-            : getx.userSelectedPathForDownloadFile.value +
-                "/${widget.examId}",));
+                Get.to(() => ShowResultPage(
+                      filePath: getx
+                              .userSelectedPathForDownloadFile.value.isEmpty
+                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                          : getx.userSelectedPathForDownloadFile.value +
+                              "/${widget.examId}",
+                    ));
               },
               child: Text("Show PDF"),
             ),
@@ -231,7 +237,6 @@ void cancelDownload() {
       ),
     );
   }
-
 
 //  void showDownloadCompleteDialog() {
 //     showDialog(
@@ -262,35 +267,33 @@ void cancelDownload() {
 //     );
 //   }
 
-   void showPdfDialog(String filePath) {
+  void showPdfDialog(String filePath) {
     showDialog(
       context: context,
       builder: (_) => Dialog(
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height*0.9,
-          child: SfPdfViewer.file(File(filePath)), // Using spfpdfviewer to display PDF
+          height: MediaQuery.of(context).size.height * 0.9,
+          child: SfPdfViewer.file(
+              File(filePath)), // Using spfpdfviewer to display PDF
         ),
       ),
     );
   }
 
-
-
-@override
+  @override
   void initState() {
     checkIfPass();
     super.initState();
   }
 
-  checkIfPass(){
-    if(widget.obtain >= widget.totalMarksRequired){
+  checkIfPass() {
+    if (widget.obtain >= widget.totalMarksRequired) {
       pass = "Pass";
       isPass = true;
-    }else{
+    } else {
       isPass = false;
       pass = "Fail";
-
     }
   }
 
@@ -308,425 +311,458 @@ void cancelDownload() {
       ),
       backgroundColor: Color(0xffEEEEEE),
       body: Container(
-       height: MediaQuery.of(context).size.height,
-       width: MediaQuery.of(context).size.width,
-      
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
           child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                    Column(children: [ 
-                      SizedBox(height: 20,),
-                        Container(
-                        padding: EdgeInsets.all(10),
-                         decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                          Expanded(child: Column(
-                           children: [
-                             SizedBox(
-                               height: 80,
-                               width: 80,
-                               child: Image(image: AssetImage('assets/person.png')),
-                             ),
-                             SizedBox(height: 5,),
-                            //  SizedBox(
-                            //   height: 80,
-                            //    child: Image(image: AssetImage('assets/signature.png')),
-                            //  )
-                           ],
-                          )),
-                          SizedBox(width: 10,),
-                          Expanded(
-                           flex: 3,
-                           child: Column(
-                           children: [
-                             Row(
-                               children: [
-                                 Icon(Icons.person_outline_rounded,size: 30,),
-                                 SizedBox(width: 10,),
-                                 Column(
-                                   children: [
-                                     Text('Basic Info',style: TextStyle(color: Colors.blue,fontSize: 20),),
-                                     Text('The Valuation School',style: TextStyle(color: Colors.grey,fontSize: 14),),
-                                                  
-                                   ],
-                                 ),
-                                 
-                               ],
-                             ),
-                             SizedBox(height: 20,),
-                             Row(
-                               children: [
-                                 RichText(text: TextSpan(
-                                     
-                                      children: [
-                                      TextSpan(text: 'Name: ', style: studentTitleStyle),
-                                                    
-                                      TextSpan(text: widget.studentName, style: studentNameStyle),
-                                    ]),
-                                    ),
-                               ],
-                             ),
-                                                       Row(
-                               children: [
-                                 RichText(text: TextSpan(
-                                     
-                                      children: [
-                                      TextSpan(text: 'Exam Name: ', style: studentTitleStyle),
-                                                    
-                                      TextSpan(text: widget.examName, style: studentNameStyle),
-                                    ]),
-                                    ),
-                               ],
-                             ),
-                                 Row(
-                                   children: [
-                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                 
-                                                                     
-                                         
-                                          children: [
-                                           
-                                          Text( 'Submitted on: ', style: studentTitleStyle),
-                                                        
-                                          Text( widget.submitedOn, style: studentNameStyle),
-                                       
-                                                                    ],
-                                                                  ),
-                                   ],
-                                 ),
-                             
-                             Row(
-                               children: [
-                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  
-                                         
-                                          children: [
-                                          Text( 'Result published on: ', style: studentTitleStyle),
-                                                        
-                                          Text(widget.resultPublishedOn, style: studentNameStyle),
-                                       
-                                        
-                                   ],
-                                 ),
-                               ],
-                             ),
-                             Row(
-                               children: [
-                                SizedBox(height: 30,)
-                               ],
-                             ),
-                           ],
-                          ))
-                          ],),
-                        ),
-                       
-                      SizedBox(height: 20,),
-                         
-                    
-                    
-                    Container(
-                           padding: EdgeInsets.symmetric(vertical: 25),
-                           
-                           decoration: BoxDecoration(
-                               color: Colors.white,
-                               borderRadius: BorderRadius.circular(20)),
-                           child: Column(
-                             mainAxisAlignment: MainAxisAlignment.center,
-                             children: [
-                               SizedBox(
-                                 height: 200,
-                                 width: 200,
-                                 child: PieChart(
-                                   PieChartData(
-                                     pieTouchData: PieTouchData(
-                                       touchCallback:
-                                           (FlTouchEvent event, pieTouchResponse) {
-                                         setState(() {
-                                           if (!event.isInterestedForInteractions ||
-                                               pieTouchResponse == null ||
-                                               pieTouchResponse.touchedSection ==
-                                                   null) {
-                                             touchedIndex = -1;
-                                             return;
-                                           }
-                                           touchedIndex = pieTouchResponse
-                                               .touchedSection!.touchedSectionIndex;
-                                         });
-                                       },
-                                     ),
-                                     borderData: FlBorderData(
-                                       show: false,
-                                     ),
-                                     sectionsSpace: 0,
-                                     centerSpaceRadius: 40,
-                                     sections: showingSections(),
-                                   ),
-                                 ),
-                               ),
-                               SizedBox(
-                                 height: 10,
-                               ),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                 children: [
-                                   Column(
-                                     
-                                           crossAxisAlignment: CrossAxisAlignment.center,
-                                           children: <Widget>[
-                                      Indicator(
-                                        color: AppColors.contentColorBlue,
-                                        text: 'Remaining Marks',
-                                        isSquare: true,
-                                      ),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Indicator(
-                                        color: AppColors.contentColorYellow,
-                                        text: 'Obtain Marks',
-                                        isSquare: true,
-                                      ),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                     
-                                    ],
-                                    
-                                         ),
-                                 ],
-                               ),
-                             ],
-                           ),
-                         ),
-                    
-                    SizedBox(height: 20,
-                                    
-                    ),
-
-                    
-                                    
-                     Container(
-                     height: 270,
-                    
-                      padding: EdgeInsets.symmetric(vertical: 10,horizontal: 5),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
+              Column(children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: Column(
                         children: [
-                          DataTable(
-                          
-                            columns: <DataColumn>[
-                              DataColumn(
-                                label: Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'Paper',
-                                        style: headerStyle,
-                                      ),
-                                      Text(
-                                        'Name',
-                                        style: headerStyle,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Expanded(
-                                  child: Text(
-                                    'Date',
-                                    style: headerStyle,
-                                  ),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Column(
-                                  children: [
-                                    Text(
-                                      'Total',
-                                      style: headerStyle,
-                                    ),
-                                    Text(
-                                      'Marks',
-                                      style: headerStyle,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              DataColumn(
-                                label: Column(
-                                  children: [
-                                    Text(
-                                      'Obtain',
-                                      style: headerStyle,
-                                    ),
-                                    Text(
-                                        'Marks',
-                                        style: headerStyle,
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                            rows: <DataRow>[
-                              DataRow(
-                                cells: <DataCell>[
-                                  DataCell(Text(widget.examName)),
-                                  DataCell(Text(widget.submitedOn)),
-                                  DataCell(Text(widget.totalMarks.toString())),
-                                  DataCell(Text(widget.obtain.toString())),
-                                ],
-                              ),
-                            ],
+                          SizedBox(
+                            height: 80,
+                            width: 80,
+                            child:
+                                Image(image: AssetImage('assets/person.png')),
                           ),
-                          SizedBox(height: 20), 
-                         
+                          SizedBox(
+                            height: 5,
+                          ),
+                          //  SizedBox(
+                          //   height: 80,
+                          //    child: Image(image: AssetImage('assets/signature.png')),
+                          //  )
+                        ],
+                      )),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                          flex: 3,
+                          child: Column(
+                            children: [
                               Row(
                                 children: [
-                                  RichText(text: TextSpan(
-                                   
+                                  Icon(
+                                    Icons.person_outline_rounded,
+                                    size: 30,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
                                     children: [
-                                    TextSpan(text: 'Total Marks Required: ', style: TextStyle(fontSize: 16,color: Colors.black)),
-                                                      
-                                    TextSpan(text: widget.totalMarksRequired.toString(), style: TextStyle(fontSize: 16,color: Colors.blue)),
-                                  ]),
+                                      Text(
+                                        'Basic Info',
+                                        style: TextStyle(
+                                            color: Colors.blue, fontSize: 20),
+                                      ),
+                                      Text(
+                                        'The Valuation School',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                          SizedBox(height: 10), 
-                     
-                               Row(
-                                 children: [
-                                   RichText(text: TextSpan(
-                                   
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                children: [
+                                  RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                          text: 'Name: ',
+                                          style: studentTitleStyle),
+                                      TextSpan(
+                                          text: widget.studentName,
+                                          style: studentNameStyle),
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                          text: 'Exam Name: ',
+                                          style: studentTitleStyle),
+                                      TextSpan(
+                                          text: widget.examName,
+                                          style: studentNameStyle),
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                    TextSpan(text: 'Total Marks Obtain: ', style: TextStyle(fontSize: 16,color: Colors.black)),
-                                                       
-                                    TextSpan(text: widget.totalMarks.toString(), style: TextStyle(fontSize: 16,color: Colors.blue)),
-                                                                 ]),
-                                                                 ),
-                                 ],
-                               ),
-                           
-                          SizedBox(height: 20,),
-                          Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                           children: [
-                            
-                                RichText(text: TextSpan(
-                                   
+                                      Text('Submitted on: ',
+                                          style: studentTitleStyle),
+                                      Text(widget.submitedOn,
+                                          style: studentNameStyle),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                    TextSpan(text: 'Status: ', style: TextStyle(fontSize: 18,color: Colors.black)),
-                                    TextSpan(text: pass, style: TextStyle(fontSize: 18,color: isPass? Colors.green : Colors.amber)),
-                                    
-                                                                 ]),),
-                           ElevatedButton(
-                                    
-                             style: ButtonStyle(
-                               padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 5,horizontal: 10)),
-                               backgroundColor: WidgetStatePropertyAll(Colors.amber[700])),
-                             onPressed: (){
-                              requestForRecheckAnswerSheet(
-                    context, getx.loginuserdata[0].token, widget.examId)
-                .then((value) {
-              if (value) {
-                onActionDialogBox("Requested", "Your request for Recheck answerSheet is send Successfully!",
-                    () {
-                  Navigator.of(context).pop();
-                  
-                }, context, true);
-              } else {
-                onActionDialogBox("Request Failed!!", "", () {
-                  Navigator.of(context).pop();
-                  
-                }, context, false);
-              }
-            });
-                             }, child: Text('Recheck Answersheet',style: TextStyle(color: Colors.white),))
-                          ],)
+                                      Text('Result published on: ',
+                                          style: studentTitleStyle),
+                                      Text(widget.resultPublishedOn,
+                                          style: studentNameStyle),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height: 30,
+                                  )
+                                ],
+                              ),
+                            ],
+                          ))
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 25),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: 200,
+                        child: PieChart(
+                          PieChartData(
+                            pieTouchData: PieTouchData(
+                              touchCallback:
+                                  (FlTouchEvent event, pieTouchResponse) {
+                                setState(() {
+                                  if (!event.isInterestedForInteractions ||
+                                      pieTouchResponse == null ||
+                                      pieTouchResponse.touchedSection == null) {
+                                    touchedIndex = -1;
+                                    return;
+                                  }
+                                  touchedIndex = pieTouchResponse
+                                      .touchedSection!.touchedSectionIndex;
+                                });
+                              },
+                            ),
+                            borderData: FlBorderData(
+                              show: false,
+                            ),
+                            sectionsSpace: 0,
+                            centerSpaceRadius: 40,
+                            sections: showingSections(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Indicator(
+                                color: AppColors.contentColorBlue,
+                                text: 'Remaining Marks',
+                                isSquare: true,
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Indicator(
+                                color: AppColors.contentColorYellow,
+                                text: 'Obtain Marks',
+                                isSquare: true,
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ),
-                                         
-                     
-                     ]),
-                     
-                    
-                   SizedBox(height: 10,),
-                         
-                        
-                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                children: [
-                                                
-                        //                         ElevatedButton(
-                        //  style: ButtonStyle(
-                        //          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
-                        //          backgroundColor: WidgetStatePropertyAll(Colors.blueGrey)),
-                        //  onPressed: (){
-                        //   //  DownloadQuestionPaperAlert();
-                        //  }, child: Text('Download Question Paper',style: TextStyle(color: Colors.white),)),
-                                              
-                                                ElevatedButton(
-                         style: ButtonStyle(
-                                 padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
-                                 backgroundColor: WidgetStatePropertyAll(Colors.blue)),
-                         onPressed: isDownloading.value
-                      ? null
-                      : () async{
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  height: 270,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    children: [
+                      DataTable(
+                        columns: <DataColumn>[
+                          DataColumn(
+                            label: Expanded(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Paper',
+                                    style: headerStyle,
+                                  ),
+                                  Text(
+                                    'Name',
+                                    style: headerStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Date',
+                                style: headerStyle,
+                              ),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Column(
+                              children: [
+                                Text(
+                                  'Total',
+                                  style: headerStyle,
+                                ),
+                                Text(
+                                  'Marks',
+                                  style: headerStyle,
+                                ),
+                              ],
+                            ),
+                          ),
+                          DataColumn(
+                            label: Column(
+                              children: [
+                                Text(
+                                  'Obtain',
+                                  style: headerStyle,
+                                ),
+                                Text(
+                                  'Marks',
+                                  style: headerStyle,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        rows: <DataRow>[
+                          DataRow(
+                            cells: <DataCell>[
+                              DataCell(Text(widget.examName)),
+                              DataCell(Text(widget.submitedOn)),
+                              DataCell(Text(widget.totalMarks.toString())),
+                              DataCell(Text(widget.obtain.toString())),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                  text: 'Total Marks Required: ',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black)),
+                              TextSpan(
+                                  text: widget.totalMarksRequired.toString(),
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.blue)),
+                            ]),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                  text: 'Total Marks Obtain: ',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black)),
+                              TextSpan(
+                                  text: widget.totalMarks.toString(),
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.blue)),
+                            ]),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                  text: 'Status: ',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black)),
+                              TextSpan(
+                                  text: pass,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: isPass
+                                          ? Colors.green
+                                          : Colors.amber)),
+                            ]),
+                          ),
+                          ElevatedButton(
+                              style: ButtonStyle(
+                                  padding: WidgetStatePropertyAll(
+                                      EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 10)),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                      Colors.amber[700])),
+                              onPressed: () {
+                                requestForRecheckAnswerSheet(
+                                        context,
+                                        getx.loginuserdata[0].token,
+                                        widget.examId)
+                                    .then((value) {
+                                  if (value) {
+                                    onActionDialogBox("Requested",
+                                        "Your request for Recheck answerSheet is send Successfully!",
+                                        () {
+                                      Navigator.of(context).pop();
+                                    }, context, true);
+                                  } else {
+                                    onActionDialogBox("Request Failed!!", "",
+                                        () {
+                                      Navigator.of(context).pop();
+                                    }, context, false);
+                                  }
+                                });
+                              },
+                              child: Text(
+                                'Recheck Answersheet',
+                                style: TextStyle(color: Colors.white),
+                              ))
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ]),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  //                         ElevatedButton(
+                  //  style: ButtonStyle(
+                  //          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10,horizontal: 10)),
+                  //          backgroundColor: WidgetStatePropertyAll(Colors.blueGrey)),
+                  //  onPressed: (){
+                  //   //  DownloadQuestionPaperAlert();
+                  //  }, child: Text('Download Question Paper',style: TextStyle(color: Colors.white),)),
 
-                        if(File(getx.userSelectedPathForDownloadFile.value.isEmpty
-            ? '${  getx.defaultPathForDownloadFile.value}/${widget.examId}'
-            : getx.userSelectedPathForDownloadFile.value +
-                "/${widget.examId}").existsSync()){
+                  ElevatedButton(
+                      style: ButtonStyle(
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10)),
+                          backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+                      onPressed: isDownloading.value
+                          ? null
+                          : () async {
+                              if (File(getx.userSelectedPathForDownloadFile
+                                          .value.isEmpty
+                                      ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                      : getx.userSelectedPathForDownloadFile
+                                              .value +
+                                          "/${widget.examId}")
+                                  .existsSync()) {
+                                Get.to(() => ShowResultPage(
+                                      filePath: getx
+                                              .userSelectedPathForDownloadFile
+                                              .value
+                                              .isEmpty
+                                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                          : getx.userSelectedPathForDownloadFile
+                                                  .value +
+                                              "/${widget.examId}",
+                                    ));
+                              } else {
+                                if (widget.pdfUrl.isNotEmpty) {
+                                  downloadAnswerSheet(
+                                      widget.pdfUrl, widget.examId);
+                                }
+                              }
 
-              Get.to( ()=>  ShowResultPage(filePath:   getx.userSelectedPathForDownloadFile.value.isEmpty
-            ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
-            : getx.userSelectedPathForDownloadFile.value +
-                "/${widget.examId}",));
+                              // showDownloadCompleteDialog();
+                              // await  getAnswerSheetURLforStudent(context,getx.loginuserdata[0].token,widget.examId).then((answerUrl){
+                              //   print(answerUrl);
+                              //   print(answerUrl);
 
-                }
-                else{
-                     if(widget.pdfUrl.isNotEmpty){
-                           downloadAnswerSheet(widget.pdfUrl,widget.examId);
-                        }
-
-                }
-
-                        // showDownloadCompleteDialog();
-                      // await  getAnswerSheetURLforStudent(context,getx.loginuserdata[0].token,widget.examId).then((answerUrl){
-                      //   print(answerUrl);
-                      //   print(answerUrl);
-
-                     
-
-
-                      // });
-
-
-
-
-                         
-                        }, child: Text(File(getx.userSelectedPathForDownloadFile.value.isEmpty
-            ? '${  getx.defaultPathForDownloadFile.value}/${widget.examId}'
-            : getx.userSelectedPathForDownloadFile.value +
-                "/${widget.examId}").existsSync()?"Show Answer Sheet":'Download Answer Sheet',style: TextStyle(color: Colors.white),)),
-                                      
-                                                ],),
-                                                SizedBox(height: 50,)
-              
+                              // });
+                            },
+                      child: Text(
+                        File(getx.userSelectedPathForDownloadFile.value.isEmpty
+                                    ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                    : getx.userSelectedPathForDownloadFile
+                                            .value +
+                                        "/${widget.examId}")
+                                .existsSync()
+                            ? "Show Answer Sheet"
+                            : 'Download Answer Sheet',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 50,
+              )
             ],
           ),
         ),
@@ -734,10 +770,8 @@ void cancelDownload() {
     );
   }
 
-
-
   List<PieChartSectionData> showingSections() {
-double remainingMarks = widget.totalMarks - widget.obtain;
+    double remainingMarks = widget.totalMarks - widget.obtain;
 
     return List.generate(2, (i) {
       final isTouched = i == touchedIndex;
@@ -771,7 +805,7 @@ double remainingMarks = widget.totalMarks - widget.obtain;
               shadows: shadows,
             ),
           );
-        
+
         default:
           throw Error();
       }
@@ -809,7 +843,6 @@ class AppColors {
   static const Color contentColorRed = Color(0xFFE80054);
   static const Color contentColorCyan = Color(0xFF50E4FF);
 }
-
 
 class ShowResultPage extends StatelessWidget {
   final String filePath;

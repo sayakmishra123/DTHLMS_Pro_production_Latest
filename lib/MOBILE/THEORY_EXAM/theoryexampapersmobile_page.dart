@@ -40,7 +40,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
     // log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
     theoryPaperList.clear();
     theoryPaperList.value =
-    await fetchTheoryPapertList(widget.paperNames['SetId']);
+        await fetchTheoryPapertList(widget.paperNames['SetId']);
     // log(theoryPaperList.toString() + " type");
   }
 
@@ -64,13 +64,13 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        backgroundColor: Colors.transparent, 
+        backgroundColor: Colors.transparent,
         title: Text('Theory Papers', style: FontFamily.styleb),
       ),
       body: Obx(
         () => theoryPaperList.isNotEmpty
             ? SingleChildScrollView(
-              child: Padding(
+                child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Wrap(
                     spacing: 10, // Horizontal space between items
@@ -78,70 +78,76 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                     children: List.generate(theoryPaperList.length, (index) {
                       return InkWell(
                         onTap: () async {
-
-
-                          
                           if (getx.isInternet.value) {
-
-                            
-                          var examcode = await getExamStatus(
-                              context, getx.loginuserdata[0].token, theoryPaperList[index]['PaperId']
-                                      .toString(),);
-                          if (examcode == 200) {
-                            Get.to(
-                                transition: Transition.cupertino,
-                                () =>  TheoryExamTermAndConditionMobile(
-                                  termAndCondition: theoryPaperList[index]
-                                          ['TermAndCondition']
-                                      .toString(),
-                                  documnetPath: theoryPaperList[index]
-                                          ['DocumentUrl']
-                                      .toString(),
-                                  duration: theoryPaperList[index]['Duration']
-                                      .toString(),
-                                  paperName: theoryPaperList[index]['PaperName']
-                                      .toString(),
-                                  sheduletime: theoryPaperList[index]['StartTime']
-                                      .toString(),
-                                  paperId: theoryPaperList[index]['PaperId']
-                                      .toString(),
-                                ));
-                          }
-                          if (examcode == 250) {
-                            Get.to(
-                                transition: Transition.cupertino,
-                                () =>  TheoryExamTermAndConditionMobile(
-                                  termAndCondition: theoryPaperList[index]
-                                          ['TermAndCondition']
-                                      .toString(),
-                                  documnetPath: theoryPaperList[index]
-                                          ['DocumentUrl']
-                                      .toString(),
-                                  duration: theoryPaperList[index]['Duration']
-                                      .toString(),
-                                  paperName: theoryPaperList[index]['PaperName']
-                                      .toString(),
-                                  sheduletime: theoryPaperList[index]['StartTime']
-                                      .toString(),
-                                  paperId: theoryPaperList[index]['PaperId']
-                                      .toString(),
-                                    
-                                ));
-                          }
-                          if (examcode == 300) {
-                             if (getx.isInternet.value) {
-                              
-                                getTheryExamResultForIndividual(context,
-                                        getx.loginuserdata[0].token, theoryPaperList[index]['PaperId']
-                                      .toString(),)
-                                    .then((value) {
+                            var examcode = await getExamStatus(
+                              context,
+                              getx.loginuserdata[0].token,
+                              theoryPaperList[index]['PaperId'].toString(),
+                            );
+                            if (examcode == 200) {
+                              Get.to(
+                                  transition: Transition.cupertino,
+                                  () => TheoryExamTermAndConditionMobile(
+                                        termAndCondition: theoryPaperList[index]
+                                                ['TermAndCondition']
+                                            .toString(),
+                                        documnetPath: theoryPaperList[index]
+                                                ['DocumentUrl']
+                                            .toString(),
+                                        duration: theoryPaperList[index]
+                                                ['Duration']
+                                            .toString(),
+                                        paperName: theoryPaperList[index]
+                                                ['PaperName']
+                                            .toString(),
+                                        sheduletime: theoryPaperList[index]
+                                                ['StartTime']
+                                            .toString(),
+                                        paperId: theoryPaperList[index]
+                                                ['PaperId']
+                                            .toString(),
+                                      ));
+                            }
+                            if (examcode == 250) {
+                              Get.to(
+                                  transition: Transition.cupertino,
+                                  () => TheoryExamTermAndConditionMobile(
+                                        termAndCondition: theoryPaperList[index]
+                                                ['TermAndCondition']
+                                            .toString(),
+                                        documnetPath: theoryPaperList[index]
+                                                ['DocumentUrl']
+                                            .toString(),
+                                        duration: theoryPaperList[index]
+                                                ['Duration']
+                                            .toString(),
+                                        paperName: theoryPaperList[index]
+                                                ['PaperName']
+                                            .toString(),
+                                        sheduletime: theoryPaperList[index]
+                                                ['StartTime']
+                                            .toString(),
+                                        paperId: theoryPaperList[index]
+                                                ['PaperId']
+                                            .toString(),
+                                      ));
+                            }
+                            if (examcode == 300) {
+                              if (getx.isInternet.value) {
+                                getTheryExamResultForIndividual(
+                                  context,
+                                  getx.loginuserdata[0].token,
+                                  theoryPaperList[index]['PaperId'].toString(),
+                                ).then((value) {
                                   print(value);
 
                                   if (value.isEmpty) {
-                                    _showDialogoferror(context, "Not publish!!",
-                                        "The result is not published yet.", () {
-                                     
-                                    }, false);
+                                    _showDialogoferror(
+                                        context,
+                                        "Not publish!!",
+                                        "The result is not published yet.",
+                                        () {},
+                                        false);
                                   } else {
                                     Get.to(
                                         transition: Transition.cupertino,
@@ -172,10 +178,12 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                                   value['PassMarks']
                                                       .toString()),
                                               // theoryExamAnswerId: '12',
-                                              examId: theoryPaperList[index]['PaperId']
-                                      .toString(),
-                                      pdfUrl: value["CheckedDocumentUrl"]
-                                      .toString(),
+                                              examId: theoryPaperList[index]
+                                                      ['PaperId']
+                                                  .toString(),
+                                              pdfUrl:
+                                                  value["CheckedDocumentUrl"]
+                                                      .toString(),
                                             ));
                                   }
                                 });
@@ -186,29 +194,18 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                   Navigator.pop(context);
                                 }, false);
                               }
-                            
 
+                              // _showDialogoferror(context, "Already Submited!",
+                              //     "your exam is already submited.", () {
 
-
-
-                            // _showDialogoferror(context, "Already Submited!",
-                            //     "your exam is already submited.", () {
-                             
-                            // }, false);
-                          }
-                          if (examcode == 400) {
-                            _showDialogoferror(context, "Time is Over!",
-                                "your exam is already ended.", () {
-                              Navigator.pop(context);
-                            }, false);
-                          }
-
-
-                            
-
-
-
-
+                              // }, false);
+                            }
+                            if (examcode == 400) {
+                              _showDialogoferror(context, "Time is Over!",
+                                  "your exam is already ended.", () {
+                                // Navigator.pop(context);
+                              }, false);
+                            }
 
                             // Get.to( transition: Transition.cupertino,() => TheoryExamTermAndConditionMobile(
                             //       termAndCondition: theoryPaperList[index]
@@ -229,14 +226,14 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                           } else {
                             _onNoInternetConnection(context);
                           }
-              
+
                           // bool checking = false;
-              
+
                           // if (widget.istype) {
                           //   checking = await checkIsSubmited(
                           //       mcqPaperList[index]['PaperId'].toString());
                           // }
-              
+
                           // if (checking) {
                           //   List rankData = await getRankDataOfMockTest(
                           //     context,
@@ -256,7 +253,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                           //     ),
                           //   );
                           // } else {
-              
+
                           // }
                         },
                         child: Container(
@@ -278,7 +275,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    theoryPaperList[index]['PaperName'] ?? 
+                                    theoryPaperList[index]['PaperName'] ??
                                         'Unnamed Paper',
                                     style: TextStyle(
                                         fontSize: 16,
@@ -316,7 +313,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                     }),
                   ),
                 ),
-            )
+              )
             : Center(
                 child: Text(
                   "No Papers Available",
@@ -356,8 +353,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
     ).show();
   }
 
-
-   _showDialogoferror(context, String title, String desc, VoidCallback ontap,
+  _showDialogoferror(context, String title, String desc, VoidCallback ontap,
       bool iscancelbutton) async {
     ArtDialogResponse? response = await ArtSweetAlert.show(
       barrierDismissible: false,
