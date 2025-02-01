@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
@@ -17,7 +18,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../CUSTOMDIALOG/customdialog.dart';
-import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 
 class TestResultPageMobile extends StatefulWidget {
   final String studentName;
@@ -305,8 +305,6 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
 
   TextEditingController reasonController = TextEditingController();
 
-  // getFranchiseName = getFranchiseNameFromTblSetting();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -396,57 +394,73 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                               ),
                               Row(
                                 children: [
-                                  RichText(
-                                    text: TextSpan(children: [
-                                      TextSpan(
+                                  Expanded(
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      text: TextSpan(children: [
+                                        TextSpan(
                                           text: 'Name: ',
-                                          style: studentTitleStyle),
-                                      TextSpan(
-                                          text: widget.studentName,
-                                          style: studentNameStyle),
-                                    ]),
+                                          style: studentTitleStyle,
+                                        ),
+                                        TextSpan(
+                                            text: widget.studentName,
+                                            style: studentNameStyle),
+                                      ]),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                            text: 'Exam Name: ',
+                                            style: studentTitleStyle),
+                                        TextSpan(
+                                            text: widget.examName,
+                                            style: studentNameStyle),
+                                      ]),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  Text('Submitted on: ',
+                                      style: studentTitleStyle),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(widget.submitedOn,
+                                        style: studentNameStyle),
                                   ),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  RichText(
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                          text: 'Exam Name: ',
-                                          style: studentTitleStyle),
-                                      TextSpan(
-                                          text: widget.examName,
-                                          style: studentNameStyle),
-                                    ]),
-                                  ),
+                                  Text('Result published on: ',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: studentTitleStyle),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Submitted on: ',
-                                          style: studentTitleStyle),
-                                      Text(widget.submitedOn,
-                                          style: studentNameStyle),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Result published on: ',
-                                          style: studentTitleStyle),
-                                      Text(widget.resultPublishedOn,
-                                          style: studentNameStyle),
-                                    ],
+                                  Expanded(
+                                    child: Text(widget.resultPublishedOn,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: studentNameStyle),
                                   ),
                                 ],
                               ),

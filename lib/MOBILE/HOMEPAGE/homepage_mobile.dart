@@ -443,17 +443,27 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
 
   bool isDownloading = false;
 
-  controlScroller() {
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        _fabVisibility.visibility.value = true;
-      } else {
+void controlScroller() {
+  _scrollController = ScrollController();
+  
+  _scrollController.addListener(() {
+    if (_scrollController.position.pixels == _scrollController.position.minScrollExtent) {
+      // If scrolled to the top, set visibility to true
+      _fabVisibility.visibility.value = false;
+    } else if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      // If scrolled to the bottom, set visibility to false
+      _fabVisibility.visibility.value = true;
+    } else {
+      // Hide when scrolling in either direction
+      if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
         _fabVisibility.visibility.value = false;
+      } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
+        _fabVisibility.visibility.value = true;
       }
-    });
-  }
+    }
+  });
+}
+
 
   final List<String> _itemsDefault = [
     "Welcome to ${getFranchiseNameFromTblSetting()}",
@@ -1461,7 +1471,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                     DateTime.now().month,
                                     DateTime.now().day,
                                   ))
-                                          ? Color.fromARGB(255, 255, 106, 95)
+                                          ? Color.fromARGB(255, 255, 106, 95) 
                                           : Colors.amberAccent)),
                               onPressed: () async {
                                 if (getx.isInternet.value) {
@@ -3113,20 +3123,35 @@ class _HomePageMobileState extends State<HomePageMobile> {
         // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
         floatingActionButton: _currentIndex.value == 0
-            ? Visibility(
-                visible: _fabVisibility.visibility.value,
+            ? _fabVisibility.visibility.value ? Visibility(
+                visible: _fabVisibility.visibility.value, 
                 child: FloatingActionButton(
                   elevation: 0,
                   backgroundColor: Colors.amber.shade100,
                   heroTag: 'arrow-up',
                   onPressed: () {
                     _scrollController.animateTo(
-                      -500, // Scroll to the event section
+                      -1000, // Scroll to the event section
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
                   },
                   child: const Icon(Icons.keyboard_arrow_up_rounded),
+                ),
+              ) : Visibility(
+                visible: !_fabVisibility.visibility.value, 
+                child: FloatingActionButton(
+                  elevation: 0,
+                  backgroundColor: Colors.amber.shade100,
+                  heroTag: 'arrow-down',
+                  onPressed: () {
+                    _scrollController.animateTo(
+                      1000, // Scroll to the event section
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: const Icon(Icons.keyboard_arrow_down_rounded),
                 ),
               )
             : null,

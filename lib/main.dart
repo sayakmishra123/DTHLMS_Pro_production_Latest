@@ -148,7 +148,7 @@ class _MyAppState extends State<MyApp> {
           lastName: userdataMap['lastName'].toString(),
           email: userdataMap['email'].toString(),
           phoneNumber: userdataMap['phoneNumber'],
-          token: userdataMap['token'].toString() ?? "",
+          token: userdataMap['token'].toString() ?? "",         
           nameId: userdataMap['nameId'].toString(),
           password: userdataMap['password'].toString(),
           loginTime: userdataMap['loginTime'].toString(),
@@ -169,7 +169,7 @@ class _MyAppState extends State<MyApp> {
 
   ClsSimInfo ob = ClsSimInfo();
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
