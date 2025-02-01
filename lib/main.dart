@@ -169,7 +169,7 @@ class _MyAppState extends State<MyApp> {
  
   ClsSimInfo ob = ClsSimInfo();
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(

@@ -93,10 +93,15 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getMeetingList(context);
     });
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getChapterFiles(
-          parentId: 0, "Book", getx.selectedPackageId.value.toString());
-    });
+
+    getChapterFiles(
+            parentId: 0, "Book", getx.selectedPackageId.value.toString())
+        .whenComplete(
+      () {
+        setState(() {});
+      },
+    );
+
     super.initState();
   }
 
@@ -614,11 +619,12 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                                     .none, // Ensures the Positioned widget is not clipped
                                 children: [
                                   // Live Animation
+                                  if (liveCount >= 1)
                                   Lottie.asset(
                                     'assets/liveanimation.json',
                                     width: 70,
                                     height: 70,
-                                  ),
+                                  ), 
 
                                   // Only show if liveCount is greater than 1
                                   if (liveCount > 1)
@@ -644,15 +650,18 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                                       ),
                                     ),
                                 ],
-                              ); 
+                              );
                             })
-                          : title == 'Book' ? CircleAvatar(
-                          child: Obx(
-                            ()=> Text(
-                            getx.booklist.length.toString(),
-                            style: FontFamily.style.copyWith(fontSize: 15),
-                                                    ),
-                          )) : SizedBox(),
+                          : title == 'Book'
+                              ? CircleAvatar(
+                                  child: Obx(
+                                  () => Text(
+                                    getx.booklist.length.toString(),
+                                    style:
+                                        FontFamily.style.copyWith(fontSize: 15),
+                                  ),
+                                ))
+                              : SizedBox(),
                   SizedBox(
                     width: 10,
                   ),

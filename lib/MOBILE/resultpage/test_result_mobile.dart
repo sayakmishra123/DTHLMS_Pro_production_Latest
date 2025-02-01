@@ -389,60 +389,77 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                               ),
                               Row(
                                 children: [
-                                  RichText(
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                          text: 'Name: ',
-                                          style: studentTitleStyle),
-                                      TextSpan(
-                                          text: widget.studentName,
-                                          style: studentNameStyle),
-                                    ]),
+                                  Expanded(
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      text: TextSpan(
+                                        
+                                        children: [
+                                        TextSpan(
+                                            text: 'Name: ',
+                                            style: studentTitleStyle,),
+                                        TextSpan(
+                                            text: widget.studentName,
+                                            style: studentNameStyle),
+                                      ]),
+                                    ),
                                   ),
+                                ],
+                              ),
+                               SizedBox(
+                                height: 5, 
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                            text: 'Exam Name: ',
+                                            style: studentTitleStyle),
+                                        TextSpan(
+                                            text: widget.examName,
+                                            style: studentNameStyle),
+                                      ]),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                               SizedBox(
+                                height: 10, 
+                              ),
+                              Row(
+                                children: [
+                                  Text('Submitted on: ',
+                                      style: studentTitleStyle),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  RichText(
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                          text: 'Exam Name: ',
-                                          style: studentTitleStyle),
-                                      TextSpan(
-                                          text: widget.examName,
-                                          style: studentNameStyle),
-                                    ]),
-                                  ),
+                                  Expanded(
+                                        child: Text(widget.submitedOn,
+                                            style: studentNameStyle),
+                                      ),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Submitted on: ',
-                                          style: studentTitleStyle),
-                                      Text(widget.submitedOn,
-                                          style: studentNameStyle),
-                                    ],
-                                  ),
+                                  Text('Result published on: ',
+                                      overflow: TextOverflow.ellipsis,
+
+                                      style: studentTitleStyle),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Result published on: ',
-                                          style: studentTitleStyle),
-                                      Text(widget.resultPublishedOn,
-                                          style: studentNameStyle),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                 Expanded(
+                                   child: Text(widget.resultPublishedOn,
+                                      overflow: TextOverflow.ellipsis,
+                                            style: studentNameStyle),
+                                 ),
+                              ],),
                               Row(
                                 children: [
                                   SizedBox(
@@ -451,7 +468,8 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                 ],
                               ),
                             ],
-                          ))
+                          )
+                          )
                     ],
                   ),
                 ),

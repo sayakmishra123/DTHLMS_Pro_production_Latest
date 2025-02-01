@@ -28,7 +28,6 @@ class TheoryExamPageMobile extends StatefulWidget {
       required this.paperId,
       required this.issubmit});
 
-
   @override
   State<TheoryExamPageMobile> createState() => _TheoryExamPageMobileState();
 }
@@ -42,7 +41,7 @@ class _TheoryExamPageMobileState extends State<TheoryExamPageMobile> {
   TextEditingController sheetController = TextEditingController();
   Getx getx = Get.put(Getx());
 
- Timer? _timer;
+  Timer? _timer;
   RxInt _start = 1800.obs;
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -53,9 +52,11 @@ class _TheoryExamPageMobileState extends State<TheoryExamPageMobile> {
           timer.cancel();
           _onTimeUp(globalContext);
           Future.delayed(Duration(seconds: 2)).whenComplete(() {
-            Get.to( transition: Transition.cupertino,() => SelectExamPapers(
-                  paperId: widget.paperId,
-                ));
+            Get.to(
+                transition: Transition.cupertino,
+                () => SelectExamPapers(
+                      paperId: widget.paperId,
+                    ));
           });
 
           //  _onimeUp(globalContext!);
@@ -188,7 +189,7 @@ class _TheoryExamPageMobileState extends State<TheoryExamPageMobile> {
                 child: Obx(
                   () => Row(
                     children: [
-                      SizedBox(width: 20), 
+                      SizedBox(width: 20),
                       Icon(
                         Icons.alarm_outlined,
                         color: ColorPage.white,
@@ -221,25 +222,23 @@ class _TheoryExamPageMobileState extends State<TheoryExamPageMobile> {
                       child: Stack(
                         children: [
                           Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border(
-                                    right: BorderSide(
-                                        width: 10,
-                                        color: ColorPage.appbarcolor))),
-                            child: 
-                            // widget.documentPath.isEmpty
-                            //     ? Center(
-                            //         child: CircularProgressIndicator(),
-                            //       )
-                            //     : 
-                                ShowQuestionPaper(  
-                                  
-                                  pdfUrl: widget.documentPath,
-                                  title: widget.title,
-                                  isEncrypted: false,
-                                )
-                          ),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border(
+                                      right: BorderSide(
+                                          width: 10,
+                                          color: ColorPage.appbarcolor))),
+                              child:
+                                  // widget.documentPath.isEmpty
+                                  //     ? Center(
+                                  //         child: CircularProgressIndicator(),
+                                  //       )
+                                  //     :
+                                  ShowQuestionPaper(
+                                pdfUrl: widget.documentPath,
+                                title: widget.title,
+                                isEncrypted: false,
+                              )),
                         ],
                       ),
                     ),
@@ -277,21 +276,17 @@ class _TheoryExamPageMobileState extends State<TheoryExamPageMobile> {
   }
 
   void dispose() {
-    if(_timer != null){
-
-    
-    if(_timer!.isActive)
-    {
-    _timer! .cancel();
-
-    }
+    if (_timer != null) {
+      if (_timer!.isActive) {
+        _timer!.cancel();
+      }
     }
     // _pageController.dispose();
     super.dispose();
   }
 
   _onSubmitExam(context) async {
-  ArtDialogResponse? response = await ArtSweetAlert.show(
+    ArtDialogResponse? response = await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
       artDialogArgs: ArtDialogArgs(
@@ -299,27 +294,24 @@ class _TheoryExamPageMobileState extends State<TheoryExamPageMobile> {
         title: "Submit your paper now?",
         text: "Select images to submit your paper",
         confirmButtonText: "Yes",
-        type: ArtSweetAlertType.question, 
-
+        type: ArtSweetAlertType.question,
       ),
-
     );
 
-    if (response == null) { 
+    if (response == null) {
       return;
     }
- 
 
- 
     if (response.isTapConfirmButton) {
-   Get.back();
-            getx.isPaperSubmit.value = false;
-            Get.to( transition: Transition.cupertino,() => SelectExamPapers(
-                  paperId: widget.paperId,
-                ));
+      Get.back();
+      getx.isPaperSubmit.value = false;
+      Get.to(
+          transition: Transition.cupertino,
+          () => SelectExamPapers(
+                paperId: widget.paperId,
+              ));
       return;
     }
-  
   }
 }
 
@@ -343,7 +335,7 @@ _exitConfirmetionBox2(context, VoidCallback ontap) {
     alertElevation: 0,
     alertAlignment: Alignment.center,
   );
-  Alert( 
+  Alert(
     context: context,
     type: AlertType.warning,
     style: alertStyle,
