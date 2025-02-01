@@ -374,11 +374,11 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                         style: TextStyle(
                                             color: Colors.blue, fontSize: 20),
                                       ),
-                                      Text(
-                                        'The Valuation School',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 14),
-                                      ),
+                                      // Text(
+                                      //   'The Valuation School',
+                                      //   style: TextStyle(
+                                      //       color: Colors.grey, fontSize: 14),
+                                      // ),
                                     ],
                                   ),
                                 ],
