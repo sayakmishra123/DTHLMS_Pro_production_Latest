@@ -1,4 +1,3 @@
- 
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
@@ -85,54 +84,62 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
         child: Column(
           children: [
             Align(
-              alignment: Alignment.topLeft,
-              child: TabBar(
-  controller: _tabController,
-  labelColor: Colors.black,
-  unselectedLabelColor: Colors.grey,
-  indicatorColor: Colors.blue,
-  indicatorWeight: 4.0,
-  labelStyle: const TextStyle(
-    fontSize: 12, 
-    fontWeight: FontWeight.bold
-  ),
-  unselectedLabelStyle: const TextStyle(fontSize: 12),
-  tabs: [
-    const Tab(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Quick', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          Text('Practice', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-     Tab(
-      text: 'Comprehensive',  
-    ),
-    const Tab(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Ranked', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          Text('Competition', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-    const Tab(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Theory', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          Text('Exam', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-  ],
-)
+                alignment: Alignment.topLeft,
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.blue,
+                  indicatorWeight: 4.0,
+                  labelStyle: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: const TextStyle(fontSize: 12),
+                  tabs: [
+                    const Tab(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Quick',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text('Practice',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    Tab(
+                      text: 'Comprehensive',
+                    ),
+                    const Tab(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Ranked',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text('Competition',
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    const Tab(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Theory',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text('Exam',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                )),
 
-            ),
-      
             // Tab Bar View for Showing Content
             Container(
               // height: 700,
@@ -145,8 +152,8 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
                   quickPractice(),
                   Comprehensive(),
                   rankedCompetition(),
-                  theoryExam(context), 
-      
+                  theoryExam(context),
+
                   // QuickPracticeWidget(),
                   // Second Tab Widget
                   // ComprehensiveWidget(),
@@ -161,8 +168,7 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
     );
   }
 
-  
-   Widget rankedCompetition() {
+  Widget rankedCompetition() {
     return Column(
       children: [
         SizedBox(
@@ -177,13 +183,13 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
     );
   }
 
-   Widget _buildRankedCompetitionExamDetailsList() {  
+  Widget _buildRankedCompetitionExamDetailsList() {
     return FutureBuilder(
       future: fetchTblMCQHistory("Ranked Competition"),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-
-          print( snapshot.data!.length.toString()+"gfdghdsgysdghdsgcydsgdhg dc sdcuhd dch jhdsgnd vdshvdsjb");
+          print(snapshot.data!.length.toString() +
+              "gfdghdsgysdghdsgcydsgdhg dc sdcuhd dch jhdsgnd vdshvdsjb");
           return ListView.builder(
             shrinkWrap: true,
             // physics:
@@ -218,13 +224,15 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
                                             ["SubmitDate"] !=
                                         ""
                                     ? "${formatDateWithOrdinal(snapshot.data![index]["SubmitDate"])}"
-                                    : formatDateWithOrdinal(snapshot.data![index]["AttemptDate"])))),
+                                    : formatDateWithOrdinal(snapshot
+                                        .data![index]["AttemptDate"])))),
                         Container(
                             width: MediaQuery.of(context).size.width / 6,
                             child: Center(
                                 child: Text(
                                     snapshot.data![index]["SubmitDate"] != ""
-                                        ? snapshot.data![index]["ObtainMarks"].toString()
+                                        ? snapshot.data![index]["ObtainMarks"]
+                                            .toString()
                                         : "Attempted but not submitted")))
                       ],
                     ),
@@ -240,8 +248,7 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
     );
   }
 
-
-    Widget _buildHeadingbarOfRankedCompetition() {
+  Widget _buildHeadingbarOfRankedCompetition() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -267,29 +274,30 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
           height: 20,
         ),
         _buildHeadingbarOfMcq(),
-        SizedBox( 
+        SizedBox(
           height: MediaQuery.of(context).size.height - 300,
-          child: _buildQuickPracticeExamDetailsList(), 
+          child: _buildQuickPracticeExamDetailsList(),
         ),
       ],
     );
   }
 
-   Widget Comprehensive() {
+  Widget Comprehensive() {
     return Column(
       children: [
         SizedBox(
           height: 20,
         ),
-        _buildHeadingbarOfComprehensive(),   
-        SizedBox( 
+        _buildHeadingbarOfComprehensive(),
+        SizedBox(
           height: MediaQuery.of(context).size.height - 300,
           child: _buildComprehensiveExamDetailsList(),
         ),
       ],
     );
   }
-    Widget _buildHeadingbarOfComprehensive() {
+
+  Widget _buildHeadingbarOfComprehensive() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -307,13 +315,14 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
       ],
     );
   }
-    Widget _buildComprehensiveExamDetailsList() {
-    return FutureBuilder(
-      future: fetchTblMCQHistory("Comprehensive"),  
-      builder: (context, snapshot) { 
-        if (snapshot.hasData) {
 
-          print( snapshot.data!.length.toString()+"gfdghdsgysdghdsgcydsgdhg dc sdcuhd dch jhdsgnd vdshvdsjb");
+  Widget _buildComprehensiveExamDetailsList() {
+    return FutureBuilder(
+      future: fetchTblMCQHistory("Comprehensive"),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          print(snapshot.data!.length.toString() +
+              "gfdghdsgysdghdsgcydsgdhg dc sdcuhd dch jhdsgnd vdshvdsjb");
           return ListView.builder(
             shrinkWrap: true,
             // physics:
@@ -348,13 +357,15 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
                                             ["SubmitDate"] !=
                                         ""
                                     ? "${formatDateWithOrdinal(snapshot.data![index]["SubmitDate"])}"
-                                    : formatDateWithOrdinal(snapshot.data![index]["AttemptDate"])))),
+                                    : formatDateWithOrdinal(snapshot
+                                        .data![index]["AttemptDate"])))),
                         Container(
                             width: MediaQuery.of(context).size.width / 6,
                             child: Center(
                                 child: Text(
                                     snapshot.data![index]["SubmitDate"] != ""
-                                        ? snapshot.data![index]["ObtainMarks"].toString()
+                                        ? snapshot.data![index]["ObtainMarks"]
+                                            .toString()
                                         : "Attempted but not submitted")))
                       ],
                     ),
@@ -447,8 +458,8 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
       future: fetchTblMCQHistory("Quick Practice"),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-
-          print( snapshot.data!.length.toString()+"gfdghdsgysdghdsgcydsgdhg dc sdcuhd dch jhdsgnd vdshvdsjb");
+          print(snapshot.data!.length.toString() +
+              "gfdghdsgysdghdsgcydsgdhg dc sdcuhd dch jhdsgnd vdshvdsjb");
           return ListView.builder(
             shrinkWrap: true,
             // physics:
@@ -483,13 +494,16 @@ class _ExamHistoryMobileState extends State<ExamHistoryMobile>
                                             ["SubmitDate"] !=
                                         ""
                                     ? "${formatDateWithOrdinal(snapshot.data![index]["SubmitDate"])}"
-                                    : formatDateWithOrdinal(snapshot.data![index]["AttemptDate"])))),
+                                    : formatDateWithOrdinal(snapshot
+                                        .data![index]["AttemptDate"])))),
                         Container(
                             width: 100,
                             child: Center(
                                 child: Text(
                                     snapshot.data![index]["SubmitDate"] != ""
-                                        ? snapshot.data![index]["ObtainMarks"].toString()+"%"
+                                        ? snapshot.data![index]["ObtainMarks"]
+                                                .toString() +
+                                            "%"
                                         : "Attempted but not submitted")))
                       ],
                     ),
@@ -570,34 +584,53 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                             width: 90,
                             child: Center(
                                 child: snapshot.data![index]
-                                            ["IsResultPublished"] == 1
+                                            ["IsResultPublished"] ==
+                                        1
                                     ? MaterialButton(
                                         color: ColorPage.blue,
                                         child: Text(
-                                          "See result", 
-                                          style:
-                                              TextStyle(color: ColorPage.white,fontSize: 12),
+                                          "See result",
+                                          style: TextStyle(
+                                              color: ColorPage.white,
+                                              fontSize: 12),
                                         ),
-                                        onPressed: () async{
-                                        
-                                          Get.to(() => TestResultPageMobile( 
-                                               studentName: getx
+                                        onPressed: () async {
+                                          Get.to(() => TestResultPageMobile(
+                                                studentName: getx
                                                         .loginuserdata[0]
                                                         .firstName +
                                                     " " +
-                                                    getx.loginuserdata[0] 
+                                                    getx.loginuserdata[0]
                                                         .lastName,
-                                                examName: snapshot.data![index]['TheoryExamName'],
+                                                examName: snapshot.data![index]
+                                                    ['TheoryExamName'],
                                                 resultPublishedOn:
-                                                    formatDateTime(snapshot.data![index]['ReportPublishDate']),
-                                                submitedOn: formatDateTime(snapshot.data![index]["SubmitedOn"]),
-                                                obtain: snapshot.data![index]['TotalReCheckedMarks']!= null?  snapshot.data![index]['TotalReCheckedMarks']:  snapshot.data![index]['TotalCheckedMarks'],
-                                                
-                                                totalMarks: double.parse(snapshot.data![index]['TotalMarks'].toString()) , 
-                                                totalMarksRequired: double.parse( snapshot.data![index]['PassMarks'].toString()),
-                                             
+                                                    formatDateTime(snapshot
+                                                            .data![index]
+                                                        ['ReportPublishDate']),
+                                                submitedOn: formatDateTime(
+                                                    snapshot.data![index]
+                                                        ["SubmitedOn"]),
+                                                obtain: snapshot.data![index]
+                                                            [
+                                                            'TotalReCheckedMarks'] !=
+                                                        null
+                                                    ? snapshot.data![index]
+                                                        ['TotalReCheckedMarks']
+                                                    : snapshot.data![index]
+                                                        ['TotalCheckedMarks'],
+                                                totalMarks: double.parse(
+                                                    snapshot.data![index]
+                                                            ['TotalMarks']
+                                                        .toString()),
+                                                totalMarksRequired:
+                                                    double.parse(snapshot
+                                                        .data![index]
+                                                            ['PassMarks']
+                                                        .toString()),
                                                 examId: "121",
                                                 pdfUrl: "hh",
+                                                questionanswersheet: '',
                                               ));
                                         })
                                     : Text("Result not publish ")))

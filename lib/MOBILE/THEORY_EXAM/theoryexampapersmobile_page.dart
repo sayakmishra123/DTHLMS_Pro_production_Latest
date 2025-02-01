@@ -1,7 +1,9 @@
 // ignore_for_file: must_be_immutable
 
 import 'dart:developer';
+import 'dart:io';
 import 'package:art_sweetalert/art_sweetalert.dart';
+import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/MOBILE/THEORY_EXAM/practiceMcqTermAndCondition_mobile_page.dart';
 import 'package:dthlms/MOBILE/resultpage/test_result_mobile.dart';
@@ -10,8 +12,11 @@ import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import '../../constants/constants.dart';
 
 class TheoryExamPapesMobile extends StatefulWidget {
   Map paperNames = {};
@@ -84,7 +89,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                               getx.loginuserdata[0].token,
                               theoryPaperList[index]['PaperId'].toString(),
                             );
-                            if (examcode == 200) {
+                            if (examcode['statusCode'] == 200) {
                               Get.to(
                                   transition: Transition.cupertino,
                                   () => TheoryExamTermAndConditionMobile(
@@ -108,7 +113,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                             .toString(),
                                       ));
                             }
-                            if (examcode == 250) {
+                            if (examcode['statusCode'] == 250) {
                               Get.to(
                                   transition: Transition.cupertino,
                                   () => TheoryExamTermAndConditionMobile(
@@ -132,8 +137,9 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                             .toString(),
                                       ));
                             }
-                            if (examcode == 300) {
+                            if (examcode['statusCode'] == 300) {
                               if (getx.isInternet.value) {
+                                print(theoryPaperList[index]['AnswerSheet']);
                                 getTheryExamResultForIndividual(
                                   context,
                                   getx.loginuserdata[0].token,
@@ -147,44 +153,40 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                         "Not publish!!",
                                         "The result is not published yet.",
                                         () {},
-                                        false);
+                                        false,
+                                        answersheet: examcode['result'],
+                                        paperid: theoryPaperList[index]
+                                                ['PaperId']
+                                            .toString());
                                   } else {
                                     Get.to(
                                         transition: Transition.cupertino,
                                         () => TestResultPageMobile(
-                                              examName: value["TheoryExamName"],
-                                              obtain: value[
-                                                          'TotalReCheckedMarks'] !=
-                                                      null
-                                                  ? double.parse(value[
-                                                          'TotalReCheckedMarks']
-                                                      .toString())
-                                                  : double.parse(
-                                                      value['TotalObtainMarks']
-                                                          .toString()),
-                                              resultPublishedOn: formatDateTime(
-                                                  value['ReportPublishDate']),
-                                              studentName: getx.loginuserdata[0]
-                                                      .firstName +
-                                                  " " +
-                                                  getx.loginuserdata[0]
-                                                      .lastName,
-                                              submitedOn: formatDateTime(
-                                                  value["SubmitedOn"]),
-                                              totalMarks: double.parse(
-                                                  value['TotalMarks']
-                                                      .toString()),
-                                              totalMarksRequired: double.parse(
-                                                  value['PassMarks']
-                                                      .toString()),
-                                              // theoryExamAnswerId: '12',
-                                              examId: theoryPaperList[index]
-                                                      ['PaperId']
-                                                  .toString(),
-                                              pdfUrl:
-                                                  value["CheckedDocumentUrl"]
-                                                      .toString(),
-                                            ));
+                                            examName: value["TheoryExamName"],
+                                            obtain: value['TotalReCheckedMarks'] !=
+                                                    null
+                                                ? double.parse(
+                                                    value['TotalReCheckedMarks']
+                                                        .toString())
+                                                : double.parse(
+                                                    value['TotalObtainMarks']
+                                                        .toString()),
+                                            resultPublishedOn: formatDateTime(
+                                                value['ReportPublishDate']),
+                                            studentName: getx.loginuserdata[0]
+                                                    .firstName +
+                                                " " +
+                                                getx.loginuserdata[0].lastName,
+                                            submitedOn: formatDateTime(
+                                                value["SubmitedOn"]),
+                                            totalMarks: double.parse(
+                                                value['TotalMarks'].toString()),
+                                            totalMarksRequired:
+                                                double.parse(value['PassMarks'].toString()),
+                                            // theoryExamAnswerId: '12',
+                                            examId: theoryPaperList[index]['PaperId'].toString(),
+                                            pdfUrl: value["CheckedDocumentUrl"].toString(),
+                                            questionanswersheet: examcode['result'] ?? ''));
                                   }
                                 });
                               } else {
@@ -200,7 +202,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
 
                               // }, false);
                             }
-                            if (examcode == 400) {
+                            if (examcode['statusCode'] == 400) {
                               _showDialogoferror(context, "Time is Over!",
                                   "your exam is already ended.", () {
                                 // Navigator.pop(context);
@@ -353,16 +355,146 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
     ).show();
   }
 
+  RxBool isDownloading = false.obs;
+  CancelToken cancelToken = CancelToken();
+  String downloadedFilePath = '';
+  double downloadProgress = 0.0;
+  Future<void> testDioDowwnload(path) async {
+    showDialog(
+      context: context,
+      builder: (context) => Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    Dio dio = Dio();
+    String testUrl = path.toString().replaceAll('"', '');
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String filePath =
+        '${appDocDir.path}/test_download.pdf'; // Test download path
+
+    try {
+      await dio.download(testUrl, filePath);
+      debugPrint("Download complete: $filePath");
+      Get.back();
+      showDownloadCompleteDialog(filePath);
+    } catch (e) {
+      Get.back();
+      debugPrint("Error downloading file: $e");
+    }
+  }
+
+  void cancelDownload() {
+    cancelToken.cancel();
+    setState(() {
+      isDownloading.value = false;
+    });
+  }
+
+  void showDownloadCompleteDialog(filePath) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Download Complete"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("The answer sheet has been downloaded."),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                // Navigator.of(context).pop();
+                Get.off(() => ShowResultPage(
+                      filePath: filePath,
+                      isnet: false,
+                    ));
+                // showPdfDialog(downloadedFilePath);
+              },
+              child: Text("Show Sheet"),
+            ),
+          ],
+        ),
+        // actions: <Widget>[
+        //   TextButton(
+        //     child: Text("Close"),
+        //     onPressed: () => Navigator.of(context).pop(),
+        //   ),
+        // ],
+      ),
+    );
+  }
+
   _showDialogoferror(context, String title, String desc, VoidCallback ontap,
-      bool iscancelbutton) async {
+      bool iscancelbutton,
+      {String answersheet = "", String paperid = ""}) async {
     ArtDialogResponse? response = await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
       artDialogArgs: ArtDialogArgs(
+        customColumns: [
+          ElevatedButton(
+              style: ButtonStyle(
+                  padding: WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+                  backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+              onPressed: isDownloading.value
+                  ? null
+                  : () async {
+                      Get.back();
+                      if (File(getx
+                                  .userSelectedPathForDownloadFile.value.isEmpty
+                              ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
+                              : getx.userSelectedPathForDownloadFile.value +
+                                  "\\${paperid}")
+                          .existsSync()) {
+                        Get.to(() => ShowResultPage(
+                              filePath: getx.userSelectedPathForDownloadFile
+                                      .value.isEmpty
+                                  ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
+                                  : getx.userSelectedPathForDownloadFile.value +
+                                      "\\${paperid}",
+                              isnet: false,
+                            ));
+                      } else {
+                        if (answersheet.isNotEmpty) {
+                          testDioDowwnload(answersheet);
+                          // downloadAnswerSheet(answersheet, paperid);
+                        }
+                      }
+                    },
+              // DownloadAnswerSheetAlert();
+
+              child: Text(
+                File(getx.userSelectedPathForDownloadFile.value.isEmpty
+                            ? '${getx.defaultPathForDownloadFile}\\${paperid}'
+                            : getx.userSelectedPathForDownloadFile.value +
+                                "\\${paperid}")
+                        .existsSync()
+                    ? "Show Answer Sheet"
+                    : 'Download Answer Sheet',
+                style: TextStyle(color: Colors.white),
+              )),
+
+          // ElevatedButton(
+          //     style: ButtonStyle(
+          //         padding: WidgetStatePropertyAll(
+          //             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+          //         backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+          //     onPressed: () {
+          //       Get.to(() => ShowResultPage(
+          //             filePath: answersheet,
+          //             isnet: true,
+          //           ));
+          //     },
+          //     child: Text(
+          //       'Download Answer Sheet',
+          //       style: TextStyle(color: Colors.white),
+          //     ))
+        ],
         title: title,
         text: desc,
         confirmButtonText: "ok",
         type: ArtSweetAlertType.info,
+        // denyButtonColor: Colors.green,
       ),
     );
 

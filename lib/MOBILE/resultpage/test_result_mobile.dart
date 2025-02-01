@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -29,18 +30,20 @@ class TestResultPageMobile extends StatefulWidget {
   final String examId;
   final String pdfUrl;
 
-  const TestResultPageMobile({
-    super.key,
-    required this.pdfUrl,
-    required this.studentName,
-    required this.examName,
-    required this.submitedOn,
-    required this.resultPublishedOn,
-    required this.totalMarks,
-    required this.obtain,
-    required this.totalMarksRequired,
-    required this.examId,
-  });
+  String? questionanswersheet = '';
+
+  TestResultPageMobile(
+      {super.key,
+      required this.pdfUrl,
+      required this.studentName,
+      required this.examName,
+      required this.submitedOn,
+      required this.resultPublishedOn,
+      required this.totalMarks,
+      required this.obtain,
+      required this.totalMarksRequired,
+      required this.examId,
+      required this.questionanswersheet});
 
   @override
   State<TestResultPageMobile> createState() => _TestResultPageMobileState();
@@ -179,7 +182,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
       isDownloading.value = true;
 
       await dio.download(
-        url,
+        url.replaceAll('"', ''),
         filePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
@@ -224,6 +227,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                           ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
                           : getx.userSelectedPathForDownloadFile.value +
                               "/${widget.examId}",
+                      isnet: false,
                     ));
               },
               child: Text("Show PDF"),
@@ -692,6 +696,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                                       : getx.userSelectedPathForDownloadFile
                                                               .value +
                                                           "/${widget.examId}",
+                                                  isnet: false,
                                                 ));
                                           } else {
                                             if (widget.pdfUrl.isNotEmpty) {
@@ -721,11 +726,67 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                   ))
                               : SizedBox()
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
               ]),
+              widget.questionanswersheet != ''
+                  ? ElevatedButton(
+                      style: ButtonStyle(
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10)),
+                          backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+                      onPressed: isDownloading.value
+                          ? null
+                          : () async {
+                              if (File(getx.userSelectedPathForDownloadFile
+                                          .value.isEmpty
+                                      ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                      : getx.userSelectedPathForDownloadFile
+                                              .value +
+                                          "/${widget.examId}")
+                                  .existsSync()) {
+                                Get.to(() => ShowResultPage(
+                                      filePath: getx
+                                              .userSelectedPathForDownloadFile
+                                              .value
+                                              .isEmpty
+                                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                          : getx.userSelectedPathForDownloadFile
+                                                  .value +
+                                              "/${widget.examId}",
+                                      isnet: false,
+                                    ));
+                              } else {
+                                if (widget.questionanswersheet
+                                    .toString()
+                                    .isNotEmpty) {
+                                  downloadAnswerSheet(
+                                      widget.questionanswersheet.toString(),
+                                      widget.examId);
+                                }
+                              }
+
+                              // showDownloadCompleteDialog();
+                              // await  getAnswerSheetURLforStudent(context,getx.loginuserdata[0].token,widget.examId).then((answerUrl){
+                              //   print(answerUrl);
+                              //   print(answerUrl);
+
+                              // });
+                            },
+                      child: Text(
+                        File(getx.userSelectedPathForDownloadFile.value.isEmpty
+                                    ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                    : getx.userSelectedPathForDownloadFile
+                                            .value +
+                                        "/${widget.examId}")
+                                .existsSync()
+                            ? "Show Question Sample Sheet"
+                            : 'Download Question Sample Sheet',
+                        style: TextStyle(color: Colors.white),
+                      ))
+                  : SizedBox(),
               SizedBox(
                 height: 10,
               ),
@@ -959,20 +1020,27 @@ class AppColors {
 
 class ShowResultPage extends StatelessWidget {
   final String filePath;
-
-  const ShowResultPage({Key? key, required this.filePath}) : super(key: key);
+  bool isnet = false;
+  ShowResultPage({Key? key, required this.filePath, required this.isnet})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(filePath.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text('Answer Sheet'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: SfPdfViewer.file(
-          File(filePath), // Display the PDF from the file path
-        ),
+        child: isnet == true
+            ? SfPdfViewer.network(
+                filePath,
+              )
+            : SfPdfViewer.file(
+                File(filePath),
+                // Display the PDF from the file path
+              ),
       ),
     );
   }

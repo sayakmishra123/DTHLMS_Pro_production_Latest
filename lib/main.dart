@@ -166,7 +166,7 @@ class _MyAppState extends State<MyApp> {
     // checkIfEmulator(context);
     // checkDeveloperMode();
   }
- 
+
   ClsSimInfo ob = ClsSimInfo();
 
   @override
@@ -183,7 +183,7 @@ class _MyAppState extends State<MyApp> {
                   displayLarge: TextStyle(fontSize: 18),
                   displayMedium: TextStyle(fontSize: 16),
                   titleMedium: TextStyle(fontSize: 14),
-                ), 
+                ),
               )
             : const TextTheme(
                 bodyLarge: TextStyle(fontSize: 12),
@@ -211,10 +211,10 @@ class _MyAppState extends State<MyApp> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return Platform.isAndroid   
+            return Platform.isAndroid
                 ? getx.isEmulator.value
                     ? EmulatorOnPage()
-                    : getx.isAndroidDeveloperModeEnabled.value   
+                    : getx.isAndroidDeveloperModeEnabled.value
                         ? DevelopermodeOnPage()
                         : FutureBuilder(
                             future: getSimCardsData(context),
@@ -511,12 +511,6 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'notification_model.dart';
-// import 'package:intl/intl.dart';
-// import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> initializeNotifications() async {
   // testSQLCipherOnWindows();

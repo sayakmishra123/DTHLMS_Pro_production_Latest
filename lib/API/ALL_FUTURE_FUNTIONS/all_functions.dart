@@ -201,8 +201,8 @@ Future packactivationKey(
       deleteVideoComponents();
       getPackageData(context, token);
       getAllFolders(context, token, "");
-      getAllFiles(context, token, ""); 
-      getAllFreeFiles(context,token,"");
+      getAllFiles(context, token, "");
+      getAllFreeFiles(context, token, "");
       getVideoComponents(context, token, "");
 
       deleteSessionDetails();
@@ -487,20 +487,19 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
   }
 }
 
-
 Future getAllFreeFiles(BuildContext context, token, String packageId) async {
   // loader(context);
   Map data = packageId == "" ? {} : {'PackageId': packageId};
 
   try {
-    var res =
-        await http.post(Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getFreePackageFiles),
-            headers: <String, String>{
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer $token',
-              'Origin': origin,
-            },
-            body: jsonEncode(data));
+    var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getFreePackageFiles),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Origin': origin,
+        },
+        body: jsonEncode(data));
 
     if (res.statusCode == 200) {
       var responseBody = jsonDecode(res.body);
@@ -726,61 +725,61 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
   Map data = packageId == "" ? {} : {"PackageId": packageId};
 
   try {
-  var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-        'Origin': origin,
-      },
-      body: jsonEncode(data));
+    var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Origin': origin,
+        },
+        body: jsonEncode(data));
 
-  if (res.statusCode == 200) {
-    var responseBody = jsonDecode(res.body);
-    // // print(responseBody.toString());
-    List<dynamic> resultList = jsonDecode(responseBody['result']);
-    List<VideoComponents> videoResults =
-        resultList.map((item) => VideoComponents.fromJson(item)).toList();
-    videoResults.forEach((item) {
-      insertTblVideoComponents(
-        item.componentId.toString(),
-        item.packageId.toString(),
-        item.videoId.toString(),
-        item.names,
-        item.option1,
-        item.option2,
-        item.option3,
-        item.option4,
-        item.videoTime,
-        item.answer,
-        item.category,
-        item.tagName,
-        item.documentId.toString(),
-        item.documentURL,
-        item.isVideoCompulsory.toString(),
-        item.isChapterCompulsory.toString(),
-        item.previousVideoId.toString(),
-        item.minimumVideoDuration.toString(),
-        item.previousChapterId.toString(),
-        item.sessionId,
-        item.franchiseId.toString(),
-        getDownloadedPathOfFileOfVideo(
+    if (res.statusCode == 200) {
+      var responseBody = jsonDecode(res.body);
+      // // print(responseBody.toString());
+      List<dynamic> resultList = jsonDecode(responseBody['result']);
+      List<VideoComponents> videoResults =
+          resultList.map((item) => VideoComponents.fromJson(item)).toList();
+      videoResults.forEach((item) {
+        insertTblVideoComponents(
+          item.componentId.toString(),
           item.packageId.toString(),
           item.videoId.toString(),
+          item.names,
+          item.option1,
+          item.option2,
+          item.option3,
+          item.option4,
+          item.videoTime,
+          item.answer,
           item.category,
+          item.tagName,
           item.documentId.toString(),
-        ),
-        item.isEncrypted,
-      );
-    });
+          item.documentURL,
+          item.isVideoCompulsory.toString(),
+          item.isChapterCompulsory.toString(),
+          item.previousVideoId.toString(),
+          item.minimumVideoDuration.toString(),
+          item.previousChapterId.toString(),
+          item.sessionId,
+          item.franchiseId.toString(),
+          getDownloadedPathOfFileOfVideo(
+            item.packageId.toString(),
+            item.videoId.toString(),
+            item.category,
+            item.documentId.toString(),
+          ),
+          item.isEncrypted,
+        );
+      });
 
-    // Get.back();
-  } else if (res.statusCode == 401) {
-    onTokenExpire(context);
-    // print("Error: in user components");
-  } else {
-    // Get.back();
-  }
+      // Get.back();
+    } else if (res.statusCode == 401) {
+      onTokenExpire(context);
+      // print("Error: in user components");
+    } else {
+      // Get.back();
+    }
   } catch (p) {
     writeToFile(p, 'getVideoComponents');
     // print("error:$p files2 video component");
@@ -1700,7 +1699,7 @@ _onUploadSuccessFull(context, VoidCallback ontap) {
 }
 
 Future<String> uploadSheet(
-    File file, String token, String key, String folderPath,context) async {
+    File file, String token, String key, String folderPath, context) async {
   showDialog(
     context: context,
     builder: (context) {
@@ -1708,13 +1707,13 @@ Future<String> uploadSheet(
         child: CircularProgressIndicator(),
       );
     },
-  ); 
+  );
   try {
     String fileName = basename(file.path);
     String mimeType = lookupMimeType(file.path) ?? '.jpg';
 
-    var request = http.MultipartRequest(
-        'POST', Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
+    var request = http.MultipartRequest('POST',
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
     request.headers['Authorization'] = 'Bearer $token';
     request.headers['accept'] = 'text/plain';
 
@@ -1773,7 +1772,8 @@ Future<String> uploadSheet(
       Get.back();
       // NoticationDialog.noticationDialogerror(context,
       //     description: jsonResponse['errorMessages'].toString());
-      ClsErrorMsg.fnErrorDialog(context, '', 'Failed to upload Images. Status code: ${response.statusCode}', "");
+      ClsErrorMsg.fnErrorDialog(context, '',
+          'Failed to upload Images. Status code: ${response.statusCode}', "");
       return "";
     }
   } catch (e) {
@@ -2050,7 +2050,7 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
   // return fullBannerPackages;
 }
 
-Future<int> getExamStatus(
+Future getExamStatus(
   BuildContext context,
   String token,
   String examId,
@@ -2070,9 +2070,10 @@ Future<int> getExamStatus(
 
     if (res.statusCode == 401) {
       onTokenExpire(context);
-      return res.statusCode;
+      return jsonDecode(res.body);
     } else {
-      return res.statusCode;
+      log(res.body);
+      return jsonDecode(res.body);
     }
   } catch (e) {
     writeToFile(e, 'getExamStatus');
@@ -2397,6 +2398,7 @@ Future<bool> gettheoryExamDataForTest2(
       body: jsonEncode(data),
     );
 
+    log(res.body.toString());
     if (res.statusCode == 200) {
       await deleteAllTheoryTable(); // Clear old data before inserting new
 
@@ -2445,7 +2447,8 @@ Future<bool> gettheoryExamDataForTest2(
                         theoryExam['PassMarks'].toString(),
                         examSet['SetUptoDate'].toString(),
                         examSet['SetFromDate'].toString(),
-                        "0");
+                        "0",
+                        answerSheet: examSet['SamplePaparUrl'] ?? '');
                   }
                 }
               }
@@ -2539,7 +2542,7 @@ Future<Map<String, dynamic>> getTheryExamResultForIndividual(
     };
 
     var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getExamResultForIndividual), 
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getExamResultForIndividual),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -3682,20 +3685,16 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
 }
 
 Future<bool> requestForRecheckAnswerSheet(
-  BuildContext context,
-  String token,
-  String examid,
-  String reson
-) async { 
+    BuildContext context, String token, String examid, String reson) async {
   Map<String, dynamic> data = {
     "ExamId": examid,
-    "ReviewReason" : reson,
-    };
+    "ReviewReason": reson,
+  };
   bool returnValue = false;
 
   try {
     var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.answerSheetRecheckRequestForTest), 
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.answerSheetRecheckRequestForTest),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
