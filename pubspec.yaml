@@ -206,15 +206,15 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"                                                                                
-  image: "assets/icons/Spalash_GBC.png"
-  branding: "assets/icons/Spalash_GBC.png"
+  image: "assets/icons/AVJ_splahs_screen.png"
+  branding: "assets/icons/AVJ_splahs_screen.png"
 
   color_dark: "#FFFFFF"
-  image_dark: "assets/icons/Spalash_GBC.png"
-  branding_dark: "assets/icons/Spalash_GBC.png"
+  image_dark: "assets/icons/AVJ_splahs_screen.png"
+  branding_dark: "assets/icons/AVJ_splahs_screen.png"
 
   android_12:
-    image: "assets/icons/Spalash_GBC.png"
+    image: "assets/icons/AVJ_splahs_screen.png"
     icon_background_color: "#FFFFFF" 
 
  
@@ -226,7 +226,7 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   
-  image_path: 'assets/icons/GBC.png'
+  image_path: 'assets/icons/AVJ_academy.png'
   min_sdk_android: 21 # android min sdk min:16, default 21
   # web:
   #   generate: true
@@ -235,7 +235,7 @@ flutter_launcher_icons:
   #   theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: 'assets/icons/GBC.png'
+    image_path: 'assets/icons/AVJ_academy.png'
     icon_size: 48 # min:48, max:256, default: 48
   # macos:
   #   generate: true

@@ -275,7 +275,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                             _showDialogoferror(context, "Already Submited!",
                                 "your exam is already submited.", () {
                               if (getx.isInternet.value) {
-                                // Navigator.pop(context);
+                                // Navigator.pop(context); 
                                 getTheryExamResultForIndividual(context,
                                         getx.loginuserdata[0].token, paperId)
                                     .then((value) {

@@ -302,8 +302,8 @@ class _TheoryExamPageState extends State<TheoryExamPage> {
         try {
           // Map each image to an uploadImage Future
           List<Future<String>> uploadFutures = _images
-              .map((image) => uploadSheet(
-                  image, getx.loginuserdata[0].token, key, "AnswerSheet"))
+              .map((image) => uploadSheet( 
+                  image, getx.loginuserdata[0].token, key, "AnswerSheet",context))
               .toList();
 
           // Wait for all uploads to complete and collect the IDs
