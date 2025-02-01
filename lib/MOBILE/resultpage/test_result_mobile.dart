@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
@@ -374,17 +375,17 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                         style: TextStyle(
                                             color: Colors.blue, fontSize: 20),
                                       ),
-                                      // Text(
-                                      //   'The Valuation School',
-                                      //   style: TextStyle(
-                                      //       color: Colors.grey, fontSize: 14),
-                                      // ),
+                                    Text(
+                                        '${getFranchiseNameFromTblSetting()}',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                      ),
                                     ],
                                   ),
                                 ],
                               ),
                               SizedBox(
-                                height: 20,
+                                height: 20, 
                               ),
                               Row(
                                 children: [
