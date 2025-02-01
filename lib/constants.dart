@@ -1,4 +1,4 @@
-const String origin = 'com.dlp.tvs';
+const String origin = 'com.dlp.avjpro';
 // const String logopath = 'assets/icons/AAC2.png';
 const String logopath = 'assets/icons/AAC2.png';
 
