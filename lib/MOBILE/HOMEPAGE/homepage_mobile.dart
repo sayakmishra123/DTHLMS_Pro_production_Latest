@@ -11,6 +11,7 @@ import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/Live/details.dart';
 import 'package:dthlms/Live/mobile_vcScreen.dart';
+import 'package:dthlms/MOBILE/HOMEPAGE/backup_videos_page.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/bannerInfoPage.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/chat/chat_page.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/fab_visibility.dart';
@@ -437,7 +438,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
     }
     lastTapVideoIndex = index;
     lastTapvideoTime = now;
-  } // Track the selected list tile
+  } // Track the selected list tile 
 
   String? _videoFilePath;
 
@@ -3154,7 +3155,20 @@ class _HomePageMobileState extends State<HomePageMobile> {
                   child: const Icon(Icons.keyboard_arrow_down_rounded),
                 ),
               )
-            : null,
+            : _currentIndex.value == 1 ?  Visibility(
+                visible: false, 
+                child: FloatingActionButton.extended(
+                  backgroundColor: Colors.amber.shade300,
+                  label: Text('Back Up',style: TextStyle(color: Colors.black87),),
+                  icon: Icon(Icons.backup_table,color: Colors.black87,),
+                  elevation: 0,
+                  heroTag: 'backup-video',
+                  onPressed: () {
+                    Get.to(()=>BackupVideosPage());
+                  },
+                  tooltip: 'Back Up Videos',
+                ),
+              )  : null,
         body: _children[_currentIndex.value],
         // bottomNavigationBar: CurvedNavigationBar(
         //   backgroundColor: Colors.transparent,

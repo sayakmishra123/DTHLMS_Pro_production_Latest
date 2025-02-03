@@ -2049,7 +2049,7 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
 
   // return fullBannerPackages;
 }
-
+ 
 Future getExamStatus(
   BuildContext context,
   String token,

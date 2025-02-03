@@ -243,10 +243,10 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    ElevatedButton(
+                    ElevatedButton( 
                       onPressed: () async {
                         if (checkbox.value) {
-                          var examcode = await getExamStatus(
+                          var examcode = await getExamStatus( 
                               context, getx.loginuserdata[0].token, paperId);
                           if (examcode == 200) {
                             Get.to(

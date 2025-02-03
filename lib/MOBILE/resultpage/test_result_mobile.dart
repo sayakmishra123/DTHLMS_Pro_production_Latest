@@ -562,22 +562,22 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                     children: [
                       DataTable(
                         columns: <DataColumn>[
-                          DataColumn(
-                            label: Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Paper',
-                                    style: headerStyle,
-                                  ),
-                                  Text(
-                                    'Name',
-                                    style: headerStyle,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          // DataColumn(
+                          //   label: Expanded(
+                          //     child: Column(
+                          //       children: [
+                          //         Text(
+                          //           'Paper',
+                          //           style: headerStyle,
+                          //         ),
+                          //         Text(
+                          //           'Name',
+                          //           style: headerStyle,
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                           DataColumn(
                             label: Expanded(
                               child: Text(
@@ -618,7 +618,10 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                         rows: <DataRow>[
                           DataRow(
                             cells: <DataCell>[
-                              DataCell(Text(widget.examName)),
+                              // DataCell(Text(widget.examName,
+                              // overflow: TextOverflow.ellipsis,
+                              
+                              // )),
                               DataCell(Text(widget.submitedOn)),
                               DataCell(Text(widget.totalMarks.toString())),
                               DataCell(Text(widget.obtain.toString())),
