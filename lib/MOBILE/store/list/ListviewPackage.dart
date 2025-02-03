@@ -17,6 +17,8 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../GETXCONTROLLER/getxController.dart';
+
 class SortMenu extends StatelessWidget {
   final void Function(String) onSortSelected;
 
@@ -62,6 +64,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
 
   // Observable list for packages using GetX
   RxList<PackageInfo> packages = <PackageInfo>[].obs;
+  Getx getx = Get.put(Getx());
 
   @override
   void initState() {
@@ -103,6 +106,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
         }
 
         // print(packages[0].);
+
         return SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
