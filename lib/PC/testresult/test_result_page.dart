@@ -638,7 +638,7 @@ class _TestResultPageState extends State<TestResultPage> {
                                 TextSpan(
                                     text: 'Status: ',
                                     style: TextStyle(
-                                        fontSize: 18, color: Colors.black)),
+                                        fontSize: 18, color: Colors.black)), 
                                 TextSpan(
                                     text: pass,
                                     style: TextStyle(

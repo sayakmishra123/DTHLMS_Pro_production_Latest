@@ -3156,7 +3156,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
                 ),
               )
             : _currentIndex.value == 1 ?  Visibility(
-                visible: false, 
+                visible: true, 
                 child: FloatingActionButton.extended(
                   backgroundColor: Colors.amber.shade300,
                   label: Text('Back Up',style: TextStyle(color: Colors.black87),),
