@@ -15,7 +15,10 @@ import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/Live/url.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
+import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart'
+    as modelclass;
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
+// import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 // import 'package:dthlms/MODEL_CLASS/Icon_model.dart';
 // import 'package:dthlms/MOBILE/PROFILE/profilrmodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
@@ -1940,34 +1943,41 @@ Future sendDocumentIdOfanswerSheets(
   return false;
 }
 
-Future getFullBannerPackages(BuildContext context, String token) async {
+Future<List<modelclass.PackageInfo>> getFullBannerPackages(
+    BuildContext context, String token) async {
   try {
     var res = await http.post(
-      Uri.https(
-          ClsUrlApi.mainurl,
-          ClsUrlApi
-              .premiumPackageList), // Replace with your API URL and endpoint
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.premiumPackageList),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
         'Origin': origin,
       },
-      body: jsonEncode({}), // Modify the request body as necessary
+      body: jsonEncode({}),
     );
-    getx.style.clear();
 
+    log(res.body.toString());
     if (res.statusCode == 201) {
-      var package = await ApiResponse.fromJson(json.decode(res.body));
-      getx.style.add(package);
+      var apiResponse = ApiResponse.fromJson(json.decode(res.body));
+
+      // Store in Encrypted Database
+      for (var package in apiResponse.result) {
+        deleteAllPackages();
+        deleteAllPremiumPackages();
+        insertPackage(package);
+        for (var premiumPackage in package.premiumPackageListInfo) {
+          insertPremiumPackage(premiumPackage);
+        }
+      }
+
+      return apiResponse.result;
     } else {
-      // print('Error r: ${res.body}');
+      return []; // Return empty list if API fails
     }
   } catch (e) {
-    writeToFile(e, 'getFullBannerPackages');
-    // print("Error rx: $e");
+    debugPrint("Error fetching packages: $e");
+    return []; // Return empty list in case of error
   }
-
-  // return fullBannerPackages;
 }
 
 Future<PackagInfoData> getPremiumPackageinfo(

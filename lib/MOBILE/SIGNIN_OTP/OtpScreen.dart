@@ -94,7 +94,7 @@ class _SignInOtpScreenState extends State<SignInOtpScreen> {
 
   //  TextEditingController otpcontroller = TextEditingController();
 
-   Timer? _timer;
+  Timer? _timer;
   RxBool _isOTPresendEnable = true.obs;
   Rx _start = 60.obs; // 30 seconds
 
@@ -142,7 +142,7 @@ class _SignInOtpScreenState extends State<SignInOtpScreen> {
     if (_timer != null) {
       _timer!.cancel();
     }
-    
+
     super.dispose();
   }
 
@@ -484,7 +484,8 @@ class _SignInOtpScreenState extends State<SignInOtpScreen> {
                                                     }
                                                   });
                                                 } catch (e) {
-                                                  writeToFile(e, "signupPageFunctionCall");
+                                                  writeToFile(e,
+                                                      "signupPageFunctionCall");
                                                   print(e.toString() + "hello");
                                                   Get.back();
                                                 }
@@ -590,8 +591,8 @@ class _SignInOtpScreenState extends State<SignInOtpScreen> {
                                     height: screenwidth / 8,
                                     child: TextButton(
                                       onPressed: () {
-                                        // Get.back();
-                                        Get.offAll(() => const Mobilelogin());
+                                        Get.back();
+                                        // Get.offAll(() => const Mobilelogin());
                                       },
                                       style: const ButtonStyle(
                                           backgroundColor:

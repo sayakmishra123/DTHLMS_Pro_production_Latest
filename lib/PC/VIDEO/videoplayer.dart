@@ -62,8 +62,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
   int? selectedListIndex = -1; // Track the selected list tile
   List<double> downloadProgress = List.filled(1000, 0.0);
   int selectedIndex = -1;
-  // Getx getx = Get.put(Getx());
-
   late final player = Player();
   late final controller = VideoController(player);
   final List<double> speeds = [0.5, 1.0, 1.5, 2.0];
@@ -73,7 +71,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
   TextEditingController timeController = TextEditingController();
   Timer? _timer;
   RxBool expanded = false.obs;
-
   List<Map<String, dynamic>> VideoPlayInfoDetails = [];
 
   @override
@@ -2540,8 +2537,12 @@ class _AskDoubtState extends State<AskDoubt> {
                       String key = await getUploadAccessKey(
                           context, getx.loginuserdata[0].token);
                       if (key != "") {
-                        uploadSheet(_selectedImage!,
-                                getx.loginuserdata[0].token, key, "AskDoubt",context)
+                        uploadSheet(
+                                _selectedImage!,
+                                getx.loginuserdata[0].token,
+                                key,
+                                "AskDoubt",
+                                context)
                             .then((documentId) {
                           if (documentId == "") {
                             setState(() {

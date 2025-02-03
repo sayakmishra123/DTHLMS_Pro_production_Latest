@@ -48,9 +48,10 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
 
   TextEditingController loginemail = TextEditingController();
   TextEditingController loginpassword = TextEditingController();
+
   TextEditingController loginotp = TextEditingController();
   FocusNode focusNode = FocusNode();
-
+  TextEditingController signupconfirmpassword = TextEditingController();
   final GlobalKey<FormState> desktop_key1 = GlobalKey();
   final GlobalKey<FormState> desktop_key2 = GlobalKey();
 
@@ -640,7 +641,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                   width:
                                                                       formfieldsize,
                                                                   child: Text(
-                                                                    'Phone Number',
+                                                                    'Contact Number',
                                                                     style:
                                                                         FontFamily
                                                                             .font,
@@ -755,7 +756,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                           labelStyle:
                                                                               GoogleFonts.outfit(),
                                                                           labelText:
-                                                                              'Phone no',
+                                                                              'Contact no',
                                                                         ),
                                                                         inputFormatters: [
                                                                           FilteringTextInputFormatter.allow(
@@ -765,12 +766,16 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                             (value) {
                                                                           if (value == null ||
                                                                               value.isEmpty) {
-                                                                            return 'Phone number is required';
+                                                                            return 'Contact number is required';
                                                                           }
 
                                                                           if (!RegExp(r'^[0-9]+$')
                                                                               .hasMatch(value)) {
                                                                             return 'Phone number must contain only digits';
+                                                                          }
+                                                                          if (value.length > 10 &&
+                                                                              selectedCountryCodePh.toString().startsWith('1')) {
+                                                                            return "The number must be 10 digits.";
                                                                           }
                                                                           return null;
                                                                         },
@@ -962,26 +967,6 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                   () => SizedBox(
                                                                       width: formfieldsize,
                                                                       child: TextFormField(
-                                                                          // onFieldSubmitted: (value) async {
-                                                                          //   if (activationkey.text.trim().length >= 10 ||
-                                                                          //       activationkey.text.trim().length == 0) {
-                                                                          //     if (desktop_key1.currentState!.validate() && GetUtils.isEmail(signupemail.text)) {
-                                                                          //       desktop_key1.currentState!.save();
-                                                                          //       if (await checkUserBeforeRegister(
-                                                                          //             context,
-                                                                          //             signupemail.text,
-                                                                          //             signupphno.text,
-                                                                          //             activationkey.text,
-                                                                          //           ) !=
-                                                                          //           '') {
-                                                                          //         desktop_key1.currentState!.save();
-                                                                          //         Get.to(() => OTPScreen(signupphno.text, signupfirstname.text, signuplastname.text, signupemail.text, signuppassword.text, signupwaphno.text, signupphno.text, activationkey.text, phoneNumberCountryId.text, whatsAppNumberCountryId.text), transition: Transition.leftToRight);
-                                                                          //       }
-                                                                          //     } else {
-                                                                          //       Get.snackbar("Error", "Please enter valid details", colorText: ColorPage.white);
-                                                                          //     }
-                                                                          //   }
-                                                                          // },
                                                                           style: TextStyle(fontSize: 14),
                                                                           obscureText: getx.signuppasswordshow.value,
                                                                           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -1050,6 +1035,105 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                 )
                                                               ],
                                                             ),
+
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                SizedBox(
+                                                                  width:
+                                                                      formfieldsize,
+                                                                  child: Text(
+                                                                    'Confirm Password',
+                                                                    style:
+                                                                        FontFamily
+                                                                            .font,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: height,
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Obx(
+                                                                  () => SizedBox(
+                                                                      width: formfieldsize,
+                                                                      child: TextFormField(
+                                                                          style: TextStyle(fontSize: 14),
+                                                                          obscureText: getx.signuppasswordshow.value,
+                                                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                          textInputAction: TextInputAction.next,
+                                                                          validator: (value) {
+                                                                            if (value!
+                                                                                .isEmpty) {
+                                                                              return 'Confirm Password cannot be blank';
+                                                                            } else if (value.length <
+                                                                                8) {
+                                                                              return 'Confirm Password must be at least 9 characters long';
+                                                                            } else if (!RegExp(r'^(?=.*[A-Z])').hasMatch(
+                                                                                value)) {
+                                                                              return 'Confirm Password must contain at least one uppercase letter';
+                                                                            } else if (!RegExp(r'^(?=.*[a-z])').hasMatch(
+                                                                                value)) {
+                                                                              return 'Confirm Password must contain at least one lowercase letter';
+                                                                            } else if (!RegExp(r'^(?=.*\d)').hasMatch(
+                                                                                value)) {
+                                                                              return 'Confirm Password must contain at least one number';
+                                                                            } else if (!RegExp(r'^(?=.*[\W_])').hasMatch(
+                                                                                value)) {
+                                                                              return 'Confirm Password must contain at least one special character';
+                                                                            } else if (RegExp(r'[a-zA-Z]').allMatches(value).length <
+                                                                                5) {
+                                                                              return 'Confirm Password must contain at least 5 alphabetic characters (both uppercase and lowercase)';
+                                                                            }
+                                                                            return null;
+                                                                          },
+                                                                          keyboardType: TextInputType.visiblePassword,
+                                                                          controller: signupconfirmpassword,
+                                                                          decoration: InputDecoration(
+                                                                            hintText:
+                                                                                'Confirm Password',
+                                                                            fillColor: Color.fromARGB(
+                                                                                255,
+                                                                                247,
+                                                                                246,
+                                                                                246),
+                                                                            filled:
+                                                                                true,
+                                                                            focusedBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                width: 0.5,
+                                                                                color: Color.fromARGB(255, 196, 194, 194),
+                                                                              ),
+                                                                              gapPadding: 20,
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            enabledBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                width: 0.5,
+                                                                                color: Color.fromARGB(255, 196, 194, 194),
+                                                                              ),
+                                                                              gapPadding: 20,
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            suffixIcon: IconButton(
+                                                                                onPressed: () {
+                                                                                  getx.signuppasswordshow.value = !getx.signuppasswordshow.value;
+                                                                                },
+                                                                                icon: getx.signuppasswordshow.value ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off)),
+                                                                          ))),
+                                                                )
+                                                              ],
+                                                            ),
+
                                                             SizedBox(
                                                               height: height,
                                                             ),
@@ -1169,7 +1253,8 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                                                                         onPressed:
                                                                             () async {
                                                                           if (desktop_key1.currentState!.validate() &&
-                                                                              GetUtils.isEmail(signupemail.text)) {
+                                                                              GetUtils.isEmail(signupemail.text) &&
+                                                                              signupconfirmpassword.text == signuppassword.text) {
                                                                             print("section 1 shubha");
                                                                             print(activationkey.text);
                                                                             await checkUserBeforeRegister(context, signupemail.text, signupphno.text, activationkey.text.toString()).then((activationKey) {

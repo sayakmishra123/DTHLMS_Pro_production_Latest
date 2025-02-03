@@ -698,8 +698,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                       const EdgeInsets.symmetric(vertical: 20),
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      
-                                      signupApi(    
+                                      signupApi(
                                           context,
                                           widget.signupuser,
                                           widget.signupfirstname,
@@ -720,9 +719,8 @@ class _OTPScreenState extends State<OTPScreen> {
                                         padding: WidgetStatePropertyAll(
                                             EdgeInsets.symmetric(
                                                 horizontal: 30, vertical: 20)),
-                                        backgroundColor:
-                                            WidgetStatePropertyAll(
-                                                ColorPage.color1),
+                                        backgroundColor: WidgetStatePropertyAll(
+                                            ColorPage.color1),
                                         shape: WidgetStatePropertyAll(
                                             ContinuousRectangleBorder(
                                                 borderRadius: BorderRadius.all(
@@ -743,9 +741,8 @@ class _OTPScreenState extends State<OTPScreen> {
                                       Navigator.pop(context);
                                     },
                                     style: const ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStatePropertyAll(
-                                                ColorPage.red),
+                                        backgroundColor: WidgetStatePropertyAll(
+                                            ColorPage.red),
                                         shape: WidgetStatePropertyAll(
                                             ContinuousRectangleBorder(
                                                 borderRadius: BorderRadius.all(
