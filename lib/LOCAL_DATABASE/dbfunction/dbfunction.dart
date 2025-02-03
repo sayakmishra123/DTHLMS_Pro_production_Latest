@@ -2608,104 +2608,6 @@ String fetchDownloadPathOfVideo(String videoId, String packageId) {
   return downloadPath;
 }
 
-void createTables() {
-  _db.execute('''
-      CREATE TABLE IF NOT EXISTS TblPackageInfo (
-        AppStoreId INTEGER,
-        CategoryOrder INTEGER,
-        ImageType TEXT,
-        Heading TEXT,
-        PremiumPackageListInfo TEXT
-      )
-      ''');
-
-  _db.execute('''
-      CREATE TABLE IF NOT EXISTS TblPremiumPackage (
-        SortingOrder INTEGER,
-        DocumentUrl TEXT,
-        PackageId INTEGER PRIMARY KEY,
-        PackageName TEXT,
-        PackageBannerPathUrl TEXT,
-        MinPackagePrice REAL
-      )
-      ''');
-}
-
-void insertApiResponse(ApiResponse apiResponse) {
-  for (PackageInfo packageInfo in apiResponse.result) {
-    insertPackageInfo(packageInfo);
-    for (PremiumPackage premiumPackage in packageInfo.premiumPackageListInfo) {
-      insertPremiumPackage(premiumPackage);
-    }
-  }
-}
-
-void insertPackageInfo(PackageInfo packageInfo) {
-  String premiumPackagesJson = jsonEncode(
-      packageInfo.premiumPackageListInfo.map((e) => e.toJson()).toList());
-
-  _db.execute(
-    '''
-        INSERT INTO TblPackageInfo (AppStoreId, CategoryOrder, ImageType, Heading, PremiumPackageListInfo)
-        VALUES (?, ?, ?, ?, ?)
-      ''',
-    [
-      packageInfo.appStoreId,
-      packageInfo.categoryOrder,
-      packageInfo.imageType,
-      packageInfo.heading,
-      premiumPackagesJson,
-    ],
-  );
-}
-
-// void insertPremiumPackage(PremiumPackage premiumPackage) {
-//   _db.execute(
-//     '''
-//         INSERT INTO TblPremiumPackage (SortingOrder, DocumentUrl, PackageId, PackageName, PackageBannerPathUrl, MinPackagePrice)
-//         VALUES (?, ?, ?, ?, ?, ?)
-//       ''',
-//     [
-//       premiumPackage.sortingOrder,
-//       premiumPackage.documentUrl,
-//       premiumPackage.packageId,
-//       premiumPackage.packageName,
-//       premiumPackage.packageBannerPathUrl,
-//       premiumPackage.minPackagePrice,
-//     ],
-//   );
-// }
-
-List<PackageInfo> fetchAllPackageInfo() {
-  var result = _db.select('SELECT * FROM TblPackageInfo');
-  return result.map((row) {
-    return PackageInfo(
-      appStoreId: row['AppStoreId'],
-      categoryOrder: row['CategoryOrder'],
-      imageType: row['ImageType'],
-      heading: row['Heading'],
-      premiumPackageListInfo:
-          (jsonDecode(row['PremiumPackageListInfo']) as List)
-              .map((e) => PremiumPackage.fromJson(e))
-              .toList(),
-    );
-  }).toList();
-}
-
-List<PremiumPackage> fetchAllPremiumPackages() {
-  var result = _db.select('SELECT * FROM TblPremiumPackage');
-  return result.map((row) {
-    return PremiumPackage(
-      sortingOrder: row['SortingOrder'],
-      documentUrl: row['DocumentUrl'],
-      packageId: row['PackageId'],
-      packageName: row['PackageName'],
-      packageBannerPathUrl: row['PackageBannerPathUrl'],
-      minPackagePrice: row['MinPackagePrice'],
-    );
-  }).toList();
-}
-
 void createTheorySet() {
   _db.execute('''
    CREATE TABLE IF NOT EXISTS TblTheorySet( 
@@ -3804,50 +3706,41 @@ Future<void> _createDB() async {
 }
 
 Future<void> deleteAllPackages() async {
-  final stmt = _db.prepare('DELETE FROM packages');
-  stmt.execute([]);
-  stmt.dispose();
+  _db.execute('DELETE FROM packages');
 }
 
-// Delete all data from the premium_packages table
 Future<void> deleteAllPremiumPackages() async {
-  final stmt = _db.prepare('DELETE FROM premium_packages');
-  stmt.execute([]);
-  stmt.dispose();
+  _db.execute('DELETE FROM premium_packages');
 }
 
 // Insert PackageInfo into database
-Future<void> insertPackage(PackageInfo package) async {
-  // final db = await database;
-  final stmt = _db.prepare('''
+Future<void> insertPackages(List<PackageInfo> packages) async {
+  for (var package in packages) {
+    _db.execute('''
       INSERT INTO packages (appStoreId, categoryOrder, imageType, heading) 
       VALUES (?, ?, ?, ?)
-    ''');
-
-  stmt.execute([
-    package.appStoreId,
-    package.categoryOrder,
-    package.imageType,
-    package.heading
-  ]);
-  stmt.dispose();
+    ''', [
+      package.appStoreId,
+      package.categoryOrder,
+      package.imageType,
+      package.heading
+    ]);
+  }
 }
 
-// Insert PremiumPackage into database
-Future<void> insertPremiumPackage(PremiumPackage package) async {
-  // final db = await database;
-  final stmt = _db.prepare('''
+// // Insert PremiumPackage into database
+Future<void> insertPremiumPackages(List<PremiumPackage> packages) async {
+  for (var package in packages) {
+    _db.execute('''
       INSERT INTO premium_packages (packageId, packageName, packageBannerPathUrl, minPackagePrice) 
       VALUES (?, ?, ?, ?)
-    ''');
-
-  stmt.execute([
-    package.packageId,
-    package.packageName,
-    package.packageBannerPathUrl,
-    package.minPackagePrice
-  ]);
-  stmt.dispose();
+    ''', [
+      package.packageId,
+      package.packageName,
+      package.packageBannerPathUrl,
+      package.minPackagePrice
+    ]);
+  }
 }
 
 Future<List<PackageInfo>> fetchAllData() async {
@@ -3856,12 +3749,13 @@ Future<List<PackageInfo>> fetchAllData() async {
   // Fetch all packages
   final packageResults = _db.select('SELECT * FROM packages');
   List<PackageInfo> packageList = packageResults.map((row) {
+    print(row['imageType']);
     return PackageInfo(
       appStoreId: row['appStoreId'],
       categoryOrder: row['categoryOrder'],
       imageType: row['imageType'],
       heading: row['heading'],
-      premiumPackageListInfo: [], // ✅ Ensure it's initialized properly
+      premiumPackageListInfo: [], //Ensure it's initialized properly
     );
   }).toList();
 
