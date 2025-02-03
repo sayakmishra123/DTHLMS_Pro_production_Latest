@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/bannerInfoPage.dart';
 import 'package:dthlms/MOBILE/THEORY_EXAM/store_dashboard.dart';
 import 'package:dthlms/MOBILE/store/list/searchlist.dart';
@@ -56,215 +57,91 @@ class ListviewPackage extends StatefulWidget {
 }
 
 class _ListviewPackageState extends State<ListviewPackage> {
-  final List<Map<String, String>> episodes = [
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 1 | New Package | Full course',
-      'views': '25K views • 5 days ago',
-      'duration': '22:35'
-    },
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 2 | New Package | Full course',
-      'views': '18K students • 6 days ago',
-      'duration': '22:33'
-    },
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 3 | New Package | Full course',
-      'views': '22K students • 7 days ago',
-      'duration': '23:06'
-    },
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 4 | New Package | Full course',
-      'views': '19K students • 8 days ago',
-      'duration': '23:05'
-    },
-  ];
+  List course = ['All', 'Courses'];
+  List other = ['Professional', 'Professional and old Syllabus'];
 
-  final List<Map<String, String>> viewersChoice = [
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'course 47 || 22 Oct 2024',
-      'views': '1.2 lakh students • 1 day ago',
-      'duration': '43:24'
-    },
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'course 45 | course | 21 Oct 2024',
-      'views': '1.3 lakh students • 2 days ago',
-      'duration': '49:00'
-    },
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'Gift With A Mystery | Full course | 19 Oct 2024',
-      'views': '79K students • 3 days ago',
-      'duration': '1:31:10'
-    },
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'course 478 || 22 Oct 2024',
-      'views': '1.2 lakh students • 1 day ago',
-      'duration': '43:24'
-    },
-  ];
-
-  late List<bool> _isSelected = [];
-  late List<bool> _isSelected2 = [];
+  // Observable list for packages using GetX
+  RxList<PackageInfo> packages = <PackageInfo>[].obs;
 
   @override
   void initState() {
     super.initState();
-    // log('init state');
-    getFullBannerPackages(context, getx.loginuserdata[0].token);
-
-    _isSelected = List.generate(
-      course.length,
-      (index) => false,
-    );
-    _isSelected2 = List.generate(
-      other.length,
-      (index) => false,
-    );
-    // Initialize selection state
+    fetchData(); // Fetch data on screen load
   }
 
-  void _toggleSelection(int index) {
-    setState(
-      () {
-        _isSelected[index] = !_isSelected[index]; // Toggle selection
-      },
-    );
+  // Function to fetch data from the API and update the observable list
+  Future<void> fetchData() async {
+    // Here you would call your method to fetch data, for example:
+    await getFullBannerPackages(context, getx.loginuserdata[0].token);
+    // Then update the RxList with the fetched data (replace this with your actual fetched data)
+    packages.value = await fetchAllData(); // Assume this fetches your data
   }
-
-  void _toggleSelection2(int index) {
-    setState(() {
-      _isSelected2[index] = !_isSelected2[index]; // Toggle selection
-    });
-  }
-
-  void _sortEpisodes(String order) {
-    setState(() {
-      if (order == "A to Z") {
-        episodes.sort((a, b) => a['title']!.compareTo(b['title']!));
-      } else if (order == "Z to A") {
-        episodes.sort((a, b) => b['title']!.compareTo(a['title']!));
-      } else if (order == "Other Style") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VerticalCourselist(),
-          ),
-        );
-      } else {
-        // Reset to original order if needed
-        // Here you can implement logic to reset to original order if you store it
-      }
-    });
-  }
-
-  List course = ['All', 'Courses'];
-  List other = ['Professional', 'Professional and old Syllabus'];
-
-  // final RxList<Map<String, dynamic>> style = [
-  //   {
-  //     "title": 'Course 1',
-  //     'banner': true,
-  //     'show': true,
-  //     'vartical': false,
-  //     'style': 0
-  //   },
-  //   {
-  //     "title": 'Course 2',
-  //     'banner': false,
-  //     'show': true,
-  //     'vartical': true,
-  //     'style': 1
-  //   },
-  //   {
-  //     "title": '',
-  //     'banner': true,
-  //     'show': true,
-  //     'vartical': true,
-  //     'style': 0,
-  //   },
-  //   {
-  //     "title": 'Course 4',
-  //     'banner': false,
-  //     'show': true,
-  //     'vartical': false,
-  //     'style': 0
-  //   },
-  // ].obs;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Courses'),
-          actions: [
-            IconButton(
-                onPressed: () async {
-                  showSearch(context: context, delegate: SearchList());
-                },
-                icon: Icon(Icons.search)),
-            SortMenu(
-              onSortSelected: _sortEpisodes,
-            )
-          ],
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        ),
-        body: Obx(
-          () => getx.style.isNotEmpty
-              ? SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // if (getx.style.isNotEmpty)
-                      for (int i = 0; i < getx.style[0].result.length; i++) ...[
-                        // Full Banner Section
-                        if (getx.style[0].result[i].imageType == 'Full Banner')
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: HeadingBox(
-                              mode: 1,
-                              imageUrl: getx
-                                  .style[0].result[i].premiumPackageListInfo,
-                              package: getx
-                                  .style[0].result[i].premiumPackageListInfo,
-                            ),
-                          ),
+      appBar: AppBar(
+        title: const Text('Courses'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              showSearch(context: context, delegate: SearchList());
+            },
+            icon: const Icon(Icons.search),
+          ),
+        ],
+        backgroundColor: Colors.white,
+      ),
+      body: Obx(() {
+        // Reactive state with Obx for when the packages list is updated
+        if (packages.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-                        //   // Horizontal Package Section
-                        if (getx.style[0].result[i].imageType ==
-                            'Horizontal Package')
-                          _buildHorizontalPackageList(getx.style[0].result[i],
-                              getx.style[0].result[i].premiumPackageListInfo),
-
-                        // // Vertical Banner Section
-                        if (getx.style[0].result[i].imageType ==
-                            'Vertical Package')
-                          _buildVerticalPackageList(getx.style[0].result[i],
-                              getx.style[0].result[i].premiumPackageListInfo),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 5, bottom: 0, top: 10),
-                        //   child: Row(children: []),
-                        // ),
-                      ]
-                      // else ...[
-
-                      // ]
-                    ],
+        // print(packages[0].);
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // if (getx.style.isNotEmpty)
+              for (int i = 0; i < packages.length; i++) ...[
+                Text(packages[i].imageType),
+                // Full Banner Section
+                if (packages[i].imageType == 'Full Banner')
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: HeadingBox(
+                      mode: 1,
+                      imageUrl: packages[i].premiumPackageListInfo,
+                      package: packages[i].premiumPackageListInfo,
+                    ),
                   ),
-                )
-              : Center(
-                  child: CircularProgressIndicator(),
+
+                //   // Horizontal Package Section
+                if (packages[i].imageType == 'Horizontal Package')
+                  _buildHorizontalPackageList(
+                      packages[i], packages[i].premiumPackageListInfo),
+
+                // // Vertical Banner Section
+                if (packages[i].imageType == 'Vertical Package')
+                  _buildVerticalPackageList(
+                      packages[i], packages[i].premiumPackageListInfo),
+                SizedBox(
+                  height: 20,
                 ),
-        ));
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 5, bottom: 0, top: 10),
+                //   child: Row(children: []),
+                // ),
+              ]
+              // else ...[
+
+              // ]
+            ],
+          ),
+        );
+      }),
+    );
   }
 
   Widget _buildHorizontalPackageList(

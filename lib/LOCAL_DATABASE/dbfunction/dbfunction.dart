@@ -49,7 +49,7 @@ void testSQLCipherOnWindows() async {
   }
 
   getVersion();
-
+  _createDB();
   createtblPackageDetails();
   createtblMCQhistory();
   creatTableVideoplayInfo();
@@ -2659,22 +2659,22 @@ void insertPackageInfo(PackageInfo packageInfo) {
   );
 }
 
-void insertPremiumPackage(PremiumPackage premiumPackage) {
-  _db.execute(
-    '''
-        INSERT INTO TblPremiumPackage (SortingOrder, DocumentUrl, PackageId, PackageName, PackageBannerPathUrl, MinPackagePrice)
-        VALUES (?, ?, ?, ?, ?, ?)
-      ''',
-    [
-      premiumPackage.sortingOrder,
-      premiumPackage.documentUrl,
-      premiumPackage.packageId,
-      premiumPackage.packageName,
-      premiumPackage.packageBannerPathUrl,
-      premiumPackage.minPackagePrice,
-    ],
-  );
-}
+// void insertPremiumPackage(PremiumPackage premiumPackage) {
+//   _db.execute(
+//     '''
+//         INSERT INTO TblPremiumPackage (SortingOrder, DocumentUrl, PackageId, PackageName, PackageBannerPathUrl, MinPackagePrice)
+//         VALUES (?, ?, ?, ?, ?, ?)
+//       ''',
+//     [
+//       premiumPackage.sortingOrder,
+//       premiumPackage.documentUrl,
+//       premiumPackage.packageId,
+//       premiumPackage.packageName,
+//       premiumPackage.packageBannerPathUrl,
+//       premiumPackage.minPackagePrice,
+//     ],
+//   );
+// }
 
 List<PackageInfo> fetchAllPackageInfo() {
   var result = _db.select('SELECT * FROM TblPackageInfo');
@@ -3779,4 +3779,109 @@ Future<void> updateIsSubmittedOnTblTheoryPaperTable(
     writeToFile(e, 'updateIsSubmittedOnTblTheoryPaperTable');
     print('Failed to update details: ${e.toString()}');
   }
+}
+
+Future<void> _createDB() async {
+  _db.execute('''
+      CREATE TABLE IF NOT EXISTS packages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        appStoreId INTEGER,
+        categoryOrder INTEGER,
+        imageType TEXT,
+        heading TEXT
+      );
+    ''');
+
+  _db.execute('''
+      CREATE TABLE IF NOT EXISTS premium_packages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        packageId INTEGER,
+        packageName TEXT,
+        packageBannerPathUrl TEXT,
+        minPackagePrice REAL
+      );
+    ''');
+}
+
+Future<void> deleteAllPackages() async {
+  final stmt = _db.prepare('DELETE FROM packages');
+  stmt.execute([]);
+  stmt.dispose();
+}
+
+// Delete all data from the premium_packages table
+Future<void> deleteAllPremiumPackages() async {
+  final stmt = _db.prepare('DELETE FROM premium_packages');
+  stmt.execute([]);
+  stmt.dispose();
+}
+
+// Insert PackageInfo into database
+Future<void> insertPackage(PackageInfo package) async {
+  // final db = await database;
+  final stmt = _db.prepare('''
+      INSERT INTO packages (appStoreId, categoryOrder, imageType, heading) 
+      VALUES (?, ?, ?, ?)
+    ''');
+
+  stmt.execute([
+    package.appStoreId,
+    package.categoryOrder,
+    package.imageType,
+    package.heading
+  ]);
+  stmt.dispose();
+}
+
+// Insert PremiumPackage into database
+Future<void> insertPremiumPackage(PremiumPackage package) async {
+  // final db = await database;
+  final stmt = _db.prepare('''
+      INSERT INTO premium_packages (packageId, packageName, packageBannerPathUrl, minPackagePrice) 
+      VALUES (?, ?, ?, ?)
+    ''');
+
+  stmt.execute([
+    package.packageId,
+    package.packageName,
+    package.packageBannerPathUrl,
+    package.minPackagePrice
+  ]);
+  stmt.dispose();
+}
+
+Future<List<PackageInfo>> fetchAllData() async {
+  // final db = await database;
+
+  // Fetch all packages
+  final packageResults = _db.select('SELECT * FROM packages');
+  List<PackageInfo> packageList = packageResults.map((row) {
+    return PackageInfo(
+      appStoreId: row['appStoreId'],
+      categoryOrder: row['categoryOrder'],
+      imageType: row['imageType'],
+      heading: row['heading'],
+      premiumPackageListInfo: [], // ✅ Ensure it's initialized properly
+    );
+  }).toList();
+
+  // Fetch all premium packages
+  final premiumResults = _db.select('SELECT * FROM premium_packages');
+  List<PremiumPackage> premiumPackageList = premiumResults.map((row) {
+    return PremiumPackage(
+      packageId: row['packageId'],
+      packageName: row['packageName'],
+      packageBannerPathUrl: row['packageBannerPathUrl'],
+      minPackagePrice: row['minPackagePrice'],
+      sortingOrder: 0,
+      documentUrl: '',
+    );
+  }).toList();
+
+  // Map premium packages to their respective PackageInfo
+  for (var package in packageList) {
+    package.premiumPackageListInfo.addAll(premiumPackageList);
+  }
+
+  return packageList;
 }

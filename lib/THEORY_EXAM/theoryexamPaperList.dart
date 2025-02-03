@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:art_sweetalert/art_sweetalert.dart';
+import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/MOBILE/resultpage/test_result_mobile.dart';
 import 'package:dthlms/PC/MCQ/PRACTICE/termandcondition.dart';
 import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
@@ -9,16 +13,14 @@ import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
-// import 'MOCKTEST/resultmocktest.dart';
-// import 'MOCKTEST/termandcondition.dart';
 
 class TheoryExamPapes extends StatefulWidget {
-  Map paperNames = {};
-  RxList mcqSetList;
-  bool istype;
+  final Map paperNames ;
+  final RxList mcqSetList;
+  final bool istype;
   TheoryExamPapes(this.paperNames, this.mcqSetList, this.istype, {super.key});
 
   @override
@@ -38,11 +40,9 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
   }
 
   getData() async {
-    // log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
     theoryPaperList.clear();
     theoryPaperList.value =
         await fetchTheoryPapertList(widget.paperNames['SetId']);
-    // log(theoryPaperList.toString() + " type");
   }
 
   @override
@@ -67,7 +67,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
         title: Text(
-          'Theory Paperss',
+          'Theory Paperss', 
           style: FontFamily.styleb,
         ),
       ),
@@ -81,12 +81,14 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                   children: List.generate(theoryPaperList.length, (index) {
                     return InkWell(
                       onTap: () async {
-                        if (getx.isInternet.value) {
+                        if (getx.isInternet.value) { 
                           var examcode = await getExamStatus(
                               context,
                               getx.loginuserdata[0].token,
                               theoryPaperList[index]['PaperId'].toString());
-                          if (examcode == 200) {
+                             var decodedResponse = jsonDecode(examcode);
+                          if (decodedResponse['statusCode'] == 200) {
+                            log('hello');
                             Get.to(
                                 transition: Transition.cupertino,
                                 () => TheoryExamTermAndCondition(
@@ -110,7 +112,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                       isEncrypted: false,
                                     ));
                           }
-                          if (examcode == 250) {
+                          if (decodedResponse['statusCode'] == 250) {
                             Get.to(
                                 transition: Transition.cupertino,
                                 () => TheoryExamTermAndCondition(
@@ -134,9 +136,9 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                       isEncrypted: false,
                                     ));
                           }
-                          if (examcode == 300) {
-                            if (getx.isInternet.value) {
-                              getTheryExamResultForIndividual(
+                          if (decodedResponse['statusCode'] == 300) { 
+                            if (getx.isInternet.value) { 
+                                    getTheryExamResultForIndividual(
                                       context,
                                       getx.loginuserdata[0].token,
                                       theoryPaperList[index]['PaperId']
@@ -144,12 +146,17 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                   .then((value) {
                                 print(value);
 
-                                if (value.isEmpty) {
-                                  _showDialogoferror(context, "Not publish!!",
-                                      "The result is not published yet.", () {
-                                    // Navigator.pop(context);
-                                    Get.back();
-                                  }, false);
+                                if (value.isEmpty) { 
+                                 _showDialogoferror(
+                                        context,
+                                        "Not publish!!",
+                                        "The result is not published yet.",
+                                        () {},
+                                        false,
+                                        answersheet: decodedResponse['result'],
+                                        paperid: theoryPaperList[index]
+                                                ['PaperId']
+                                            .toString());
                                 } else {
                                   Get.to(
                                       transition: Transition.cupertino,
@@ -198,7 +205,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                             // }, () {
                             // });
                           }
-                          if (examcode == 400) {
+                          if (decodedResponse['statusCode'] == 400) {
                             _showDialogoferror(context, "Time is Over!",
                                 "your exam is already ended.", () {
                               // Navigator.pop(context);
@@ -340,47 +347,153 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
             // onCancel: onCancelTap,
             type: ArtSweetAlertType.danger));
   }
+    void showDownloadCompleteDialog(filePath) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Download Complete"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("The answer sheet has been downloaded."),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                // Navigator.of(context).pop();
+                Get.off(() => ShowResultPage(
+                      filePath: filePath,
+                      isnet: false,
+                    ));
+                // showPdfDialog(downloadedFilePath);
+              },
+              child: Text("Show Sheet"),
+            ),
+          ],
+        ),
+        // actions: <Widget>[
+        //   TextButton(
+        //     child: Text("Close"),
+        //     onPressed: () => Navigator.of(context).pop(),
+        //   ),
+        // ],
+      ),
+    );
+  }
+    RxBool isDownloading = false.obs;
+  CancelToken cancelToken = CancelToken();
+  String downloadedFilePath = '';
+  double downloadProgress = 0.0;
+  Future<void> testDioDowwnload(path) async {
+    showDialog(
+      context: context,
+      builder: (context) => Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    Dio dio = Dio();
+    String testUrl = path.toString().replaceAll('"', '');
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String filePath =
+        '${appDocDir.path}/test_download.pdf'; // Test download path
+
+    try {
+      await dio.download(testUrl, filePath);
+      debugPrint("Download complete: $filePath");
+      Get.back();
+      showDownloadCompleteDialog(filePath);
+    } catch (e) {
+      Get.back();
+      debugPrint("Error downloading file: $e");
+    }
+  }
 
   _showDialogoferror(context, String title, String desc, VoidCallback ontap,
-      bool iscancelbutton) async {
-    // Alert(
-    //   context: context,
-    //   onWillPopActive: false,
-    //   type: AlertType.info,
-    //   style: AlertStyle(
-    //     isOverlayTapDismiss: false,
-    //     animationType: AnimationType.fromTop,
-    //     titleStyle:
-    //         TextStyle(color: ColorPage.red, fontWeight: FontWeight.bold),
-    //     descStyle: FontFamily.font6,
-    //     isCloseButton: false,
-    //   ),
-    //   title: title,
-    //   desc: desc,
-    //   buttons: [
-    //     DialogButton(
-    //       child:
-    //           Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
-    //       highlightColor: Color.fromRGBO(3, 77, 59, 1),
-    //       onPressed: ontap,
-    //       color: Color.fromRGBO(9, 89, 158, 1),
-    //     ),
-    //   ],
-    // ).show();
-    await ArtSweetAlert.show(
-        barrierDismissible: false,
-        context: context,
-        artDialogArgs: ArtDialogArgs(
-            // denyButtonText: "Cancel",
-            title: title,
-            text: desc,
-            showCancelBtn: false,
-            confirmButtonText: "Ok",
-            onConfirm: ontap,
-            confirmButtonColor: Colors.red,
+      bool iscancelbutton,
+      {String answersheet = "", String paperid = ""}) async {
+    ArtDialogResponse? response = await ArtSweetAlert.show(
+      barrierDismissible: false,
+      context: context,
+      artDialogArgs: ArtDialogArgs(
+        customColumns: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+                style: ButtonStyle(
+                    padding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+                    backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+                onPressed: isDownloading.value
+                    ? null
+                    : () async {
+                        Get.back();
+                        if (File(getx
+                                    .userSelectedPathForDownloadFile.value.isEmpty
+                                ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
+                                : getx.userSelectedPathForDownloadFile.value +
+                                    "\\${paperid}")
+                            .existsSync()) {
+                          Get.to(() => ShowResultPage(
+                                filePath: getx.userSelectedPathForDownloadFile
+                                        .value.isEmpty
+                                    ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
+                                    : getx.userSelectedPathForDownloadFile.value +
+                                        "\\${paperid}",
+                                isnet: false,
+                              ));
+                        } else {
+                          if (answersheet.isNotEmpty) {
+                            testDioDowwnload(answersheet);
+                            // downloadAnswerSheet(answersheet, paperid);
+                          }
+                        }
+                      },
+                // DownloadAnswerSheetAlert();
+            
+                child: Text(
+                  File(getx.userSelectedPathForDownloadFile.value.isEmpty
+                              ? '${getx.defaultPathForDownloadFile}\\${paperid}'
+                              : getx.userSelectedPathForDownloadFile.value +
+                                  "\\${paperid}")
+                          .existsSync()
+                      ? "Show Answer Sheet"
+                      : 'Download Answer Sheet',
+                  style: TextStyle(color: Colors.white),
+                )),
+          ), 
 
-            // onCancel: onCancelTap,
-            type: ArtSweetAlertType.info));
+          // ElevatedButton(
+          //     style: ButtonStyle(
+          //         padding: WidgetStatePropertyAll(
+          //             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+          //         backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+          //     onPressed: () {
+          //       Get.to(() => ShowResultPage(
+          //             filePath: answersheet,
+          //             isnet: true,
+          //           ));
+          //     },
+          //     child: Text(
+          //       'Download Answer Sheet',
+          //       style: TextStyle(color: Colors.white),
+          //     ))
+        ],
+        title: title,
+        text: desc,
+        confirmButtonText: "ok",
+        type: ArtSweetAlertType.info,
+        // denyButtonColor: Colors.green,
+      ),
+    );
+
+    if (response == null) {
+      return;
+    }
+
+    if (response.isTapConfirmButton) {
+      ontap();
+
+      return;
+    }
   }
 
   _onTermDeniey(context) {

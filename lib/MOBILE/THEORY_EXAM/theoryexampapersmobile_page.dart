@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:art_sweetalert/art_sweetalert.dart';
@@ -84,12 +85,13 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                       return InkWell(
                         onTap: () async {
                           if (getx.isInternet.value) {
-                            var examcode = await getExamStatus(
+                            var examcode = await getExamStatus( 
                               context,
                               getx.loginuserdata[0].token,
                               theoryPaperList[index]['PaperId'].toString(),
                             );
-                            if (examcode['statusCode'] == 200) {
+                            var decodedResponse = jsonDecode(examcode);
+                            if (decodedResponse['statusCode'] == 200) {
                               Get.to(
                                   transition: Transition.cupertino,
                                   () => TheoryExamTermAndConditionMobile(
@@ -113,7 +115,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                             .toString(),
                                       ));
                             }
-                            if (examcode['statusCode'] == 250) {
+                            if (decodedResponse['statusCode'] == 250) {
                               Get.to(
                                   transition: Transition.cupertino,
                                   () => TheoryExamTermAndConditionMobile(
@@ -137,7 +139,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                             .toString(),
                                       ));
                             }
-                            if (examcode['statusCode'] == 300) {
+                            if (decodedResponse['statusCode'] == 300) {
                               if (getx.isInternet.value) {
                                 print(theoryPaperList[index]['AnswerSheet']);
                                 getTheryExamResultForIndividual(
@@ -147,14 +149,14 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                 ).then((value) {
                                   print(value);
 
-                                  if (value.isEmpty) {
+                                  if (value.isEmpty) { 
                                     _showDialogoferror(
                                         context,
                                         "Not publish!!",
                                         "The result is not published yet.",
                                         () {},
                                         false,
-                                        answersheet: examcode['result'],
+                                        answersheet: decodedResponse['result'],
                                         paperid: theoryPaperList[index]
                                                 ['PaperId']
                                             .toString());
@@ -186,7 +188,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                             // theoryExamAnswerId: '12',
                                             examId: theoryPaperList[index]['PaperId'].toString(),
                                             pdfUrl: value["CheckedDocumentUrl"].toString(),
-                                            questionanswersheet: examcode['result'] ?? ''));
+                                            questionanswersheet: decodedResponse['result'] ?? ''));
                                   }
                                 });
                               } else {
@@ -202,7 +204,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
 
                               // }, false);
                             }
-                            if (examcode['statusCode'] == 400) {
+                            if (decodedResponse['statusCode'] == 400) {
                               _showDialogoferror(context, "Time is Over!",
                                   "your exam is already ended.", () {
                                 // Navigator.pop(context);
@@ -431,48 +433,51 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
       context: context,
       artDialogArgs: ArtDialogArgs(
         customColumns: [
-          ElevatedButton(
-              style: ButtonStyle(
-                  padding: WidgetStatePropertyAll(
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
-                  backgroundColor: WidgetStatePropertyAll(Colors.blue)),
-              onPressed: isDownloading.value
-                  ? null
-                  : () async {
-                      Get.back();
-                      if (File(getx
-                                  .userSelectedPathForDownloadFile.value.isEmpty
-                              ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+                style: ButtonStyle(
+                    padding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
+                    backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+                onPressed: isDownloading.value
+                    ? null
+                    : () async {
+                        Get.back();
+                        if (File(getx
+                                    .userSelectedPathForDownloadFile.value.isEmpty
+                                ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
+                                : getx.userSelectedPathForDownloadFile.value +
+                                    "\\${paperid}")
+                            .existsSync()) {
+                          Get.to(() => ShowResultPage(
+                                filePath: getx.userSelectedPathForDownloadFile
+                                        .value.isEmpty
+                                    ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
+                                    : getx.userSelectedPathForDownloadFile.value +
+                                        "\\${paperid}",
+                                isnet: false,
+                              ));
+                        } else {
+                          if (answersheet.isNotEmpty) {
+                            testDioDowwnload(answersheet);
+                            // downloadAnswerSheet(answersheet, paperid);
+                          }
+                        }
+                      },
+                // DownloadAnswerSheetAlert();
+            
+                child: Text(
+                  File(getx.userSelectedPathForDownloadFile.value.isEmpty
+                              ? '${getx.defaultPathForDownloadFile}\\${paperid}'
                               : getx.userSelectedPathForDownloadFile.value +
                                   "\\${paperid}")
-                          .existsSync()) {
-                        Get.to(() => ShowResultPage(
-                              filePath: getx.userSelectedPathForDownloadFile
-                                      .value.isEmpty
-                                  ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
-                                  : getx.userSelectedPathForDownloadFile.value +
-                                      "\\${paperid}",
-                              isnet: false,
-                            ));
-                      } else {
-                        if (answersheet.isNotEmpty) {
-                          testDioDowwnload(answersheet);
-                          // downloadAnswerSheet(answersheet, paperid);
-                        }
-                      }
-                    },
-              // DownloadAnswerSheetAlert();
-
-              child: Text(
-                File(getx.userSelectedPathForDownloadFile.value.isEmpty
-                            ? '${getx.defaultPathForDownloadFile}\\${paperid}'
-                            : getx.userSelectedPathForDownloadFile.value +
-                                "\\${paperid}")
-                        .existsSync()
-                    ? "Show Answer Sheet"
-                    : 'Download Answer Sheet',
-                style: TextStyle(color: Colors.white),
-              )),
+                          .existsSync()
+                      ? "Show Answer Sheet"
+                      : 'Download Answer Sheet',
+                  style: TextStyle(color: Colors.white),
+                )),
+          ), 
 
           // ElevatedButton(
           //     style: ButtonStyle(
