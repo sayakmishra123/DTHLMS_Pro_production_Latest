@@ -66,13 +66,17 @@ class _ListviewPackageState extends State<ListviewPackage> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // Fetch data on screen load
+
+    packages.isEmpty ? fetchData() : null; // Fetch data on screen load
   }
 
   // Function to fetch data from the API and update the observable list
   Future<void> fetchData() async {
     // Here you would call your method to fetch data, for example:
-    await getFullBannerPackages(context, getx.loginuserdata[0].token);
+
+    if (getx.isInternet.value) {
+      await getFullBannerPackages(context, getx.loginuserdata[0].token);
+    }
     // Then update the RxList with the fetched data (replace this with your actual fetched data)
     packages.value = await fetchAllData(); // Assume this fetches your data
   }
@@ -106,7 +110,6 @@ class _ListviewPackageState extends State<ListviewPackage> {
             children: [
               // if (getx.style.isNotEmpty)
               for (int i = 0; i < packages.length; i++) ...[
-                Text(packages[i].imageType),
                 // Full Banner Section
                 if (packages[i].imageType == 'Full Banner')
                   Padding(
@@ -130,10 +133,10 @@ class _ListviewPackageState extends State<ListviewPackage> {
                 SizedBox(
                   height: 20,
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 5, bottom: 0, top: 10),
-                //   child: Row(children: []),
-                // ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5, bottom: 0, top: 10),
+                  child: Row(children: []),
+                ),
               ]
               // else ...[
 
@@ -486,12 +489,17 @@ class _HeadingBoxState extends State<HeadingBox> {
   RxList list = [].obs;
   @override
   Widget build(BuildContext context) {
+    // Get the screen width for responsiveness
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Stack(
       children: [
-        //  getx.bannerImageList.isNotEmpty
+        // Conditional Layout based on mode
         widget.mode == 0
             ? Container(
-                height: 110,
+                height: screenWidth < 600
+                    ? 110
+                    : 150, // Adjust height based on screen size
                 width: MediaQuery.of(context).size.width,
                 child: InkWell(
                   child: Padding(
@@ -500,37 +508,28 @@ class _HeadingBoxState extends State<HeadingBox> {
                       items: widget.imageUrl.map((item) {
                         return InkWell(
                           onTap: () {
-                            Get.to(() => BannerDetailsPage(
-                                  index: currentIndex.value,
-                                ));
+                            // Navigate to the banner details page
+                            Get.to(() =>
+                                BannerDetailsPage(index: currentIndex.value));
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Container(
-                              // padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  // borderRadius: BorderRadius.circular(20),
-                                  // gradient: LinearGradient(
-                                  //   begin: Alignment.centerLeft,
-                                  //   end: Alignment.centerRight,
-                                  //   // colors: ColorPage.gradientHeadingBox,
-                                  // ),
-                                  ),
+                              // Adjust layout for smaller screen sizes
+                              decoration: BoxDecoration(),
                               child: item["BannerImagePosition"] == "middle"
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       child: Image.network(
                                         item['DocumentUrl']!,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.cover,
                                         width: double.infinity,
                                         errorBuilder:
                                             (context, error, stackTrace) {
-                                          return Text(
-                                            'Image failed',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16),
-                                          );
+                                          return Text('Image failed',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16));
                                         },
                                       ),
                                     )
@@ -561,33 +560,27 @@ class _HeadingBoxState extends State<HeadingBox> {
               )
             : Container(
                 height: 150,
-                width: MediaQuery.of(context).size.width,
+                width: screenWidth - 10,
                 child: InkWell(
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 0),
                     child: CarouselSlider(
                       items: widget.package.map((item) {
-                        print(item.documentUrl);
                         return Padding(
                           padding: const EdgeInsets.all(0.0),
                           child: Container(
-                              // padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  // borderRadius: BorderRadius.circular(20),
-                                  // gradient: LinearGradient(
-                                  //   begin: Alignment.centerLeft,
-                                  //   end: Alignment.centerRight,
-                                  //   // colors: ColorPage.gradientHeadingBox,
-                                  // ),
-                                  ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  item.documentUrl,
-                                  fit: BoxFit.fill,
-                                  width: double.infinity,
-                                ),
-                              )),
+                            decoration: BoxDecoration(),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                item.packageBannerPathUrl,
+                                fit: BoxFit.fill,
+                                width: double.infinity,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Center(child: Image.asset(logopath)),
+                              ),
+                            ),
+                          ),
                         );
                       }).toList(),
                       carouselController: carouselController,
@@ -604,55 +597,58 @@ class _HeadingBoxState extends State<HeadingBox> {
                   ),
                 ),
               ),
-        Obx(
-          () => list.isEmpty
-              ? Positioned(
-                  bottom: 10,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: widget.package.isEmpty
-                        ? widget.imageUrl.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () =>
-                                  carouselController.animateToPage(entry.key),
-                              child: Container(
-                                width: currentIndex == entry.key ? 18 : 10,
-                                height: 7,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 3.0),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: currentIndex == entry.key
-                                        ? ColorPage.blue
-                                        : ColorPage.white),
-                              ),
-                            );
-                          }).toList()
-                        : widget.package.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () =>
-                                  carouselController.animateToPage(entry.key),
-                              child: Container(
-                                width: currentIndex == entry.key ? 18 : 10,
-                                height: 7,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 3.0),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: currentIndex == entry.key
-                                        ? ColorPage.blue
-                                        : ColorPage.white),
-                              ),
-                            );
-                          }).toList(),
-                  ),
-                )
-              : SizedBox(),
-        ),
+        // Bottom Navigation Dots
+        // Obx(
+        //   () => list.isEmpty
+        //       ? Positioned(
+        //           bottom: 10,
+        //           left: 0,
+        //           right: 0,
+        //           child: Row(
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: widget.package.isEmpty
+        //                 ? widget.imageUrl.asMap().entries.map((entry) {
+        //                     return GestureDetector(
+        //                       onTap: () =>
+        //                           carouselController.animateToPage(entry.key),
+        //                       child: Container(
+        //                         width: currentIndex == entry.key ? 18 : 10,
+        //                         height: 7,
+        //                         margin:
+        //                             const EdgeInsets.symmetric(horizontal: 3.0),
+        //                         decoration: BoxDecoration(
+        //                           border: Border.all(color: Colors.grey),
+        //                           borderRadius: BorderRadius.circular(20),
+        //                           color: currentIndex == entry.key
+        //                               ? ColorPage.blue
+        //                               : ColorPage.white,
+        //                         ),
+        //                       ),
+        //                     );
+        //                   }).toList()
+        //                 : widget.package.asMap().entries.map((entry) {
+        //                     return GestureDetector(
+        //                       onTap: () =>
+        //                           carouselController.animateToPage(entry.key),
+        //                       child: Container(
+        //                         width: currentIndex == entry.key ? 18 : 10,
+        //                         height: 7,
+        //                         margin:
+        //                             const EdgeInsets.symmetric(horizontal: 3.0),
+        //                         decoration: BoxDecoration(
+        //                           border: Border.all(color: Colors.grey),
+        //                           borderRadius: BorderRadius.circular(20),
+        //                           color: currentIndex == entry.key
+        //                               ? ColorPage.blue
+        //                               : ColorPage.white,
+        //                         ),
+        //                       ),
+        //                     );
+        //                   }).toList(),
+        //           ),
+        //         )
+        //       : SizedBox(),
+        // ),
       ],
     );
   }

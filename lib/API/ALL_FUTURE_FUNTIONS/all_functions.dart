@@ -1956,20 +1956,22 @@ Future<List<modelclass.PackageInfo>> getFullBannerPackages(
       body: jsonEncode({}),
     );
 
-    log(res.body.toString());
     if (res.statusCode == 201) {
       var apiResponse = ApiResponse.fromJson(json.decode(res.body));
 
-      // Store in Encrypted Database
+      // Clear previous packages and premium packages from the database
+      await deleteAllPackages();
+      await deleteAllPremiumPackages();
+
+      // Insert the packages into the database
+      await insertPackages(apiResponse.result);
+
+      // Insert the premium packages for each package into the database
       for (var package in apiResponse.result) {
-        deleteAllPackages();
-        deleteAllPremiumPackages();
-        insertPackage(package);
-        for (var premiumPackage in package.premiumPackageListInfo) {
-          insertPremiumPackage(premiumPackage);
-        }
+        await insertPremiumPackages(package.premiumPackageListInfo);
       }
 
+      // Return the list of packages
       return apiResponse.result;
     } else {
       return []; // Return empty list if API fails

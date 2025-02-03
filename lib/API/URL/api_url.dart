@@ -6,7 +6,7 @@ class ClsUrlApi {
 
   static const loginEndpoint = '/api/auth/login';
   static const checkUserExitenceBeforeregister =
-      '/api/AnonymousDataGet/ExecuteJson/spValidateexistingUser/1'; //////////// 
+      '/api/AnonymousDataGet/ExecuteJson/spValidateexistingUser/1'; ////////////
   static const socialMediaIconsApi =
       '/api/AuthDataGet/ExecuteJson/sptblSocialMediaLinks/14';
   static const getInfiniteMarqueeDetailsApi =
