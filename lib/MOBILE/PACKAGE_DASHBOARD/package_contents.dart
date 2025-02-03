@@ -89,27 +89,40 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       callData();
     });
     getx.isInsidePackage.value = true;
-    getVideoCount();
+    getVideoCount(); 
+    getBooksCount();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getMeetingList(context);
     });
 
-    getChapterFiles(
-            parentId: 0, "Book", getx.selectedPackageId.value.toString())
-        .whenComplete(
-      () {
-        setState(() {});
-      },
-    );
 
     super.initState();
   }
 
   // Video section data
-  RxBool hasData = false.obs;
+  RxBool hasData = false.obs; 
   int videoCountData = 0;
+  int booksCountData = 0;
+
   RxInt allowedDuration = 0.obs;
   RxString formattedDuration = ''.obs;
+
+    getBooksCount() async {
+    var data =
+        await getAllPackageDetailsForBooksCount(widget.packageid.toString());
+
+    if (data.isNotEmpty) {
+     
+      
+
+     setState(() {
+      booksCountData = data.length;
+       
+     });
+
+    }
+    print(booksCountData);
+  }
 
   getVideoCount() async {
     var data =
@@ -460,6 +473,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                             getFolderIconColor(filteredList[index], index),
                         videoCount: videoCountData.toString(),
                         allowedDurationVideo: formattedDuration.value,
+                        booksCount: booksCountData.toString(),
                         // zipText: 'ZIP',
                         // zipTextColor: Colors.orange,
                       ),
@@ -531,6 +545,8 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       required Icon icon,
       required Color iconcolor,
       required String videoCount,
+      required String booksCount,
+
       required String allowedDurationVideo}) {
     Getx getx = Get.put(Getx());
 
@@ -654,13 +670,11 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                             })
                           : title == 'Book'
                               ? CircleAvatar(
-                                  child: Obx(
-                                  () => Text(
-                                    getx.booklist.length.toString(),
+                                  child: Text(
+                                    booksCount.toString(),
                                     style:
                                         FontFamily.style.copyWith(fontSize: 15),
-                                  ),
-                                ))
+                                  ))
                               : SizedBox(),
                   SizedBox(
                     width: 10,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
@@ -416,7 +418,8 @@ class _McqTermAndConditionmobileState extends State<McqTermAndConditionmobile> {
                         if (widget.type == "Theory") {
                           var examcode = await getExamStatus(context,
                               getx.loginuserdata[0].token, widget.paperId);
-                          if (examcode == 200) {
+                              var decodedResponse = jsonDecode(examcode);
+                          if (decodedResponse['statusCode'] == 200) {
                             print("$examcode");
                             Get.off(() => TheoryExamPageMobile( 
                                   // documentUrl: widget.url,
@@ -427,7 +430,7 @@ class _McqTermAndConditionmobileState extends State<McqTermAndConditionmobile> {
                                   title: widget.paperName, 
                                 ));
                           }
-                          if (examcode == 250) {
+                          if (decodedResponse['statusCode'] == 250) {
                             Get.off(() => TheoryExamPageMobile(    
                                 title: widget.paperName,
                                   documentPath: widget.url,
@@ -437,12 +440,12 @@ class _McqTermAndConditionmobileState extends State<McqTermAndConditionmobile> {
                                   issubmit: false,
                                 )); 
                           }
-                           if (examcode == 300) {
+                           if (decodedResponse['statusCode'] == 300) {
                           _showDialogoferror(context,"Already Submited!","your exam is already submited.",(){
                             Navigator.pop(context);
                           },false);
                         }
-                        if(examcode==400){
+                        if(decodedResponse['statusCode']==400){
                             _showDialogoferror(context,"Time is Over!","your exam is already ended.",(){
                             Navigator.pop(context);
                           },false);

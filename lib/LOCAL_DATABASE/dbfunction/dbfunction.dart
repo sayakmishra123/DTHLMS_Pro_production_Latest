@@ -496,7 +496,22 @@ Future<List<Map<String, dynamic>>> getAllPackageDetailsForVideoCount(
     return []; // Return an empty list in case of an error
   }
 }
+Future<List<Map<String, dynamic>>> getAllPackageDetailsForBooksCount(
+    String packageId) async {
+  try {
+    // Replace '_db' with your database instance
+    List<Map<String, dynamic>> result = await _db.select('''
+      SELECT * FROM TblAllPackageDetails  
+      WHERE PackageId = ? AND FileIdType = ?
+    ''', [packageId, 'Book']);
 
+    return result; // Return all rows matching the conditions
+  } catch (e) {
+    writeToFile(e, "getAllPackageDetailsForBooksCount");
+    print(e);
+    return []; // Return an empty list in case of an error
+  }
+}
 Future<void> insertVideoplayInfo(
     int videoId,
     String startingTimeLine,

@@ -2061,7 +2061,7 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
 
   // return fullBannerPackages;
 }
-
+ 
 Future getExamStatus(
   BuildContext context,
   String token,
@@ -2082,10 +2082,10 @@ Future getExamStatus(
 
     if (res.statusCode == 401) {
       onTokenExpire(context);
-      return jsonDecode(res.body);
+      return res.body;
     } else {
       log(res.body);
-      return jsonDecode(res.body);
+      return res.body;
     }
   } catch (e) {
     writeToFile(e, 'getExamStatus');

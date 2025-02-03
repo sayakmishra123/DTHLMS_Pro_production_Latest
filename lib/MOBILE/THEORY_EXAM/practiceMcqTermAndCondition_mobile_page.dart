@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -241,14 +242,15 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 10,
+                      width: 10, 
                     ),
                     ElevatedButton(
                       onPressed: () async {
                         if (checkbox.value) {
                           var examcode = await getExamStatus(
                               context, getx.loginuserdata[0].token, paperId);
-                          if (examcode == 200) {
+                              var decodedResponse = jsonDecode(examcode);
+                          if (decodedResponse['statusCode'] == 200) {
                             Get.to(
                                 transition: Transition.cupertino,
                                 () => TheoryExamPageMobile(
@@ -259,7 +261,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                       issubmit: true,
                                     ));
                           }
-                          if (examcode == 250) {
+                          if (decodedResponse['statusCode'] == 250) {
                             Get.to(
                                 transition: Transition.cupertino,
                                 () => TheoryExamPageMobile(
@@ -270,7 +272,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                       issubmit: true,
                                     ));
                           }
-                          if (examcode == 300) {
+                          if (decodedResponse['statusCode'] == 300) {
                             _showDialogoferror(context, "Already Submited!",
                                 "your exam is already submited.", () {
                               if (getx.isInternet.value) {
@@ -280,7 +282,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                     .then((value) {
                                   print(value);
 
-                                  if (value.isEmpty) {
+                                  if (value.isEmpty) { 
                                     _showDialogoferror(context, "Not publish!!",
                                         "The result is not published yet.", () {
                                       Navigator.pop(context);
@@ -320,7 +322,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                   value['CheckedDocumentUrl']
                                                       .toString(),
                                               questionanswersheet:
-                                                  examcode['result'] ?? '',
+                                                decodedResponse['result'] ?? '',
                                             ));
                                   }
                                 });
@@ -333,7 +335,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                               }
                             }, false);
                           }
-                          if (examcode == 400) {
+                          if (decodedResponse['statusCode'] == 400) {
                             _showDialogoferror(context, "Time is Over!",
                                 "your exam is already ended.", () {
                               Navigator.pop(context);

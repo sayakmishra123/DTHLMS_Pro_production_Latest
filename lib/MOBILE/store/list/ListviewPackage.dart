@@ -106,7 +106,6 @@ class _ListviewPackageState extends State<ListviewPackage> {
         }
 
         // print(packages[0].);
-
         return SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,21 +1,14 @@
 import 'dart:developer';
-
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/THEORY_EXAM/theoryexamPaperList.dart';
 import 'package:flutter/material.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:get/get.dart';
-
-// import 'API/ALL_FUTURE_FUNTIONS/all_functions.dart';
-// import 'PC/MCQ/MOCKTEST/resultmocktest.dart';
-// import 'PC/MCQ/MOCKTEST/termandcondition.dart';
-// import 'PC/MCQ/mcqpaperDetails.dart';
-
 class TheoryPaperList extends StatelessWidget {
   final RxList theorylist;
   final String type;
   final String img;
-  bool istype;
+  final bool istype;
   TheoryPaperList(this.theorylist, this.type, this.img, this.istype,
       {super.key});
   RxList filteredList = [].obs;
@@ -58,7 +51,7 @@ class TheoryPaperList extends StatelessWidget {
                     onTap: () async {
                       //                   mcqPaperList.clear();
                       // mcqPaperList.value = await fetchMCQPapertList(paperNames['SetId']);
-                      Navigator.push(
+                      Navigator.push( 
                           context,
                           MaterialPageRoute(
                             builder: (context) => TheoryExamPapes(

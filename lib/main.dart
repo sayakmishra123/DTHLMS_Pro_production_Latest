@@ -14,7 +14,7 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/no_sim.dart';
+// import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
 import 'package:dthlms/security.dart';
@@ -144,7 +144,7 @@ class _MyAppState extends State<MyApp> {
       // print("data found of login");
       Map<String, dynamic> userdataMap = jsonDecode(userdataJson);
       DthloginUserDetails userdata = DthloginUserDetails(
-          firstName: userdataMap['firstName'].toString(),
+          firstName: userdataMap['firstName'].toString(),     
           lastName: userdataMap['lastName'].toString(),
           email: userdataMap['email'].toString(),
           phoneNumber: userdataMap['phoneNumber'],
@@ -163,8 +163,8 @@ class _MyAppState extends State<MyApp> {
       // print("data not found of login");
     }
 
-    // checkIfEmulator(context);
-    // checkDeveloperMode();
+    // checkIfEmulator(context); 
+    // checkDeveloperMode(); 
   }
 
   ClsSimInfo ob = ClsSimInfo();
@@ -216,50 +216,9 @@ class _MyAppState extends State<MyApp> {
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
                         ? DevelopermodeOnPage()
-                        : FutureBuilder(
-                            future: getSimCardsData(context),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.data!.isNotEmpty) {
-                                // bool isDataLengthValid = snapshot.data!
-                                //     .every((element) => element.length < 10);
-
-                                bool isDataLengthValid = false;
-
-                                if (snapshot.hasData &&
-                                    snapshot.data != null &&
-                                    snapshot.data is List) {
-                                  // Safely cast snapshot.data to a List and check the condition
-                                  final List dataList = snapshot.data!;
-                                  isDataLengthValid = dataList.every((element) {
-                                    if (element is String ||
-                                        element is Iterable) {
-                                      return element.length < 10;
-                                    }
-                                    return false;
-                                  });
-                                }
-
-                                if (isDataLengthValid) {
-                                  // return NoSim();
-                                  return getx.loginuserdata.isNotEmpty
+                        : getx.loginuserdata.isNotEmpty
                                       ? HomePageMobile()
-                                      : Mobilelogin();
-                                  // : IntroductionDashBoard();
-                                } else {
-                                  return getx.loginuserdata.isNotEmpty
-                                      ? HomePageMobile()
-                                      : Mobilelogin();
-                                  // : IntroductionDashBoard();
-                                }
-                              } else {
-                                return const NoSim();
-                              }
-                            },
-                          )
+                                      : Mobilelogin()
                 : getx.loginuserdata.isNotEmpty
                     ? DthDashboard()
                     : DthLmsLogin();
