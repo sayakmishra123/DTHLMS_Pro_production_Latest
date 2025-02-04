@@ -68,48 +68,52 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
   }
 
   Future<File> resizeImage(File inputFile) async {
-    // Make a copy of the input file
-    final tempDir = Directory.systemTemp;
-    final copiedFile = File(
-        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_${inputFile.uri.pathSegments.last}');
-    inputFile.copySync(copiedFile.path);
+    try {
+      // Make a copy of the input file
+      final tempDir = Directory.systemTemp;
+      final copiedFile = File(
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_${inputFile.uri.pathSegments.last}');
+      inputFile.copySync(copiedFile.path);
 
-    // Read and decode the image
-    final imageBytes = copiedFile.readAsBytesSync();
-    final img.Image? image = img.decodeImage(imageBytes);
+      // Read and decode the image
+      final imageBytes = copiedFile.readAsBytesSync();
+      final img.Image? image = img.decodeImage(imageBytes);
 
-    if (image == null) {
-      throw Exception('Error: Unable to decode the image.');
-    }
+      if (image == null) {
+        throw Exception('Error: Unable to decode the image.');
+      }
 
-    // Dimensions of A4 in pixels at 300 DPI
-    const a4Width = 1240; // pixels
-    const a4Height = 1754; // pixels
+      // Dimensions of A4 in pixels at 300 DPI
+      const a4Width = 1240; // pixels
+      const a4Height = 1754; // pixels
 
-    // Temporary file for resized image
-    final tempFile = File(
-        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_resized_${inputFile.uri.pathSegments.last}');
+      // Temporary file for resized image
+      final tempFile = File(
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_resized_${inputFile.uri.pathSegments.last}');
 
-    // Check if the original image size exceeds A4 dimensions
-    if (image.width > a4Width || image.height > a4Height) {
-      print(
-          'Original image size: ${image.width}x${image.height}. Resizing to A4 dimensions.');
+      // Check if the original image size exceeds A4 dimensions
+      if (image.width > a4Width || image.height > a4Height) {
+        print(
+            'Original image size: ${image.width}x${image.height}. Resizing to A4 dimensions.');
 
-      // Resize the image to A4 dimensions while maintaining aspect ratio
-      final img.Image thumbnail =
-          img.copyResize(image, width: a4Width, height: a4Height);
+        // Resize the image to A4 dimensions while maintaining aspect ratio
+        final img.Image thumbnail =
+            img.copyResize(image, width: a4Width, height: a4Height);
 
-      // Save the resized image in memory
-      final resizedBytes = img.encodePng(thumbnail);
+        // Save the resized image in memory
+        final resizedBytes = img.encodePng(thumbnail);
 
-      // Create and return resized file
-      return tempFile..writeAsBytesSync(resizedBytes);
-    } else {
-      print(
-          'Original image size: ${image.width}x${image.height}. No resizing needed.');
+        // Create and return resized file
+        return tempFile..writeAsBytesSync(resizedBytes);
+      } else {
+        print(
+            'Original image size: ${image.width}x${image.height}. No resizing needed.');
 
-      // Return copied file without resizing
-      return copiedFile;
+        // Return copied file without resizing
+        return copiedFile;
+      }
+    } catch (e) {
+      return File('path');
     }
   }
 
@@ -144,7 +148,7 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
   }
 
   void _uploadImages(BuildContext context) {
-    if (_images.length == sheetNumber) { 
+    if (_images.length == sheetNumber) {
       _uploadImageList(_images, context);
       // _onUploadSuccessFull(globalContext);
       print("Images uploaded: ${_images.length} images");
@@ -240,111 +244,139 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
                     ? Expanded(
                         child: Column(
                           children: [
-                           Expanded(
-  child: ListView.builder(
-    padding: EdgeInsets.all(10),
-    scrollDirection: Axis.horizontal,
-    itemCount: sheetNumber.toInt(),
-    itemBuilder: (context, index) {
-      if (index < _images.length) {
-        return DragTarget<int>(
-          onWillAccept: (fromIndex) => fromIndex != index, // Avoid dropping on itself
-          onAccept: (fromIndex) {
-            setState(() {
-              final draggedImage = _images.removeAt(fromIndex);
-              _images.insert(index, draggedImage);
-            });
-          },
-          builder: (context, candidateData, rejectedData) {
-            return LongPressDraggable<int>(
-              data: index,
-              feedback: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.file(
-                  _images[index],
-                  fit: BoxFit.cover,
-                  width: 100,
-                  height: 150,
-                ),
-              ),
-              childWhenDragging: const SizedBox(), // Placeholder during drag
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: GestureDetector(
-                  onTap: () {
-                    _selectImage(_images[index]);
-                  },
-                  child: Stack(
-                    children: [
-                      AnimatedContainer(
-                        padding: EdgeInsets.symmetric(
-                            vertical: _selectedImage == _images[index] ? 10 : 0),
-                        duration: Duration(milliseconds: 200),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.file(
-                            _images[index],
-                            fit: BoxFit.cover,
-                            width: 100,
-                            height: double.infinity,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: IconButton(
-                          icon: Icon(Icons.close_rounded,
-                              color: Color(0xFF008080)),
-                          onPressed: () => _deleteImage(_images[index]),
-                        ),
-                      ),
-                 
-Positioned(
-   left: 10,
-   top: 10,
-      child: Text(
-        (index + 1).toString(),
-        style: FontFamily.styleb.copyWith(color: Colors.blueGrey),
-      ),
-    ),
-    Positioned(
-      bottom: 10,
-      left: 10,
-      child: Icon(Icons.drag_indicator_rounded,color: Colors.blueGrey,))
-  
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      } else {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: GestureDetector(
-            onTap: _pickImage,
-            child: Container(
-              width: 100,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add_rounded, size: 30, color: Colors.grey[700]),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
-    },
-  ),
-)
-
+                            Expanded(
+                              child: ListView.builder(
+                                padding: EdgeInsets.all(10),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: sheetNumber.toInt(),
+                                itemBuilder: (context, index) {
+                                  if (index < _images.length) {
+                                    return DragTarget<int>(
+                                      onWillAccept: (fromIndex) =>
+                                          fromIndex !=
+                                          index, // Avoid dropping on itself
+                                      onAccept: (fromIndex) {
+                                        setState(() {
+                                          final draggedImage =
+                                              _images.removeAt(fromIndex);
+                                          _images.insert(index, draggedImage);
+                                        });
+                                      },
+                                      builder: (context, candidateData,
+                                          rejectedData) {
+                                        return LongPressDraggable<int>(
+                                          data: index,
+                                          feedback: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: Image.file(
+                                              _images[index],
+                                              fit: BoxFit.cover,
+                                              width: 100,
+                                              height: 150,
+                                            ),
+                                          ),
+                                          childWhenDragging:
+                                              const SizedBox(), // Placeholder during drag
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                _selectImage(_images[index]);
+                                              },
+                                              child: Stack(
+                                                children: [
+                                                  AnimatedContainer(
+                                                    padding: EdgeInsets.symmetric(
+                                                        vertical:
+                                                            _selectedImage ==
+                                                                    _images[
+                                                                        index]
+                                                                ? 10
+                                                                : 0),
+                                                    duration: Duration(
+                                                        milliseconds: 200),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      child: Image.file(
+                                                        _images[index],
+                                                        fit: BoxFit.cover,
+                                                        width: 100,
+                                                        height: double.infinity,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    right: 0,
+                                                    top: 0,
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                          Icons.close_rounded,
+                                                          color: Color(
+                                                              0xFF008080)),
+                                                      onPressed: () =>
+                                                          _deleteImage(
+                                                              _images[index]),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    left: 10,
+                                                    top: 10,
+                                                    child: Text(
+                                                      (index + 1).toString(),
+                                                      style: FontFamily.styleb
+                                                          .copyWith(
+                                                              color: Colors
+                                                                  .blueGrey),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                      bottom: 10,
+                                                      left: 10,
+                                                      child: Icon(
+                                                        Icons
+                                                            .drag_indicator_rounded,
+                                                        color: Colors.blueGrey,
+                                                      ))
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: GestureDetector(
+                                        onTap: _pickImage,
+                                        child: Container(
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[300],
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.add_rounded,
+                                                  size: 30,
+                                                  color: Colors.grey[700]),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            )
                           ],
                         ),
                       )
@@ -654,32 +686,33 @@ Positioned(
         try {
           // Map each image to an uploadImage Future
           List<Future<String>> uploadFutures = images
-              .map((image) => uploadSheet(  
-                  image, getx.loginuserdata[0].token, key, "AnswerSheet",context))
+              .map((image) => uploadSheet(image, getx.loginuserdata[0].token,
+                  key, "AnswerSheet", context))
               .toList();
- 
+
           // Wait for all uploads to complete and collect the IDs
-          List<String> imageIds = await Future.wait(uploadFutures); 
+          List<String> imageIds = await Future.wait(uploadFutures);
           print(imageIds);
           String documentId =
               imageIds.toString().replaceAll("[", "").replaceAll("]", "");
           print(documentId);
           sendDocumentIdOfanswerSheets(
-              context,
-              getxController.loginuserdata[0].token,
-              int.parse(widget.paperId),
-              documentId).then((value){
-                      if(value){ _onUploadSuccessFull(context);
-          print("Images uploaded: ${_images.length} images");}
-              });
+                  context,
+                  getxController.loginuserdata[0].token,
+                  int.parse(widget.paperId),
+                  documentId)
+              .then((value) {
+            if (value) {
+              _onUploadSuccessFull(context);
+              print("Images uploaded: ${_images.length} images");
+            }
+          });
           // Hide progress indicator
           Navigator.of(context).pop();
 
           // Now you have a list of IDs
           print('Uploaded image IDs: $imageIds');
           isUploaded.value = true;
-
-   
         } catch (e) {
           writeToFile(e, "_uploadImageList");
           // Handle errors here
@@ -694,7 +727,6 @@ Positioned(
           "Access Key not found");
     }
   }
-  
 }
 
 _exitConfirmetionBox(context, VoidCallback ontap) {

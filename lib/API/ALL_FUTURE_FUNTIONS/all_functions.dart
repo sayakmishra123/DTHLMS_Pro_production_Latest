@@ -2061,7 +2061,7 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
 
   // return fullBannerPackages;
 }
- 
+
 Future getExamStatus(
   BuildContext context,
   String token,
@@ -2941,11 +2941,6 @@ Future<void> getMCQExamHistory(
               exam['SubmitDate'].toString(),
               exam['AttemptDate'].toString(),
               "1");
-          // Insert the exam data into your table
-          // await insertData(dataForInsert);  // Assuming insertData is an async function
-
-          // // print each inserted record (optional)
-          // // print('Inserted exam data: $dataForInsert');
         }
 
         ; // Return success after all records are inserted

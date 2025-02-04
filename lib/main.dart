@@ -144,11 +144,11 @@ class _MyAppState extends State<MyApp> {
       // print("data found of login");
       Map<String, dynamic> userdataMap = jsonDecode(userdataJson);
       DthloginUserDetails userdata = DthloginUserDetails(
-          firstName: userdataMap['firstName'].toString(),     
+          firstName: userdataMap['firstName'].toString(),
           lastName: userdataMap['lastName'].toString(),
           email: userdataMap['email'].toString(),
           phoneNumber: userdataMap['phoneNumber'],
-          token: userdataMap['token'].toString() ?? "",         
+          token: userdataMap['token'].toString() ?? "",
           nameId: userdataMap['nameId'].toString(),
           password: userdataMap['password'].toString(),
           loginTime: userdataMap['loginTime'].toString(),
@@ -163,13 +163,13 @@ class _MyAppState extends State<MyApp> {
       // print("data not found of login");
     }
 
-    // checkIfEmulator(context); 
-    // checkDeveloperMode(); 
+    // checkIfEmulator(context);
+    // checkDeveloperMode();
   }
 
   ClsSimInfo ob = ClsSimInfo();
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
@@ -217,8 +217,8 @@ class _MyAppState extends State<MyApp> {
                     : getx.isAndroidDeveloperModeEnabled.value
                         ? DevelopermodeOnPage()
                         : getx.loginuserdata.isNotEmpty
-                                      ? HomePageMobile()
-                                      : Mobilelogin()
+                            ? HomePageMobile()
+                            : Mobilelogin()
                 : getx.loginuserdata.isNotEmpty
                     ? DthDashboard()
                     : DthLmsLogin();
