@@ -14,7 +14,6 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-// import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
 import 'package:dthlms/security.dart';
@@ -93,10 +92,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     appVersionGet();
 
-// A
-// lue.toString() +
-//         "");
-
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setWindowDisplayAffinity();
@@ -148,7 +143,7 @@ class _MyAppState extends State<MyApp> {
           lastName: userdataMap['lastName'].toString(),
           email: userdataMap['email'].toString(),
           phoneNumber: userdataMap['phoneNumber'],
-          token: userdataMap['token'].toString() ?? "",         
+          token: userdataMap['token'].toString() ?? "",          
           nameId: userdataMap['nameId'].toString(),
           password: userdataMap['password'].toString(),
           loginTime: userdataMap['loginTime'].toString(),

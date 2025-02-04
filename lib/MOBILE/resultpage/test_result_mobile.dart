@@ -656,7 +656,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.black)),
                               TextSpan(
-                                  text: widget.totalMarks.toString(),
+                                  text: widget.obtain.toString(),
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.blue)),
                             ]),
