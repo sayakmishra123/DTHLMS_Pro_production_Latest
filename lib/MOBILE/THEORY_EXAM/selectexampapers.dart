@@ -673,59 +673,154 @@ class _SelectExamPapersState extends State<SelectExamPapers> {
   }
 
   void _uploadImageList(List images, BuildContext context) async {
-    String key = await getUploadAccessKey(context, getx.loginuserdata[0].token);
-    if (key != "") {
-      if (images.length == sheetNumber) {
-        // Show progress indicator
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => Center(child: CircularProgressIndicator()),
-        );
-
-        try {
-          // Map each image to an uploadImage Future
-          List<Future<String>> uploadFutures = images
-              .map((image) => uploadSheet(image, getx.loginuserdata[0].token,
-                  key, "AnswerSheet", context))
-              .toList();
-
-          // Wait for all uploads to complete and collect the IDs
-          List<String> imageIds = await Future.wait(uploadFutures);
-          print(imageIds);
-          String documentId =
-              imageIds.toString().replaceAll("[", "").replaceAll("]", "");
-          print(documentId);
-          sendDocumentIdOfanswerSheets(
-                  context,
-                  getxController.loginuserdata[0].token,
-                  int.parse(widget.paperId),
-                  documentId)
-              .then((value) {
-            if (value) {
-              _onUploadSuccessFull(context);
-              print("Images uploaded: ${_images.length} images");
-            }
-          });
-          // Hide progress indicator
-          Navigator.of(context).pop();
-
-          // Now you have a list of IDs
-          print('Uploaded image IDs: $imageIds');
-          isUploaded.value = true;
-        } catch (e) {
-          writeToFile(e, "_uploadImageList");
-          // Handle errors here
-          Navigator.of(context).pop();
-          ClsErrorMsg.fnErrorDialog(
-              context, "Uploadfailed", "Something went wrong", e.toString());
-          print('Error uploading images: $e');
-        }
-      }
-    } else {
-      ClsErrorMsg.fnErrorDialog(context, "Uploadfailed", "Something went wrong",
-          "Access Key not found");
+    // Pre-validation checks
+    if (images == null || images.isEmpty) {
+      ClsErrorMsg.fnErrorDialog(context, "Upload Failed", "Missing Documents",
+          "Please capture answer sheets before uploading.");
+      return;
     }
+
+    if (images.length != sheetNumber) {
+      ClsErrorMsg.fnErrorDialog(
+        context,
+        "Upload Failed",
+        "Incomplete Submission",
+        "Please upload exactly $sheetNumber answer sheets for evaluation.",
+      );
+      return;
+    }
+
+    // Authentication validation
+    if (getx.loginuserdata.isEmpty || getx.loginuserdata[0].token.isEmpty ??
+        true) {
+      ClsErrorMsg.fnErrorDialog(
+        context,
+        "Session Expired",
+        "Authentication Required",
+        "Please log in again to continue.",
+      );
+      return;
+    }
+
+    // Paper ID validation
+    if (widget.paperId.isEmpty ??
+        true || !RegExp(r'^\d+$').hasMatch(widget.paperId)) {
+      ClsErrorMsg.fnErrorDialog(
+        context,
+        "Invalid Exam",
+        "Configuration Error",
+        "Please select a valid exam paper from the list.",
+      );
+      return;
+    }
+
+    final String token = getx.loginuserdata[0].token;
+    late String documentId;
+
+    try {
+      // Access key retrieval
+      final String key = await getUploadAccessKey(context, token);
+      if (key.isEmpty) {
+        ClsErrorMsg.fnErrorDialog(
+          context,
+          "Upload Failed",
+          "Service Unavailable",
+          "Temporary upload credentials could not be obtained.",
+        );
+        return;
+      }
+
+      // Show processing indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(child: CircularProgressIndicator()),
+      );
+
+      // Parallel image uploads
+      final List<Future<String>> uploadTasks = images
+          .map(
+              (image) => uploadSheet(image, token, key, "AnswerSheet", context))
+          .toList();
+
+      final List<String> imageIds = await Future.wait(uploadTasks);
+
+      // Validate upload results
+      if (imageIds.isEmpty) {
+        throw Exception("No upload confirmation received from server.");
+      }
+
+      if (imageIds.any((id) => id.isEmpty)) {
+        throw Exception("Partial upload failure - some sheets not processed.");
+      }
+
+      // Document ID processing
+      documentId = imageIds.join(',');
+      if (!RegExp(r'^\d+(,\d+)*$').hasMatch(documentId)) {
+        throw Exception("Data integrity check failed for uploaded documents.");
+      }
+
+      // Final submission
+      final bool isDocumentIdSaved = await sendDocumentIdOfanswerSheets(
+        context,
+        token,
+        int.parse(widget.paperId),
+        documentId,
+      );
+
+      Navigator.of(context, rootNavigator: true).pop();
+
+      if (!isDocumentIdSaved) {
+        throw Exception("Submission finalization failed - data not persisted.");
+      }
+
+      // Success handling
+      _onUploadSuccessFull(context);
+      isUploaded.value = true;
+      print("[SUCCESS] Uploaded ${images.length} sheets | DocID: $documentId");
+    } catch (e, stackTrace) {
+      // Error cleanup
+      if (Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+
+      // Technical logging
+      writeToFile(
+          "ERROR: ${DateTime.now()}\n"
+              "Paper: ${widget.paperId}\n"
+              "DocID: ${documentId ?? 'N/A'}\n"
+              "Error: $e\n"
+              "Stack: $stackTrace\n"
+              "------------------",
+          "upload_errors");
+
+      // User-facing messages
+      final userMessage = _getUserFriendlyError(e);
+      ClsErrorMsg.fnErrorDialog(
+        context,
+        "Upload Interrupted",
+        "Upload Issue Detected",
+        userMessage,
+      );
+
+      print("[UPLOAD ERROR] ${e.toString()}");
+    }
+  }
+
+  String _getUserFriendlyError(dynamic error) {
+    final message = error.toString().replaceAll("Exception: ", "");
+
+    return switch (message) {
+      String msg when msg.contains("No upload confirmation") =>
+        "Server did not acknowledge receipt of documents. Please retry.",
+      String msg when msg.contains("Partial upload") =>
+        "Some answer sheets could not be processed. Please verify document quality.",
+      String msg when msg.contains("Data integrity") =>
+        "System validation failed. Please contact support with code UPL-INT.",
+      String msg when msg.contains("Submission finalization") =>
+        "Upload verification incomplete. Check your network connection.",
+      _ => "An unexpected error occurred. Please try again later.",
+    };
   }
 }
 

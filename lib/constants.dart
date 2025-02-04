@@ -8,4 +8,4 @@ const String facebookPageLink = 'http://facebook.com/myapp';
 
 const String dbPassword = 'test';
 
-String webSiteLink = 'https://myapp.com';
+String webSiteLink = 'https://myapp.com'; 
