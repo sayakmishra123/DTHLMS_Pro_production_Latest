@@ -2134,25 +2134,24 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   @override
   void initState() {
-          infoList = {
-      'Name': getx.loginuserdata[0].firstName + " " +getx.loginuserdata[0].lastName,
+    infoList = {
+      'Name': getx.loginuserdata[0].firstName +
+          " " +
+          getx.loginuserdata[0].lastName,
       'Phone': getx.loginuserdata[0].phoneNumber,
       'Email': getx.loginuserdata[0].email,
       'UserId': getx.loginuserdata[0].nameId,
       'FranchaiseId': getx.loginuserdata[0].franchiseeId,
-    }; 
-        setState(() {
-    qrData = jsonEncode(infoList);
-      
+    };
+    setState(() {
+      qrData = jsonEncode(infoList);
     });
     super.initState();
   }
+
   Map<String, String> infoList = {};
 
-    
-    
-    String qrData = '';
-
+  String qrData = '';
 
   void _changeName() {
     showDialog(
@@ -2214,70 +2213,77 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       children: [
                         DetailsHeader(title: 'Name'),
                         DetailsItem(
-                      icon: Icons.person,
-                      title: getx.loginuserdata[0].firstName +
-                          " " +
-                          getx.loginuserdata[0].lastName,
-                      type: "name",
-                      isEditable: false,
-                    ),
+                          icon: Icons.person,
+                          title: getx.loginuserdata[0].firstName +
+                              " " +
+                              getx.loginuserdata[0].lastName,
+                          type: "name",
+                          isEditable: false,
+                        ),
                       ],
                     ),
                   ),
-                  Row(children: [
-                     SizedBox( 
-                            height: 100,
-                            width: 100,
-                            child: InkWell(
-                              onTap: () {
-                                // Show a larger QR code when tapped
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                  return Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "Scan QR Code",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 20),
-                          QrImageView(
-                            data: qrData,
-                            version: QrVersions.auto,
-                            size: 300, // Bigger QR Code
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text("Close",style: TextStyle(color: Colors.red,),)
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                                  },
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: InkWell(
+                          onTap: () {
+                            // Show a larger QR code when tapped
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "Scan QR Code",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 20),
+                                        QrImageView(
+                                          data: qrData,
+                                          version: QrVersions.auto,
+                                          size: 300, // Bigger QR Code
+                                        ),
+                                        SizedBox(height: 20),
+                                        ElevatedButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: Text(
+                                              "Close",
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            )),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               },
-                              child: QrImageView(
-                                data: qrData,
-                                version: QrVersions.auto,
-                                size: 100, // Small QR Code
-                              ),
-                            ),
+                            );
+                          },
+                          child: QrImageView(
+                            data: qrData,
+                            version: QrVersions.auto,
+                            size: 100, // Small QR Code
                           ),
-                  ],)
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
-              
+
               DetailsHeader(title: 'E-mail'),
               DetailsItem(
                 icon: Icons.mail,
@@ -2445,7 +2451,7 @@ Future<bool> _uploadRemainingData(BuildContext context) async {
     var videoInfoList = await fetchUploadableVideoInfo();
     if (videoInfoList.length != 0) {
       rteurnvalue = await unUploadedVideoInfoInsert(
-          context, videoInfoList, getx.loginuserdata[0].token,false);
+          context, videoInfoList, getx.loginuserdata[0].token, false);
     } else {
       rteurnvalue = true;
     }
@@ -2461,8 +2467,6 @@ Future<bool> _uploadRemainingData(BuildContext context) async {
 
 Future<void> _performLogout(BuildContext context) async {
   try {
-  
-
     // var prefs = await SharedPreferences.getInstance();
     // prefs.setString("LoginId", getx.loginuserdata[0].loginId);
 
@@ -2470,14 +2474,13 @@ Future<void> _performLogout(BuildContext context) async {
       context,
       getx.loginuserdata[0].token,
     )) {
-
-        await clearSharedPreferencesExcept([
-      'SelectedDownloadPathOfVieo',
-      'SelectedDownloadPathOfFile',
-      'DefaultDownloadpathOfFile',
-      'DefaultDownloadpathOfVieo',
-      'LoginId',
-    ], getx.loginuserdata[0].loginId.toString());
+      await clearSharedPreferencesExcept([
+        'SelectedDownloadPathOfVieo',
+        'SelectedDownloadPathOfFile',
+        'DefaultDownloadpathOfFile',
+        'DefaultDownloadpathOfVieo',
+        'LoginId',
+      ], getx.loginuserdata[0].loginId.toString());
       Platform.isAndroid
           ? Get.offAll(() => Mobilelogin())
           : Get.offAll(() => DthLmsLogin());
@@ -3808,9 +3811,10 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                         examId: snapshot
                                                                 .data![index]
                                                             ['TheoryExamId'],
-                                                            pdfurl:snapshot.data![
-                                                                    index][
-                                                                'CheckedDocumentUrl'] ,
+                                                        pdfurl: snapshot
+                                                                .data![index][
+                                                            'CheckedDocumentUrl'],
+                                                        questionanswersheet: '',
                                                       ));
                                             })
                                         : Text("Result not publish ")))

@@ -3140,11 +3140,25 @@ Future<void> run_Video_Player_exe(
   // print(pckageID);
   // print(dbPath);
   //    print("///////////////////////////////////////////");
+  print(dbPath + "Sayak Mishra");
+
+  writeToFile('',
+      '${videoPath}, ${videoPath} , ${videoId}, ${pckageID}, ${token}, ${dbPath}, ${origin}');
 
   if (exePath.isNotEmpty) {
     await Process.run(
       'cmd',
-      ['/c', 'start', exePath, videoPath, videoId, pckageID, token, dbPath],
+      [
+        '/c',
+        'start',
+        exePath,
+        videoPath,
+        videoId,
+        pckageID,
+        token,
+        dbPath,
+        origin
+      ],
       runInShell: true,
     );
   }

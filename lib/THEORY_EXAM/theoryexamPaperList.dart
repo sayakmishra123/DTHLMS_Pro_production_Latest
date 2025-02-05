@@ -18,7 +18,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 
 class TheoryExamPapes extends StatefulWidget {
-  final Map paperNames ;
+  final Map paperNames;
   final RxList mcqSetList;
   final bool istype;
   TheoryExamPapes(this.paperNames, this.mcqSetList, this.istype, {super.key});
@@ -67,7 +67,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
         title: Text(
-          'Theory Paperss', 
+          'Theory Paperss',
           style: FontFamily.styleb,
         ),
       ),
@@ -81,12 +81,12 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                   children: List.generate(theoryPaperList.length, (index) {
                     return InkWell(
                       onTap: () async {
-                        if (getx.isInternet.value) { 
+                        if (getx.isInternet.value) {
                           var examcode = await getExamStatus(
                               context,
                               getx.loginuserdata[0].token,
                               theoryPaperList[index]['PaperId'].toString());
-                             var decodedResponse = jsonDecode(examcode);
+                          var decodedResponse = jsonDecode(examcode);
                           if (decodedResponse['statusCode'] == 200) {
                             log('hello');
                             Get.to(
@@ -136,9 +136,9 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                       isEncrypted: false,
                                     ));
                           }
-                          if (decodedResponse['statusCode'] == 300) { 
-                            if (getx.isInternet.value) { 
-                                    getTheryExamResultForIndividual(
+                          if (decodedResponse['statusCode'] == 300) {
+                            if (getx.isInternet.value) {
+                              getTheryExamResultForIndividual(
                                       context,
                                       getx.loginuserdata[0].token,
                                       theoryPaperList[index]['PaperId']
@@ -146,17 +146,16 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                   .then((value) {
                                 print(value);
 
-                                if (value.isEmpty) { 
-                                 _showDialogoferror(
-                                        context,
-                                        "Not publish!!",
-                                        "The result is not published yet.",
-                                        () {},
-                                        false,
-                                        answersheet: decodedResponse['result'],
-                                        paperid: theoryPaperList[index]
-                                                ['PaperId']
-                                            .toString());
+                                if (value.isEmpty) {
+                                  _showDialogoferror(
+                                      context,
+                                      "Not publish!!",
+                                      "The result is not published yet.",
+                                      () {},
+                                      false,
+                                      answersheet: decodedResponse['result'],
+                                      paperid: theoryPaperList[index]['PaperId']
+                                          .toString());
                                 } else {
                                   Get.to(
                                       transition: Transition.cupertino,
@@ -189,6 +188,8 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                                 .toString(),
                                             pdfurl: value['CheckedDocumentUrl']
                                                 .toString(),
+                                            questionanswersheet:
+                                                decodedResponse['result'] ?? '',
                                           ));
                                 }
                               });
@@ -347,7 +348,8 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
             // onCancel: onCancelTap,
             type: ArtSweetAlertType.danger));
   }
-    void showDownloadCompleteDialog(filePath) {
+
+  void showDownloadCompleteDialog(filePath) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -379,7 +381,8 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
       ),
     );
   }
-    RxBool isDownloading = false.obs;
+
+  RxBool isDownloading = false.obs;
   CancelToken cancelToken = CancelToken();
   String downloadedFilePath = '';
   double downloadProgress = 0.0;
@@ -426,8 +429,8 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                     ? null
                     : () async {
                         Get.back();
-                        if (File(getx
-                                    .userSelectedPathForDownloadFile.value.isEmpty
+                        if (File(getx.userSelectedPathForDownloadFile.value
+                                    .isEmpty
                                 ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
                                 : getx.userSelectedPathForDownloadFile.value +
                                     "\\${paperid}")
@@ -436,7 +439,8 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                 filePath: getx.userSelectedPathForDownloadFile
                                         .value.isEmpty
                                     ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
-                                    : getx.userSelectedPathForDownloadFile.value +
+                                    : getx.userSelectedPathForDownloadFile
+                                            .value +
                                         "\\${paperid}",
                                 isnet: false,
                               ));
@@ -448,7 +452,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                         }
                       },
                 // DownloadAnswerSheetAlert();
-            
+
                 child: Text(
                   File(getx.userSelectedPathForDownloadFile.value.isEmpty
                               ? '${getx.defaultPathForDownloadFile}\\${paperid}'
@@ -459,7 +463,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                       : 'Download Answer Sheet',
                   style: TextStyle(color: Colors.white),
                 )),
-          ), 
+          ),
 
           // ElevatedButton(
           //     style: ButtonStyle(

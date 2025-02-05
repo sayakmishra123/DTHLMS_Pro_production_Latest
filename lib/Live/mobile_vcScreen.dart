@@ -157,10 +157,11 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
         },
       ),
     )
-    ..loadRequest(Uri?.parse('https://www.youtube.com/'));
+    ..loadRequest(Uri.parse('https://www.youtube.com/'));
 
   Future<void> initializeWebView() async {
     try {
+      log(widget.meeting!.groupChat!);
       controller.loadRequest(Uri.parse(
           widget.meeting!.groupChat!)); // Assuming widget.personchat is a URL
       getx.isloadChatUrl.value = true;

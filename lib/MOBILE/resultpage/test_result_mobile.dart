@@ -246,35 +246,6 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
     );
   }
 
-//  void showDownloadCompleteDialog() {
-//     showDialog(
-//       context: context,
-//       builder: (_) => AlertDialog(
-//         title: Text("Answer sheet not found"),
-//         // content: Column(
-//         //   mainAxisSize: MainAxisSize.min,
-//         //   children: <Widget>[
-//         //     Text("The answer sheet has been downloaded."),
-//         //     SizedBox(height: 10),
-//         //     ElevatedButton(
-//         //       onPressed: () {
-//         //         Navigator.of(context).pop();
-//         //         showPdfDialog(downloadedFilePath);
-//         //       },
-//         //       child: Text("Show PDF"),
-//         //     ),
-//         //   ],
-//         // ),
-//         actions: <Widget>[
-//           TextButton(
-//             child: Text("Close"),
-//             onPressed: () => Navigator.of(context).pop(),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
   void showPdfDialog(String filePath) {
     showDialog(
       context: context,
@@ -799,10 +770,10 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                             },
                       child: Text(
                         File(getx.userSelectedPathForDownloadFile.value.isEmpty
-                                    ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                    ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} ${widget.examName}'
                                     : getx.userSelectedPathForDownloadFile
                                             .value +
-                                        "/${widget.examId}")
+                                        "/${widget.examId} ${widget.examName}")
                                 .existsSync()
                             ? "Show Question Sample Sheet"
                             : 'Download Question Sample Sheet',
