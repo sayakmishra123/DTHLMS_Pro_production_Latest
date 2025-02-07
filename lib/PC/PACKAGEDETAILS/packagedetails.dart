@@ -1,5 +1,4 @@
 import 'dart:async';
-// import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
@@ -8,12 +7,8 @@ import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
-import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/mobile_pdf_viewer.dart';
-import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
-import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
-import 'package:dthlms/PC/MCQ/MOCKTEST/termandcondition.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/book_list_page.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/podcastPage.dart';
 import 'package:dthlms/PC/STUDYMATERIAL/pdfViewer.dart';
@@ -23,15 +18,11 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/THEORY_EXAM/theorySetList.dart';
 import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
-import 'package:dthlms/test.dart';
 import 'package:dthlms/test1.dart';
-// import 'package:dthlms/getx/getxcontroller.getx.dart';
-// import 'package:dthlms/GETX/getxcontroller.getx.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info_plus/package_info_plus.dart' as pinfo;
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,19 +54,6 @@ class _PackageDetailsPageState extends State<PackageDetailsPage> {
   Getx getx = Get.put(Getx());
   int selectedIndex = -1;
 
-  // State variable for sidebar collapse
-
-  // @override
-  // void initState() {
-  //   getx.path2.value = '';
-  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //     packagedetails(context, widget.token, widget.packageId);
-  //   });
-  //   super.initState();
-  // }
-
-  // List
-
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -105,7 +83,7 @@ class _PackageDetailsPageState extends State<PackageDetailsPage> {
             Expanded(
               flex: 5,
               child: Column(
-                children: [
+                children: [  
                   Obx(
                     () => Expanded(
                       child: getx.isVideoDashBoard.value

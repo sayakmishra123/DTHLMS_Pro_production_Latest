@@ -143,11 +143,7 @@ class _MyAppState extends State<MyApp> {
           lastName: userdataMap['lastName'].toString(),
           email: userdataMap['email'].toString(),
           phoneNumber: userdataMap['phoneNumber'],
-<<<<<<< HEAD
-          token: userdataMap['token'].toString() ?? "",
-=======
           token: userdataMap['token'].toString() ?? "",          
->>>>>>> 8684fcc6ac026f1010ea5cecbe5ca032974326ca
           nameId: userdataMap['nameId'].toString(),
           password: userdataMap['password'].toString(),
           loginTime: userdataMap['loginTime'].toString(),
