@@ -7,13 +7,13 @@ import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/live_page.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/podCastDashboard.dart';
 import 'package:dthlms/MOBILE/THEORY_EXAM/examPaperList.dart';
+import 'package:dthlms/PC/PACKAGEDETAILS/book_list_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import '../../PC/PACKAGEDETAILS/packagedetails.dart';
 import '../../constants.dart';
 
 class Mobile_Package_content extends StatefulWidget {
@@ -60,7 +60,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       case 'Book':
         Get.to(
           transition: Transition.cupertino,
-          () => BookDashboard(),
+          () => BookListPagePc(),
         );
         break;
       case 'Podcast':
@@ -83,6 +83,10 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
   String pagename = '';
   int submitedExamsCount = 0;
 
+    RxList mcqSetList = [].obs;
+  RxList mcqPaperList = [].obs;
+  late BuildContext globalContext;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -99,6 +103,10 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     super.initState();
   }
 
+
+
+
+
   // Video section data
   RxBool hasData = false.obs; 
   int videoCountData = 0;
@@ -106,7 +114,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
 
   RxInt allowedDuration = 0.obs;
   RxString formattedDuration = ''.obs;
-
+ 
     getBooksCount() async {
     var data =
         await getAllPackageDetailsForBooksCount(widget.packageid.toString());
@@ -185,7 +193,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center, 
             children: [
               Row(
                 children: [
@@ -265,7 +273,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
   }
 
   final List<Map<String, dynamic>> folderIcons = [
-    {
+    { 
       "section": "Video",
       "icon": Icons.video_library,
       "color": Colors.blue,
@@ -461,7 +469,8 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: _buildOfferCard(
+                      child: _buildOfferCard( 
+                        packageid: widget.packageid.toString(),
                         title: filteredList[index]['section'],
                         subtitle: getFolderSubtitle(filteredList[index], index),
                         gradientColors:
@@ -537,7 +546,9 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
   // }
 
   static Widget _buildOfferCard(
-      {required String title,
+      {
+        required String packageid,
+        required String title,
       required String subtitle,
       required List<Color> gradientColors,
       required Color arrowBackground,
@@ -627,7 +638,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                                       meeting.scheduledOn != null &&
                                       DateFormat('yyyy-MM-dd')
                                               .format(meeting.scheduledOn) ==
-                                          todayDate)
+                                          todayDate && meeting.packageId == packageid.toString())
                                   .length;
 
                               return Stack(
@@ -670,7 +681,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                             })
                           : title == 'Book'
                               ? CircleAvatar(
-                                  child: Text(
+                                  child: Text( 
                                     booksCount.toString(),
                                     style:
                                         FontFamily.style.copyWith(fontSize: 15),

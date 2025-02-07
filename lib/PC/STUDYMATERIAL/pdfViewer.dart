@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -84,7 +83,7 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
       getx.encryptedpdffile.value = await downloadAndSavePdf(
           widget.pdfUrl, widget.title, enkey, widget.folderName);
     } else {
-      getx.unEncryptedPDFfile.value = await downloadAndSavePdf(
+      getx.unEncryptedPDFfile.value = await downloadAndSavePdf( 
           widget.pdfUrl, widget.title, enkey, widget.folderName);
     }
   }
@@ -357,7 +356,7 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
                     // Navigate to the previous page
-                    _pdfViewerController.previousPage();
+                    _pdfViewerController.previousPage(); 
                   },
                 ),
                 IconButton(
@@ -370,7 +369,7 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
               ],
             ),
             body: Obx(
-              () => File(getx.unEncryptedPDFfile.value).existsSync()
+              () => getx.unEncryptedPDFfile.value != null || getx.unEncryptedPDFfile.value != "" || getx.unEncryptedPDFfile.value != " "
                   ? SfPdfViewer.file(
                       File(getx.unEncryptedPDFfile.value),
                       controller: _pdfViewerController,
@@ -385,23 +384,26 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
 
   String title = "";
 
-  Future downloadAndSavePdf(
+Future downloadAndSavePdf(
       String pdfUrl, String title, String enkey, String foldername) async {
-    this.title = title;
+
     data = getDownloadedPathOfPDF(title, foldername);
     print(data + " ssss ${this.title}");
-
-    if (!File(data).existsSync()) {
+String fixedPath = data.replaceAll('/', '\\'); // Convert forward slashes to backslashes
+File file = File(fixedPath);
+ 
+if (!file.existsSync()) {
       print("Downloading file.....");
       try {
         // Get the application's document directory
-        Directory appDocDir = await getApplicationDocumentsDirectory();
-
+        final appDocDir = await getApplicationDocumentsDirectory();
+ 
         // Create the folder structure: com.si.dthLive/notes
         Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
         if (!await dthLmsDir.exists()) {
           await dthLmsDir.create(recursive: true);
         }
+
         var prefs = await SharedPreferences.getInstance();
         getx.defaultPathForDownloadFile.value = dthLmsDir.path;
         prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
@@ -452,12 +454,12 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
         final encryptedBytes = await readEncryptedPdfFromFile(data);
         final decryptedPdfBytes = aesDecryptPdf(encryptedBytes, enkey);
         isLoading = false;
-        return decryptedPdfBytes;
+        return decryptedPdfBytes; 
       } else {
         return data;
       }
     }
-  }
+  } 
 
 // Function to add watermark to a PDF
   static Future<void> addWatermarkToPdf(

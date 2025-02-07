@@ -1,23 +1,46 @@
-import 'dart:developer';
-
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
-import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:get/get.dart';
-
 import 'API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'PC/MCQ/MOCKTEST/resultMcqTest.dart';
 import 'PC/MCQ/MOCKTEST/termandcondition.dart';
 import 'PC/MCQ/mcqpaperDetails.dart';
-
-class McqList extends StatelessWidget {
+class McqList extends StatefulWidget {
   final RxList mcqSetList;
   final String type;
   final String img;
-  bool istype;
+  final bool istype;
   McqList(this.mcqSetList, this.type, this.img, this.istype, {super.key});
+
+  @override
+  State<McqList> createState() => _McqListState();
+}
+
+class _McqListState extends State<McqList> {
   RxList filteredList = [].obs;
+
   RxList mcqPaperList = [].obs;
+
+
+@override
+  void initState() {
+    getData();
+    super.initState();
+  }
+  
+RxInt mcqExamCount = 0.obs;
+  getData() async {
+    mcqPaperList.clear();
+        filteredList.value =
+        widget.mcqSetList.where((item) => item["ServicesTypeName"] == widget.type).toList();
+        for (var i in filteredList){
+    mcqPaperList.value = await fetchMCQPapertList(i['SetId']);
+
+        }
+        mcqExamCount.value = mcqPaperList.length;
+    
+  }
   @override
   Widget build(BuildContext context) {
     // Get screen size
@@ -32,79 +55,134 @@ class McqList extends StatelessWidget {
             : 4; // Adjust the number of grid items per row based on screen width.
 
     // Filter the mcqSetList to only include "Quick Practice"
-    filteredList.value =
-        mcqSetList.where((item) => item["ServicesTypeName"] == type).toList();
+
+        
+        
     // log(filteredList.toString());
     return SizedBox(
       height: screenHeight * 0.8, // Make it responsive to screen height.
       child: Column(
         children: [
           if (filteredList.isNotEmpty)
-            Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.all(16.0),
-                itemCount: filteredList.length, // Use filtered list count
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 8.0,
-                  childAspectRatio: 0.9, // Adjust aspect ratio for grid items.
-                ),
-                itemBuilder: (context, index) {
-                  final mcqItem = filteredList[index];
-                  return InkWell(
-                    onTap: () async {
-                      //                   mcqPaperList.clear();
-                      // mcqPaperList.value = await fetchMCQPapertList(paperNames['SetId']);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => McqPaperDetails(
-                              mcqItem,
-                              mcqSetList,
-                              istype,
-                            ),
-                          ));
+          Expanded(
+  child: GridView.builder(
+    padding: const EdgeInsets.all(16.0),
+    itemCount: filteredList.length,
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: crossAxisCount,
+      crossAxisSpacing: 10.0,
+      mainAxisSpacing: 8.0,
+      childAspectRatio: 0.9,
+    ),
+    itemBuilder: (context, index) {
+      final mcqItem = filteredList[index];
 
-                      // _showPaperListDialog(context, mcqItem);
-                    },
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Card(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+      return LayoutBuilder( // Add LayoutBuilder inside each Grid Item
+        builder: (context, constraints) {
+          bool showSupportingText = constraints.maxWidth > 180;
+          
+          // Calculate maxLines based on available height
+          int calculatedMaxLines = (constraints.maxHeight ~/ 80).clamp(1, 6); // Adjust dynamically
+
+          return InkWell(
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => McqPaperDetails(
+                    mcqItem,
+                    widget.mcqSetList,
+                    widget.istype,
+                  ),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Expanded(
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            child: Image.asset(
+                              widget.img,
                             ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: ColorPage.white,
+                          ),
+                          const SizedBox(height: 10),
+                          Obx(
+                            ()=> RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '$mcqExamCount',
+                                    style: TextStyle(
+                                      color: mcqExamCount == 0
+                                          ? Colors.red
+                                          : Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' available',
+                                    style: FontFamily.styleb.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  img,
-                                  fit: BoxFit.contain,
+                            ),
+                          ),
+                          // Show supporting text only if the individual container is wide enough
+                          if (showSupportingText)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                'MCQ exams test your knowledge with objective questions, requiring critical thinking and quick decision-making. '
+                                'They help assess understanding across various topics efficiently.',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: calculatedMaxLines, // Dynamic maxLines
+                                softWrap: true,
+                                textAlign: TextAlign.justify,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          mcqItem["SetName"] ?? 'Question', // Use dynamic title
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  );
-                },
-              ),
-            )
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  mcqItem["SetName"] ?? 'Question',
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  ),
+)
+
           else
             Expanded(
               child: Center(
@@ -221,7 +299,7 @@ class McqList extends StatelessWidget {
                                         duration: mcqPaperList[index]
                                             ['Duration'],
                                         paperId: mcqPaperList[index]['PaperId'],
-                                        type: mcqSetList[index]
+                                        type: widget.mcqSetList[index]
                                             ["ServicesTypeName"],
                                         isAnswerSheetShow: mcqPaperList[index]
                                                         ['IsAnswerSheetShow']
