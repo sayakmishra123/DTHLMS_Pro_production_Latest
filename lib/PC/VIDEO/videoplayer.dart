@@ -1287,8 +1287,17 @@ class _VideoPlayerState extends State<VideoPlayer> {
   }
 
   static Future<bool> isProcessRunning(String processName) async {
+    try{
     final result = await Process.run('tasklist', []);
     return result.stdout.toString().contains(processName);
+    }
+    catch(e)
+    {
+      
+    }
+    finally{
+      return  false;
+    }
   }
 
   Future<bool> checkFileExists(String path) async {
