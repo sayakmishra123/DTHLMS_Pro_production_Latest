@@ -157,10 +157,11 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
         },
       ),
     )
-    ..loadRequest(Uri?.parse('https://www.youtube.com/'));
+    ..loadRequest(Uri.parse('https://www.youtube.com/'));
 
   Future<void> initializeWebView() async {
     try {
+      log(widget.meeting!.groupChat!);
       controller.loadRequest(Uri.parse(
           widget.meeting!.groupChat!)); // Assuming widget.personchat is a URL
       getx.isloadChatUrl.value = true;
@@ -228,7 +229,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                 'VideoId': int.parse(
                     widget.meeting!.videoId.toString().replaceAll(",", "")),
                 'StartDuration': "0",
-                'EndDuration': "0",
+                'SpendTime': "0",
                 "Speed": "0",
                 "StartTime": startTime.substring(0, startTime.length - 3),
                 "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
@@ -340,7 +341,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                 .toString()
                                 .replaceAll(",", "")),
                             'StartDuration': "0",
-                            'EndDuration': "0",
+                            'SpendTime': "0",
                             "Speed": "0",
                             "StartTime":
                                 startTime.substring(0, startTime.length - 3),

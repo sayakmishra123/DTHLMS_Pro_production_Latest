@@ -39,9 +39,7 @@ import 'notification_model.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-
   MediaKit.ensureInitialized();
-
   // ensureYQPInitialized();
   Get.put(OnlineAudioPlayerController()); 
 
@@ -136,14 +134,13 @@ class _MyAppState extends State<MyApp> {
     getx.userImageLocalPath.value = prefs.getString("LocalImagePath") ?? "";
 
     if (userdataJson != null) {
-      // print("data found of login");
       Map<String, dynamic> userdataMap = jsonDecode(userdataJson);
       DthloginUserDetails userdata = DthloginUserDetails(
           firstName: userdataMap['firstName'].toString(),
           lastName: userdataMap['lastName'].toString(),
           email: userdataMap['email'].toString(),
           phoneNumber: userdataMap['phoneNumber'],
-          token: userdataMap['token'].toString() ?? "",          
+          token: userdataMap['token'].toString() ?? "",
           nameId: userdataMap['nameId'].toString(),
           password: userdataMap['password'].toString(),
           loginTime: userdataMap['loginTime'].toString(),

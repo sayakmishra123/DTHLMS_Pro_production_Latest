@@ -18,7 +18,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 
 class TheoryExamPapes extends StatefulWidget {
-  final Map paperNames ;
+  final Map paperNames;
   final RxList mcqSetList;
   final bool istype;
   TheoryExamPapes(this.paperNames, this.mcqSetList, this.istype, {super.key});
@@ -28,8 +28,6 @@ class TheoryExamPapes extends StatefulWidget {
 }
 
 class _TheoryExamPapesState extends State<TheoryExamPapes> {
-
-
   RxList theoryPaperList = [].obs;
 
   @override
@@ -39,54 +37,54 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
     super.initState();
   }
 
-  getData() async { 
+  getData() async {
     theoryPaperList.clear();
-    theoryPaperList.value = 
+    theoryPaperList.value =
         await fetchTheoryPapertList(widget.paperNames['SetId']);
   }
+
   bool _isExamExpired(String? endDateString) {
-  if (endDateString == null || endDateString.isEmpty) {
-    return false; // Treat missing dates as non-expired
+    if (endDateString == null || endDateString.isEmpty) {
+      return false; // Treat missing dates as non-expired
+    }
+
+    try {
+      // Parse the date from string
+      DateTime endDate = DateTime.parse(endDateString);
+
+      // Compare with the current date
+      return endDate.isBefore(DateTime.now());
+    } catch (e) {
+      print("Error parsing date: $e");
+      return false; // If parsing fails, assume it's not expired
+    }
   }
 
-  try {
-    // Parse the date from string
-    DateTime endDate = DateTime.parse(endDateString);
+  String _formatDuration(dynamic duration) {
+    if (duration == null) return "Unknown Duration";
 
-    // Compare with the current date
-    return endDate.isBefore(DateTime.now());
-  } catch (e) {
-    print("Error parsing date: $e");
-    return false; // If parsing fails, assume it's not expired
+    int totalMinutes;
+
+    // Ensure duration is an integer
+    try {
+      totalMinutes = int.parse(duration.toString());
+    } catch (e) {
+      print("Invalid duration format: $duration");
+      return "Unknown Duration";
+    }
+
+    int hours = totalMinutes ~/ 60; // Get hours
+    int minutes = totalMinutes % 60; // Get remaining minutes
+
+    // Build duration string dynamically
+    if (hours > 0 && minutes > 0) {
+      return "$hours hours $minutes minutes";
+    } else if (hours > 0) {
+      return "$hours hours";
+    } else {
+      return "$minutes minutes";
+    }
   }
-}
-String _formatDuration(dynamic duration) {
-  if (duration == null) return "Unknown Duration";
-
-  int totalMinutes;
-
-  // Ensure duration is an integer
-  try {
-    totalMinutes = int.parse(duration.toString());
-  } catch (e) {
-    print("Invalid duration format: $duration");
-    return "Unknown Duration";
-  }
-
-  int hours = totalMinutes ~/ 60; // Get hours
-  int minutes = totalMinutes % 60; // Get remaining minutes
-
-  // Build duration string dynamically
-  if (hours > 0 && minutes > 0) {
-    return "$hours hours $minutes minutes";
-  } else if (hours > 0) {
-    return "$hours hours";
-  } else {
-    return "$minutes minutes";
-  }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +108,7 @@ String _formatDuration(dynamic duration) {
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
         title: Text(
-          'Theory Papers', 
+          'Theory Papers',
           style: FontFamily.styleb,
         ),
       ),
@@ -124,12 +122,12 @@ String _formatDuration(dynamic duration) {
                   children: List.generate(theoryPaperList.length, (index) {
                     return InkWell(
                       onTap: () async {
-                        if (getx.isInternet.value) { 
+                        if (getx.isInternet.value) {
                           var examcode = await getExamStatus(
                               context,
                               getx.loginuserdata[0].token,
                               theoryPaperList[index]['PaperId'].toString());
-                             var decodedResponse = jsonDecode(examcode);
+                          var decodedResponse = jsonDecode(examcode);
                           if (decodedResponse['statusCode'] == 200) {
                             log('hello');
                             Get.to(
@@ -179,9 +177,9 @@ String _formatDuration(dynamic duration) {
                                       isEncrypted: false,
                                     ));
                           }
-                          if (decodedResponse['statusCode'] == 300) { 
-                            if (getx.isInternet.value) { 
-                                    getTheryExamResultForIndividual(
+                          if (decodedResponse['statusCode'] == 300) {
+                            if (getx.isInternet.value) {
+                              getTheryExamResultForIndividual(
                                       context,
                                       getx.loginuserdata[0].token,
                                       theoryPaperList[index]['PaperId']
@@ -189,17 +187,16 @@ String _formatDuration(dynamic duration) {
                                   .then((value) {
                                 print(value);
 
-                                if (value.isEmpty) { 
-                                 _showDialogoferror(
-                                        context,
-                                        "Not publish!!",
-                                        "The result is not published yet.",
-                                        () {},
-                                        false,
-                                        answersheet: decodedResponse['result'],
-                                        paperid: theoryPaperList[index]
-                                                ['PaperId']
-                                            .toString());
+                                if (value.isEmpty) {
+                                  _showDialogoferror(
+                                      context,
+                                      "Not publish!!",
+                                      "The result is not published yet.",
+                                      () {},
+                                      false,
+                                      answersheet: decodedResponse['result'],
+                                      paperid: theoryPaperList[index]['PaperId']
+                                          .toString());
                                 } else {
                                   Get.to(
                                       transition: Transition.cupertino,
@@ -232,6 +229,8 @@ String _formatDuration(dynamic duration) {
                                                 .toString(),
                                             pdfurl: value['CheckedDocumentUrl']
                                                 .toString(),
+                                            questionanswersheet:
+                                                decodedResponse['result'] ?? '',
                                           ));
                                 }
                               });
@@ -260,40 +259,51 @@ String _formatDuration(dynamic duration) {
                       },
                       child: Container(
                         width: itemWidth,
-                         
                         child: Card(
-                         elevation: 20,
-                         shadowColor: _isExamExpired(theoryPaperList[index]['PaperEndDate'])
-    ? Colors.red
-    : Colors.green,
+                          elevation: 20,
+                          shadowColor: _isExamExpired(
+                                  theoryPaperList[index]['PaperEndDate'])
+                              ? Colors.red
+                              : Colors.green,
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                           child: Padding(
                             padding: EdgeInsets.all(8),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start, 
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     CircleAvatar(
-                                      radius: 30,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Image(image: AssetImage('assets/myexam.png'),),
-                                      )
-                                          
-                                    ),
-                                     _isExamExpired(theoryPaperList[index]['PaperEndDate']) ? Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  
-                                ),
-                                child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 5),
-                                child: Text('Expired',style: TextStyle(color: Colors.white),),
-                              )) : SizedBox()
+                                        radius: 30,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Image(
+                                            image:
+                                                AssetImage('assets/myexam.png'),
+                                          ),
+                                        )),
+                                    _isExamExpired(theoryPaperList[index]
+                                            ['PaperEndDate'])
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 2,
+                                                      horizontal: 5),
+                                              child: Text(
+                                                'Expired',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ))
+                                        : SizedBox()
                                   ],
                                 ),
                                 SizedBox(height: 8),
@@ -321,18 +331,20 @@ String _formatDuration(dynamic duration) {
                                       color: Colors.grey,
                                       fontWeight: FontWeight.w300),
                                 ),
-                                SizedBox(height: 5,),
+                                SizedBox(
+                                  height: 5,
+                                ),
                                 Container(
                                   decoration: BoxDecoration(
-                                  color: Colors.blueGrey,
-                                    borderRadius: BorderRadius.circular(10)
-                                  ),
+                                      color: Colors.blueGrey,
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 2),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 2),
                                     child: Text(
-"Duration: ${_formatDuration(theoryPaperList[index]['Duration'])}",
+                                      "Duration: ${_formatDuration(theoryPaperList[index]['Duration'])}",
                                       style: TextStyle(
-                                        color: Colors.white,
+                                          color: Colors.white,
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -399,7 +411,8 @@ String _formatDuration(dynamic duration) {
             // onCancel: onCancelTap,
             type: ArtSweetAlertType.danger));
   }
-    void showDownloadCompleteDialog(filePath) {
+
+  void showDownloadCompleteDialog(filePath) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -431,7 +444,8 @@ String _formatDuration(dynamic duration) {
       ),
     );
   }
-    RxBool isDownloading = false.obs;
+
+  RxBool isDownloading = false.obs;
   CancelToken cancelToken = CancelToken();
   String downloadedFilePath = '';
   double downloadProgress = 0.0;
@@ -478,8 +492,8 @@ String _formatDuration(dynamic duration) {
                     ? null
                     : () async {
                         Get.back();
-                        if (File(getx
-                                    .userSelectedPathForDownloadFile.value.isEmpty
+                        if (File(getx.userSelectedPathForDownloadFile.value
+                                    .isEmpty
                                 ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
                                 : getx.userSelectedPathForDownloadFile.value +
                                     "\\${paperid}")
@@ -488,7 +502,8 @@ String _formatDuration(dynamic duration) {
                                 filePath: getx.userSelectedPathForDownloadFile
                                         .value.isEmpty
                                     ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
-                                    : getx.userSelectedPathForDownloadFile.value +
+                                    : getx.userSelectedPathForDownloadFile
+                                            .value +
                                         "\\${paperid}",
                                 isnet: false,
                               ));
@@ -500,7 +515,7 @@ String _formatDuration(dynamic duration) {
                         }
                       },
                 // DownloadAnswerSheetAlert();
-            
+
                 child: Text(
                   File(getx.userSelectedPathForDownloadFile.value.isEmpty
                               ? '${getx.defaultPathForDownloadFile}\\${paperid}'
@@ -511,7 +526,7 @@ String _formatDuration(dynamic duration) {
                       : 'Download Answer Sheet',
                   style: TextStyle(color: Colors.white),
                 )),
-          ), 
+          ),
 
           // ElevatedButton(
           //     style: ButtonStyle(

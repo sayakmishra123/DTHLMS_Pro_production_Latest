@@ -7,6 +7,7 @@ import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/constants.dart';
+import 'package:dthlms/globalfunction/downloadsheet.dart';
 // import 'package:dthlms/constants/constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -153,125 +154,96 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
     }
   }
 
-  double downloadProgress = 0.0;
-  CancelToken cancelToken = CancelToken();
+  // double downloadProgress = 0.0;
+  // CancelToken cancelToken = CancelToken();
 
-  RxBool isDownloading = false.obs;
-  Future<void> downloadAnswerSheet(String url, String examId,
-      {String examName = ""}) async {
-    Dio dio = Dio();
-    Directory appDocDir = await getApplicationDocumentsDirectory();
+  // RxBool isDownloading = false.obs;
+  // Future<void> downloadAnswerSheet(String url, String examId,
+  //     {String examName = ""}) async {
+  //   Dio dio = Dio();
+  //   Directory appDocDir = await getApplicationDocumentsDirectory();
 
-    Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
-    if (!await dthLmsDir.exists()) {
-      await dthLmsDir.create(recursive: true);
-    }
+  //   Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
+  //   if (!await dthLmsDir.exists()) {
+  //     await dthLmsDir.create(recursive: true);
+  //   }
 
-    var prefs = await SharedPreferences.getInstance();
-    getx.defaultPathForDownloadFile.value = dthLmsDir.path;
-    prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
-    String? filePath = getx.userSelectedPathForDownloadFile.value.isEmpty
-        ? '${dthLmsDir.path}/$examId $examName'
-        : getx.userSelectedPathForDownloadFile.value + "/$examId $examName";
-    if (filePath == null) {
-      debugPrint("No file path selected. Cancelling download.");
-      return;
-    }
+  //   var prefs = await SharedPreferences.getInstance();
+  //   getx.defaultPathForDownloadFile.value = dthLmsDir.path;
+  //   prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
+  //   String? filePath = getx.userSelectedPathForDownloadFile.value.isEmpty
+  //       ? '${dthLmsDir.path}/$examId $examName'
+  //       : getx.userSelectedPathForDownloadFile.value + "/$examId $examName";
+  //   if (filePath == null) {
+  //     debugPrint("No file path selected. Cancelling download.");
+  //     return;
+  //   }
 
-    try {
-      isDownloading.value = true;
+  //   try {
+  //     isDownloading.value = true;
 
-      await dio.download(
-        url.replaceAll('"', ''),
-        filePath,
-        onReceiveProgress: (received, total) {
-          if (total != -1) {
-            downloadProgress = received / total;
-          }
-        },
-        cancelToken: cancelToken,
-      );
+  //     await dio.download(
+  //       url.replaceAll('"', ''),
+  //       filePath,
+  //       onReceiveProgress: (received, total) {
+  //         if (total != -1) {
+  //           downloadProgress = received / total;
+  //         }
+  //       },
+  //       cancelToken: cancelToken,
+  //     );
 
-      isDownloading.value = false;
-      debugPrint("Download complete: $filePath");
+  //     isDownloading.value = false;
+  //     debugPrint("Download complete: $filePath");
 
-      showDownloadCompleteDialog(examName);
-    } catch (e) {
-      isDownloading.value = false;
-      debugPrint("Error downloading file: $e");
-      // showErrorDialog("Download Failed", "An error occurred while downloading the file.");
-    }
-  }
+  //     showDownloadCompleteDialog(examName);
+  //   } catch (e) {
+  //     isDownloading.value = false;
+  //     debugPrint("Error downloading file: $e");
+  //     // showErrorDialog("Download Failed", "An error occurred while downloading the file.");
+  //   }
+  // }
 
-  void cancelDownload() {
-    cancelToken.cancel();
-    isDownloading.value = false;
-  }
+  // void cancelDownload() {
+  //   cancelToken.cancel();
+  //   isDownloading.value = false;
+  // }
 
-  void showDownloadCompleteDialog(String examName) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text("Download Complete"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text("The answer sheet has been downloaded."),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Get.to(() => ShowResultPage(
-                      filePath: getx
-                              .userSelectedPathForDownloadFile.value.isEmpty
-                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} $examName'
-                          : getx.userSelectedPathForDownloadFile.value +
-                              "/${widget.examId} $examName",
-                      isnet: false,
-                    ));
-              },
-              child: Text("Show PDF"),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Close"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
-  }
-
-//  void showDownloadCompleteDialog() {
-//     showDialog(
-//       context: context,
-//       builder: (_) => AlertDialog(
-//         title: Text("Answer sheet not found"),
-//         // content: Column(
-//         //   mainAxisSize: MainAxisSize.min,
-//         //   children: <Widget>[
-//         //     Text("The answer sheet has been downloaded."),
-//         //     SizedBox(height: 10),
-//         //     ElevatedButton(
-//         //       onPressed: () {
-//         //         Navigator.of(context).pop();
-//         //         showPdfDialog(downloadedFilePath);
-//         //       },
-//         //       child: Text("Show PDF"),
-//         //     ),
-//         //   ],
-//         // ),
-//         actions: <Widget>[
-//           TextButton(
-//             child: Text("Close"),
-//             onPressed: () => Navigator.of(context).pop(),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
+  // void showDownloadCompleteDialog(String examName) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (_) => AlertDialog(
+  //       title: Text("Download Complete"),
+  //       content: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: <Widget>[
+  //           Text("The answer sheet has been downloaded."),
+  //           SizedBox(height: 10),
+  //           ElevatedButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               Get.to(() => ShowResultPage(
+  //                     filePath: getx
+  //                             .userSelectedPathForDownloadFile.value.isEmpty
+  //                         ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} $examName'
+  //                         : getx.userSelectedPathForDownloadFile.value +
+  //                             "/${widget.examId} $examName",
+  //                     isnet: false,
+  //                   ));
+  //             },
+  //             child: Text("Show PDF"),
+  //           ),
+  //         ],
+  //       ),
+  //       actions: <Widget>[
+  //         TextButton(
+  //           child: Text("Close"),
+  //           onPressed: () => Navigator.of(context).pop(),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   void showPdfDialog(String filePath) {
     showDialog(
@@ -304,7 +276,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
   }
 
   TextEditingController reasonController = TextEditingController();
-
+  Downloadsheet downloadsheet = Downloadsheet();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -684,7 +656,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                           : Colors.amber)),
                             ]),
                           ),
-                          widget.pdfUrl != 'null'
+                          widget.pdfUrl != ''
                               ? ElevatedButton(
                                   style: ButtonStyle(
                                       padding: WidgetStatePropertyAll(
@@ -692,7 +664,8 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                               vertical: 10, horizontal: 10)),
                                       backgroundColor:
                                           WidgetStatePropertyAll(Colors.blue)),
-                                  onPressed: isDownloading.value
+                                  onPressed: downloadsheet
+                                          .getx.isDownloading.value
                                       ? null
                                       : () async {
                                           if (File(getx
@@ -718,8 +691,9 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                           } else {
                                             if (widget.pdfUrl.isNotEmpty) {
                                               print(widget.pdfUrl.toString());
-                                              downloadAnswerSheet(
-                                                  widget.pdfUrl, widget.examId);
+                                              downloadsheet.downloadAnswerSheet(
+                                                  widget.pdfUrl, widget.examId,
+                                                  context: context);
                                             }
                                           }
 
@@ -755,7 +729,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                           padding: WidgetStatePropertyAll(EdgeInsets.symmetric(
                               vertical: 10, horizontal: 10)),
                           backgroundColor: WidgetStatePropertyAll(Colors.blue)),
-                      onPressed: isDownloading.value
+                      onPressed: downloadsheet.getx.isDownloading.value
                           ? null
                           : () async {
                               if (File(getx.userSelectedPathForDownloadFile
@@ -781,10 +755,11 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                     .toString()
                                     .isNotEmpty) {
                                   print(widget.questionanswersheet.toString());
-                                  downloadAnswerSheet(
+                                  downloadsheet.downloadAnswerSheet(
                                       widget.questionanswersheet.toString(),
                                       widget.examId,
-                                      examName: widget.examName);
+                                      examName: widget.examName,
+                                      context: context);
                                 }
                               }
 
@@ -797,10 +772,10 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                             },
                       child: Text(
                         File(getx.userSelectedPathForDownloadFile.value.isEmpty
-                                    ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                    ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} ${widget.examName}'
                                     : getx.userSelectedPathForDownloadFile
                                             .value +
-                                        "/${widget.examId}")
+                                        "/${widget.examId} ${widget.examName}")
                                 .existsSync()
                             ? "Show Question Sample Sheet"
                             : 'Download Question Sample Sheet',
