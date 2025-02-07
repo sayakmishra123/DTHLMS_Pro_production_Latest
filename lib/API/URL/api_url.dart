@@ -1,8 +1,8 @@
 class ClsUrlApi {
-  static const mainurl =
-      String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
+  // static const mainurl =
+  //     String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
 
-  // static const mainurl = "apipro20240709.dthlms.com";
+  static const mainurl = "apipro20240709.dthlms.com";
 
   static const loginEndpoint = '/api/auth/login';
   static const checkUserExitenceBeforeregister =
@@ -14,12 +14,12 @@ class ClsUrlApi {
   static const getNotificationsDetailsApi =
       "/api/AuthDataGet/ExecuteJson/spAppApi/52";
   static const getIconDataApi = "/api/AuthDataGet/ExecuteJson/spAppApi/49";
-  static const signupEndpoint = "/api/auth/studentregister/";  
+  static const signupEndpoint = "/api/auth/studentregister/";
   static const getUserConfirmationTypeEndpoint =
       "/api/auth/getUserConfirmationType";
   static const generateSRCode = "/api/auth/generateSRCode";
   static const generateCodeEndpoint = '/api/auth/generateCode';
-  
+
   static const studentVideoreviewlink = '/api/auth/studentVideoreview';
   static const resendOtp = '/api/auth/resendOtp';
   static const allpackage = '/api/AuthDataGet/ExecuteJson/sptblPackage/4';
@@ -33,8 +33,8 @@ class ClsUrlApi {
   static const tblpackage = "/api/AuthDataGet/ExecuteJson/spAppApi/5";
   static const logoutapi = '/api/auth/logout';
 
-  static const getFileData = "/api/AuthDataGet/ExecuteJson/spAppApi/6";   
-  static const getFreePackageFiles = "/api/AuthDataGet/ExecuteJson/spAppApi/3"; 
+  static const getFileData = "/api/AuthDataGet/ExecuteJson/spAppApi/6";
+  static const getFreePackageFiles = "/api/AuthDataGet/ExecuteJson/spAppApi/3";
   static const getFolderData = "/api/AuthDataGet/ExecuteJson/spAppApi/12";
   static const getPackageData = "/api/AuthDataGet/ExecuteJson/spAppApi/14";
   static const getVideoComponents = "/api/AuthDataGet/ExecuteJson/spAppApi/15";

@@ -14,7 +14,6 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/no_sim.dart';
 import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
 import 'package:dthlms/security.dart';
@@ -216,50 +215,9 @@ class _MyAppState extends State<MyApp> {
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
                         ? DevelopermodeOnPage()
-                        : FutureBuilder(
-                            future: getSimCardsData(context),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.data!.isNotEmpty) {
-                                // bool isDataLengthValid = snapshot.data!
-                                //     .every((element) => element.length < 10);
-
-                                bool isDataLengthValid = false;
-
-                                if (snapshot.hasData && 
-                                    snapshot.data != null &&
-                                    snapshot.data is List) {
-                                  // Safely cast snapshot.data to a List and check the condition
-                                  final List dataList = snapshot.data!;
-                                  isDataLengthValid = dataList.every((element) {
-                                    if (element is String ||
-                                        element is Iterable) {
-                                      return element.length < 10;
-                                    }
-                                    return false;
-                                  });
-                                }
-
-                                if (isDataLengthValid) {
-                                  // return NoSim();
-                                  return getx.loginuserdata.isNotEmpty
-                                      ? HomePageMobile()
-                                      : Mobilelogin();
-                                  // : IntroductionDashBoard();
-                                } else {
-                                  return getx.loginuserdata.isNotEmpty
-                                      ? HomePageMobile()
-                                      : Mobilelogin();
-                                  // : IntroductionDashBoard();
-                                }
-                               } else {
-                                return const NoSim();
-                              }
-                            },
-                          )
+                        : getx.loginuserdata.isNotEmpty
+                            ? HomePageMobile()
+                            : Mobilelogin()
                 : getx.loginuserdata.isNotEmpty
                     ? DthDashboard()
                     : DthLmsLogin();
@@ -506,16 +464,10 @@ class _EmulatorOnPageState extends State<EmulatorOnPage> {
   }
 }
 
-// import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'notification_model.dart';
-// import 'package:intl/intl.dart';
-// import 'package:onesignal_flutter/onesignal_flutter.dart';
-
 Future<void> initializeNotifications() async {
   // testSQLCipherOnWindows();
   String osid = getEncryptionKeyFromTblSetting('OneSignalId');
-
+  log("user id of one signal :$osid");
   if (osid.isNotEmpty) {
     // Initialize OneSignal
     OneSignal.Debug.setLogLevel(

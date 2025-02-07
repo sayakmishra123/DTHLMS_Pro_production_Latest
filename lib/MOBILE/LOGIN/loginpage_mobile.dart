@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/API/LOGIN/login_api.dart';
@@ -42,6 +44,7 @@ class _MobileloginState extends State<Mobilelogin> {
   TextEditingController whatsAppNumberCountryId = TextEditingController();
 
   TextEditingController signuppassword = TextEditingController();
+  TextEditingController signupconfirmpassword = TextEditingController();
   String signupcourse = "JEE";
   TextEditingController loginemail = TextEditingController();
   TextEditingController loginpassword = TextEditingController();
@@ -159,11 +162,11 @@ class _MobileloginState extends State<Mobilelogin> {
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8)),
-                  
+
                     padding: EdgeInsets.symmetric(vertical: 10),
                     // width: 400,
                     // height: MediaQuery.sizeOf(context).height - 200,
-                  
+
                     alignment: Alignment.center,
                     child: Obx(
                       () => Column(
@@ -196,8 +199,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                 width: 300,
                                 child: AnimatedButtonBar(
                                   controller: _animatedButtonController
-                                    ..setIndex(
-                                        getxController.ButtonControllerIndex.value),
+                                    ..setIndex(getxController
+                                        .ButtonControllerIndex.value),
                                   radius: 32.0,
                                   padding: const EdgeInsets.all(16.0),
                                   backgroundColor:
@@ -241,7 +244,8 @@ class _MobileloginState extends State<Mobilelogin> {
                             ],
                           ),
                           getxController.show.value &&
-                                  getxController.ButtonControllerIndex.value == 1
+                                  getxController.ButtonControllerIndex.value ==
+                                      1
                               ? Form(
                                   // autovalidateMode:
                                   //     AutovalidateMode.onUserInteraction,
@@ -252,7 +256,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize / 2.1,
@@ -277,13 +282,15 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                               width: formfieldsize / 2.1,
                                               child: TextFormField(
-                                                autovalidateMode: AutovalidateMode
-                                                    .onUserInteraction,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
                                                 textInputAction:
                                                     TextInputAction.next,
                                                 validator: (value) {
@@ -293,14 +300,16 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     return null;
                                                   }
                                                 },
-                                                keyboardType: TextInputType.name,
+                                                keyboardType:
+                                                    TextInputType.name,
                                                 controller: signupfirstname,
                                                 decoration: InputDecoration(
                                                   hintText: 'First Name',
                                                   fillColor: Color.fromARGB(
                                                       255, 247, 246, 246),
                                                   filled: true,
-                                                  focusedBorder: OutlineInputBorder(
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -308,9 +317,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
-                                                  enabledBorder: OutlineInputBorder(
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -318,7 +329,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                 ),
                                               )),
@@ -328,8 +340,9 @@ class _MobileloginState extends State<Mobilelogin> {
                                           SizedBox(
                                               width: formfieldsize / 2,
                                               child: TextFormField(
-                                                autovalidateMode: AutovalidateMode
-                                                    .onUserInteraction,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
                                                 textInputAction:
                                                     TextInputAction.next,
                                                 validator: (value) {
@@ -339,14 +352,16 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     return null;
                                                   }
                                                 },
-                                                keyboardType: TextInputType.name,
+                                                keyboardType:
+                                                    TextInputType.name,
                                                 controller: signuplastname,
                                                 decoration: InputDecoration(
                                                   hintText: 'Last Name',
                                                   fillColor: Color.fromARGB(
                                                       255, 247, 246, 246),
                                                   filled: true,
-                                                  focusedBorder: OutlineInputBorder(
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -354,9 +369,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
-                                                  enabledBorder: OutlineInputBorder(
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -364,7 +381,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                 ),
                                               ))
@@ -374,7 +392,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
@@ -389,13 +408,15 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                               width: formfieldsize,
                                               child: TextFormField(
-                                                autovalidateMode: AutovalidateMode
-                                                    .onUserInteraction,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
                                                     return 'Cannot be blank';
@@ -411,7 +432,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                   fillColor: Color.fromARGB(
                                                       255, 247, 246, 246),
                                                   filled: true,
-                                                  focusedBorder: OutlineInputBorder(
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -419,9 +441,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
-                                                  enabledBorder: OutlineInputBorder(
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -429,7 +453,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                 ),
                                               ))
@@ -439,12 +464,13 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
                                             child: Text(
-                                              'Phone Number',
+                                              'Contact Number',
                                               style: FontFamily.mobilefont,
                                             ),
                                           )
@@ -454,12 +480,14 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
-                                            width:
-                                                MediaQuery.of(context).size.width *
-                                                    0.22,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.22,
                                             child: DropdownButton<int>(
                                               isExpanded: true,
                                               isDense: true,
@@ -479,9 +507,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                   value: item["value"],
                                                   child: Text(
                                                     item["label"]!,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     textAlign: TextAlign.center,
-                                                    style: TextStyle(fontSize: 14),
+                                                    style:
+                                                        TextStyle(fontSize: 14),
                                                   ),
                                                 );
                                               }).toList(),
@@ -506,6 +536,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                         AutovalidateMode
                                                             .onUserInteraction,
                                                     validator: (value) {
+                                                      log(selectedCountryCodePhone
+                                                          .toString());
                                                       if (value == null ||
                                                           value.isEmpty) {
                                                         return 'Phone number is required';
@@ -517,51 +549,22 @@ class _MobileloginState extends State<Mobilelogin> {
                                                           .hasMatch(value)) {
                                                         return 'must contain only digits';
                                                       }
+
+                                                      if (value.length > 10 &&
+                                                          selectedCountryCodePhone
+                                                              .toString()
+                                                              .startsWith(
+                                                                  '1')) {
+                                                        return "The number must be 10 digits.";
+                                                      }
+
                                                       return null;
                                                     },
-                  
+
                                                     controller: signupphno,
-                                                    obscureText:
-                                                        getx.forgetpassword1.value,
-                                                    onTap: () async {
-                                                      // await ClsSimInfo()
-                                                      //     .printSimCardsData(
-                                                      //         context)
-                                                      //     .whenComplete(() {
-                                                      //   Future.delayed(
-                                                      //       const Duration(
-                                                      //           seconds: 1), () {
-                                                      //     showDialog(
-                                                      //         context: context,
-                                                      //         builder: (context) {
-                                                      //           return Obx(() {
-                                                      //             return AlertDialog(
-                                                      //               title: const Text(
-                                                      //                   'Choose Sim number'),
-                                                      //               content:
-                                                      //                   SizedBox(
-                                                      //                 height: 100,
-                                                      //                 child: Column(
-                                                      //                   children: [
-                                                      //                     for (int i =
-                                                      //                             0;
-                                                      //                         i < getx.simCardinfo.length;
-                                                      //                         i++)
-                                                      //                       ElevatedButton(
-                                                      //                           onPressed: () {
-                                                      //                             signupphno.text = getx.simCardinfo[i].phoneNumber.toString();
-                                                      //                             Get.back();
-                                                      //                           },
-                                                      //                           child: Text(getx.simCardinfo[i].phoneNumber.toString())),
-                                                      //                   ],
-                                                      //                 ),
-                                                      //               ),
-                                                      //             );
-                                                      //           });
-                                                      //         });
-                                                      //   });
-                                                      // });
-                                                    },
+                                                    obscureText: getx
+                                                        .forgetpassword1.value,
+                                                    onTap: () async {},
                                                     keyboardType:
                                                         TextInputType.phone,
                                                     decoration: InputDecoration(
@@ -576,24 +579,30 @@ class _MobileloginState extends State<Mobilelogin> {
                                                         borderSide: BorderSide(
                                                           width: 0.5,
                                                           color: Color.fromARGB(
-                                                              255, 196, 194, 194),
+                                                              255,
+                                                              196,
+                                                              194,
+                                                              194),
                                                         ),
                                                         gapPadding: 20,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                       enabledBorder:
                                                           OutlineInputBorder(
                                                         borderSide: BorderSide(
                                                           width: 0.5,
                                                           color: Color.fromARGB(
-                                                              255, 196, 194, 194),
+                                                              255,
+                                                              196,
+                                                              194,
+                                                              194),
                                                         ),
                                                         gapPadding: 20,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                     ),
                                                     // controller: ,
@@ -606,7 +615,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
@@ -621,19 +631,22 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
-                                            width:
-                                                MediaQuery.of(context).size.width *
-                                                    0.22,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.22,
                                             child: DropdownButton<int>(
                                               isExpanded: true,
                                               isDense: true,
                                               value: selectedCountryCodeWA,
                                               onChanged: (newValue) {
                                                 setState(() {
-                                                  selectedCountryCodeWA = newValue!;
+                                                  selectedCountryCodeWA =
+                                                      newValue!;
                                                   whatsAppNumberCountryId.text =
                                                       newValue.toString();
                                                 });
@@ -645,9 +658,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                   value: item["value"],
                                                   child: Text(
                                                     item["label"]!,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     textAlign: TextAlign.center,
-                                                    style: TextStyle(fontSize: 14),
+                                                    style:
+                                                        TextStyle(fontSize: 14),
                                                   ),
                                                 );
                                               }).toList(),
@@ -674,7 +689,7 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     validator: (value) {
                                                       if (value == null ||
                                                           value.isEmpty) {
-                                                        return 'Phone number is required';
+                                                        return 'Contact number is required';
                                                       }
                                                       // if (value.length != 10) {
                                                       //   return 'must be 10 digits';
@@ -685,11 +700,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                       }
                                                       return null;
                                                     },
-                  
+
                                                     controller: signupwaphno,
-                                                    obscureText:
-                                                        getx.forgetpassword1.value,
-                  
+                                                    obscureText: getx
+                                                        .forgetpassword1.value,
+
                                                     keyboardType:
                                                         TextInputType.phone,
                                                     decoration: InputDecoration(
@@ -704,24 +719,30 @@ class _MobileloginState extends State<Mobilelogin> {
                                                         borderSide: BorderSide(
                                                           width: 0.5,
                                                           color: Color.fromARGB(
-                                                              255, 196, 194, 194),
+                                                              255,
+                                                              196,
+                                                              194,
+                                                              194),
                                                         ),
                                                         gapPadding: 20,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                       enabledBorder:
                                                           OutlineInputBorder(
                                                         borderSide: BorderSide(
                                                           width: 0.5,
                                                           color: Color.fromARGB(
-                                                              255, 196, 194, 194),
+                                                              255,
+                                                              196,
+                                                              194,
+                                                              194),
                                                         ),
                                                         gapPadding: 20,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                     ),
                                                     // controller: ,
@@ -773,7 +794,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
@@ -788,13 +810,15 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
                                             child: TextFormField(
-                                                autovalidateMode: AutovalidateMode
-                                                    .onUserInteraction,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
                                                     return 'Password cannot be blank';
@@ -808,7 +832,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                           r'^(?=.*[a-z])')
                                                       .hasMatch(value)) {
                                                     return 'Password must contain at least one lowercase letter';
-                                                  } else if (!RegExp(r'^(?=.*\d)')
+                                                  } else if (!RegExp(
+                                                          r'^(?=.*\d)')
                                                       .hasMatch(value)) {
                                                     return 'Password must contain at least one number';
                                                   } else if (!RegExp(
@@ -823,8 +848,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                   }
                                                   return null;
                                                 },
-                                                keyboardType:
-                                                    TextInputType.visiblePassword,
+                                                keyboardType: TextInputType
+                                                    .visiblePassword,
                                                 controller: signuppassword,
                                                 obscureText: !showPass.value,
                                                 decoration: InputDecoration(
@@ -832,7 +857,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                   fillColor: Color.fromARGB(
                                                       255, 247, 246, 246),
                                                   filled: true,
-                                                  focusedBorder: OutlineInputBorder(
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -840,9 +866,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
-                                                  enabledBorder: OutlineInputBorder(
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -850,7 +878,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                   suffixIcon: IconButton(
                                                       onPressed: () {
@@ -859,17 +888,126 @@ class _MobileloginState extends State<Mobilelogin> {
                                                       },
                                                       icon: Icon(showPass.value
                                                           ? Icons.visibility
-                                                          : Icons.visibility_off)),
+                                                          : Icons
+                                                              .visibility_off)),
                                                 )),
                                           )
+                                        ],
+                                      ),
+
+                                      SizedBox(
+                                        height: height,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: formfieldsize,
+                                            child: Text(
+                                              'Confirm Password',
+                                              style: FontFamily.mobilefont,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       SizedBox(
                                         height: height,
                                       ),
-                  
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: formfieldsize,
+                                            child: TextFormField(
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return 'Confirm Password cannot be blank';
+                                                  } else if (value.length < 8) {
+                                                    return 'Confirm Password must be at least 9 characters long';
+                                                  } else if (!RegExp(
+                                                          r'^(?=.*[A-Z])')
+                                                      .hasMatch(value)) {
+                                                    return 'Confirm Password must contain at least one uppercase letter';
+                                                  } else if (!RegExp(
+                                                          r'^(?=.*[a-z])')
+                                                      .hasMatch(value)) {
+                                                    return 'Confirm Password must contain at least one lowercase letter';
+                                                  } else if (!RegExp(
+                                                          r'^(?=.*\d)')
+                                                      .hasMatch(value)) {
+                                                    return 'Confirm Password must contain at least one number';
+                                                  } else if (!RegExp(
+                                                          r'^(?=.*[\W_])')
+                                                      .hasMatch(value)) {
+                                                    return 'Confirm Password must contain at least one special character';
+                                                  } else if (RegExp(r'[a-zA-Z]')
+                                                          .allMatches(value)
+                                                          .length <
+                                                      5) {
+                                                    return 'Confirm Password must contain at least 5 alphabetic characters (both uppercase and lowercase)';
+                                                  }
+                                                  return null;
+                                                },
+                                                keyboardType: TextInputType
+                                                    .visiblePassword,
+                                                controller:
+                                                    signupconfirmpassword,
+                                                obscureText: !showPass.value,
+                                                decoration: InputDecoration(
+                                                  hintText: 'Confirm Password',
+                                                  fillColor: Color.fromARGB(
+                                                      255, 247, 246, 246),
+                                                  filled: true,
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      width: 0.5,
+                                                      color: Color.fromARGB(
+                                                          255, 196, 194, 194),
+                                                    ),
+                                                    gapPadding: 20,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      width: 0.5,
+                                                      color: Color.fromARGB(
+                                                          255, 196, 194, 194),
+                                                    ),
+                                                    gapPadding: 20,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  suffixIcon: IconButton(
+                                                      onPressed: () {
+                                                        showPass.value =
+                                                            !showPass.value;
+                                                      },
+                                                      icon: Icon(showPass.value
+                                                          ? Icons.visibility
+                                                          : Icons
+                                                              .visibility_off)),
+                                                )),
+                                          )
+                                        ],
+                                      ),
+
+                                      SizedBox(
+                                        height: height,
+                                      ),
+
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
@@ -884,20 +1022,22 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                               width: formfieldsize,
                                               child: TextFormField(
-                                                keyboardType:
-                                                    TextInputType.visiblePassword,
+                                                keyboardType: TextInputType
+                                                    .visiblePassword,
                                                 controller: activationkey,
                                                 decoration: InputDecoration(
                                                   hintText: 'Activation key',
                                                   fillColor: Color.fromARGB(
                                                       255, 247, 246, 246),
                                                   filled: true,
-                                                  focusedBorder: OutlineInputBorder(
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -905,9 +1045,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
-                                                  enabledBorder: OutlineInputBorder(
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -915,7 +1057,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                 ),
                                               ))
@@ -934,85 +1077,99 @@ class _MobileloginState extends State<Mobilelogin> {
                                                 width: formfieldsize,
                                                 // height: 30,
                                                 child: MaterialButton(
-                                                  shape: ContinuousRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 15),
+                                                  shape:
+                                                      ContinuousRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20)),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 15),
                                                   color: ColorPage.color1,
                                                   onPressed: () async {
-                                                    if (mobile_key_signup
-                                                            .currentState!
-                                                            .validate() &
-                                                        GetUtils.isEmail(
-                                                            signupemail.text)) {
-                                                      print("section 1 shubha");
-                                                      print(activationkey.text);
-                                                      await checkUserBeforeRegister(
-                                                              context,
-                                                              signupemail.text,
-                                                              signupphno.text,
-                                                              activationkey.text
-                                                                  .toString())
-                                                          .then((activationKey) {
-                                                        if (activationKey != '') {
-                                                          print("section 2 shubha");
-                  
-                                                          activationkey.text =
-                                                              activationKey;
-                  
-                                                          mobile_key_signup
+                                                    if (signuppassword.text ==
+                                                        signupconfirmpassword
+                                                            .text) {
+                                                      if (mobile_key_signup
                                                               .currentState!
-                                                              .save();
-                                                          Get.toNamed(
-                                                              "/Mobilesigninotpscreen",
-                                                              arguments: {
-                                                                'signupuser':
-                                                                    signupphno.text,
-                                                                'signupfirstname':
-                                                                    signupfirstname
-                                                                        .text,
-                                                                'signuplastname':
-                                                                    signuplastname
-                                                                        .text,
-                                                                'signupemail':
-                                                                    signupemail
-                                                                        .text,
-                                                                'signuppassword':
-                                                                    signuppassword
-                                                                        .text,
-                                                                'signupphno':
-                                                                    signupphno.text,
-                                                                // 'signupcourse':signupcourse,
-                                                                'activationkey':
-                                                                    activationkey
-                                                                        .text,
-                  
-                                                                'signupwaphno':
-                                                                    signupwaphno
-                                                                        .text,
-                                                                'phonenumbercountryid':
-                                                                    phoneNumberCountryId
-                                                                        .text,
-                                                                'whatsappnumbercountryid':
-                                                                    whatsAppNumberCountryId
-                                                                        .text,
-                                                              });
-                                                        }
-                                                      });
-                                                    } else {
-                                                      Get.snackbar("Error",
-                                                          "Please enter valid details",
-                                                          colorText:
-                                                              ColorPage.white);
+                                                              .validate() &
+                                                          GetUtils.isEmail(
+                                                              signupemail
+                                                                  .text)) {
+                                                        print(
+                                                            activationkey.text);
+                                                        await checkUserBeforeRegister(
+                                                                context,
+                                                                signupemail
+                                                                    .text,
+                                                                signupphno.text,
+                                                                activationkey
+                                                                    .text
+                                                                    .toString())
+                                                            .then(
+                                                                (activationKey) {
+                                                          if (activationKey !=
+                                                              '') {
+                                                            print(
+                                                                "section 2 shubha");
+
+                                                            activationkey.text =
+                                                                activationKey;
+
+                                                            mobile_key_signup
+                                                                .currentState!
+                                                                .save();
+                                                            Get.toNamed(
+                                                                "/Mobilesigninotpscreen",
+                                                                arguments: {
+                                                                  'signupuser':
+                                                                      signupphno
+                                                                          .text,
+                                                                  'signupfirstname':
+                                                                      signupfirstname
+                                                                          .text,
+                                                                  'signuplastname':
+                                                                      signuplastname
+                                                                          .text,
+                                                                  'signupemail':
+                                                                      signupemail
+                                                                          .text,
+                                                                  'signuppassword':
+                                                                      signuppassword
+                                                                          .text,
+                                                                  'signupphno':
+                                                                      signupphno
+                                                                          .text,
+                                                                  // 'signupcourse':signupcourse,
+                                                                  'activationkey':
+                                                                      activationkey
+                                                                          .text,
+
+                                                                  'signupwaphno':
+                                                                      signupwaphno
+                                                                          .text,
+                                                                  'phonenumbercountryid':
+                                                                      phoneNumberCountryId
+                                                                          .text,
+                                                                  'whatsappnumbercountryid':
+                                                                      whatsAppNumberCountryId
+                                                                          .text,
+                                                                });
+                                                          }
+                                                        });
+                                                      } else {
+                                                        Get.snackbar("Error",
+                                                            "Please enter valid details",
+                                                            colorText: ColorPage
+                                                                .white);
+                                                      }
                                                     }
                                                   },
                                                   child: Text(
                                                     'Sign Up',
                                                     style: TextStyle(
-                                                        fontSize: ClsFontsize.Large,
+                                                        fontSize:
+                                                            ClsFontsize.Large,
                                                         color: Colors.white),
                                                   ),
                                                 ))
@@ -1022,7 +1179,7 @@ class _MobileloginState extends State<Mobilelogin> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                  
+
                                       // Row(
                                       //   mainAxisAlignment:
                                       //       MainAxisAlignment.center,
@@ -1037,7 +1194,7 @@ class _MobileloginState extends State<Mobilelogin> {
                                       //                       BorderRadius
                                       //                           .circular(
                                       //                               20)),
-                  
+
                                       //           // color: ColorPage.colorgrey,
                                       //           onPressed: () {},
                                       //           child: Text(
@@ -1058,7 +1215,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
@@ -1076,13 +1234,15 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                               width: formfieldsize,
                                               child: TextFormField(
-                                                autovalidateMode: AutovalidateMode
-                                                    .onUserInteraction,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
                                                     return 'Cannot be blank';
@@ -1100,7 +1260,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                   fillColor: Color.fromARGB(
                                                       255, 247, 246, 246),
                                                   filled: true,
-                                                  focusedBorder: OutlineInputBorder(
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -1108,9 +1269,11 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
-                                                  enabledBorder: OutlineInputBorder(
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 0.5,
                                                       color: Color.fromARGB(
@@ -1118,7 +1281,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     ),
                                                     gapPadding: 20,
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                 ),
                                                 // controller: ,
@@ -1129,7 +1293,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: formfieldsize,
@@ -1144,16 +1309,18 @@ class _MobileloginState extends State<Mobilelogin> {
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                               width: formfieldsize,
                                               child: Obx(
                                                 () => TextFormField(
-                                                  obscureText:
-                                                      getx.loginpasswordshow.value,
-                                                  autovalidateMode: AutovalidateMode
-                                                      .onUserInteraction,
+                                                  obscureText: getx
+                                                      .loginpasswordshow.value,
+                                                  autovalidateMode:
+                                                      AutovalidateMode
+                                                          .onUserInteraction,
                                                   textInputAction:
                                                       TextInputAction.next,
                                                   validator: (value) {
@@ -1163,8 +1330,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                     return null;
                                                   },
                                                   controller: loginpassword,
-                                                  keyboardType:
-                                                      TextInputType.visiblePassword,
+                                                  keyboardType: TextInputType
+                                                      .visiblePassword,
                                                   decoration: InputDecoration(
                                                       hintText: '************',
                                                       fillColor: Color.fromARGB(
@@ -1175,24 +1342,30 @@ class _MobileloginState extends State<Mobilelogin> {
                                                         borderSide: BorderSide(
                                                           width: 0.5,
                                                           color: Color.fromARGB(
-                                                              255, 196, 194, 194),
+                                                              255,
+                                                              196,
+                                                              194,
+                                                              194),
                                                         ),
                                                         gapPadding: 20,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                       enabledBorder:
                                                           OutlineInputBorder(
                                                         borderSide: BorderSide(
                                                           width: 0.5,
                                                           color: Color.fromARGB(
-                                                              255, 196, 194, 194),
+                                                              255,
+                                                              196,
+                                                              194,
+                                                              194),
                                                         ),
                                                         gapPadding: 20,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                       suffixIcon: IconButton(
                                                           onPressed: () {
@@ -1205,8 +1378,8 @@ class _MobileloginState extends State<Mobilelogin> {
                                                           icon: getx
                                                                   .loginpasswordshow
                                                                   .value
-                                                              ? const Icon(
-                                                                  Icons.visibility)
+                                                              ? const Icon(Icons
+                                                                  .visibility)
                                                               : const Icon(Icons
                                                                   .visibility_off))),
                                                 ),
@@ -1294,24 +1467,26 @@ class _MobileloginState extends State<Mobilelogin> {
                                             SizedBox(
                                                 width: formfieldsize,
                                                 child: MaterialButton(
-                                                  shape: ContinuousRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 10),
+                                                  shape:
+                                                      ContinuousRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20)),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
                                                   color: ColorPage.color1,
                                                   onPressed: () async {
                                                     // var token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGaXJzdE5hbWUiOiJTb3VyYXYiLCJMYXN0TmFtZSI6Ik5hdGgiLCJuYW1laWQiOiI2NTg0YWUzNC00NjMwLTRhNjMtYjI3MC1kNjUwNjdmNTNmZDIiLCJGcmFuY2hpc2VJZCI6IjEiLCJNb2JpbGUiOiI5ODMxODExOTIzIiwiZW1haWwiOiJpc3NzYnN0MjAxNkBnbWFpbC5jb20iLCJyb2xlIjoiVGVzdGVyIiwibmJmIjoxNzIxNzI2NjA3LCJleHAiOjE3MjE3MzAyMDcsImlhdCI6MTcyMTcyNjYwN30.Z3ALSqb6bZwjkOcx2uSFpPjS3Ktqhp8dkolsUrekH1o";
                                                     //  await tableEncryptionHistory(context,token);
-                  
+
                                                     if (mobile_key_login
                                                         .currentState!
                                                         .validate()) {
-                                                      mobile_key_login.currentState!
+                                                      mobile_key_login
+                                                          .currentState!
                                                           .save();
-                  
+
                                                       await loginApi(
                                                           context,
                                                           loginemail.text,
@@ -1335,12 +1510,13 @@ class _MobileloginState extends State<Mobilelogin> {
                                           ],
                                         ),
                                       ),
-                  
+
                                       SizedBox(
                                         height: height,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Expanded(
                                             child: Divider(
@@ -1366,7 +1542,7 @@ class _MobileloginState extends State<Mobilelogin> {
                                         ],
                                       ),
                                       SizedBox(height: 20),
-                  
+
                                       // Forget Password Text
                                       GestureDetector(
                                         onTap: () {
@@ -1385,8 +1561,9 @@ class _MobileloginState extends State<Mobilelogin> {
                                                 TextSpan(
                                                     text: 'FORGET PASSWORD',
                                                     style: TextStyle(
-                                                        decoration: TextDecoration
-                                                            .underline,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
                                                         color: Color.fromARGB(
                                                             255, 44, 27, 197),
                                                         fontWeight:
@@ -1402,17 +1579,15 @@ class _MobileloginState extends State<Mobilelogin> {
                                     ],
                                   ),
                                 ),
-                               
                         ],
                       ),
                     ),
                   ),
-               
-                Padding(
-                  padding: const EdgeInsets.only(top:100 ),
-                  child: Text("Version: ${getx.appVersion.value}",style: TextStyle(color: Colors.black45,fontSize: 12)),
-                )
-               
+                  Padding(
+                    padding: const EdgeInsets.only(top: 100),
+                    child: Text("Version: ${getx.appVersion.value}",
+                        style: TextStyle(color: Colors.black45, fontSize: 12)),
+                  )
                 ],
               ),
             ),

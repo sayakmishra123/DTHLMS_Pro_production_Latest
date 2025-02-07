@@ -7,7 +7,8 @@ import 'package:dthlms/API/ERROR_MASSEGE/errorhandling.dart';
 
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
+// import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
 
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ void testSQLCipherOnWindows() async {
   }
 
   getVersion();
-
+  _createDB();
   createtblPackageDetails();
   createtblMCQhistory();
   creatTableVideoplayInfo();
@@ -122,7 +123,7 @@ void createTblVideoComponents() {
 }
 
 Future<void> insertTblVideoComponents(
-  String componentId,
+    String componentId,
     String packageId,
     String videoId,
     String names,
@@ -192,7 +193,6 @@ void createtblSession() {
   // log()
 }
 
-
 void createTblStudentFeedback() {
   // Create a table and insert some data
   _db.execute('''
@@ -207,28 +207,20 @@ void createTblStudentFeedback() {
   // log()
 }
 
-Future<void> insertTblStudentFeedback(
-    String componentId,
-    String packageId,
-    String answer,
-    String uploadflag,
-    String videoId
-  ) async {
+Future<void> insertTblStudentFeedback(String componentId, String packageId,
+    String answer, String uploadflag, String videoId) async {
   _db.execute('''
         INSERT INTO TblStudentFeedback (
           ComponentId, PackageId, Answer,VideoId, UploadFlag
         ) VALUES (?, ?, ?, ?,?);
       ''', [
-        componentId,
-        packageId,
-        answer,
-        videoId,
-        
-        uploadflag,
-      
-      ]);
+    componentId,
+    packageId,
+    answer,
+    videoId,
+    uploadflag,
+  ]);
 }
-
 
 Future<void> insertTblSession(
     String loginId,
@@ -268,7 +260,7 @@ Future<void> readTblSession() async {
 }
 
 void deleteSessionDetails() {
-  _db.execute('DELETE FROM TblSession');             
+  _db.execute('DELETE FROM TblSession');
   getx.sessionData.clear();
 
   print("Session data cleared");
@@ -488,7 +480,9 @@ Future<Map<String, dynamic>> getAllPackageDetailsForLastRow(fileId) async {
     return {}; // Return an empty map in case of an error
   }
 }
-Future<List<Map<String, dynamic>>> getAllPackageDetailsForVideoCount(String packageId) async {
+
+Future<List<Map<String, dynamic>>> getAllPackageDetailsForVideoCount(
+    String packageId) async {
   try {
     // Replace '_db' with your database instance
     List<Map<String, dynamic>> result = await _db.select('''
@@ -504,6 +498,23 @@ Future<List<Map<String, dynamic>>> getAllPackageDetailsForVideoCount(String pack
   }
 }
 
+Future<List<Map<String, dynamic>>> getAllPackageDetailsForBooksCount(
+    String packageId) async {
+  try {
+    // Replace '_db' with your database instance
+    List<Map<String, dynamic>> result = await _db.select('''
+      SELECT * FROM TblAllPackageDetails  
+      WHERE PackageId = ? AND FileIdType = ?
+    ''', [packageId, 'Book']);
+
+    return result; // Return all rows matching the conditions
+  } catch (e) {
+    writeToFile(e, "getAllPackageDetailsForBooksCount");
+    print(e);
+    return []; // Return an empty list in case of an error
+  }
+}
+
 Future<void> insertVideoplayInfo(
     int videoId,
     String startingTimeLine,
@@ -512,7 +523,7 @@ Future<void> insertVideoplayInfo(
     String startClockTime,
     int playNo,
     int uploadflag,
-   { String type="video"}) async {
+    {String type = "video"}) async {
   try {
     // print(videoId.toString() + watchduration.toString());
 
@@ -777,24 +788,23 @@ Future<void> insertOrUpdateTblPackageData(
 
 // new added
 Future<void> insertPackageDetailsdata(
-  String packageId,
-  String packageName,
-  String fileIdType,
-  String fileId,
-  String fileIdName,
-  String chapterId,
-  String allowDuration,
-  String consumeDuration,
-  String consumeNos,
-  String allowNo,
-  String documentPath,
-  String scheduleOn,
-  String sessionId,
-  String videoDuration,
-  String DownloadedPath,
-  String isEncrypted,
-  String sortedOrder
-) async {
+    String packageId,
+    String packageName,
+    String fileIdType,
+    String fileId,
+    String fileIdName,
+    String chapterId,
+    String allowDuration,
+    String consumeDuration,
+    String consumeNos,
+    String allowNo,
+    String documentPath,
+    String scheduleOn,
+    String sessionId,
+    String videoDuration,
+    String DownloadedPath,
+    String isEncrypted,
+    String sortedOrder) async {
   _db.execute('''
        INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder) 
       VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder');
@@ -1454,9 +1464,8 @@ Future<void> getMCQListOfVideo(String packageId, String videoId) async {
   print("Details added in mcq list");
 }
 
-
-
-Future<void> getReviewQuestionListOfVideo(String packageId, String videoId) async {
+Future<void> getReviewQuestionListOfVideo(
+    String packageId, String videoId) async {
   final sql.ResultSet resultSet = _db.select('''
   SELECT * 
   FROM TblVideoComponents 
@@ -1469,21 +1478,22 @@ Future<void> getReviewQuestionListOfVideo(String packageId, String videoId) asyn
 
   for (int item = 0; item < resultSet.length; item++) {
     final details = {
-      "videoId":videoId,
-      "packageId":packageId,
-      "componentId":resultSet[item]['ComponentId'],
+      "videoId": videoId,
+      "packageId": packageId,
+      "componentId": resultSet[item]['ComponentId'],
       "question": resultSet[item]['Names'],
-      "options": [resultSet[item]['Option1'], resultSet[item]['Option2'], resultSet[item]['Option3'], resultSet[item]['Option4']],
+      "options": [
+        resultSet[item]['Option1'],
+        resultSet[item]['Option2'],
+        resultSet[item]['Option3'],
+        resultSet[item]['Option4']
+      ],
 
-
-
-
-   
       // "mcqQuestion": resultSet[item]['Names'],
       // "answer": resultSet[item]['Answer'],
       // "options": [
       //   {"optionName": resultSet[item]['Option1']},
-      //   {"optionName": resultSet[item]['Option2']},     
+      //   {"optionName": resultSet[item]['Option2']},
       //   {"optionName": resultSet[item]['Option3']},
       //   {"optionName": resultSet[item]['Option4']}
       // ]
@@ -1493,6 +1503,7 @@ Future<void> getReviewQuestionListOfVideo(String packageId, String videoId) asyn
   }
   print("Details added in mcq list");
 }
+
 Future<void> getPDFlistOfVideo(String packageId, String videoId) async {
   final sql.ResultSet resultSet = _db.select('''
   SELECT DocumentURL, DocumentId,Names,IsEncrypted
@@ -2600,104 +2611,6 @@ String fetchDownloadPathOfVideo(String videoId, String packageId) {
   return downloadPath;
 }
 
-void createTables() {
-  _db.execute('''
-      CREATE TABLE IF NOT EXISTS TblPackageInfo (
-        AppStoreId INTEGER,
-        CategoryOrder INTEGER,
-        ImageType TEXT,
-        Heading TEXT,
-        PremiumPackageListInfo TEXT
-      )
-      ''');
-
-  _db.execute('''
-      CREATE TABLE IF NOT EXISTS TblPremiumPackage (
-        SortingOrder INTEGER,
-        DocumentUrl TEXT,
-        PackageId INTEGER PRIMARY KEY,
-        PackageName TEXT,
-        PackageBannerPathUrl TEXT,
-        MinPackagePrice REAL
-      )
-      ''');
-}
-
-void insertApiResponse(ApiResponse apiResponse) {
-  for (PackageInfo packageInfo in apiResponse.result) {
-    insertPackageInfo(packageInfo);
-    for (PremiumPackage premiumPackage in packageInfo.premiumPackageListInfo) {
-      insertPremiumPackage(premiumPackage);
-    }
-  }
-}
-
-void insertPackageInfo(PackageInfo packageInfo) {
-  String premiumPackagesJson = jsonEncode(
-      packageInfo.premiumPackageListInfo.map((e) => e.toJson()).toList());
-
-  _db.execute(
-    '''
-        INSERT INTO TblPackageInfo (AppStoreId, CategoryOrder, ImageType, Heading, PremiumPackageListInfo)
-        VALUES (?, ?, ?, ?, ?)
-      ''',
-    [
-      packageInfo.appStoreId,
-      packageInfo.categoryOrder,
-      packageInfo.imageType,
-      packageInfo.heading,
-      premiumPackagesJson,
-    ],
-  );
-}
-
-void insertPremiumPackage(PremiumPackage premiumPackage) {
-  _db.execute(
-    '''
-        INSERT INTO TblPremiumPackage (SortingOrder, DocumentUrl, PackageId, PackageName, PackageBannerPathUrl, MinPackagePrice)
-        VALUES (?, ?, ?, ?, ?, ?)
-      ''',
-    [
-      premiumPackage.sortingOrder,
-      premiumPackage.documentUrl,
-      premiumPackage.packageId,
-      premiumPackage.packageName,
-      premiumPackage.packageBannerPathUrl,
-      premiumPackage.minPackagePrice,
-    ],
-  );
-}
-
-List<PackageInfo> fetchAllPackageInfo() {
-  var result = _db.select('SELECT * FROM TblPackageInfo');
-  return result.map((row) {
-    return PackageInfo(
-      appStoreId: row['AppStoreId'],
-      categoryOrder: row['CategoryOrder'],
-      imageType: row['ImageType'],
-      heading: row['Heading'],
-      premiumPackageListInfo:
-          (jsonDecode(row['PremiumPackageListInfo']) as List)
-              .map((e) => PremiumPackage.fromJson(e))
-              .toList(),
-    );
-  }).toList();
-}
-
-List<PremiumPackage> fetchAllPremiumPackages() {
-  var result = _db.select('SELECT * FROM TblPremiumPackage');
-  return result.map((row) {
-    return PremiumPackage(
-      sortingOrder: row['SortingOrder'],
-      documentUrl: row['DocumentUrl'],
-      packageId: row['PackageId'],
-      packageName: row['PackageName'],
-      packageBannerPathUrl: row['PackageBannerPathUrl'],
-      minPackagePrice: row['MinPackagePrice'],
-    );
-  }).toList();
-}
-
 void createTheorySet() {
   _db.execute('''
    CREATE TABLE IF NOT EXISTS TblTheorySet( 
@@ -2746,7 +2659,8 @@ void createTheoryPaper() {
    
      PaperEndDate TEXT,
      PaperStartDate TEXT,
-     IsSubmitted TEXT
+     IsSubmitted TEXT,
+     AnswerSheet TEXT
    
    
    
@@ -2757,24 +2671,24 @@ void createTheoryPaper() {
 }
 
 Future<void> inserTblTheoryPaper(
-  String paperId,
-  String setId,
-  String paperName,
-  String totalMarks,
-  String termAndCondition,
-  String duration,
-  String documentUrl,
-  String startTime,
-  String passMarks,
-  String paperEndDate,
-  String paperStartDate,
-  String isSubmited
-) async {
+    String paperId,
+    String setId,
+    String paperName,
+    String totalMarks,
+    String termAndCondition,
+    String duration,
+    String documentUrl,
+    String startTime,
+    String passMarks,
+    String paperEndDate,
+    String paperStartDate,
+    String isSubmited,
+    {String answerSheet = ""}) async {
   try {
     _db.execute(
       '''
-        INSERT INTO TblTheoryPaper (PaperId, SetId, PaperName,TotalMarks,TermAndCondition,Duration,DocumentUrl,StartTime,PassMarks,PaperEndDate,PaperStartDate,IsSubmitted)
-        VALUES (?, ?, ?,?,?,?,?,?,?,?,?,?)
+        INSERT INTO TblTheoryPaper (PaperId, SetId, PaperName,TotalMarks,TermAndCondition,Duration,DocumentUrl,StartTime,PassMarks,PaperEndDate,PaperStartDate,IsSubmitted, AnswerSheet)
+        VALUES (?, ?, ?,?,?,?,?,?,?,?,?,?,?)
         ''',
       [
         paperId,
@@ -2788,7 +2702,8 @@ Future<void> inserTblTheoryPaper(
         passMarks,
         paperEndDate,
         paperStartDate,
-        isSubmited
+        isSubmited,
+        answerSheet
       ],
     );
     // log("insert Successfull   $paperId");
@@ -2808,7 +2723,7 @@ Future<List<Map<String, dynamic>>> fetchTheorySetList(String packageId) async {
     tblMCQSetList.add({
       'SetId': row['SetId'],
       'PackageId': row['PackageId'],
-      'SetName': row['SetName'], 
+      'SetName': row['SetName'],
       'ServicesTypeId': row['ServicesTypeId'],
       'ServicesTypeName': row['ServicesTypeName']
     });
@@ -2840,6 +2755,7 @@ Future<List<Map<String, dynamic>>> fetchTheoryPapertList(String setId) async {
       "StartTime": row["StartTime"],
       "PassMarks": row['PassMarks'],
       "DocumentUrl": row['DocumentUrl'],
+      "AnswerSheet": row['AnswerSheet'],
     });
     print("Data get papername form theory paper list: ${row['PaperName']}.");
   }
@@ -3068,7 +2984,7 @@ Future<dynamic> fetchUploadableVideoInfo() async {
       print(
           "${row['VideoId']}\n,${row['StartDuration']}\n,${row['EndDuration']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
       unUploadedVideoInfo.add({
-        'Type':row['Type'],
+        'Type': row['Type'],
         'VideoId': row['VideoId'],
         'StartDuration': row['StartDuration'],
         'EndDuration': row['EndDuration'],
@@ -3152,7 +3068,7 @@ void deletePartularPackageData(String packageId, BuildContext context) {
     gettheoryExamDataForTest2(context, getx.loginuserdata[0].token, packageId);
     getAllFolders(context, getx.loginuserdata[0].token, packageId);
     getAllFiles(context, getx.loginuserdata[0].token, packageId);
-    getAllFreeFiles(context,getx.loginuserdata[0].token,packageId);
+    getAllFreeFiles(context, getx.loginuserdata[0].token, packageId);
     getVideoComponents(context, getx.loginuserdata[0].token, packageId);
   } catch (e) {
     writeToFile(e, "deletePartularPackageData");
@@ -3640,8 +3556,8 @@ Future<List<Map<String, dynamic>>> getAllTblImages() async {
     // Ensure '_db' is your initialized database instance
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblImages''');
-      print("shubha getAllTblImages");
-log(result.toString());
+    print("shubha getAllTblImages");
+    log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {
     writeToFile(e, "getAllTblImages");
@@ -3756,19 +3672,113 @@ String getVideoPlayModeFromPackageId(String packageId) {
   // }
 }
 
-
-Future<void> updateIsSubmittedOnTblTheoryPaperTable(String paperId, 
-    String issubmited, BuildContext context) async {
+Future<void> updateIsSubmittedOnTblTheoryPaperTable(
+    String paperId, String issubmited, BuildContext context) async {
   try {
     _db.execute('''
       UPDATE TblTheoryPaper
       SET IsSubmitted = ?
       WHERE PaperId = ?;
     ''', [issubmited, paperId]);
-
- 
   } catch (e) {
     writeToFile(e, 'updateIsSubmittedOnTblTheoryPaperTable');
     print('Failed to update details: ${e.toString()}');
   }
+}
+
+Future<void> _createDB() async {
+  _db.execute('''
+      CREATE TABLE IF NOT EXISTS packages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        appStoreId INTEGER,
+        categoryOrder INTEGER,
+        imageType TEXT,
+        heading TEXT
+      );
+    ''');
+
+  _db.execute('''
+      CREATE TABLE IF NOT EXISTS premium_packages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        packageId INTEGER,
+        packageName TEXT,
+        packageBannerPathUrl TEXT,
+        minPackagePrice REAL
+      );
+    ''');
+}
+
+Future<void> deleteAllPackages() async {
+  _db.execute('DELETE FROM packages');
+}
+
+Future<void> deleteAllPremiumPackages() async {
+  _db.execute('DELETE FROM premium_packages');
+}
+
+// Insert PackageInfo into database
+Future<void> insertPackages(List<PackageInfo> packages) async {
+  for (var package in packages) {
+    _db.execute('''
+      INSERT INTO packages (appStoreId, categoryOrder, imageType, heading) 
+      VALUES (?, ?, ?, ?)
+    ''', [
+      package.appStoreId,
+      package.categoryOrder,
+      package.imageType,
+      package.heading
+    ]);
+  }
+}
+
+// // Insert PremiumPackage into database
+Future<void> insertPremiumPackages(List<PremiumPackage> packages) async {
+  for (var package in packages) {
+    _db.execute('''
+      INSERT INTO premium_packages (packageId, packageName, packageBannerPathUrl, minPackagePrice) 
+      VALUES (?, ?, ?, ?)
+    ''', [
+      package.packageId,
+      package.packageName,
+      package.packageBannerPathUrl,
+      package.minPackagePrice
+    ]);
+  }
+}
+
+Future<List<PackageInfo>> fetchAllData() async {
+  // final db = await database;
+
+  // Fetch all packages
+  final packageResults = _db.select('SELECT * FROM packages');
+  List<PackageInfo> packageList = packageResults.map((row) {
+    print(row['imageType']);
+    return PackageInfo(
+      appStoreId: row['appStoreId'],
+      categoryOrder: row['categoryOrder'],
+      imageType: row['imageType'],
+      heading: row['heading'],
+      premiumPackageListInfo: [], //Ensure it's initialized properly
+    );
+  }).toList();
+
+  // Fetch all premium packages
+  final premiumResults = _db.select('SELECT * FROM premium_packages');
+  List<PremiumPackage> premiumPackageList = premiumResults.map((row) {
+    return PremiumPackage(
+      packageId: row['packageId'],
+      packageName: row['packageName'],
+      packageBannerPathUrl: row['packageBannerPathUrl'],
+      minPackagePrice: row['minPackagePrice'],
+      sortingOrder: 0,
+      documentUrl: '',
+    );
+  }).toList();
+
+  // Map premium packages to their respective PackageInfo
+  for (var package in packageList) {
+    package.premiumPackageListInfo.addAll(premiumPackageList);
+  }
+
+  return packageList;
 }

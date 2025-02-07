@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:art_sweetalert/art_sweetalert.dart';
@@ -271,7 +272,8 @@ class TheoryExamTermAndCondition extends StatelessWidget {
                       if (checkbox.value) {
                         var examcode = await getExamStatus(
                             context, getx.loginuserdata[0].token, paperId);
-                        if (examcode == 200) {
+                            var decodedResponse = jsonDecode(examcode);
+                        if (decodedResponse['statusCode'] == 200) {
                           Get.to(
                               transition: Transition.cupertino,
                               () => TheoryExamPage(
@@ -283,7 +285,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
                                     isEncrypted: isEncrypted,
                                   ));
                         }
-                        if (examcode == 250) {
+                        if (decodedResponse['statusCode'] == 250) {
                           Get.to(
                               transition: Transition.cupertino,
                               () => TheoryExamPage(
@@ -295,7 +297,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
                                     isEncrypted: isEncrypted,
                                   ));
                         }
-                        if (examcode == 300) {
+                        if (decodedResponse['statusCode'] == 300) {
                           _showDialogSubmited(context, "Already Submited!",
                               "your exam is already submited.", () {
                             Navigator.pop(context);
@@ -354,7 +356,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
                             }
                           });
                         }
-                        if (examcode == 400) {
+                        if (decodedResponse['statusCode'] == 400) {
                           _showDialogoferror(context, "Time is Over!",
                               "your exam is already ended.", () {
                             Navigator.pop(context);

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/bannerInfoPage.dart';
 import 'package:dthlms/MOBILE/THEORY_EXAM/store_dashboard.dart';
 import 'package:dthlms/MOBILE/store/list/searchlist.dart';
@@ -16,39 +17,41 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SortMenu extends StatelessWidget {
-  final void Function(String) onSortSelected;
+import '../../../GETXCONTROLLER/getxController.dart';
 
-  const SortMenu({Key? key, required this.onSortSelected}) : super(key: key);
+// class SortMenu extends StatelessWidget {
+//   final void Function(String) onSortSelected;
 
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      color: Colors.white,
-      onSelected: onSortSelected,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        side: BorderSide(color: Colors.grey.shade300),
-      ),
-      itemBuilder: (BuildContext context) {
-        return ['A to Z', 'Z to A', 'Other Style'].map((String choice) {
-          return PopupMenuItem<String>(
-            value: choice,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-              child: Text(
-                choice,
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-            ),
-          );
-        }).toList();
-      },
-      icon: Icon(Icons.sort, color: Colors.black),
-    );
-  }
-}
+//   const SortMenu({Key? key, required this.onSortSelected}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return PopupMenuButton<String>(
+//       color: Colors.white,
+//       onSelected: onSortSelected,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(8.0),
+//         side: BorderSide(color: Colors.grey.shade300),
+//       ),
+//       itemBuilder: (BuildContext context) {
+//         return ['A to Z', 'Z to A', 'Other Style'].map((String choice) {
+//           return PopupMenuItem<String>(
+//             value: choice,
+//             child: Padding(
+//               padding:
+//                   const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+//               child: Text(
+//                 choice,
+//                 style: TextStyle(fontSize: 16, color: Colors.black),
+//               ),
+//             ),
+//           );
+//         }).toList();
+//       },
+//       icon: Icon(Icons.sort, color: Colors.black),
+//     );
+//   }
+// }
 
 class ListviewPackage extends StatefulWidget {
   @override
@@ -56,215 +59,92 @@ class ListviewPackage extends StatefulWidget {
 }
 
 class _ListviewPackageState extends State<ListviewPackage> {
-  final List<Map<String, String>> episodes = [
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 1 | New Package | Full course',
-      'views': '25K views • 5 days ago',
-      'duration': '22:35'
-    },
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 2 | New Package | Full course',
-      'views': '18K students • 6 days ago',
-      'duration': '22:33'
-    },
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 3 | New Package | Full course',
-      'views': '22K students • 7 days ago',
-      'duration': '23:06'
-    },
-    {
-      'imageUrl': 'assets/android/Welcome to.jpg',
-      'title': 'course 4 | New Package | Full course',
-      'views': '19K students • 8 days ago',
-      'duration': '23:05'
-    },
-  ];
-
-  final List<Map<String, String>> viewersChoice = [
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'course 47 || 22 Oct 2024',
-      'views': '1.2 lakh students • 1 day ago',
-      'duration': '43:24'
-    },
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'course 45 | course | 21 Oct 2024',
-      'views': '1.3 lakh students • 2 days ago',
-      'duration': '49:00'
-    },
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'Gift With A Mystery | Full course | 19 Oct 2024',
-      'views': '79K students • 3 days ago',
-      'duration': '1:31:10'
-    },
-    {
-      'imageUrl': 'https://picsum.photos/200/300',
-      'title': 'course 478 || 22 Oct 2024',
-      'views': '1.2 lakh students • 1 day ago',
-      'duration': '43:24'
-    },
-  ];
-
-  late List<bool> _isSelected = [];
-  late List<bool> _isSelected2 = [];
+  RxList<PackageInfo> packages = <PackageInfo>[].obs;
+  Getx getx = Get.put(Getx());
 
   @override
   void initState() {
     super.initState();
-    // log('init state');
-    getFullBannerPackages(context, getx.loginuserdata[0].token);
 
-    _isSelected = List.generate(
-      course.length,
-      (index) => false,
-    );
-    _isSelected2 = List.generate(
-      other.length,
-      (index) => false,
-    );
-    // Initialize selection state
+    packages.isEmpty ? fetchData() : null; // Fetch data on screen load
   }
 
-  void _toggleSelection(int index) {
-    setState(
-      () {
-        _isSelected[index] = !_isSelected[index]; // Toggle selection
-      },
-    );
+  // Function to fetch data from the API and update the observable list
+  Future<void> fetchData() async {
+    // Here you would call your method to fetch data, for example:
+
+    if (getx.isInternet.value) {
+      await getFullBannerPackages(context, getx.loginuserdata[0].token);
+    }
+    // Then update the RxList with the fetched data (replace this with your actual fetched data)
+    packages.value = await fetchAllData(); // Assume this fetches your data
   }
-
-  void _toggleSelection2(int index) {
-    setState(() {
-      _isSelected2[index] = !_isSelected2[index]; // Toggle selection
-    });
-  }
-
-  void _sortEpisodes(String order) {
-    setState(() {
-      if (order == "A to Z") {
-        episodes.sort((a, b) => a['title']!.compareTo(b['title']!));
-      } else if (order == "Z to A") {
-        episodes.sort((a, b) => b['title']!.compareTo(a['title']!));
-      } else if (order == "Other Style") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VerticalCourselist(),
-          ),
-        );
-      } else {
-        // Reset to original order if needed
-        // Here you can implement logic to reset to original order if you store it
-      }
-    });
-  }
-
-  List course = ['All', 'Courses'];
-  List other = ['Professional', 'Professional and old Syllabus'];
-
-  // final RxList<Map<String, dynamic>> style = [
-  //   {
-  //     "title": 'Course 1',
-  //     'banner': true,
-  //     'show': true,
-  //     'vartical': false,
-  //     'style': 0
-  //   },
-  //   {
-  //     "title": 'Course 2',
-  //     'banner': false,
-  //     'show': true,
-  //     'vartical': true,
-  //     'style': 1
-  //   },
-  //   {
-  //     "title": '',
-  //     'banner': true,
-  //     'show': true,
-  //     'vartical': true,
-  //     'style': 0,
-  //   },
-  //   {
-  //     "title": 'Course 4',
-  //     'banner': false,
-  //     'show': true,
-  //     'vartical': false,
-  //     'style': 0
-  //   },
-  // ].obs;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Courses'),
-          actions: [
-            IconButton(
-                onPressed: () async {
-                  showSearch(context: context, delegate: SearchList());
-                },
-                icon: Icon(Icons.search)),
-            SortMenu(
-              onSortSelected: _sortEpisodes,
-            )
-          ],
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        ),
-        body: Obx(
-          () => getx.style.isNotEmpty
-              ? SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // if (getx.style.isNotEmpty)
-                      for (int i = 0; i < getx.style[0].result.length; i++) ...[
-                        // Full Banner Section
-                        if (getx.style[0].result[i].imageType == 'Full Banner')
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: HeadingBox(
-                              mode: 1,
-                              imageUrl: getx
-                                  .style[0].result[i].premiumPackageListInfo,
-                              package: getx
-                                  .style[0].result[i].premiumPackageListInfo,
-                            ),
-                          ),
+      appBar: AppBar(
+        title: const Text('Courses'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              showSearch(context: context, delegate: SearchList(packages));
+            },
+            icon: const Icon(Icons.search),
+          ),
+        ],
+        backgroundColor: Colors.white,
+      ),
+      body: Obx(() {
+        // Reactive state with Obx for when the packages list is updated
+        if (packages.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-                        //   // Horizontal Package Section
-                        if (getx.style[0].result[i].imageType ==
-                            'Horizontal Package')
-                          _buildHorizontalPackageList(getx.style[0].result[i],
-                              getx.style[0].result[i].premiumPackageListInfo),
+        // print(packages[0].);
 
-                        // // Vertical Banner Section
-                        if (getx.style[0].result[i].imageType ==
-                            'Vertical Package')
-                          _buildVerticalPackageList(getx.style[0].result[i],
-                              getx.style[0].result[i].premiumPackageListInfo),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 5, bottom: 0, top: 10),
-                        //   child: Row(children: []),
-                        // ),
-                      ]
-                      // else ...[
-
-                      // ]
-                    ],
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // if (getx.style.isNotEmpty)
+              for (int i = 0; i < packages.length; i++) ...[
+                // Full Banner Section
+                if (packages[i].imageType == 'Full Banner')
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: HeadingBox(
+                      mode: 1,
+                      imageUrl: packages[i].premiumPackageListInfo,
+                      package: packages[i].premiumPackageListInfo,
+                    ),
                   ),
-                )
-              : Center(
-                  child: CircularProgressIndicator(),
+
+                //   // Horizontal Package Section
+                if (packages[i].imageType == 'Horizontal Package')
+                  _buildHorizontalPackageList(
+                      packages[i], packages[i].premiumPackageListInfo),
+
+                // // Vertical Banner Section
+                if (packages[i].imageType == 'Vertical Package')
+                  _buildVerticalPackageList(
+                      packages[i], packages[i].premiumPackageListInfo),
+                SizedBox(
+                  height: 20,
                 ),
-        ));
+                Padding(
+                  padding: const EdgeInsets.only(left: 5, bottom: 0, top: 10),
+                  child: Row(children: []),
+                ),
+              ]
+              // else ...[
+
+              // ]
+            ],
+          ),
+        );
+      }),
+    );
   }
 
   Widget _buildHorizontalPackageList(
@@ -363,7 +243,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                           child: EpisodeCard(
                             imageUrl: data.packageBannerPathUrl,
                             title: data.packageName,
-                            views: '55k',
+                            views: packageinfo.heading,
                             duration: '10:50',
                             price: data.minPackagePrice,
                             mode: 1,
@@ -608,12 +488,17 @@ class _HeadingBoxState extends State<HeadingBox> {
   RxList list = [].obs;
   @override
   Widget build(BuildContext context) {
+    // Get the screen width for responsiveness
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Stack(
       children: [
-        //  getx.bannerImageList.isNotEmpty
+        // Conditional Layout based on mode
         widget.mode == 0
             ? Container(
-                height: 110,
+                height: screenWidth < 600
+                    ? 110
+                    : 150, // Adjust height based on screen size
                 width: MediaQuery.of(context).size.width,
                 child: InkWell(
                   child: Padding(
@@ -622,37 +507,28 @@ class _HeadingBoxState extends State<HeadingBox> {
                       items: widget.imageUrl.map((item) {
                         return InkWell(
                           onTap: () {
-                            Get.to(() => BannerDetailsPage(
-                                  index: currentIndex.value,
-                                ));
+                            // Navigate to the banner details page
+                            Get.to(() =>
+                                BannerDetailsPage(index: currentIndex.value));
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Container(
-                              // padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  // borderRadius: BorderRadius.circular(20),
-                                  // gradient: LinearGradient(
-                                  //   begin: Alignment.centerLeft,
-                                  //   end: Alignment.centerRight,
-                                  //   // colors: ColorPage.gradientHeadingBox,
-                                  // ),
-                                  ),
+                              // Adjust layout for smaller screen sizes
+                              decoration: BoxDecoration(),
                               child: item["BannerImagePosition"] == "middle"
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       child: Image.network(
                                         item['DocumentUrl']!,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.cover,
                                         width: double.infinity,
                                         errorBuilder:
                                             (context, error, stackTrace) {
-                                          return Text(
-                                            'Image failed',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16),
-                                          );
+                                          return Text('Image failed',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16));
                                         },
                                       ),
                                     )
@@ -683,33 +559,27 @@ class _HeadingBoxState extends State<HeadingBox> {
               )
             : Container(
                 height: 150,
-                width: MediaQuery.of(context).size.width,
+                width: screenWidth - 10,
                 child: InkWell(
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 0),
                     child: CarouselSlider(
                       items: widget.package.map((item) {
-                        print(item.documentUrl);
                         return Padding(
                           padding: const EdgeInsets.all(0.0),
                           child: Container(
-                              // padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  // borderRadius: BorderRadius.circular(20),
-                                  // gradient: LinearGradient(
-                                  //   begin: Alignment.centerLeft,
-                                  //   end: Alignment.centerRight,
-                                  //   // colors: ColorPage.gradientHeadingBox,
-                                  // ),
-                                  ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  item.documentUrl,
-                                  fit: BoxFit.fill,
-                                  width: double.infinity,
-                                ),
-                              )),
+                            decoration: BoxDecoration(),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                item.packageBannerPathUrl,
+                                fit: BoxFit.fill,
+                                width: double.infinity,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Center(child: Image.asset(logopath)),
+                              ),
+                            ),
+                          ),
                         );
                       }).toList(),
                       carouselController: carouselController,
@@ -726,55 +596,58 @@ class _HeadingBoxState extends State<HeadingBox> {
                   ),
                 ),
               ),
-        Obx(
-          () => list.isEmpty
-              ? Positioned(
-                  bottom: 10,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: widget.package.isEmpty
-                        ? widget.imageUrl.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () =>
-                                  carouselController.animateToPage(entry.key),
-                              child: Container(
-                                width: currentIndex == entry.key ? 18 : 10,
-                                height: 7,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 3.0),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: currentIndex == entry.key
-                                        ? ColorPage.blue
-                                        : ColorPage.white),
-                              ),
-                            );
-                          }).toList()
-                        : widget.package.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () =>
-                                  carouselController.animateToPage(entry.key),
-                              child: Container(
-                                width: currentIndex == entry.key ? 18 : 10,
-                                height: 7,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 3.0),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: currentIndex == entry.key
-                                        ? ColorPage.blue
-                                        : ColorPage.white),
-                              ),
-                            );
-                          }).toList(),
-                  ),
-                )
-              : SizedBox(),
-        ),
+        // Bottom Navigation Dots
+        // Obx(
+        //   () => list.isEmpty
+        //       ? Positioned(
+        //           bottom: 10,
+        //           left: 0,
+        //           right: 0,
+        //           child: Row(
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: widget.package.isEmpty
+        //                 ? widget.imageUrl.asMap().entries.map((entry) {
+        //                     return GestureDetector(
+        //                       onTap: () =>
+        //                           carouselController.animateToPage(entry.key),
+        //                       child: Container(
+        //                         width: currentIndex == entry.key ? 18 : 10,
+        //                         height: 7,
+        //                         margin:
+        //                             const EdgeInsets.symmetric(horizontal: 3.0),
+        //                         decoration: BoxDecoration(
+        //                           border: Border.all(color: Colors.grey),
+        //                           borderRadius: BorderRadius.circular(20),
+        //                           color: currentIndex == entry.key
+        //                               ? ColorPage.blue
+        //                               : ColorPage.white,
+        //                         ),
+        //                       ),
+        //                     );
+        //                   }).toList()
+        //                 : widget.package.asMap().entries.map((entry) {
+        //                     return GestureDetector(
+        //                       onTap: () =>
+        //                           carouselController.animateToPage(entry.key),
+        //                       child: Container(
+        //                         width: currentIndex == entry.key ? 18 : 10,
+        //                         height: 7,
+        //                         margin:
+        //                             const EdgeInsets.symmetric(horizontal: 3.0),
+        //                         decoration: BoxDecoration(
+        //                           border: Border.all(color: Colors.grey),
+        //                           borderRadius: BorderRadius.circular(20),
+        //                           color: currentIndex == entry.key
+        //                               ? ColorPage.blue
+        //                               : ColorPage.white,
+        //                         ),
+        //                       ),
+        //                     );
+        //                   }).toList(),
+        //           ),
+        //         )
+        //       : SizedBox(),
+        // ),
       ],
     );
   }

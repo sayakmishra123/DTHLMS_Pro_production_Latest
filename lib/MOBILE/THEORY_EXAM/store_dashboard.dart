@@ -182,118 +182,122 @@ class _CoursePageState extends State<CoursePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<PackagInfoData>(
-          future: getPremiumPackageinfo(context, getx.loginuserdata[0].token,
-              widget.packageinfo.packageId.toString()),
-          builder:
-              (BuildContext context, AsyncSnapshot<PackagInfoData> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error'),
-              );
-            } else {
-              // print(snapshot.data![0].result[0].attribute[0].category);
-              return Column(
-                children: [
-                  Flexible(
-                    child: Image.network(
-                      // width: MediaQuery.sizeOf(context).width,
-                      widget.packageinfo.packageBannerPathUrl,
-                      height: 250,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Center(
-                          child: Text(
-                        'No Package image found',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                        textScaler: TextScaler.linear(1.5),
-                      )),
-                    ),
-                  ),
-                  // Banner and Course Info
-                  Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      // color: Colors.indigo[900],
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment
-                            .start, // Aligns everything to the left
-                        children: [
-                          SizedBox(height: 10),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width,
+      body: SafeArea(
+        child: FutureBuilder<PackagInfoData>(
+            future: getPremiumPackageinfo(context, getx.loginuserdata[0].token,
+                widget.packageinfo.packageId.toString()),
+            builder:
+                (BuildContext context, AsyncSnapshot<PackagInfoData> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error'),
+                );
+              } else {
+                // print(snapshot.data![0].result[0].attribute[0].category);
+                return Column(
+                  children: [
+                    Flexible(
+                      child: Image.network(
+                        // width: MediaQuery.sizeOf(context).width,
+                        widget.packageinfo.packageBannerPathUrl,
+                        height: 250,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => Center(
                             child: Text(
-                              widget.packageinfo.packageName,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                          'No Package image found',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                          textScaler: TextScaler.linear(1.5),
+                        )),
+                      ),
+                    ),
+                    // Banner and Course Info
+                    Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        // color: Colors.indigo[900],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment
+                              .start, // Aligns everything to the left
+                          children: [
+                            SizedBox(height: 10),
+                            Container(
+                              width: MediaQuery.sizeOf(context).width,
+                              child: Text(
+                                widget.packageinfo.packageName,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 5),
+                            SizedBox(height: 5),
 
-                          // Row for name and module details on the same line
-                          Row(
-                            children: [
-                              Text(
-                                'CA Amit Bachhawat',
-                                style: TextStyle(
-                                  color: const Color.fromARGB(255, 216, 88, 3),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                            // Row for name and module details on the same line
+                            Row(
+                              children: [
+                                Text(
+                                  'CA Amit Bachhawat',
+                                  style: TextStyle(
+                                    color:
+                                        const Color.fromARGB(255, 216, 88, 3),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 10), // Space between texts
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Faculty:  ',
-                                style: TextStyle(
-                                  color: Colors.black54,
+                                SizedBox(width: 10), // Space between texts
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Faculty:  ',
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          )
-                        ],
-                      )),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 5,
+                            )
+                          ],
+                        )),
 
-                  // Module List
-                  Expanded(
-                    child: ModuleList(snapshot.data),
-                  ),
-
-                  // Pick a Plan Button
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _showPlanSelection(context);
-                      },
-                      child: Text(
-                        'Enroll Now',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorPage.colorbutton,
-                        // primary: Colors.orange,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6))),
-                        minimumSize: Size(double.infinity, 45),
-                      ),
+                    // Module List
+                    Expanded(
+                      child: ModuleList(snapshot.data),
                     ),
-                  )
-                ],
-              );
-            }
-          }),
+
+                    // Pick a Plan Button
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _showPlanSelection(context);
+                        },
+                        child: Text(
+                          'Enroll Now',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorPage.colorbutton,
+                          // primary: Colors.orange,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(6))),
+                          minimumSize: Size(double.infinity, 45),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              }
+            }),
+      ),
     );
   }
 }

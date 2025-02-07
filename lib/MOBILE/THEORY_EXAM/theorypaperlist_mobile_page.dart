@@ -24,29 +24,29 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
 
   RxList theoryPaperList = [].obs;
 
-   Map<String, List<dynamic>> fetchedDataMap = {};
+  Map<String, List<dynamic>> fetchedDataMap = {};
 
   Future<void> getData(Map<String, dynamic> paperNames) async {
     final setId = paperNames['SetId'];
     if (!fetchedDataMap.containsKey(setId)) {
       fetchedDataMap[setId] = await fetchTheoryPapertList(setId);
-      setState(() {}); 
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    filteredList.value =
-        widget.theorylist.where((item) => item["ServicesTypeName"] == widget.type).toList();
+    filteredList.value = widget.theorylist
+        .where((item) => item["ServicesTypeName"] == widget.type)
+        .toList();
     // log(filteredList.toString());
 
     return SizedBox(
       height: screenHeight,
-      child: Column( 
+      child: Column(
         children: [
           if (filteredList.isNotEmpty)
             Expanded(
@@ -55,15 +55,14 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
                 itemCount: filteredList.length, // Use filtered list count
                 itemBuilder: (context, index) {
                   final theoryItem = filteredList[index];
-        final setId = theoryItem['SetId'];
-         if (!fetchedDataMap.containsKey(setId)) {
-          getData(theoryItem);
-        }
-         final currentDataLength =
-            fetchedDataMap[setId]?.length ?? 0;
-    
-                   getData(theoryItem);
-    
+                  final setId = theoryItem['SetId'];
+                  if (!fetchedDataMap.containsKey(setId)) {
+                    getData(theoryItem);
+                  }
+                  final currentDataLength = fetchedDataMap[setId]?.length ?? 0;
+
+                  getData(theoryItem);
+
                   // log(theoryItem.toString());
                   return InkWell(
                     onTap: () async {
@@ -71,23 +70,21 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
                       // mcqPaperList.value = await fetchMCQPapertList(paperNames['SetId']);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(  
+                        MaterialPageRoute(
                           builder: (context) => TheoryExamPapesMobile(
                             theoryItem,
-                            widget.theorylist, 
+                            widget.theorylist,
                             widget.istype,
                           ),
                         ),
                       );
                     },
                     child: Container(
-                      
-                      
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                       margin: EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.orange.withAlpha(200)),
+                          border:
+                              Border.all(color: Colors.orange.withAlpha(200)),
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
                       child: Row(
@@ -95,9 +92,9 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
                           Container(
                             margin: EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: const Color.fromARGB(255, 192, 169, 255)
-                            ),
+                                borderRadius: BorderRadius.circular(100),
+                                color:
+                                    const Color.fromARGB(255, 192, 169, 255)),
                             child: Padding(
                               padding: const EdgeInsets.all(15),
                               child: Image.asset(
@@ -108,7 +105,7 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
                               ),
                             ),
                           ),
-                          Container( 
+                          Container(
                             margin: EdgeInsets.only(right: 15, left: 5),
                             height: 80,
                             width: 2,
@@ -119,34 +116,44 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                          theoryItem["SetName"] ?? 
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          theoryItem["SetName"] ??
                                               'Question', // Use dynamic title
-                                          style: FontFamily.styleb.copyWith(fontSize: 16)),
-                                          SizedBox(height: 5,),
-                                        //   Text( 
-                                        // maxLines: 2,
-                                        // overflow: TextOverflow.ellipsis,
-                                        //   theoryItem["SetName"] ??
-                                        //       'Question', // Use dynamic title
-                                        //   style: FontFamily.style.copyWith(fontSize: 14,color: Colors.grey)),
+                                          style: FontFamily.styleb
+                                              .copyWith(fontSize: 16)),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      //   Text(
+                                      // maxLines: 2,
+                                      // overflow: TextOverflow.ellipsis,
+                                      //   theoryItem["SetName"] ??
+                                      //       'Question', // Use dynamic title
+                                      //   style: FontFamily.style.copyWith(fontSize: 14,color: Colors.grey)),
                                     ],
                                   ),
                                 ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: Column(
-                                      children: [CircleAvatar(
-                                        backgroundColor: Colors.pink.withAlpha(50),
-                                        radius: 15.0,
-                                        child: Text(currentDataLength.toString(),style: FontFamily.style.copyWith(fontSize: 16),))],
-                                    ),
-                              ),
-
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                          backgroundColor:
+                                              Colors.pink.withAlpha(50),
+                                          radius: 15.0,
+                                          child: Text(
+                                            currentDataLength.toString(),
+                                            style: FontFamily.style
+                                                .copyWith(fontSize: 16),
+                                          ))
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),

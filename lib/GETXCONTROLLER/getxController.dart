@@ -230,8 +230,8 @@ class Getx extends GetxController {
   void onInit() {
     initConnectivity();
 
-    // _connectivitySubscription =
-    //     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
     databasecopy();
     super.onInit();

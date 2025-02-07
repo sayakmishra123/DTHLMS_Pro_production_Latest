@@ -13,8 +13,12 @@ import 'package:dthlms/DEVICE_INFORMATION/device_info.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/Live/url.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
+import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart'
+    as modelclass;
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
+// import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 // import 'package:dthlms/MODEL_CLASS/Icon_model.dart';
 // import 'package:dthlms/MOBILE/PROFILE/profilrmodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
@@ -200,8 +204,8 @@ Future packactivationKey(
       deleteVideoComponents();
       getPackageData(context, token);
       getAllFolders(context, token, "");
-      getAllFiles(context, token, ""); 
-      getAllFreeFiles(context,token,"");
+      getAllFiles(context, token, "");
+      getAllFreeFiles(context, token, "");
       getVideoComponents(context, token, "");
 
       deleteSessionDetails();
@@ -486,20 +490,19 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
   }
 }
 
-
 Future getAllFreeFiles(BuildContext context, token, String packageId) async {
   // loader(context);
   Map data = packageId == "" ? {} : {'PackageId': packageId};
 
   try {
-    var res =
-        await http.post(Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getFreePackageFiles),
-            headers: <String, String>{
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer $token',
-              'Origin': origin,
-            },
-            body: jsonEncode(data));
+    var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getFreePackageFiles),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Origin': origin,
+        },
+        body: jsonEncode(data));
 
     if (res.statusCode == 200) {
       var responseBody = jsonDecode(res.body);
@@ -725,61 +728,61 @@ Future getVideoComponents(BuildContext context, token, String packageId) async {
   Map data = packageId == "" ? {} : {"PackageId": packageId};
 
   try {
-  var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-        'Origin': origin,
-      },
-      body: jsonEncode(data));
+    var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getVideoComponents),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Origin': origin,
+        },
+        body: jsonEncode(data));
 
-  if (res.statusCode == 200) {
-    var responseBody = jsonDecode(res.body);
-    // // print(responseBody.toString());
-    List<dynamic> resultList = jsonDecode(responseBody['result']);
-    List<VideoComponents> videoResults =
-        resultList.map((item) => VideoComponents.fromJson(item)).toList();
-    videoResults.forEach((item) {
-      insertTblVideoComponents(
-        item.componentId.toString(),
-        item.packageId.toString(),
-        item.videoId.toString(),
-        item.names,
-        item.option1,
-        item.option2,
-        item.option3,
-        item.option4,
-        item.videoTime,
-        item.answer,
-        item.category,
-        item.tagName,
-        item.documentId.toString(),
-        item.documentURL,
-        item.isVideoCompulsory.toString(),
-        item.isChapterCompulsory.toString(),
-        item.previousVideoId.toString(),
-        item.minimumVideoDuration.toString(),
-        item.previousChapterId.toString(),
-        item.sessionId,
-        item.franchiseId.toString(),
-        getDownloadedPathOfFileOfVideo(
+    if (res.statusCode == 200) {
+      var responseBody = jsonDecode(res.body);
+      // // print(responseBody.toString());
+      List<dynamic> resultList = jsonDecode(responseBody['result']);
+      List<VideoComponents> videoResults =
+          resultList.map((item) => VideoComponents.fromJson(item)).toList();
+      videoResults.forEach((item) {
+        insertTblVideoComponents(
+          item.componentId.toString(),
           item.packageId.toString(),
           item.videoId.toString(),
+          item.names,
+          item.option1,
+          item.option2,
+          item.option3,
+          item.option4,
+          item.videoTime,
+          item.answer,
           item.category,
+          item.tagName,
           item.documentId.toString(),
-        ),
-        item.isEncrypted,
-      );
-    });
+          item.documentURL,
+          item.isVideoCompulsory.toString(),
+          item.isChapterCompulsory.toString(),
+          item.previousVideoId.toString(),
+          item.minimumVideoDuration.toString(),
+          item.previousChapterId.toString(),
+          item.sessionId,
+          item.franchiseId.toString(),
+          getDownloadedPathOfFileOfVideo(
+            item.packageId.toString(),
+            item.videoId.toString(),
+            item.category,
+            item.documentId.toString(),
+          ),
+          item.isEncrypted,
+        );
+      });
 
-    // Get.back();
-  } else if (res.statusCode == 401) {
-    onTokenExpire(context);
-    // print("Error: in user components");
-  } else {
-    // Get.back();
-  }
+      // Get.back();
+    } else if (res.statusCode == 401) {
+      onTokenExpire(context);
+      // print("Error: in user components");
+    } else {
+      // Get.back();
+    }
   } catch (p) {
     writeToFile(p, 'getVideoComponents');
     // print("error:$p files2 video component");
@@ -1699,106 +1702,199 @@ _onUploadSuccessFull(context, VoidCallback ontap) {
 }
 
 Future<String> uploadSheet(
-    File file, String token, String key, String folderPath) async {
+    File file, String token, String key, String folderPath, context) async {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+  );
   try {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String fileName = basename(file.path);
-    String mimeType = lookupMimeType(file.path) ?? 'jpg';
+    String mimeType = lookupMimeType(file.path) ?? '.jpg';
 
-    // Create a multipart request
-    var request = http.MultipartRequest('POST',
+    var request = http.MultipartRequest('POST',   
         Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
-
-    // Add headers
     request.headers['Authorization'] = 'Bearer $token';
     request.headers['accept'] = 'text/plain';
 
-    getx.uploadProgress.value = 0.0;
-
-    // Create a ByteStream to track progress
     var byteStream = http.ByteStream(
       file.openRead().transform(
         StreamTransformer.fromHandlers(
           handleData: (data, sink) {
             sink.add(data);
-            getx.uploadProgress.value += data.length / file.lengthSync();
+            // setState(() {
+            //   uploadProgress += data.length / file.lengthSync();
+            // });
           },
         ),
       ),
     );
 
-    // Add the file
-    request.files.add(
-      http.MultipartFile(
-        'FileDetails',
-        byteStream,
-        file.lengthSync(),
-        filename: fileName,
-        contentType: MediaType.parse(mimeType),
-      ),
+// Update the request
+    request.files.add(http.MultipartFile(
+      'FileDetails',
+      byteStream,
+      file.lengthSync(),
+      filename: fileName,
+      contentType: MediaType.parse(mimeType),
+    ));
+
+    request.fields['folderPath'] = folderPath;
+    request.fields['DocumentTitle'] = fileName;
+
+    // Send the request with a 10-minute timeout
+    var response = await request.send().timeout(
+      const Duration(minutes: 50), // Set the timeout duration here
+      onTimeout: () {
+        // You can handle the timeout separately if needed
+        // ClsErrorMsg.fnErrorDialog(context, '', 'File upload timed out after 10 minutes', "");
+        return http.StreamedResponse(
+          const Stream.empty(),
+          408, // HTTP status code for timeout
+        );
+      },
     );
 
-    // Add other form fields
-    request.fields['folderPath'] = "folderPath";
-    request.fields['DocumentTitle'] = fileName;
-    request.fields['key'] = key;
-
-    // Send the request
-    var response = await request.send();
-
-    var responseData = await response.stream.bytesToString();
-    var jsonResponse = json.decode(responseData);
-    // Check the response
     if (response.statusCode == 200) {
-      // print('sheet uploaded successfully! ${jsonResponse["result"]} $file');
+      var responseData = await response.stream.bytesToString();
+      var jsonResponse = jsonDecode(responseData);
       var json = jsonDecode(jsonResponse["result"]);
-
+      print(json.toString());
       String documentId = json['DocumentId'].toString();
-      String documentPath = json['returnPath'];
-      // SettingsStorage storage = SettingsStorage();
-      String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
 
-      // rename video name add by Sayak Mishra
-
-      // renameVideoFile(videoFile.path, documentId, currentTime)
-      //     .then((bool isrename) async {
-
-      //   if (isrename) {
-
+      Get.back();
+      // NoticationDialog.noticationDialogsuccess(context, description: '');
       return documentId;
-      // }
-      // f.uploadProgress.value = 1.0;
-      // });
-
-      // return
-      // Ensure progress is set to 100% on success
     } else {
-      // ClsErrorMsg.fnErrorDialog(
-      // context,
-      // 'Failed',
-      // "Failed to upload video. Status code: ${response.statusCode}".toString()
-      //       .replaceAll("[", "")
-      //       .replaceAll("]", ""),
-      // "");
-      // print('Failed to upload video. Status code: ${response.statusCode}');
+      var responseData = await response.stream.bytesToString();
+      var jsonResponse = jsonDecode(responseData.toString());
+      log(jsonResponse['errorMessages'].toString());
+      Get.back();
+      // NoticationDialog.noticationDialogerror(context,
+      //     description: jsonResponse['errorMessages'].toString());
+      ClsErrorMsg.fnErrorDialog(context, '',
+          'Failed to upload Images. Status code: ${response.statusCode}', "");
       return "";
     }
   } catch (e) {
-    writeToFile(e, 'uploadSheet');
+    Get.back();
+    // ClsErrorMsg.fnErrorDialog(context, '', e.toString(), "");
     return '';
-    //  ClsErrorMsg.fnErrorDialog(
-    //     context,
-    //     '',
-    //    e. toString()
-    //           .replaceAll("[", "")
-    //           .replaceAll("]", ""),
-    //     "");
   }
 }
+// Future<String> uploadSheet(
+//     File file, String token, String key, String folderPath,context) async {
+//   try {
+//     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+//     String fileName = basename(file.path);
+//     String mimeType = lookupMimeType(file.path) ?? 'jpg';
+
+//     // Create a multipart request
+//     var request = http.MultipartRequest('POST',
+//         Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
+
+//     // Add headers
+//     request.headers['Authorization'] = 'Bearer $token';
+//     request.headers['accept'] = 'text/plain';
+
+//     getx.uploadProgress.value = 0.0;
+
+//     // Create a ByteStream to track progress
+//     var byteStream = http.ByteStream(
+//       file.openRead().transform(
+//         StreamTransformer.fromHandlers(
+//           handleData: (data, sink) {
+//             sink.add(data);
+//             getx.uploadProgress.value += data.length / file.lengthSync();
+//           },
+//         ),
+//       ),
+//     );
+
+//     // Add the file
+//     request.files.add(
+//       http.MultipartFile(
+//         'FileDetails',
+//         byteStream,
+//         file.lengthSync(),
+//         filename: fileName,
+//         contentType: MediaType.parse(mimeType),
+//       ),
+//     );
+
+//     // Add other form fields
+//     request.fields['folderPath'] = "folderPath";
+//     request.fields['DocumentTitle'] = fileName;
+//     request.fields['key'] = key;
+
+//     // Send the request
+//     var response = await request.send();
+//     log(response.statusCode.toString());
+
+//     var responseData = await response.stream.bytesToString();
+//     var jsonResponse = json.decode(responseData);
+//     // Check the response
+//     if (response.statusCode == 200) {
+//       // print('sheet uploaded successfully! ${jsonResponse["result"]} $file');
+//       var json = jsonDecode(jsonResponse["result"]);
+
+//       String documentId = json['DocumentId'].toString();
+
+//       String documentPath = json['returnPath'];
+//       // SettingsStorage storage = SettingsStorage();
+//       String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
+//       // rename video name add by Sayak Mishra
+
+//       // renameVideoFile(videoFile.path, documentId, currentTime)
+//       //     .then((bool isrename) async {
+
+//       //   if (isrename) {
+// log(documentId);
+//       return documentId;
+//       // }
+//       // f.uploadProgress.value = 1.0;
+//       // });
+
+//       // return
+//       // Ensure progress is set to 100% on success
+//     } else {
+//       ClsErrorMsg.fnErrorDialog(
+//         context
+// ,
+//       'Failed',
+//       "Failed to upload video. Status code: ${response.statusCode}".toString()
+//             .replaceAll("[", "")
+//             .replaceAll("]", ""),
+//       "");
+//       print('Failed to upload video. Status code: ${response.statusCode}');
+//       return "";
+//     }
+//   } catch (e) {
+//     writeToFile(e, 'uploadSheet');
+//     return '';
+//     //  ClsErrorMsg.fnErrorDialog(
+//     //     context,
+//     //     '',
+//     //    e. toString()
+//     //           .replaceAll("[", "")
+//     //           .replaceAll("]", ""),
+//     //     "");
+//   }
+// }
 
 Future sendDocumentIdOfanswerSheets(
     BuildContext context, String token, int paperid, String documentId) async {
+
+
+
+
+      log('message');
+
   // // print(questionanswer);
   // loader(context);
   // List<Map<String, dynamic>> resultList = [];
@@ -1812,7 +1908,7 @@ Future sendDocumentIdOfanswerSheets(
   try {
     var res = await http.post(
       Uri.https(ClsUrlApi.mainurl, ClsUrlApi.sendAnswerSheedIdList),
-      headers: <String, String>{
+      headers: <String, String>{ 
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
         'Origin': origin,
@@ -1853,34 +1949,43 @@ Future sendDocumentIdOfanswerSheets(
   return false;
 }
 
-Future getFullBannerPackages(BuildContext context, String token) async {
+Future<List<modelclass.PackageInfo>> getFullBannerPackages(
+    BuildContext context, String token) async {
   try {
     var res = await http.post(
-      Uri.https(
-          ClsUrlApi.mainurl,
-          ClsUrlApi
-              .premiumPackageList), // Replace with your API URL and endpoint
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.premiumPackageList),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
         'Origin': origin,
       },
-      body: jsonEncode({}), // Modify the request body as necessary
+      body: jsonEncode({}),
     );
-    getx.style.clear();
 
     if (res.statusCode == 201) {
-      var package = await ApiResponse.fromJson(json.decode(res.body));
-      getx.style.add(package);
+      var apiResponse = ApiResponse.fromJson(json.decode(res.body));
+
+      // Clear previous packages and premium packages from the database
+      await deleteAllPackages();
+      await deleteAllPremiumPackages();
+
+      // Insert the packages into the database
+      await insertPackages(apiResponse.result);
+
+      // Insert the premium packages for each package into the database
+      for (var package in apiResponse.result) {
+        await insertPremiumPackages(package.premiumPackageListInfo);
+      }
+
+      // Return the list of packages
+      return apiResponse.result;
     } else {
-      // print('Error r: ${res.body}');
+      return []; // Return empty list if API fails
     }
   } catch (e) {
-    writeToFile(e, 'getFullBannerPackages');
-    // print("Error rx: $e");
+    debugPrint("Error fetching packages: $e");
+    return []; // Return empty list in case of error
   }
-
-  // return fullBannerPackages;
 }
 
 Future<PackagInfoData> getPremiumPackageinfo(
@@ -1963,7 +2068,7 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
   // return fullBannerPackages;
 }
 
-Future<int> getExamStatus(
+Future getExamStatus(
   BuildContext context,
   String token,
   String examId,
@@ -1983,9 +2088,10 @@ Future<int> getExamStatus(
 
     if (res.statusCode == 401) {
       onTokenExpire(context);
-      return res.statusCode;
+      return res.body;
     } else {
-      return res.statusCode;
+      log(res.body);
+      return res.body;
     }
   } catch (e) {
     writeToFile(e, 'getExamStatus');
@@ -2310,6 +2416,7 @@ Future<bool> gettheoryExamDataForTest2(
       body: jsonEncode(data),
     );
 
+    log(res.body.toString());
     if (res.statusCode == 200) {
       await deleteAllTheoryTable(); // Clear old data before inserting new
 
@@ -2358,7 +2465,8 @@ Future<bool> gettheoryExamDataForTest2(
                         theoryExam['PassMarks'].toString(),
                         examSet['SetUptoDate'].toString(),
                         examSet['SetFromDate'].toString(),
-                        "0");
+                        "0",
+                        answerSheet: examSet['SamplePaparUrl'] ?? '');
                   }
                 }
               }
@@ -2839,11 +2947,6 @@ Future<void> getMCQExamHistory(
               exam['SubmitDate'].toString(),
               exam['AttemptDate'].toString(),
               "1");
-          // Insert the exam data into your table
-          // await insertData(dataForInsert);  // Assuming insertData is an async function
-
-          // // print each inserted record (optional)
-          // // print('Inserted exam data: $dataForInsert');
         }
 
         ; // Return success after all records are inserted
@@ -3595,11 +3698,11 @@ Future<String> downloadNotificationImageAndSave(String documentUrl) async {
 }
 
 Future<bool> requestForRecheckAnswerSheet(
-  BuildContext context,
-  String token,
-  String examid,
-) async {
-  Map<String, dynamic> data = {"ExamId": examid};
+    BuildContext context, String token, String examid, String reson) async {
+  Map<String, dynamic> data = {
+    "ExamId": examid,
+    "ReviewReason": reson,
+  };
   bool returnValue = false;
 
   try {
