@@ -268,7 +268,7 @@ Future<void> readTblSession() async {
 }
 
 void deleteSessionDetails() {
-  _db.execute('DELETE FROM TblSession');
+  _db.execute('DELETE FROM TblSession');             
   getx.sessionData.clear();
 
   print("Session data cleared");
@@ -486,6 +486,21 @@ Future<Map<String, dynamic>> getAllPackageDetailsForLastRow(fileId) async {
     writeToFile(e, "getAllPackageDetailsForLastRow");
     print(e);
     return {}; // Return an empty map in case of an error
+  }
+}
+Future<List<Map<String, dynamic>>> getAllPackageDetailsForVideoCount(String packageId) async {
+  try {
+    // Replace '_db' with your database instance
+    List<Map<String, dynamic>> result = await _db.select('''
+      SELECT * FROM TblAllPackageDetails 
+      WHERE PackageId = ? AND FileIdType = ?
+    ''', [packageId, 'Video']);
+
+    return result; // Return all rows matching the conditions
+  } catch (e) {
+    writeToFile(e, "getAllPackageDetailsForVideoCount");
+    print(e);
+    return []; // Return an empty list in case of an error
   }
 }
 
@@ -3137,6 +3152,7 @@ void deletePartularPackageData(String packageId, BuildContext context) {
     gettheoryExamDataForTest2(context, getx.loginuserdata[0].token, packageId);
     getAllFolders(context, getx.loginuserdata[0].token, packageId);
     getAllFiles(context, getx.loginuserdata[0].token, packageId);
+    getAllFreeFiles(context,getx.loginuserdata[0].token,packageId);
     getVideoComponents(context, getx.loginuserdata[0].token, packageId);
   } catch (e) {
     writeToFile(e, "deletePartularPackageData");

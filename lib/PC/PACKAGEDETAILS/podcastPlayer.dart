@@ -56,8 +56,8 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
     prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
 
     String savePath = getx.userSelectedPathForDownloadFile.isEmpty
-        ? dthLmsDir.path +'/Podcast/$fileName.mp3'
-        : getx.userSelectedPathForDownloadFile.value + '/Podcast/$fileName.mp3';
+        ? dthLmsDir.path +'/Podcast/$fileName'
+        : getx.userSelectedPathForDownloadFile.value + '/Podcast/$fileName';
 
     try {
       downloadingIndexes.add(index);
@@ -81,16 +81,30 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
       downloadProgress.remove(index);
     }
   }
-
-  void _playPodcast(String filePath) async {
+void _playPodcast(String filePath) async {
   log("Original Path: $filePath");
 
-  // Fix incorrect path formatting
-  filePath = filePath.replaceAll('\\', '/');
+  // Fix incorrect path formatting (ensure consistent usage of '/')
+  filePath = filePath.replaceAll('\\', '/').trim();
   log("Fixed Path: $filePath");
 
-  if (!File(filePath).existsSync()) {
-    Get.snackbar("Error", "Podcast file does not exist: $filePath",
+  File audioFile = File(filePath);
+
+  // Check if the file exists
+  if (!audioFile.existsSync()) {
+    Get.snackbar("Error", "Podcast file does not exist:\n$filePath",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white);
+    return;
+  }
+
+  // Ensure file has a valid audio extension
+  List<String> validExtensions = ['mp3', 'wav', 'aac', 'm4a'];
+  String fileExtension = filePath.split('.').last.toLowerCase();
+
+  if (!validExtensions.contains(fileExtension)) {
+    Get.snackbar("Error", "Unsupported audio format ($fileExtension)",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white);
@@ -98,32 +112,30 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
   }
 
   try {
-    await audioPlayer.play(DeviceFileSource('$filePath')).onError(
-      (error, stackTrace) {
-        writeToFile(error, '_playPodcast_onError');
-        log('Error playing podcast: $error');
-        Get.snackbar("Playback Error", "Error: $error",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.redAccent,
-            colorText: Colors.white);
-      },
-    );
+    // Set source first to ensure the file can be loaded
+    await audioPlayer.setSource(DeviceFileSource(filePath));
+
+    // Play audio after source is set
+    await audioPlayer.resume();
   } on PlatformException catch (e, stackTrace) {
     writeToFile(e, '_playPodcast_PlatformException');
     log('PlatformException: $e\nStackTrace: $stackTrace');
-    Get.snackbar("Playback Error", "Unsupported audio format.",
+
+    Get.snackbar("Playback Error", "Unsupported audio format or file issue.",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white);
   } catch (e, stackTrace) {
     writeToFile(e, '_playPodcast_CatchAll');
     log('Unknown error playing podcast: $e\nStackTrace: $stackTrace');
+
     Get.snackbar("Error", "Unknown error occurred.",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white);
   }
 }
+
 
   @override
   void dispose() {

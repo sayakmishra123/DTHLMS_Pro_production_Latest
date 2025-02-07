@@ -7,9 +7,8 @@ import 'package:get/get.dart';
 class McqListMobile extends StatefulWidget {
   final RxList mcqSetList;
   final String type;
-  final String img;
   final bool istype;
-  McqListMobile(this.mcqSetList, this.type, this.img, this.istype, {super.key});
+  McqListMobile(this.mcqSetList, this.type, this.istype, {super.key});
 
   @override
   State<McqListMobile> createState() => _McqListMobileState();
@@ -38,7 +37,7 @@ class _McqListMobileState extends State<McqListMobile> {
                 itemCount: filteredList.length,
                 itemBuilder: (context, index) {
                   final mcqItem = filteredList[index];
-                  return McqListItem(
+                  return McqListItem( 
                     name: mcqItem["SetName"] ?? 'No name found',
                     // date: mcqItem["StartDate"] ?? 'No date found',
                     mcqItem: mcqItem,

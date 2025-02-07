@@ -1163,214 +1163,118 @@ class _RankedCompetitionMcqPcState extends State<RankedCompetitionMcqPc> {
                                               ],
                                             )
                                           : Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10),
-                                              child: AnimatedContainer(
-                                                duration:
-                                                    Duration(milliseconds: 600),
-                                                curve: Curves.easeInOut,
-                                                // height: 80,
-                                                decoration: BoxDecoration(
-                                                  color: tileColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black12,
-                                                      blurRadius: 10,
-                                                      offset: Offset(0, 5),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Material(
-                                                  color: Colors.transparent,
-                                                  child: InkWell(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        if (widget.examType ==
-                                                            "Quick Practice") {
-                                                          // Skip if selection is disabled
-                                                          if (isSelectionDisabled)
-                                                            return;
+  padding: EdgeInsets.symmetric(vertical: 10),
+  child: AnimatedContainer(
+    duration: Duration(milliseconds: 600),
+    curve: Curves.easeInOut,
+    decoration: BoxDecoration(
+      color: tileColor,
+      borderRadius: BorderRadius.circular(8),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 10,
+          offset: Offset(0, 5),
+        ),
+      ],
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () {
+          setState(() {
+            if (widget.examType == "Quick Practice") {
+              if (isSelectionDisabled) return;
 
-                                                          if (mcqData[qindex
-                                                                      .value]
-                                                                  .isMultiple ==
-                                                              'true') {
-                                                            // Multi-select option with limit check
-                                                            if (userAns.containsKey(
-                                                                int.parse(
-                                                                    questionId))) {
-                                                              if (userAns[int.parse(
-                                                                      questionId)]!
-                                                                  .contains(
-                                                                      int.parse(
-                                                                          optionId))) {
-                                                                // Prevent unselecting a chosen option
-                                                                return;
-                                                              } else {
-                                                                userAns[int.parse(
-                                                                        questionId)]!
-                                                                    .add(int.parse(
-                                                                        optionId));
-                                                              }
-                                                            } else {
-                                                              userAns[int.parse(
-                                                                  questionId)] = [
-                                                                int.parse(
-                                                                    optionId)
-                                                              ];
-                                                            }
+              if (mcqData[qindex.value].isMultiple == 'true') {
+                // Multi-select logic
+                if (userAns.containsKey(int.parse(questionId))) {
+                  if (userAns[int.parse(questionId)]!.contains(int.parse(optionId))) {
+                    return; // Prevent unselecting
+                  } else {
+                    userAns[int.parse(questionId)]!.add(int.parse(optionId));
+                  }
+                } else {
+                  userAns[int.parse(questionId)] = [int.parse(optionId)];
+                }
 
-                                                            // Check if maximum selections have been made for multi-select
-                                                            if (userAns[int.parse(
-                                                                        questionId)]!
-                                                                    .length ==
-                                                                correctAnswersForQuestion
-                                                                    .length) {
-                                                              // Automatically reveal answers if max selection is reached
-                                                              setState(() {
-                                                                // Set `isSelectionDisabled` to true to prevent further changes
-                                                                isSelectionDisabled =
-                                                                    true;
-                                                                showAnswerExplenetion
-                                                                        .value =
-                                                                    true;
-                                                              });
-                                                            }
-                                                          } else {
-                                                            // Single selection, replace existing answer
-                                                            userAns[int.parse(
-                                                                questionId)] = [
-                                                              int.parse(
-                                                                  optionId)
-                                                            ];
-                                                            showAnswerExplenetion
-                                                                    .value =
-                                                                userAns.containsKey(
-                                                                    int.parse(mcqData[
-                                                                            qindex.value]
-                                                                        .questionId));
-                                                          }
-                                                        }
+                if (userAns[int.parse(questionId)]!.length == correctAnswersForQuestion.length) {
+                  setState(() {
+                    isSelectionDisabled = true;
+                    showAnswerExplenetion.value = true;
+                  });
+                }
+              } else {
+                // Single select logic
+                userAns[int.parse(questionId)] = [int.parse(optionId)];
+                showAnswerExplenetion.value = userAns.containsKey(int.parse(mcqData[qindex.value].questionId));
+              }
+            }
 
-                                                        ////////////////////////////////////////////////////////////////////////////////////////////////
-                                                        // print("question id $questionId");
-                                                        // print("optin Id $optionId");
-                                                        // print("ismultiple ${mcqData[qindex.value]
-                                                        //             .isMultiple}");
+            if (widget.examType == "Ranked Competition" || widget.examType == "Comprehensive") {
+              if (!isSubmitted.value) {
+                if (userAns.containsKey(int.parse(questionId))) {
+                  if (mcqData[qindex.value].isMultiple == 'true') {
+                    if (userAns[int.parse(questionId)]!.contains(int.parse(optionId))) {
+                      userAns[int.parse(questionId)]!.remove(int.parse(optionId));
+                    } else {
+                      userAns[int.parse(questionId)]!.add(int.parse(optionId));
+                    }
+                  } else {
+                    userAns[int.parse(questionId)] = [int.parse(optionId)];
+                  }
+                } else {
+                  userAns[int.parse(questionId)] = [int.parse(optionId)];
+                }
+              }
+            }
+          });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: GestureDetector(
+                onTap: () {
+                  
+                  // Handle tap within MathEquation (if needed)
+                },
+                child: Container(
+                  // Ensuring MathEquation widget has proper width and height
+                  width: double.infinity, // Make it take full width of the parent
+                  height: 80, // Adjust height based on your design
+                  child: mcqData[qindex.value].options[index].optionText.contains('<?xml')
+                      ?GestureDetector(
+                          onTap: () {
+                            print("Inside MathEquation tapped!"); // Debugging MathEquation tap
+                          },
+                          child: AbsorbPointer(
+                            absorbing: true, // Make sure WebView doesn't block taps
+                            child: MathEquation(mathMl: mcqData[qindex.value].options[index].optionText),
+                          ),
+                        )
+                      : Text(
+                          mcqData[qindex.value].options[index].optionText,
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                        ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
 
-                                                        if (widget.examType ==
-                                                                "Ranked Competition" ||
-                                                            widget.examType ==
-                                                                "Comprehensive") {
-                                                          if (!isSubmitted
-                                                              .value) {
-                                                            if (userAns.containsKey(
-                                                                int.parse(
-                                                                    questionId))) {
-                                                              if (mcqData[qindex
-                                                                          .value]
-                                                                      .isMultiple ==
-                                                                  'true') {
-                                                                // Toggle option for multi-select
-                                                                if (userAns[int
-                                                                        .parse(
-                                                                            questionId)]!
-                                                                    .contains(int
-                                                                        .parse(
-                                                                            optionId))) {
-                                                                  userAns[int.parse(
-                                                                          questionId)]!
-                                                                      .remove(int
-                                                                          .parse(
-                                                                              optionId));
-                                                                } else {
-                                                                  userAns[int.parse(
-                                                                          questionId)]!
-                                                                      .add(int.parse(
-                                                                          optionId));
-                                                                }
-                                                              } else {
-                                                                // Single answer
-                                                                userAns[int.parse(
-                                                                    questionId)] = [
-                                                                  int.parse(
-                                                                      optionId)
-                                                                ];
-                                                              }
-                                                            } else {
-                                                              userAns[int.parse(
-                                                                  questionId)] = [
-                                                                int.parse(
-                                                                    optionId)
-                                                              ];
-                                                            }
-                                                          }
-                                                        }
-                                                      });
-                                                    },
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      16,
-                                                                  vertical: 16),
-                                                          child: mcqData[qindex
-                                                                      .value]
-                                                                  .options[
-                                                                      index]
-                                                                  .optionText
-                                                                  .contains(
-                                                                      '<?xml')
-                                                              ? MathEquation(
-                                                                  mathMl: mcqData[
-                                                                          qindex
-                                                                              .value]
-                                                                      .options[
-                                                                          index]
-                                                                      .optionText,
-                                                                )
-                                                              : Text(
-                                                                  mcqData[qindex
-                                                                          .value]
-                                                                      .options[
-                                                                          index]
-                                                                      .optionText,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    // fontSize: 15,
-                                                                  ),
-                                                                  softWrap:
-                                                                      true,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .visible,
-                                                                ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
                                     },
                                   ),
                                 ),

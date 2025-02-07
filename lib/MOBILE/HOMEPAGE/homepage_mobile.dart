@@ -2227,11 +2227,11 @@ class HomePageDrawer extends StatefulWidget {
 class _HomePageDrawerState extends State<HomePageDrawer> {
   @override
   void initState() {
-   version.value= appVersionGet();
+ 
     super.initState();
   }
 
-  RxString version = "".obs;
+  // RxString version = "".obs;
 
 
   logOut() async {
@@ -2529,76 +2529,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                         }
                       }),
 
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: [
-                  //     Column(
-                  //       children: [
-                  //         IconButton(
-                  //           onPressed: () {},
-                  //           icon: Icon(
-                  //             FontAwesome.whatsapp,
-                  //             color: Colors.green,
-                  //           ),
-                  //         ),
-                  //         Text('WhatsApp'),
-                  //       ],
-                  //     ),
-                  //     Column(
-                  //       children: [
-                  //         IconButton(
-                  //           onPressed: () {},
-                  //           icon: Icon(
-                  //             FontAwesome.facebook,
-                  //             color: Colors.blue,
-                  //           ),
-                  //         ),
-                  //         Text('Facebook'),
-                  //       ],
-                  //     ),
-                  //     Column(
-                  //       children: [
-                  //         IconButton(
-                  //           onPressed: () {},
-                  //           icon: Icon(
-                  //             FontAwesome.instagram,
-                  //             color: Colors.amber,
-                  //           ),
-                  //         ),
-                  //         Text('Instagram'),
-                  //       ],
-                  //     ),
-                  //     Column(
-                  //       children: [
-                  //         IconButton(
-                  //           onPressed: () {},
-                  //           icon: Icon(
-                  //             FontAwesome.youtube_play,
-                  //             color: Colors.red,
-                  //           ),
-                  //         ),
-                  //         Text('YouTube'),
-                  //       ],
-                  //     ),
-                  //     Column(
-                  //       children: [
-                  //         IconButton(
-                  //           onPressed: () {
-                  //             _launchUrl(Uri.parse(webSiteLink));
-                  //           }, // Open the website on click
-                  //           icon: Icon(
-                  //             FontAwesome.globe, // Globe icon for the website
-                  //             color: Colors
-                  //                 .blueGrey, // You can choose a color that fits your design
-                  //           ),
-                  //         ),
-                  //         Text(
-                  //           'Website',
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
+                
                 ],
               ),
             ),
@@ -2618,14 +2549,11 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "version ${version.value}",
+                      "version ${getx.appVersion.value}",
                       style: FontFamily.style
                           .copyWith(color: Colors.grey, fontSize: 12),
                     )
@@ -2635,7 +2563,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
             ),
           ),
           const SizedBox(
-            height: 60,
+            height: 80,
           )
         ],
       ),

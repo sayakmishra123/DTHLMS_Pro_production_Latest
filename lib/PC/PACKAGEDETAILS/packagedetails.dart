@@ -324,17 +324,12 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     }
   }
 
-  RxString version = "".obs;
-
-  appVersionGet() async {
-    pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
-    version.value = packageInfo.version;
-  }
+ 
 
   @override
   void initState() {
     section();
-    appVersionGet();
+    
 
     super.initState();
   }
@@ -557,7 +552,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
 
                             const SizedBox(height: 5),
                             Text(
-                              "Version ${version.value}",
+                              "Version ${getx.appVersion.value}",
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey),
                             ),

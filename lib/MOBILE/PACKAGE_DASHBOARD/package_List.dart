@@ -7,7 +7,6 @@ import '../../GETXCONTROLLER/getxController.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import '../../THEME_DATA/color/color.dart';
 import '../../THEME_DATA/font/font_family.dart';
-import '../../constants.dart';
 
 class Mobile_Package_List extends StatefulWidget {
   const Mobile_Package_List({super.key});

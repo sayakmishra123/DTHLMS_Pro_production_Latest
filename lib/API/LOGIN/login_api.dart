@@ -133,6 +133,7 @@ Future loginApi(
       getPackageData(context, jsondata['result']['token']);
       getAllFolders(context, jsondata['result']['token'], "");
       getAllFiles(context, jsondata['result']['token'], "");
+      getAllFreeFiles(context,jsondata['result']['token'],"");
       getVideoComponents(context, jsondata['result']['token'], "");
       getMCQExamHistory(context, jsondata['result']['token']);
       getVideowatchHistory(context, jsondata['result']['token']);

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -13,7 +12,6 @@ import 'package:dthlms/MOBILE/LOGIN/loginpage_mobile.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/packagedetails.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
-// import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/log.dart';
@@ -22,12 +20,11 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_toastr/flutter_toastr.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:printing/printing.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -44,11 +41,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   Getx getx = Get.put(Getx());
   RxInt pageIndex = 0.obs;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   setProfilePicture() async {
     if (!File(getx.userImageLocalPath.value).existsSync() &&
@@ -2142,8 +2134,25 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   @override
   void initState() {
+          infoList = {
+      'Name': getx.loginuserdata[0].firstName + " " +getx.loginuserdata[0].lastName,
+      'Phone': getx.loginuserdata[0].phoneNumber,
+      'Email': getx.loginuserdata[0].email,
+      'UserId': getx.loginuserdata[0].nameId,
+      'FranchaiseId': getx.loginuserdata[0].franchiseeId,
+    }; 
+        setState(() {
+    qrData = jsonEncode(infoList);
+      
+    });
     super.initState();
   }
+  Map<String, String> infoList = {};
+
+    
+    
+    String qrData = '';
+
 
   void _changeName() {
     showDialog(
@@ -2195,15 +2204,80 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 ],
               ),
 
-              DetailsHeader(title: 'Name'),
-              DetailsItem(
-                icon: Icons.person,
-                title: getx.loginuserdata[0].firstName +
-                    " " +
-                    getx.loginuserdata[0].lastName,
-                type: "name",
-                isEditable: false,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DetailsHeader(title: 'Name'),
+                        DetailsItem(
+                      icon: Icons.person,
+                      title: getx.loginuserdata[0].firstName +
+                          " " +
+                          getx.loginuserdata[0].lastName,
+                      type: "name",
+                      isEditable: false,
+                    ),
+                      ],
+                    ),
+                  ),
+                  Row(children: [
+                     SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: InkWell(
+                              onTap: () {
+                                // Show a larger QR code when tapped
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Scan QR Code",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 20),
+                          QrImageView(
+                            data: qrData,
+                            version: QrVersions.auto,
+                            size: 300, // Bigger QR Code
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text("Close",style: TextStyle(color: Colors.red,),)
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                                  },
+                                );
+                              },
+                              child: QrImageView(
+                                data: qrData,
+                                version: QrVersions.auto,
+                                size: 100, // Small QR Code
+                              ),
+                            ),
+                          ),
+                  ],)
+                ],
               ),
+              
               DetailsHeader(title: 'E-mail'),
               DetailsItem(
                 icon: Icons.mail,
