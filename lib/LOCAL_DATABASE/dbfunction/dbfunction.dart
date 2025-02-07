@@ -2253,6 +2253,14 @@ Future<List<Map<String, dynamic>>> fetchMCQSetList(String packageId) async {
   return tblMCQSetList;
 }
 
+Future<List<Map<String, dynamic>>> fetchPodcast(String packageId,FileIdType) async {
+  final sql.ResultSet result = _db.select(
+      'SELECT * FROM TblAllPackageDetails WHERE PackageId= ? AND FileIdType = ?',
+      [packageId, FileIdType]);
+
+  return result;
+}
+
 Future<List<Map<String, dynamic>>> fetchMCQPapertList(String setId) async {
   print("Set id is $setId");
   final sql.ResultSet resultSet =
@@ -2831,6 +2839,7 @@ Future<List<Map<String, dynamic>>> fetchTheoryPapertList(String setId) async {
       "PassMarks": row['PassMarks'],
       "DocumentUrl": row['DocumentUrl'],
       "AnswerSheet": row['AnswerSheet'],
+      'IsSubmitted': row['IsSubmitted'],
     });
     print("Data get papername form theory paper list: ${row['PaperName']}.");
   }
@@ -3631,7 +3640,7 @@ Future<List<Map<String, dynamic>>> getAllTblImages() async {
     // Ensure '_db' is your initialized database instance
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblImages''');
-    print("shubha getAllTblImages");
+    // print("shubha getAllTblImages");
     log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {

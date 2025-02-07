@@ -2061,7 +2061,6 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
     // print("Error rx: $e");
     return [];
   }
-
   // return fullBannerPackages;
 }
 
@@ -2095,7 +2094,6 @@ Future getExamStatus(
     // print("Error rx: $e");
     return 0;
   }
-
   // return fullBannerPackages;
 }
 

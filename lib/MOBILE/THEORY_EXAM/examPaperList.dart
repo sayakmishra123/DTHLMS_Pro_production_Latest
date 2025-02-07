@@ -59,7 +59,7 @@ class _TheoryExamPaperListofMobileState
             'Test Series',
             style: FontFamily.styleb.copyWith(color: Colors.white),
           ),
-        ),
+        ), 
         body: getx.theoryExamvalue.value && uniqueServicesList.isNotEmpty
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,

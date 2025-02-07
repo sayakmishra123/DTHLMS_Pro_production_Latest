@@ -28,8 +28,6 @@ class TheoryExamPapes extends StatefulWidget {
 }
 
 class _TheoryExamPapesState extends State<TheoryExamPapes> {
-  RxList filteredList = [].obs;
-
   RxList theoryPaperList = [].obs;
 
   @override
@@ -43,6 +41,49 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
     theoryPaperList.clear();
     theoryPaperList.value =
         await fetchTheoryPapertList(widget.paperNames['SetId']);
+  }
+
+  bool _isExamExpired(String? endDateString) {
+    if (endDateString == null || endDateString.isEmpty) {
+      return false; // Treat missing dates as non-expired
+    }
+
+    try {
+      // Parse the date from string
+      DateTime endDate = DateTime.parse(endDateString);
+
+      // Compare with the current date
+      return endDate.isBefore(DateTime.now());
+    } catch (e) {
+      print("Error parsing date: $e");
+      return false; // If parsing fails, assume it's not expired
+    }
+  }
+
+  String _formatDuration(dynamic duration) {
+    if (duration == null) return "Unknown Duration";
+
+    int totalMinutes;
+
+    // Ensure duration is an integer
+    try {
+      totalMinutes = int.parse(duration.toString());
+    } catch (e) {
+      print("Invalid duration format: $duration");
+      return "Unknown Duration";
+    }
+
+    int hours = totalMinutes ~/ 60; // Get hours
+    int minutes = totalMinutes % 60; // Get remaining minutes
+
+    // Build duration string dynamically
+    if (hours > 0 && minutes > 0) {
+      return "$hours hours $minutes minutes";
+    } else if (hours > 0) {
+      return "$hours hours";
+    } else {
+      return "$minutes minutes";
+    }
   }
 
   @override
@@ -67,7 +108,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
         title: Text(
-          'Theory Paperss',
+          'Theory Papers',
           style: FontFamily.styleb,
         ),
       ),
@@ -212,29 +253,6 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                               // Navigator.pop(context);
                             }, false);
                           }
-
-                          // Get.to(
-                          //     transition: Transition.cupertino,
-                          //     () => TheoryExamTermAndCondition(
-                          //           termAndCondition: theoryPaperList[index]
-                          //                   ['TermAndCondition']
-                          //               .toString(),
-                          //           documnetPath: theoryPaperList[index]
-                          //                   ['DocumentUrl']
-                          //               .toString(),
-
-                          //           duration: theoryPaperList[index]['Duration']
-                          //               .toString(),
-                          //           paperName: theoryPaperList[index]
-                          //                   ['PaperName']
-                          //               .toString(),
-                          //           sheduletime: theoryPaperList[index]
-                          //                   ['StartTime']
-                          //               .toString(),
-                          //           paperId: theoryPaperList[index]['PaperId']
-                          //               .toString(),
-                          //               isEncrypted: false,
-                          //         ));
                         } else {
                           _onNoInternetConnection(context);
                         }
@@ -242,7 +260,11 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                       child: Container(
                         width: itemWidth,
                         child: Card(
-                          elevation: 0,
+                          elevation: 20,
+                          shadowColor: _isExamExpired(
+                                  theoryPaperList[index]['PaperEndDate'])
+                              ? Colors.red
+                              : Colors.green,
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
@@ -251,10 +273,38 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage:
-                                      AssetImage('assets/mcq_set.png'),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CircleAvatar(
+                                        radius: 30,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Image(
+                                            image:
+                                                AssetImage('assets/myexam.png'),
+                                          ),
+                                        )),
+                                    _isExamExpired(theoryPaperList[index]
+                                            ['PaperEndDate'])
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 2,
+                                                      horizontal: 5),
+                                              child: Text(
+                                                'Expired',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ))
+                                        : SizedBox()
+                                  ],
                                 ),
                                 SizedBox(height: 8),
                                 Text(
@@ -263,7 +313,7 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 SizedBox(height: 4),
@@ -271,21 +321,34 @@ class _TheoryExamPapesState extends State<TheoryExamPapes> {
                                   "Start Exam: ${formatDateWithOrdinal(theoryPaperList[index]['PaperStartDate'])}",
                                   style: TextStyle(
                                       fontSize: 13,
-                                      color: Colors.green,
+                                      color: Colors.grey,
                                       fontWeight: FontWeight.w300),
                                 ),
                                 Text(
                                   "End Exam: ${formatDateWithOrdinal(theoryPaperList[index]['PaperEndDate'])}",
                                   style: TextStyle(
                                       fontSize: 13,
-                                      color: Colors.red,
+                                      color: Colors.grey,
                                       fontWeight: FontWeight.w300),
                                 ),
-                                Text(
-                                  "Duration: ${theoryPaperList[index]['Duration']} min",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.blueGrey,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 2),
+                                    child: Text(
+                                      "Duration: ${_formatDuration(theoryPaperList[index]['Duration'])}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
