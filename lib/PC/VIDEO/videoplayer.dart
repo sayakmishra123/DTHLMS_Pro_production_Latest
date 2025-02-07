@@ -143,14 +143,22 @@ class _VideoPlayerState extends State<VideoPlayer> {
             // Start a new timer that triggers every 5 seconds
             _timer = Timer.periodic(Duration(seconds: 5), (timer) {
               // log(videoPlay.totalPlayTime.inSeconds.toString());
+              var utcTime = DateTime.now();
+              insertVideoplayInfo(
+                int.parse(getx.playingVideoId.value),
+                videoPlay.player.state.position.toString(),
+                videoPlay.totalPlayTime.inSeconds.toString(),
+                videoPlay.player.state.rate.toString(),
+                videoPlay.startclocktime.toString(),
+                utcTime.millisecondsSinceEpoch,
+                0,
 
-              // insertVideoplayInfo(
-              //   int.parse(getx.playingVideoId.value),
-              //   videoPlay.player.state.position.toString(),
-              //   videoPlay.totalPlayTime.inSeconds.toString(),
-              //   videoPlay.player.state.rate.toString(),
-              //   videoPlay.startclocktime.toString(),
-              // );
+                // Date
+
+                type: 'video',
+
+                // type: ''
+              );
               updateVideoConsumeDuration(
                 getx.playingVideoId.value,
                 getx.selectedPackageId.value.toString(),
@@ -160,8 +168,12 @@ class _VideoPlayerState extends State<VideoPlayer> {
               readTblvideoPlayInfo();
             });
           } else {
+            getTotalWatchTime(getx.playingVideoId.value.isNotEmpty
+                ? int.parse(getx.playingVideoId.value)
+                : 0);
             // Stop tracking and cancel the timer when video stops playing
             videoPlay.stopTrackingPlayTime();
+
             // videoInfo(
             //     context,
             //     videoPlay.player.state.position.toString(),
@@ -582,10 +594,12 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                   ],
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 25, vertical: 10),
-                                  child: page[selectedIndexOfVideoList],
-                                )
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 25, vertical: 10),
+                                    child: videoPlayerRight()
+
+                                    //  page[selectedIndexOfVideoList],
+                                    )
 
                                 // child: isDownloadPathExitsOnVideoList()
                                 //     ? videoPlayerRight()
@@ -1927,179 +1941,6 @@ class NavigationClipper1 extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
 
-// class Pdf extends StatefulWidget {
-
-//   const Pdf({super.key});
-
-//   @override
-//   State<Pdf> createState() => _PdfState();
-// }
-
-// class _PdfState extends State<Pdf> {
-//   String encryptionKey = '';
-//   @override
-//   void initState() {
-
-//       encryptionKey = getEncryptionKeyFromTblSetting();
-
-//         getPdf().whenComplete(() {});
-
-//     // TODO: implement initState
-//     super.initState();
-//   }
-
-//   Future getPdf() async {
-//     if (getx.pdfListOfVideo.isNotEmpty) {
-
-//       if( getx.pdfListOfVideo[0]['Encrypted'].toString() =="true"){
-//           getx.encryptedpdffile.value = await downloadAndSavePdf(
-//           getx.pdfListOfVideo[0]['DocumentURL'],
-//           getx.pdfListOfVideo[0]['Names'],
-//           getx.pdfListOfVideo[0]['PackageId'],
-//           getx.pdfListOfVideo[0]['DocumentId'],
-//           getx.pdfListOfVideo[0]['VideoId'],
-//           getx.pdfListOfVideo[0]['Catagory']);
-
-//       }
-//       else{
-//           getx.unEncryptedPDFfile.value = await downloadAndSavePdf(
-//           getx.pdfListOfVideo[0]['DocumentURL'],
-//           getx.pdfListOfVideo[0]['Names'],
-//           getx.pdfListOfVideo[0]['PackageId'],
-//           getx.pdfListOfVideo[0]['DocumentId'],
-//           getx.pdfListOfVideo[0]['VideoId'],
-//           getx.pdfListOfVideo[0]['Catagory']);
-//       }
-
-//     }
-//   }
-
-//   Future downloadAndSavePdf(String pdfUrl, String title,
-//       String packageId, String documentId, String fileId, String type) async {
-//     final data = getDownloadedPathOfFileOfVideo(
-//         getx.   pdfListOfVideo [0]['PackageId'],
-//         getx.pdfListOfVideo[0]['VideoId'],
-//         getx.pdfListOfVideo[0]['Catagory'],
-//         getx.pdfListOfVideo[0]['DocumentId']);
-
-//     if (!File(data).existsSync()) {
-//       try {
-//         // Get the application's document directory
-//         Directory appDocDir = await getApplicationDocumentsDirectory();
-
-//         // Create the folder structure: com.si.dthLive/notes
-//         Directory dthLmsDir =
-//             Directory('${appDocDir.path}/$origin/notes');
-//         if (!await dthLmsDir.exists()) {
-//           await dthLmsDir.create(recursive: true);
-//         }
-//         var prefs = await SharedPreferences.getInstance();
-//         getx.defaultPathForDownloadFile.value = dthLmsDir.path;
-//         prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
-
-//         // Correct file path to save the PDF
-//         String filePath = getx.userSelectedPathForDownloadFile.isEmpty
-//             ? '${dthLmsDir.path}/$title'
-//             : getx.userSelectedPathForDownloadFile.value +
-//                 "/$title"; // Make sure to add .pdf extension if needed
-
-//         // Download the PDF using Dio
-//         Dio dio = Dio();
-//         await dio.download(pdfUrl, filePath,
-//             onReceiveProgress: (received, total) {
-//           if (total != -1) {
-//             print(
-//                 'Downloading: ${(received / total * 100).toStringAsFixed(0)}%');
-//           }
-//         });
-//         insertDownloadedFileDataOfVideo(
-//             packageId, fileId, documentId, filePath, type, title);
-//         insertPdfDownloadPath(fileId, packageId, filePath, documentId, context);
-
-//         print('PDF downloaded and saved to: $filePath');
-//         getx.pdfFilePath.value = filePath;
-//        if( getx.pdfListOfVideo[0]['Encrypted'].toString()=="true"){
-//          final encryptedBytes = await readEncryptedPdfFromFile(filePath);
-//         final decryptedPdfBytes = aesDecryptPdf(encryptedBytes, encryptionKey);
-
-//         return decryptedPdfBytes;
-//        }
-//        else{
-//         return filePath;
-
-//        }
-//       } catch (e) {
-//         writeToFile(e, "downloadAndSavePdf");
-//         print('Error downloading or saving the PDF: $e');
-//         return  getx.pdfListOfVideo[0]['Encrypted']=="true"? Uint8List(0):'';
-//       }
-//     } else {
-//      if( getx.pdfListOfVideo[0]['Encrypted'].toString()=="true"){
-//        getx.pdfFilePath.value = data;
-
-//       final encryptedBytes = await readEncryptedPdfFromFile(data);
-//       final decryptedPdfBytes = aesDecryptPdf(encryptedBytes, encryptionKey);
-//       return decryptedPdfBytes;
-//      }
-//      else{
-//       return data;
-//      }
-//     }
-//   }
-
-//   Future<Uint8List> readEncryptedPdfFromFile(String filePath) async {
-//     final file = File(filePath);
-//     return file.readAsBytes();
-//   }
-
-//   Uint8List aesDecryptPdf(Uint8List encryptedData, String key) {
-//     final keyBytes = encrypt.Key.fromUtf8(key.padRight(16)); // 128-bit key
-//     final iv = encrypt.IV(encryptedData.sublist(0, 16)); // Extract IV
-//     final encrypter =
-//         encrypt.Encrypter(encrypt.AES(keyBytes, mode: encrypt.AESMode.cbc));
-
-//     final encryptedBytes =
-//         encryptedData.sublist(16); // Extract actual encrypted data
-//     final decrypted =
-//         encrypter.decryptBytes(encrypt.Encrypted(encryptedBytes), iv: iv);
-
-//     return Uint8List.fromList(decrypted);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return  getx.pdfListOfVideo [0]['Encrypted'].toString()=="true"?   Obx(
-//       () => SizedBox(
-//         height: MediaQuery.of(context).size.height * 0.9,
-//         child: getx.pdfListOfVideo.isEmpty
-//             ? Center(
-//                 child: Text(
-//                   "No PDF Here",
-//                   style: FontFamily.font,
-//                 ),
-//               )
-//             : getx.encryptedpdffile.value.isNotEmpty
-//                 ? SfPdfViewer.memory(getx.encryptedpdffile.value)
-//                 : Center(child: CircularProgressIndicator()),
-//       ),
-//     ):Obx(
-//       () => SizedBox(
-//         height: MediaQuery.of(context).size.height * 0.9,
-//         child: getx.pdfListOfVideo.isEmpty
-//             ? Center(
-//                 child: Text(
-//                   "No PDF Here",
-//                   style: FontFamily.font,
-//                 ),
-//               )
-//             : File(getx.unEncryptedPDFfile.value).existsSync()
-//                 ? SfPdfViewer.file( File(getx.unEncryptedPDFfile.value))
-//                 : Center(child: CircularProgressIndicator()),
-//       ),
-//     );;
-//   }
-// }
-
 class Pdf extends StatefulWidget {
   const Pdf({super.key});
 
@@ -3143,7 +2984,7 @@ Future<void> run_Video_Player_exe(
   print(dbPath + "Sayak Mishra");
 
   writeToFile('',
-      '${videoPath}, ${videoPath} , ${videoId}, ${pckageID}, ${token}, ${dbPath}, ${origin}');
+      '${videoPath}, ${videoId}, ${pckageID}, ${token}, ${dbPath}, ${origin}');
 
   if (exePath.isNotEmpty) {
     await Process.run(

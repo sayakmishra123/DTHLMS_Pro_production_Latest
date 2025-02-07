@@ -402,6 +402,7 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
         if (!await dthLmsDir.exists()) {
           await dthLmsDir.create(recursive: true);
         }
+
         var prefs = await SharedPreferences.getInstance();
         getx.defaultPathForDownloadFile.value = dthLmsDir.path;
         prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
