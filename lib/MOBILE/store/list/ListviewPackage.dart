@@ -19,39 +19,39 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../GETXCONTROLLER/getxController.dart';
 
-class SortMenu extends StatelessWidget {
-  final void Function(String) onSortSelected;
+// class SortMenu extends StatelessWidget {
+//   final void Function(String) onSortSelected;
 
-  const SortMenu({Key? key, required this.onSortSelected}) : super(key: key);
+//   const SortMenu({Key? key, required this.onSortSelected}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      color: Colors.white,
-      onSelected: onSortSelected,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        side: BorderSide(color: Colors.grey.shade300),
-      ),
-      itemBuilder: (BuildContext context) {
-        return ['A to Z', 'Z to A', 'Other Style'].map((String choice) {
-          return PopupMenuItem<String>(
-            value: choice,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-              child: Text(
-                choice,
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-            ),
-          );
-        }).toList();
-      },
-      icon: Icon(Icons.sort, color: Colors.black),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return PopupMenuButton<String>(
+//       color: Colors.white,
+//       onSelected: onSortSelected,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(8.0),
+//         side: BorderSide(color: Colors.grey.shade300),
+//       ),
+//       itemBuilder: (BuildContext context) {
+//         return ['A to Z', 'Z to A', 'Other Style'].map((String choice) {
+//           return PopupMenuItem<String>(
+//             value: choice,
+//             child: Padding(
+//               padding:
+//                   const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+//               child: Text(
+//                 choice,
+//                 style: TextStyle(fontSize: 16, color: Colors.black),
+//               ),
+//             ),
+//           );
+//         }).toList();
+//       },
+//       icon: Icon(Icons.sort, color: Colors.black),
+//     );
+//   }
+// }
 
 class ListviewPackage extends StatefulWidget {
   @override
@@ -59,10 +59,6 @@ class ListviewPackage extends StatefulWidget {
 }
 
 class _ListviewPackageState extends State<ListviewPackage> {
-  List course = ['All', 'Courses'];
-  List other = ['Professional', 'Professional and old Syllabus'];
-
-  // Observable list for packages using GetX
   RxList<PackageInfo> packages = <PackageInfo>[].obs;
   Getx getx = Get.put(Getx());
 
@@ -92,7 +88,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
         actions: [
           IconButton(
             onPressed: () async {
-              showSearch(context: context, delegate: SearchList());
+              showSearch(context: context, delegate: SearchList(packages));
             },
             icon: const Icon(Icons.search),
           ),
@@ -247,7 +243,7 @@ class _ListviewPackageState extends State<ListviewPackage> {
                           child: EpisodeCard(
                             imageUrl: data.packageBannerPathUrl,
                             title: data.packageName,
-                            views: '55k',
+                            views: packageinfo.heading,
                             duration: '10:50',
                             price: data.minPackagePrice,
                             mode: 1,

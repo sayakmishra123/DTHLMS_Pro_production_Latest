@@ -6,7 +6,8 @@ import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
+// import 'package:dthlms/constants/constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -156,7 +157,8 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
   CancelToken cancelToken = CancelToken();
 
   RxBool isDownloading = false.obs;
-  Future<void> downloadAnswerSheet(String url, String examId) async {
+  Future<void> downloadAnswerSheet(String url, String examId,
+      {String examName = ""}) async {
     Dio dio = Dio();
     Directory appDocDir = await getApplicationDocumentsDirectory();
 
@@ -169,8 +171,8 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
     getx.defaultPathForDownloadFile.value = dthLmsDir.path;
     prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
     String? filePath = getx.userSelectedPathForDownloadFile.value.isEmpty
-        ? '${dthLmsDir.path}/$examId'
-        : getx.userSelectedPathForDownloadFile.value + "/$examId";
+        ? '${dthLmsDir.path}/$examId $examName'
+        : getx.userSelectedPathForDownloadFile.value + "/$examId $examName";
     if (filePath == null) {
       debugPrint("No file path selected. Cancelling download.");
       return;
@@ -193,7 +195,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
       isDownloading.value = false;
       debugPrint("Download complete: $filePath");
 
-      showDownloadCompleteDialog();
+      showDownloadCompleteDialog(examName);
     } catch (e) {
       isDownloading.value = false;
       debugPrint("Error downloading file: $e");
@@ -206,7 +208,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
     isDownloading.value = false;
   }
 
-  void showDownloadCompleteDialog() {
+  void showDownloadCompleteDialog(String examName) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -222,9 +224,9 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                 Get.to(() => ShowResultPage(
                       filePath: getx
                               .userSelectedPathForDownloadFile.value.isEmpty
-                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} $examName'
                           : getx.userSelectedPathForDownloadFile.value +
-                              "/${widget.examId}",
+                              "/${widget.examId} $examName",
                       isnet: false,
                     ));
               },
@@ -618,7 +620,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                             cells: <DataCell>[
                               // DataCell(Text(widget.examName,
                               // overflow: TextOverflow.ellipsis,
-                              
+
                               // )),
                               DataCell(Text(widget.submitedOn)),
                               DataCell(Text(widget.totalMarks.toString())),
@@ -697,24 +699,25 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                                       .userSelectedPathForDownloadFile
                                                       .value
                                                       .isEmpty
-                                                  ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                                  ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} '
                                                   : getx.userSelectedPathForDownloadFile
                                                           .value +
-                                                      "/${widget.examId}")
+                                                      "/${widget.examId} ")
                                               .existsSync()) {
                                             Get.to(() => ShowResultPage(
                                                   filePath: getx
                                                           .userSelectedPathForDownloadFile
                                                           .value
                                                           .isEmpty
-                                                      ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                                      ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} '
                                                       : getx.userSelectedPathForDownloadFile
                                                               .value +
-                                                          "/${widget.examId}",
+                                                          "/${widget.examId} ",
                                                   isnet: false,
                                                 ));
                                           } else {
                                             if (widget.pdfUrl.isNotEmpty) {
+                                              print(widget.pdfUrl.toString());
                                               downloadAnswerSheet(
                                                   widget.pdfUrl, widget.examId);
                                             }
@@ -730,10 +733,10 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                                   child: Text(
                                     File(getx.userSelectedPathForDownloadFile
                                                     .value.isEmpty
-                                                ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                                ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} '
                                                 : getx.userSelectedPathForDownloadFile
                                                         .value +
-                                                    "/${widget.examId}")
+                                                    "/${widget.examId} ")
                                             .existsSync()
                                         ? "Show Answer Sheet"
                                         : 'Download Answer Sheet',
@@ -757,29 +760,31 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                           : () async {
                               if (File(getx.userSelectedPathForDownloadFile
                                           .value.isEmpty
-                                      ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                      ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} ${widget.examName}'
                                       : getx.userSelectedPathForDownloadFile
                                               .value +
-                                          "/${widget.examId}")
+                                          "/${widget.examId} ${widget.examName}")
                                   .existsSync()) {
                                 Get.to(() => ShowResultPage(
                                       filePath: getx
                                               .userSelectedPathForDownloadFile
                                               .value
                                               .isEmpty
-                                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId}'
+                                          ? '${getx.defaultPathForDownloadFile.value}/${widget.examId} ${widget.examName}'
                                           : getx.userSelectedPathForDownloadFile
                                                   .value +
-                                              "/${widget.examId}",
+                                              "/${widget.examId} ${widget.examName}",
                                       isnet: false,
                                     ));
                               } else {
                                 if (widget.questionanswersheet
                                     .toString()
                                     .isNotEmpty) {
+                                  print(widget.questionanswersheet.toString());
                                   downloadAnswerSheet(
                                       widget.questionanswersheet.toString(),
-                                      widget.examId);
+                                      widget.examId,
+                                      examName: widget.examName);
                                 }
                               }
 
