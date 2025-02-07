@@ -76,68 +76,83 @@ class _TheoryExamPageState extends State<TheoryExamPage> {
 
   bool isTimeOver = false;
 
-  Future<void> _pickImage() async {
-    if (_isFilePickerOpen) {
-      Get.showSnackbar(GetSnackBar(
-        isDismissible: true,
-        shouldIconPulse: true,
-        icon: const Icon(
-          Icons.file_copy,
-          color: Colors.white,
-        ),
-        snackPosition: SnackPosition.TOP,
-        title: 'File Picker is already open ',
-        message: 'Please check your Taskbar.',
-        mainButton: TextButton(
-          onPressed: () {
-            Get.back();
-          },
-          child: const Text(
-            'Ok',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        duration: const Duration(seconds: 3),
-      ));
-      return;
-    }
-    // Prevent multiple file pickers from opening
-    if (getxController.isPaperSubmit.value) {
-      _isFilePickerOpen =
-          true; // Set the variable to true when opening the picker
-      try {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-            type: FileType.image,
-            allowMultiple: true,
-            dialogTitle: "Press & Hold CTRL to Select Multiple Sheet!");
+ Future<void> _pickImage() async {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // Prevent closing while loading
+    builder: (context) {
+      return Center(child: CircularProgressIndicator());
+    },
+  );
 
-        if (result != null) {
-          if (sheetNumber < result.paths.length) {
-            _onSelectedSheetOverFlow(golablContext, result.paths);
-          } else {
-            for (var path in result.paths) {
-              if (path != null) {
-                File file = File(path);
-                if (!_isDuplicateImage(file)) {
-                  _images.add(await resizeImage(file));
-                  setState(() {});
-                } else {
-                  _showDuplicateImageAlert(file.absolute.path.split('\\').last);
-                  setState(() {});
-                }
+  if (_isFilePickerOpen) {
+    Get.back(); // Close the loader if file picker is already open
+    Get.showSnackbar(GetSnackBar(
+      isDismissible: true,
+      shouldIconPulse: true,
+      icon: const Icon(
+        Icons.file_copy,
+        color: Colors.white,
+      ),
+      snackPosition: SnackPosition.TOP,
+      title: 'File Picker is already open',
+      message: 'Please check your Taskbar.',
+      mainButton: TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          'Ok',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      duration: const Duration(seconds: 3),
+    ));
+    return;
+  }
+
+  if (getxController.isPaperSubmit.value) {
+    _isFilePickerOpen = true;
+
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true,
+        dialogTitle: "Press & Hold CTRL to Select Multiple Sheets!",
+      );
+
+      if (result != null) {
+        if (sheetNumber < result.paths.length) {
+          _onSelectedSheetOverFlow(golablContext, result.paths);
+        } else {
+          for (var path in result.paths) {
+            if (path != null) {
+              File file = File(path);
+              if (!_isDuplicateImage(file)) {
+                _images.add(await resizeImage(file));
+                setState(() {});
+              } else {
+                _showDuplicateImageAlert(file.absolute.path.split('\\').last);
+                setState(() {});
               }
             }
           }
         }
-      } finally {
-        _isFilePickerOpen = false; // Reset the variable after picker is closed
       }
-    } else {
-      editSheetNumber(context);
+    } finally {
+      _isFilePickerOpen = false;
+      Get.back(); // Close the loading dialog after all processing is done
     }
+  } else {
+    Get.back(); // Ensure the loader is closed before showing editSheetNumber dialog
+    editSheetNumber(context);
   }
+}
+
 
   Future<File> resizeImage(File inputFile) async {
+
+
     // Make a copy of the input file
     final tempDir = Directory.systemTemp;
     final copiedFile = File(
@@ -173,12 +188,14 @@ class _TheoryExamPageState extends State<TheoryExamPage> {
       final resizedBytes = img.encodePng(thumbnail);
 
       // Create and return resized file
+
       return tempFile..writeAsBytesSync(resizedBytes);
     } else {
       print(
           'Original image size: ${image.width}x${image.height}. No resizing needed.');
 
       // Return copied file without resizing
+
       return copiedFile;
     }
   }
