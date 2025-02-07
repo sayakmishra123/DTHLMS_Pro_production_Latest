@@ -270,7 +270,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
         getx.isBookDashBoard.value = false;
         getx.isMCQDashBoard.value = false;
         getx.isBackupDashBoard.value = false;
-        getx.isPDFDashBoard.value = false;    
+        getx.isPDFDashBoard.value = false;
         getx.isPodcastDashboard.value = false;
         break;
       case 'VideosBackup':
@@ -324,12 +324,9 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     }
   }
 
- 
-
   @override
   void initState() {
     section();
-    
 
     super.initState();
   }
@@ -1584,6 +1581,16 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
     );
   }
 
+  double _getBalance(String allowDuration, dynamic consumeDuration) {
+    // Try to parse the allowDuration as double and consumeDuration as double
+    double allowDurationValue = double.tryParse(allowDuration) ?? 0.0;
+    double consumeDurationValue =
+        double.tryParse(consumeDuration.toString()) ?? 0.0;
+
+    // Return the difference (balance)
+    return allowDurationValue - consumeDurationValue;
+  }
+
   Widget buildFileList() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
@@ -1600,97 +1607,155 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
       ),
       child: Obx(
         () => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: filteredFileDetails.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    // physics: NeverScrollableScrollPhysics(),
-                    itemCount: filteredFileDetails.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onDoubleTap: () async {
-                          //               if(await isProcessRunning("dthlmspro_video_player")==false){
-                          //    run_Video_Player_exe(filteredFileDetails[index]['DocumentPath']);
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: filteredFileDetails.isNotEmpty
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: filteredFileDetails.length,
+                  itemBuilder: (context, index) {
+                    var allowDuration =
+                        filteredFileDetails[index]["AllowDuration"];
+                    var fileId = filteredFileDetails[index]["FileId"];
 
-                          // }
+                    return FutureBuilder<double>(
+                      future: getTotalWatchTime(
+                          int.parse(fileId)), // Call async function here
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator(); // Show loading while waiting
+                        } else if (snapshot.hasError) {
+                          return Text("Error: ${snapshot.error}");
+                        } else if (snapshot.hasData) {
+                          var consumeDuration = snapshot.data;
 
-                          print(filteredFileDetails[index]['DocumentPath'] +
-                              "  this is video link");
-                          Get.to(
-                              transition: Transition.cupertino,
-                              () => VideoPlayer(
-                                    filteredFileDetails[index]['DocumentPath'],
-                                  ));
+                          return GestureDetector(
+                            onDoubleTap: () async {
+                              if (allowDuration != null &&
+                                  consumeDuration != null) {
+                                // Try parsing as double first (since video durations can have decimals)
+                                double allowDurationValue =
+                                    double.tryParse(allowDuration) ?? 0.0;
+                                double consumeDurationValue = double.tryParse(
+                                        consumeDuration.toString()) ??
+                                    0.0;
 
-                          print("object find");
-                        },
-                        onTap: () {
-                          setState(() {
-                            selectedVideoIndex = index;
-                          });
-
-                          handleTap(index);
-                        },
-                        child: Card(
-                          color: selectedVideoIndex == index
-                              ? ColorPage.colorbutton.withOpacity(0.9)
-                              : Color.fromARGB(255, 245, 243, 248),
-                          child: ListTile(
-                            leading: Image.asset(
-                              "assets/video2.png",
-                              scale: 19,
+                                // Now compare the values
+                                if (allowDurationValue !=
+                                    consumeDurationValue) {
+                                  // Log or handle the difference
+                                  print(
+                                      "AllowDuration ($allowDurationValue) is not equal to ConsumeDuration ($consumeDurationValue)");
+                                  Get.to(
+                                      transition: Transition.cupertino,
+                                      () => VideoPlayer(
+                                            filteredFileDetails[index]
+                                                ['FileIdName'],
+                                          ));
+                                } else {
+                                  print(
+                                      "AllowDuration equals ConsumeDuration.");
+                                }
+                              } else {
+                                print(
+                                    "AllowDuration or ConsumeDuration is null.");
+                              }
+                            },
+                            onTap: () {
+                              setState(() {
+                                selectedVideoIndex = index;
+                              });
+                              handleTap(index);
+                            },
+                            child: Card(
                               color: selectedVideoIndex == index
-                                  ? ColorPage.white.withOpacity(0.85)
-                                  : ColorPage.colorbutton,
-                            ),
-                            subtitle: Text(
-                              'Duration:  ${filteredFileDetails[index]['AllowDuration']}',
-                              style: TextStyle(
-                                color: selectedVideoIndex == index
-                                    ? ColorPage.white.withOpacity(0.9)
-                                    : ColorPage.grey,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            title: Text(
-                              filteredFileDetails[index]['FileIdName'],
-                              style: GoogleFonts.inter().copyWith(
-                                color: selectedVideoIndex == index
-                                    ? ColorPage.white
-                                    : ColorPage.colorblack,
-                                fontWeight: FontWeight.w800,
-                                fontSize:
-                                    selectedvideoListIndex == index ? 20 : null,
-                                // color: selectedListIndex == index
-                                //     ? Colors.amber[900]
-                                //     : Colors.black,
-                              ),
-                            ),
-                            trailing: SizedBox(
-                              child: IconButton(
-                                  onPressed: () {
-                                    Get.to(
-                                        transition: Transition.cupertino,
-                                        () => VideoPlayer(
-                                              filteredFileDetails[index]
-                                                  ['FileIdName'],
-                                            ));
-                                  },
-                                  icon: Icon(
-                                    Icons.play_circle,
+                                  ? ColorPage.colorbutton.withOpacity(0.9)
+                                  : Color.fromARGB(255, 245, 243, 248),
+                              child: ListTile(
+                                leading: Image.asset(
+                                  "assets/video2.png",
+                                  scale: 19,
+                                  color: selectedVideoIndex == index
+                                      ? ColorPage.white.withOpacity(0.85)
+                                      : ColorPage.colorbutton,
+                                ),
+                                subtitle: Text(
+                                  "(In Mins & Seconds) Allocated: $allowDuration Watched: $consumeDuration   Balance: ${_getBalance(allowDuration, consumeDuration)}",
+                                  style: TextStyle(
+                                    color: selectedVideoIndex == index
+                                        ? ColorPage.white.withOpacity(0.9)
+                                        : ColorPage.grey,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                title: Text(
+                                  filteredFileDetails[index]['FileIdName'],
+                                  style: GoogleFonts.inter().copyWith(
                                     color: selectedVideoIndex == index
                                         ? ColorPage.white
-                                        : ColorPage.colorbutton,
-                                  )),
+                                        : ColorPage.colorblack,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: selectedvideoListIndex == index
+                                        ? 20
+                                        : null,
+                                  ),
+                                ),
+                                trailing: SizedBox(
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      if (allowDuration != null &&
+                                          consumeDuration != null) {
+                                        // Try parsing as double first (since video durations can have decimals)
+                                        double allowDurationValue =
+                                            double.tryParse(allowDuration) ??
+                                                0.0;
+                                        double consumeDurationValue =
+                                            double.tryParse(consumeDuration
+                                                    .toString()) ??
+                                                0.0;
+
+                                        // Now compare the values
+                                        if (allowDurationValue !=
+                                            consumeDurationValue) {
+                                          print(
+                                              "AllowDuration ($allowDurationValue) is not equal to ConsumeDuration ($consumeDurationValue)");
+                                          Get.to(
+                                              transition: Transition.cupertino,
+                                              () => VideoPlayer(
+                                                    filteredFileDetails[index]
+                                                        ['FileIdName'],
+                                                  ));
+                                        } else {
+                                          print(
+                                              "AllowDuration equals ConsumeDuration.");
+                                        }
+                                      } else {
+                                        print(
+                                            "AllowDuration or ConsumeDuration is null.");
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.play_circle,
+                                      color: selectedVideoIndex == index
+                                          ? ColorPage.white
+                                          : ColorPage.colorbutton,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                : Center(
-                    child: Text('No data found'),
-                  )),
+                          );
+                        } else {
+                          return Center(child: Text("No data available"));
+                        }
+                      },
+                    );
+                  },
+                )
+              : Center(
+                  child: Text('No data found'),
+                ),
+        ),
       ),
     );
   }
@@ -2167,7 +2232,7 @@ class _BookDashboardState extends State<BookDashboard>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getChapterFiles( 
+      getChapterFiles(
           parentId: 0, "Book", getx.selectedPackageId.value.toString());
     });
 

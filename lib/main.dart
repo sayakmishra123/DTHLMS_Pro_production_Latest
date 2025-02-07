@@ -39,11 +39,9 @@ import 'notification_model.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-
   MediaKit.ensureInitialized();
-
   // ensureYQPInitialized();
-  Get.put(OnlineAudioPlayerController());
+  Get.put(OnlineAudioPlayerController()); 
 
   function() async {
     // open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
@@ -85,7 +83,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   pageRouter router = pageRouter();
-  // late Future<void> userDetailsFuture;
+  // late Future<void> userDetailsFuture; 
 
   @override
   void initState() {
@@ -140,7 +138,6 @@ class _MyAppState extends State<MyApp> {
     getx.userImageLocalPath.value = prefs.getString("LocalImagePath") ?? "";
 
     if (userdataJson != null) {
-      // print("data found of login");
       Map<String, dynamic> userdataMap = jsonDecode(userdataJson);
       DthloginUserDetails userdata = DthloginUserDetails(
           firstName: userdataMap['firstName'].toString(),
@@ -374,7 +371,7 @@ class _DevelopermodeOnPageState extends State<DevelopermodeOnPage> {
       ],
     ).show();
   }
-
+ 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

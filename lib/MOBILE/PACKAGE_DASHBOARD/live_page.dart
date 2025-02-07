@@ -157,7 +157,7 @@ class _LivePageState extends State<LivePage> {
     );
   }
 
-  String pageTitle = 'Today Meetings';
+  String pageTitle = 'Today Meetingss';
 
   @override
   void initState() {
@@ -182,7 +182,9 @@ class _LivePageState extends State<LivePage> {
         child: Column(
           children: [
             _buildHeaderRow(),
-            _buildMeetingList(),
+           getx.todaymeeting.isEmpty ? Column(children: [
+            Text('No Data to reflect')
+           ],) : _buildMeetingList()
           ],
         ),
       ),

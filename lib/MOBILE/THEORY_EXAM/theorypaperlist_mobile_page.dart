@@ -79,7 +79,7 @@ class _TheoryPaperListMobileState extends State<TheoryPaperListMobile> {
                         ),
                       );
                     },
-                    child: Container(
+                    child: Container( 
                       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                       margin: EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(

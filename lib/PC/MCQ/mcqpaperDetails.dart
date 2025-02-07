@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'MOCKTEST/resultMcqTest.dart';
 import 'MOCKTEST/termandcondition.dart';
@@ -22,8 +18,8 @@ class McqPaperDetails extends StatefulWidget {
 }
 
 class _McqPaperDetailsState extends State<McqPaperDetails> {
-  RxList filteredList = [].obs;
 
+  RxList filteredList = [].obs;
   RxList mcqPaperList = [].obs;
 
   bool isExpired(String expirationDateStr) {
@@ -37,20 +33,16 @@ class _McqPaperDetailsState extends State<McqPaperDetails> {
     return expirationDate.isBefore(currentTime);
   }
 
-//  final RxList mcqSetList;
+  // final RxList mcqSetList;
   @override
   void initState() {
     getData();
-    // TODO: implement initState
     super.initState();
   }
 
   getData() async {
-    // log(widget.paperNames['ServicesTypeName'] + "kjhukhu");
     mcqPaperList.clear();
     mcqPaperList.value = await fetchMCQPapertList(widget.paperNames['SetId']);
-    // log(mcqPaperList.toString() + " type");
-    // setState(() {});
   }
 
   @override
@@ -108,8 +100,6 @@ class _McqPaperDetailsState extends State<McqPaperDetails> {
                             if(checking['StatusCode']==220){
               
                   print(  checking['UserAnswerList'].toString()+"///////////////////////");
-                          
-                          
                            Get.to(
                                 transition: Transition.cupertino,
                                 () => MockMcqTermAndCondition(

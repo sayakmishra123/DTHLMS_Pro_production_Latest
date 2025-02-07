@@ -409,6 +409,7 @@ Future getAllFolders(BuildContext context, token, String packageId) async {
 
 Future getAllFiles(BuildContext context, token, String packageId) async {
   // loader(context);
+
   Map data = packageId == "" ? {} : {'PackageId': packageId};
 
   try {
@@ -1715,7 +1716,7 @@ Future<String> uploadSheet(
     String fileName = basename(file.path);
     String mimeType = lookupMimeType(file.path) ?? '.jpg';
 
-    var request = http.MultipartRequest('POST',   
+    var request = http.MultipartRequest('POST',
         Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadVideoiInCloudeUrl));
     request.headers['Authorization'] = 'Bearer $token';
     request.headers['accept'] = 'text/plain';
@@ -1889,11 +1890,7 @@ Future<String> uploadSheet(
 
 Future sendDocumentIdOfanswerSheets(
     BuildContext context, String token, int paperid, String documentId) async {
-
-
-
-
-      log('message');
+  log('message');
 
   // // print(questionanswer);
   // loader(context);
@@ -1908,7 +1905,7 @@ Future sendDocumentIdOfanswerSheets(
   try {
     var res = await http.post(
       Uri.https(ClsUrlApi.mainurl, ClsUrlApi.sendAnswerSheedIdList),
-      headers: <String, String>{ 
+      headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
         'Origin': origin,
@@ -2064,7 +2061,6 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
     // print("Error rx: $e");
     return [];
   }
-
   // return fullBannerPackages;
 }
 
@@ -2098,7 +2094,6 @@ Future getExamStatus(
     // print("Error rx: $e");
     return 0;
   }
-
   // return fullBannerPackages;
 }
 
@@ -2496,6 +2491,7 @@ Future unUploadedVideoInfoInsert(
     context, List videolist, String token, bool isLive) async {
   // loader(context);
   try {
+    log(' video list : ' + videolist.toString());
     Map data = {"tblStudentPackageHistory": videolist};
 
     final res = await http.post(
