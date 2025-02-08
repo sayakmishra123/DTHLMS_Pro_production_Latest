@@ -10,6 +10,7 @@ import 'package:dthlms/MOBILE/THEORY_EXAM/examPaperList.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/book_list_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -33,7 +34,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     switch (pageName) {
       case 'Video':
         Get.to(
-          transition: Transition.cupertino,
+          transition: Transition.cupertino, 
           () => MobilePackageVideoDashboard(),
         );
 
@@ -89,73 +90,171 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      callData();
-    });
-    getx.isInsidePackage.value = true;
-    getVideoCount(); 
-    getBooksCount();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getMeetingList(context);
-    });
-
-
+    initializeData();
+    globalContext = context;
     super.initState();
   }
 
 
 
+  getPodcast() async { 
+    podcastCount = await fetchPodcast(widget.packageid.toString(), 'Podcast');
+  }
 
+  void initializeData() async {
+    await section();
+    await getVideoCount();
+    await getBooksCount();
+    await getTheorySetList();
+    await getMCQSetList();
+    await getPodcast();
+    getMeetingList(context);
+  }
 
-  // Video section data
-  RxBool hasData = false.obs; 
-  int videoCountData = 0;
-  int booksCountData = 0;
+  RxBool hasData = false.obs;
+  RxInt videoCountData = 0.obs;
+  RxInt booksCountData = 0.obs;
 
   RxInt allowedDuration = 0.obs;
   RxString formattedDuration = ''.obs;
- 
-    getBooksCount() async {
+
+  RxList theorySetList = [].obs;
+  RxList uniqueServicesList = [].obs;
+
+  List<Map<String, dynamic>> podcastCount = [];
+
+  RxInt mcqTotalLength = 0.obs;
+
+  RxList uniqueServicesList2 = [].obs;
+  Future getMCQSetList() async {
+    if (getx.isInternet.value) {
+      fetchTblMCQHistory("").then((mcqhistoryList) {
+        unUploadedMcQHistoryInfoInsert(
+            globalContext, mcqhistoryList, getx.loginuserdata[0].token);
+      });
+    }
+
+    mcqSetList.value =
+        await fetchMCQSetList(getx.selectedPackageId.value.toString());
+    print(mcqSetList.toString());
+    Set<String> uniqueServices2 =
+        mcqSetList.map((item) => item['ServicesTypeName'] as String).toSet();
+
+// Convert Set to List if needed
+    uniqueServicesList2.value = uniqueServices2.toList();
+  }
+
+  Future getTheorySetList() async {
+    theorySetList.value =
+        await fetchTheorySetList(getx.selectedPackageId.value.toString());
+    Set<String> uniqueServices =
+        theorySetList.map((item) => item['ServicesTypeName'] as String).toSet();
+    uniqueServicesList.value = uniqueServices.toList();
+  }
+
+  getBooksCount() async {
     var data =
         await getAllPackageDetailsForBooksCount(widget.packageid.toString());
 
     if (data.isNotEmpty) {
-     
-      
-
-     setState(() {
-      booksCountData = data.length;
-       
-     });
-
+      setState(() {
+        booksCountData.value = data.length;
+      });
     }
     print(booksCountData);
   }
 
-  getVideoCount() async {
-    var data =
-        await getAllPackageDetailsForVideoCount(widget.packageid.toString());
+  section() {
+    getSectionListOfPackage(widget.packageid).whenComplete(
+      () {
+        // getMainChapter(widget.packageId);
+      },
+    );
+  }
 
+  String formatDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return 'N/A';
+
+    try {
+      // Parse the date string
+      final dateTime = DateTime.parse(dateString);
+      // Format it to a more readable form
+      return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
+    } catch (e) {
+      writeToFile(e, "formatDate");
+      return 'Invalid Date';
+    }
+  }
+
+  getVideoCount() async { 
+    var data = await getAllPackageDetailsForVideoCount(widget.packageid.toString());
     if (data.isNotEmpty) {
       hasData.value = false;
       for (var i in data) {
         if (i['AllowDuration'] != "") {
           allowedDuration.value =
               allowedDuration.value + int.parse(i['AllowDuration']);
+          videoCountData.value = data.length;
+
+          int seconds = allowedDuration.value;
+          int minutes = seconds ~/ 60;
+          int hours = minutes ~/ 60;
+
+          formattedDuration.value = hours > 0
+              ? "$hours hours ${minutes % 60} minutes"
+              : "$minutes minutes";
         }
+        print(videoCountData);
       }
-      videoCountData = data.length;
-
-      int seconds = allowedDuration.value;
-      int minutes = seconds ~/ 60;
-      int hours = minutes ~/ 60;
-
-      formattedDuration.value = hours > 0
-          ? "$hours hours ${minutes % 60} minutes"
-          : "$minutes minutes";
     }
-    print(videoCountData);
   }
+
+  // Video section data
+  // RxBool hasData = false.obs; 
+  // int videoCountData = 0;
+  // int booksCountData = 0;
+
+  // RxInt allowedDuration = 0.obs;
+  // RxString formattedDuration = ''.obs;
+ 
+  //   getBooksCount() async {
+  //   var data =
+  //       await getAllPackageDetailsForBooksCount(widget.packageid.toString());
+
+  //   if (data.isNotEmpty) {
+  //    setState(() {
+  //     booksCountData = data.length;
+       
+  //    });
+
+  //   }
+  //   print(booksCountData);
+  // }
+
+  // getVideoCount() async {
+  //   var data =
+  //       await getAllPackageDetailsForVideoCount(widget.packageid.toString());
+
+  //   if (data.isNotEmpty) {
+  //     hasData.value = false;
+  //     for (var i in data) {
+  //       if (i['AllowDuration'] != "") {
+  //         allowedDuration.value =
+  //             allowedDuration.value + int.parse(i['AllowDuration']);
+  //       }
+  //     }
+  //     videoCountData = data.length;
+
+  //     int seconds = allowedDuration.value;
+  //     int minutes = seconds ~/ 60;
+  //     int hours = minutes ~/ 60;
+
+  //     formattedDuration.value = hours > 0
+  //         ? "$hours hours ${minutes % 60} minutes"
+  //         : "$minutes minutes";
+  //   }
+  //   print(videoCountData);
+  // }
 
   callData() async {
     initialfunction(widget.packageid.toString()).whenComplete(() {
@@ -266,7 +365,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
   }
 
   @override
-  void dispose() {
+  void dispose() { 
     getx.sectionListOfPackage.clear();
     getx.isInsidePackage.value = false;
     super.dispose();
@@ -441,6 +540,17 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                         item['section'] != 'YouTube')
                     .length,
                 itemBuilder: (context, index) {
+                    String todayDate = DateFormat('yyyy-MM-dd')
+                                      .format(DateTime.now());
+                   int liveCount = getx.todaymeeting
+                                      .where((meeting) =>
+                                          meeting.scheduledOn != null &&
+                                          DateFormat('yyyy-MM-dd').format(
+                                                  meeting.scheduledOn) ==
+                                              todayDate &&
+                                          meeting.packageId ==
+                                              widget.packageid.toString())
+                                      .length;
                   final filteredList = getx.sectionListOfPackage
                       .where((item) =>
                           item['section'] != 'PDF' &&
@@ -469,7 +579,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: _buildOfferCard( 
+                      child: _buildOfferCard(   
                         packageid: widget.packageid.toString(),
                         title: filteredList[index]['section'],
                         subtitle: getFolderSubtitle(filteredList[index], index),
@@ -480,9 +590,13 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                         icon: getFolderIcon(filteredList[index], index),
                         iconcolor:
                             getFolderIconColor(filteredList[index], index),
+                        liveCount: liveCount.toString(),
                         videoCount: videoCountData.toString(),
                         allowedDurationVideo: formattedDuration.value,
                         booksCount: booksCountData.toString(),
+                        testCount: theorySetList.length.toString(),
+                        podcastCount: podcastCount.length.toString(),
+                        mcaCount:  mcqSetList.length.toString(),
                         // zipText: 'ZIP',
                         // zipTextColor: Colors.orange,
                       ),
@@ -555,13 +669,122 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       required Color arrowColor,
       required Icon icon,
       required Color iconcolor,
+      required String liveCount,
       required String videoCount,
       required String booksCount,
+      required String testCount,
+      required String podcastCount,
+      required String mcaCount,
 
       required String allowedDurationVideo}) {
+        
+    getCountDetailsForAllFolder<Widget>(String foldername) {
+      double fontSize = 16.0;
+      switch (foldername) {
+        case "Video":
+          return videoCount != '0' ?  CircleAvatar(
+                          child: Text(
+                          videoCount,
+                          style: FontFamily.style.copyWith(fontSize: 15),
+                        )) : SizedBox();
+        case "Live":
+          return Obx(() {
     Getx getx = Get.put(Getx());
 
-    return Container(
+                              String todayDate = DateFormat('yyyy-MM-dd')
+                                  .format(DateTime.now());
+
+                              int liveCount = getx.todaymeeting
+                                  .where((meeting) =>
+                                      meeting.scheduledOn != null &&
+                                      DateFormat('yyyy-MM-dd')
+                                              .format(meeting.scheduledOn) ==
+                                          todayDate && meeting.packageId == packageid.toString())
+                                  .length;
+
+                              return Stack(
+                                clipBehavior: Clip
+                                    .none, // Ensures the Positioned widget is not clipped
+                                children: [
+                                  // Live Animation
+                                  if (liveCount >= 1)
+                                  Lottie.asset(
+                                    'assets/liveanimation.json',
+                                    width: 70,
+                                    height: 70,
+                                  ), 
+
+                                  // Only show if liveCount is greater than 1
+                                  if (liveCount > 1)
+                                    Positioned(
+                                      top:
+                                          0, // Position it slightly above the animation
+                                      right: 0, // Align it to the right corner
+                                      child: CircleAvatar(
+                                        radius:
+                                            15.0, // Reduced radius for better proportion
+                                        backgroundColor: Colors
+                                            .white, // Light background for visibility
+                                        child: Text(
+                                          '+${liveCount - 1}', // Show remaining count
+                                          style: TextStyle(
+                                            color: Colors
+                                                .red, // Red to indicate urgency/attention
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                12, // Reduced font size for better fit
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            });
+        case "VideosBackup":
+          return null;
+        case "MCQ":
+          // return null;
+          return CircleAvatar(
+            child: Text(
+              mcaCount,
+              style: FontFamily.style.copyWith(fontSize: fontSize),
+            ),
+          );
+        case "Theory":
+         return CircleAvatar(
+           child: Text(
+              testCount,
+              style: FontFamily.style.copyWith(fontSize: fontSize),
+            ),
+         );
+        case "Book":
+        return CircleAvatar(
+                                  child: Text( 
+                                    booksCount.toString(),
+                                    style:
+                                        FontFamily.style.copyWith(fontSize: 15),
+                                  ));
+        case "Test":
+          // return null;
+          return CircleAvatar(
+            child: Text(
+              testCount,
+              style: FontFamily.style.copyWith(fontSize: fontSize),
+            ),
+          );
+        case "Podcast":
+          return CircleAvatar(
+            child: Text(
+              podcastCount,
+              style: FontFamily.style.copyWith(fontSize: fontSize),
+            ),
+          );
+        default:
+          return null;
+      }
+    }
+
+    return Container( 
       width: 100,
       height: 170,
       padding: const EdgeInsets.all(16),
@@ -622,71 +845,10 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
               ),
               Row(
                 children: [
-                  title == 'Video' && videoCount != '0'
-                      ? CircleAvatar(
-                          child: Text(
-                          videoCount,
-                          style: FontFamily.style.copyWith(fontSize: 15),
-                        ))
-                      : title == 'Live'
-                          ? Obx(() {
-                              String todayDate = DateFormat('yyyy-MM-dd')
-                                  .format(DateTime.now());
 
-                              int liveCount = getx.todaymeeting
-                                  .where((meeting) =>
-                                      meeting.scheduledOn != null &&
-                                      DateFormat('yyyy-MM-dd')
-                                              .format(meeting.scheduledOn) ==
-                                          todayDate && meeting.packageId == packageid.toString())
-                                  .length;
-
-                              return Stack(
-                                clipBehavior: Clip
-                                    .none, // Ensures the Positioned widget is not clipped
-                                children: [
-                                  // Live Animation
-                                  if (liveCount >= 1)
-                                  Lottie.asset(
-                                    'assets/liveanimation.json',
-                                    width: 70,
-                                    height: 70,
-                                  ), 
-
-                                  // Only show if liveCount is greater than 1
-                                  if (liveCount > 1)
-                                    Positioned(
-                                      top:
-                                          0, // Position it slightly above the animation
-                                      right: 0, // Align it to the right corner
-                                      child: CircleAvatar(
-                                        radius:
-                                            15.0, // Reduced radius for better proportion
-                                        backgroundColor: Colors
-                                            .white, // Light background for visibility
-                                        child: Text(
-                                          '+${liveCount - 1}', // Show remaining count
-                                          style: TextStyle(
-                                            color: Colors
-                                                .red, // Red to indicate urgency/attention
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                12, // Reduced font size for better fit
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              );
-                            })
-                          : title == 'Book'
-                              ? CircleAvatar(
-                                  child: Text( 
-                                    booksCount.toString(),
-                                    style:
-                                        FontFamily.style.copyWith(fontSize: 15),
-                                  ))
-                              : SizedBox(),
+SizedBox(
+  child: getCountDetailsForAllFolder(title),
+),
                   SizedBox(
                     width: 10,
                   ),

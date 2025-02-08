@@ -239,7 +239,7 @@ Future<void> getMeetingList(BuildContext context) async {
   Map<String, dynamic> data = {};
   // prnt("calling live methdo");
   try {
-    // Sending the POST request
+    // Sending the POST request 
     var res = await http.post(
       Uri.https(
         ClsUrlApi.mainurl,

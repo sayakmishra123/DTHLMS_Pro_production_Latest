@@ -26,7 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PackageDetailsPage extends StatefulWidget {
+class PackageDetailsPage extends StatefulWidget { 
   final String packageName;
   final int packageId;
   final String ExpiryDate;
@@ -83,7 +83,7 @@ class _PackageDetailsPageState extends State<PackageDetailsPage> {
             Expanded(
               flex: 5,
               child: Column(
-                children: [  
+                children: [
                   Obx(
                     () => Expanded(
                       child: getx.isVideoDashBoard.value
@@ -197,7 +197,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
         getx.isLiveDashBoard.value = false;
         getx.isTheoryDashBoard.value = false;
         getx.isBookDashBoard.value = false;
-        getx.isMCQDashBoard.value = false;
+        getx.isMCQDashBoard.value = false; 
         getx.isBackupDashBoard.value = false;
         getx.isPDFDashBoard.value = false;
         getx.isPodcastDashboard.value = false;
@@ -288,13 +288,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     }
   }
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   initializeData();
-  // }
-
-  getPodcast() async {
+  getPodcast() async { 
     podcastCount = await fetchPodcast(widget.packageId.toString(), 'Podcast');
   }
 
@@ -305,13 +299,12 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     await getTheorySetList();
     await getMCQSetList();
     await getPodcast();
-    getMeetingList(context); // If this requires context, handle appropriately
-    setState(() {});
+    getMeetingList(context);
   }
 
   RxBool hasData = false.obs;
-  int videoCountData = 0;
-  int booksCountData = 0;
+  RxInt videoCountData = 0.obs;
+  RxInt booksCountData = 0.obs;
 
   RxInt allowedDuration = 0.obs;
   RxString formattedDuration = ''.obs;
@@ -321,15 +314,6 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
 
   @override
   void initState() {
-    // section();
-    // getVideoCount();
-
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   getMeetingList(context);
-    // });
-    // getBooksCount();
-    // getTheorySetList();
-    // getMCQSetList();
     initializeData();
     globalContext = context;
     super.initState();
@@ -374,7 +358,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
 
     if (data.isNotEmpty) {
       setState(() {
-        booksCountData = data.length;
+        booksCountData.value = data.length;
       });
     }
     print(booksCountData);
@@ -402,29 +386,27 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     }
   }
 
-  getVideoCount() async {
-    var data =
-        await getAllPackageDetailsForVideoCount(widget.packageId.toString());
-
+  getVideoCount() async { 
+    var data = await getAllPackageDetailsForVideoCount(widget.packageId.toString());
     if (data.isNotEmpty) {
       hasData.value = false;
       for (var i in data) {
         if (i['AllowDuration'] != "") {
           allowedDuration.value =
               allowedDuration.value + int.parse(i['AllowDuration']);
+          videoCountData.value = data.length;
+
+          int seconds = allowedDuration.value;
+          int minutes = seconds ~/ 60;
+          int hours = minutes ~/ 60;
+
+          formattedDuration.value = hours > 0
+              ? "$hours hours ${minutes % 60} minutes"
+              : "$minutes minutes";
         }
+        print(videoCountData);
       }
-      videoCountData = data.length;
-
-      int seconds = allowedDuration.value;
-      int minutes = seconds ~/ 60;
-      int hours = minutes ~/ 60;
-
-      formattedDuration.value = hours > 0
-          ? "$hours hours ${minutes % 60} minutes"
-          : "$minutes minutes";
     }
-    print(videoCountData);
   }
 
   @override
@@ -554,46 +536,47 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
                                                   ["section"] ==
                                               "YouTube"
                                       ? SizedBox()
-                                      : buttonWidget(() {
-                                          if (widget.selectedIndex != index) {
-                                            resetTblLocalNavigationByOrderOnsection(
-                                                1);
-                                            print(
-                                                getx.sectionListOfPackage[index]
-                                                        ['section'] +
-                                                    "wow mc");
+                                      : Obx(
+                                          () => buttonWidget(() {
+                                            if (widget.selectedIndex != index) {
+                                              resetTblLocalNavigationByOrderOnsection(
+                                                  1);
+                                              print(getx.sectionListOfPackage[
+                                                      index]['section'] +
+                                                  "wow mc");
 
-                                            insertTblLocalNavigation(
-                                                    "Section",
-                                                    widget.packageId.toString(),
-                                                    getx.sectionListOfPackage[
-                                                        index]["section"])
-                                                .whenComplete(() => null);
+                                              insertTblLocalNavigation(
+                                                      "Section",
+                                                      widget.packageId
+                                                          .toString(),
+                                                      getx.sectionListOfPackage[
+                                                          index]["section"])
+                                                  .whenComplete(() => null);
 
-                                            getMainChapter(widget.packageId);
+                                              getMainChapter(widget.packageId);
 
-                                            getLocalNavigationDetails();
+                                              getLocalNavigationDetails();
 
-                                            getx.selectedPackageId.value =
-                                                widget.packageId;
-                                            widget.onItemSelected(index);
+                                              getx.selectedPackageId.value =
+                                                  widget.packageId;
+                                              widget.onItemSelected(index);
 
-                                            paging(
-                                                getx.sectionListOfPackage[index]
-                                                    ["section"]);
-                                          }
-                                        },
-                                          widget.selectedIndex == index,
-                                          hoverIndex == index,
-                                          index,
-                                          getx.sectionListOfPackage[index]
-                                              ["section"],
-                                          videoCountData.toString(), 
-                                          liveCount.toString(),
-                                          booksCountData.toString(),
-                                          theorySetList.length.toString(),
-                                          mcqSetList.length.toString(),
-                                          podcastCount.length.toString());
+                                              paging(getx.sectionListOfPackage[
+                                                  index]["section"]);
+                                            }
+                                          }, 
+                                              widget.selectedIndex == index,
+                                              hoverIndex == index,
+                                              index,
+                                              getx.sectionListOfPackage[index]
+                                                  ["section"],
+                                              videoCountData.toString(),
+                                              liveCount.toString(),
+                                              booksCountData.toString(),
+                                              theorySetList.length.toString(),
+                                              mcqSetList.length.toString(),
+                                              podcastCount.length.toString()),
+                                        );
                                 },
                               ),
                             )
@@ -651,95 +634,94 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     String mcqCount,
     String podcustCount,
   ) {
-
-    
-  final List<Map<String, dynamic>> folderIcons = [
-    {
-      "section": "Video",
-      "icon": Icons.video_library,
-      "color": Colors.blue,
-      "subtitle": "Watch recorded videos and tutorials",
-      "color2": [
-        // Light pink -> soft pink
-        Colors.green.shade200,
-        Colors.green.shade100
-      ],
-    },
-    {
-      "section": "Live",
-      "icon": Icons.live_tv,
-      "color": Colors.red,
-      "subtitle": "Join live streaming\nsessions",
-      'color2': [
-        // Light orange -> peach
-        const Color(0xFFFFF1D5),
-        const Color(0xFFFFE0AF),
-      ],
-    },
-    {
-      "section": "Podcast",
-      "icon": Icons.podcasts,
-      "color": Colors.orange,
-      "subtitle":
-          "Listen to insightful discussions and audio episodes anytime, anywhere.",
-      "color2": [
-        // Light pink -> soft pink
-        Colors.brown.shade200,
-        Colors.brown.shade100
-      ],
-    },
-    {
-      "section": "MCQ",
-      "icon": Icons.question_answer,
-      "color": Colors.green,
-      "subtitle": "Practice multiple-choice questions",
-      'color2': [
-        // Light pink -> soft pink
-        Colors.blue.shade200,
-        Colors.blue.shade100
-      ],
-    },
-    {
-      "section": "Test",
-      "icon": Icons.book,
-      "color": Colors.purple,
-      "subtitle": "Read and review theoretical content",
-      "color2": [
-        // Light pink -> soft pink
-        Colors.orange.shade200,
-        Colors.orange.shade100
-      ],
-    },
-    {
-      "section": "Book",
-      "icon": Icons.library_books,
-      "color": Colors.brown,
-      "subtitle": "Access and manage your digital library",
-      "color2": [
-        // Light pink -> soft pink
-        const Color.fromARGB(255, 248, 177, 219),
-        const Color(0xFFFDD3E7),
-      ],
-    },
-  ];
-
-    List<Color> gradientColorsList(String foldername) {
-    final iconData = folderIcons.firstWhere(
-      (item) => item['section'] == foldername,
-      orElse: () => {
-        "icon": Icons.folder,
+    final List<Map<String, dynamic>> folderIcons = [
+      {
+        "section": "Video",
+        "icon": Icons.video_library,
         "color": Colors.blue,
-        "subtitle": '',
+        "subtitle": "Watch recorded videos and tutorials",
         "color2": [
+          // Light pink -> soft pink
+          Colors.green.shade200,
+          Colors.green.shade100
+        ],
+      },
+      {
+        "section": "Live",
+        "icon": Icons.live_tv,
+        "color": Colors.red,
+        "subtitle": "Join live streaming\nsessions",
+        'color2': [
+          // Light orange -> peach
           const Color(0xFFFFF1D5),
           const Color(0xFFFFE0AF),
-        ]
+        ],
       },
-    );
+      {
+        "section": "Podcast",
+        "icon": Icons.podcasts,
+        "color": Colors.orange,
+        "subtitle":
+            "Listen to insightful discussions and audio episodes anytime, anywhere.",
+        "color2": [
+          // Light pink -> soft pink
+          Colors.brown.shade200,
+          Colors.brown.shade100
+        ],
+      },
+      {
+        "section": "MCQ",
+        "icon": Icons.question_answer,
+        "color": Colors.green,
+        "subtitle": "Practice multiple-choice questions",
+        'color2': [
+          // Light pink -> soft pink
+          Colors.blue.shade200,
+          Colors.blue.shade100
+        ],
+      },
+      {
+        "section": "Test",
+        "icon": Icons.book,
+        "color": Colors.purple,
+        "subtitle": "Read and review theoretical content",
+        "color2": [
+          // Light pink -> soft pink
+          Colors.orange.shade200,
+          Colors.orange.shade100
+        ],
+      },
+      {
+        "section": "Book",
+        "icon": Icons.library_books,
+        "color": Colors.brown,
+        "subtitle": "Access and manage your digital library",
+        "color2": [
+          // Light pink -> soft pink
+          const Color.fromARGB(255, 248, 177, 219),
+          const Color(0xFFFDD3E7),
+        ],
+      },
+    ];
 
-    // Return the showDetails widget with the appropriate icon and foldername
-    return iconData['color2'];
-  }
+    List<Color> gradientColorsList(String foldername) {
+      final iconData = folderIcons.firstWhere(
+        (item) => item['section'] == foldername,
+        orElse: () => {
+          "icon": Icons.folder,
+          "color": Colors.blue,
+          "subtitle": '',
+          "color2": [
+            const Color(0xFFFFF1D5),
+            const Color(0xFFFFE0AF),
+          ]
+        },
+      );
+
+      // Return the showDetails widget with the appropriate icon and foldername
+      return iconData['color2'];
+    }
+
     Color backgroundColor =
         isActive ? Colors.blue.withOpacity(0.1) : Colors.white;
 
@@ -756,7 +738,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
           return Icon(Icons.video_library, color: Colors.blue);
         case "Live":
           return Icon(Icons.live_tv, color: Colors.red);
-        case "VideosBackup": 
+        case "VideosBackup":
           return Icon(Icons.backup, color: Colors.orange);
         case "MCQ":
           return Icon(Icons.question_answer, color: Colors.green);
@@ -840,7 +822,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
           child: Container(
             alignment: Alignment.topLeft,
             decoration: BoxDecoration(
-             gradient: LinearGradient(colors: gradientColorsList(foldername)),
+              gradient: LinearGradient(colors: gradientColorsList(foldername)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
@@ -2625,8 +2607,6 @@ class _McqDashboardState extends State<McqDashboard>
     super.initState();
   }
 
-
-
   RxList uniqueServicesList = [].obs;
   Future getMCQSetList() async {
     if (getx.isInternet.value) {
@@ -2728,7 +2708,7 @@ class _McqDashboardState extends State<McqDashboard>
                     builder: (_) {
                       // Check for the list data to display
                       // if (mcqSetList.isNotEmpty) {
-                      return McqList(  
+                      return McqList(
                           mcqSetList, tabTitle, 'assets/quick.png', istype);
                       // } else {
                       // return ; // Show "No Set Found" if the list is empty
@@ -2872,7 +2852,7 @@ class _TheoryExamPaperListState extends State<TheoryExamPaperList>
                     builder: (_) {
                       // Check for the list data to display
                       // if (mcqSetList.isNotEmpty) {
-                      return TheoryPaperList( 
+                      return TheoryPaperList(
                           theorySetList, tabTitle, 'assets/mcq_img.png', true);
                       // } else {
                       // return ; // Show "No Set Found" if the list is empty

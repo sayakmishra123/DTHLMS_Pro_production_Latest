@@ -14,6 +14,7 @@ import 'package:dthlms/PC/PACKAGEDETAILS/packagedetails.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
@@ -2225,7 +2226,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   ),
                   Row(
                     children: [
-                      SizedBox(
+                      SizedBox( 
                         height: 100,
                         width: 100,
                         child: InkWell(
@@ -2251,10 +2252,15 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         ),
                                         SizedBox(height: 20),
                                         QrImageView(
-                                          data: qrData,
-                                          version: QrVersions.auto,
-                                          size: 300, // Bigger QR Code
-                                        ),
+  data: qrData,
+  version: QrVersions.auto,
+  size: 320,
+  gapless: false,
+  embeddedImage: AssetImage(logopath),
+  embeddedImageStyle: QrEmbeddedImageStyle(
+    size: Size(80, 80),
+  ),
+),
                                         SizedBox(height: 20),
                                         ElevatedButton(
                                             onPressed: () =>
@@ -2273,10 +2279,15 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                             );
                           },
                           child: QrImageView(
-                            data: qrData,
-                            version: QrVersions.auto,
-                            size: 100, // Small QR Code
-                          ),
+  data: qrData,
+  version: QrVersions.auto,
+  size: 320,
+  gapless: false,
+  embeddedImage: AssetImage(logopath),
+  embeddedImageStyle: QrEmbeddedImageStyle(
+    size: Size(20, 20),
+  ),
+)
                         ),
                       ),
                     ],
