@@ -7,11 +7,8 @@ import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/constants.dart';
-<<<<<<< HEAD
-=======
 import 'package:dthlms/globalfunction/downloadsheet.dart';
 // import 'package:dthlms/constants/constants.dart';
->>>>>>> e5bb140c4a7dafcf5b56f9d19db5321e98f3f7c2
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
