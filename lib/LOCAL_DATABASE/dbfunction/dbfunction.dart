@@ -7,7 +7,7 @@ import 'package:dthlms/API/ERROR_MASSEGE/errorhandling.dart';
 
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 
 import 'package:flutter/material.dart';
@@ -349,7 +349,9 @@ void createTblPackageData() {
       CourseId TEXT,
       CourseName TEXT,
       IsFree TEXT,
-      IsDirectPlay
+      IsDirectPlay,
+      IsPaused TEXT,
+      IsActiveByUser TEXT
     );
   ''');
   print('TblPackageData created with PackageId as the primary key!');
@@ -496,6 +498,7 @@ Future<List<Map<String, dynamic>>> getAllPackageDetailsForVideoCount(
     return []; // Return an empty list in case of an error
   }
 }
+
 Future<List<Map<String, dynamic>>> getAllPackageDetailsForBooksCount(
     String packageId) async {
   try {
@@ -512,6 +515,7 @@ Future<List<Map<String, dynamic>>> getAllPackageDetailsForBooksCount(
     return []; // Return an empty list in case of an error
   }
 }
+
 Future<void> insertVideoplayInfo(
     int videoId,
     String startingTimeLine,
@@ -682,10 +686,12 @@ Future<void> insertOrUpdateTblPackageData(
     String courseId,
     String courseName,
     String isFree,
-    String isDirectPlay) async {
+    String isDirectPlay,
+    String isPasued,
+    String isActivateByUser) async {
   _db.execute('''
-    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay) 
-    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay')
+    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,IsActiveByUser,IsPaused) 
+    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay','$isActivateByUser','$isPasued')
     ON CONFLICT(PackageId) 
     DO UPDATE SET 
       PackageName = excluded.PackageName,
@@ -696,7 +702,9 @@ Future<void> insertOrUpdateTblPackageData(
       CourseName=excluded.CourseName,
       CourseId=excluded.CourseId,
       IsFree=excluded.IsFree,
-      IsDirectPlay=excluded.IsDirectPlay;
+      IsDirectPlay=excluded.IsDirectPlay,
+      IsActiveByUser=excluded.IsActiveByUser,
+      IsPaused=excluded.IsPaused;
       
       ;
   ''');
@@ -959,23 +967,37 @@ Future<void> getAllPackageListOfStudent() async {
       print("Error on clear studentPackageList: ${e.toString()}");
     }
   }
+  if (getx.studentAllPackage.isNotEmpty) {
+    try {
+      getx.studentAllPackage.clear();
+    } catch (e) {
+      writeToFile(e, 'getAllPackageListOfStudent');
+      print("Error on clear studentPackageList: ${e.toString()}");
+    }
+  }
 
   resultSet.forEach((row) {
     // Parse ExpiryDate from string to DateTime
     DateTime expiryDate = DateTime.parse(row['ExpiryDate']);
     DateTime currentDate = DateTime.now();
 
+    Map<String, dynamic> packageData = {
+      'packageId': row['PackageId'],
+      'packageName': row['PackageName'],
+      'ExpiryDate': row['ExpiryDate'],
+      'IsShow': row['IsShow'],
+      'LastUpdatedOn': row['LastUpdatedOn'],
+      'CourseName': row['CourseName'],
+      'IsFree': row['IsFree'],
+      'IsPaused': row['IsPaused'],
+      'IsActiveByUser': row['IsActiveByUser']
+    };
+    getx.studentAllPackage.add(packageData);
     // Check if the package is still valid and should be shown
-    if (row['IsShow'] == '1' && expiryDate.isAfter(currentDate)) {
-      Map<String, dynamic> packageData = {
-        'packageId': row['PackageId'],
-        'packageName': row['PackageName'],
-        'ExpiryDate': row['ExpiryDate'],
-        'IsShow': row['IsShow'],
-        'LastUpdatedOn': row['LastUpdatedOn'],
-        'CourseName': row['CourseName'],
-        'IsFree': row['IsFree'],
-      };
+    if (row['IsShow'] == '1'
+        //  &&
+        //  expiryDate.isAfter(currentDate)
+        ) {
       getx.studentPackage.add(packageData);
     }
   });
@@ -3778,4 +3800,65 @@ Future<List<PackageInfo>> fetchAllData() async {
   }
 
   return packageList;
+}
+
+Future<void> updateTblPackageDataForPauseSubscription(
+    String pauseValue, String packageId, String expireyDate) async {
+  try {
+    _db.execute('''
+      UPDATE TblPackageData
+      SET IsPaused = ?,ExpiryDate=?
+      WHERE PackageId = ?;
+    ''', [pauseValue, expireyDate, packageId]);
+  } catch (e) {
+    writeToFile(e, 'updateTblPackageDataForPauseSubscription');
+    print('Failed to update details: ${e.toString()}');
+  }
+}
+
+Future<void> updateTblPackageDataForFirsttimeActivation(
+  String activationValue,
+  String packageId,
+) async {
+  try {
+    _db.execute('''
+      UPDATE TblPackageData
+      SET IsActiveByUser = ?
+      WHERE PackageId = ?;
+    ''', [activationValue, packageId]);
+  } catch (e) {
+    writeToFile(e, 'updateTblPackageDataForFirsttimeActivation');
+    print('Failed to update details: ${e.toString()}');
+  }
+}
+
+String addDaysToExpiryDate(String mainTime, int additionalDays) {
+  DateTime dateTime = DateTime.parse(mainTime);
+  DateTime updatedDateTime = dateTime.add(Duration(days: additionalDays));
+  String updatedDateTimeString = updatedDateTime.toIso8601String();
+  return updatedDateTimeString;
+}
+
+bool checkVaildationOfPackage(String expDate) {
+  DateTime expiryDate = DateTime.parse(expDate);
+  DateTime currentDate = DateTime.now();
+
+  return expiryDate.isAfter(currentDate);
+}
+
+bool checkIsPackageActiveByUser(String packageId) {
+  // Execute the SQL query
+  try {
+    final sql.ResultSet resultSet = _db.select(
+        'SELECT IsActiveByUser FROM TblPackageData WHERE PackageId = ?',
+        [packageId]);
+
+    // Check if a result is returned and fetch the OptionName
+    if (resultSet.isNotEmpty) {
+      return resultSet.first['IsActiveByUser'] as String == "1";
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
 }

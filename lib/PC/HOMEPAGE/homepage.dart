@@ -7,6 +7,7 @@ import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
 import 'package:dthlms/Live/details.dart';
 import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/social_media_links_model.dart';
 import 'package:dthlms/PC/MCQ/PRACTICE/termandcondition.dart';
@@ -226,7 +227,8 @@ class DashboardSlideBar extends StatefulWidget {
   State<DashboardSlideBar> createState() => _DashboardSlideBarState();
 }
 
-class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerProviderStateMixin {
+class _DashboardSlideBarState extends State<DashboardSlideBar>
+    with SingleTickerProviderStateMixin {
   Getx getx = Get.find<Getx>();
   // List<Color> colors = [
   //   Colors.blue,
@@ -245,12 +247,11 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
 
   int hoverIndex = -1;
 
-   late TabController _tabController;
-
+  late TabController _tabController;
 
   @override
   void initState() {
-     _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
 // while(getx.studentPackage.length==0)
 
 // {
@@ -282,7 +283,6 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
     }
   }
 
-
   cantLaunchUrlAlert(BuildContext context) async {
     await ArtSweetAlert.show(
       barrierDismissible: false,
@@ -300,7 +300,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
   }
 
   @override
-  Widget build(BuildContext context)  {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorPage.white,
       body: Drawer(
@@ -338,9 +338,10 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                         Tab(text: 'Free'),
                       ],
                       indicatorColor: Colors.blueGrey.shade400.withOpacity(0.4),
-                      labelStyle: TextStyle(color: const Color.fromARGB(255, 3, 32, 125),fontWeight: FontWeight.bold),
+                      labelStyle: TextStyle(
+                          color: const Color.fromARGB(255, 3, 32, 125),
+                          fontWeight: FontWeight.bold),
                       unselectedLabelColor: Colors.black54,
-
 
                       dividerColor: Colors.transparent,
                       // labelColor: ColorPage.color1,
@@ -360,101 +361,272 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                       .where((pkg) => pkg['IsFree'] == 'false')
                       .toList();
 
-
-
-
-
-
                   return Expanded(
                     child: TabBarView(
                       controller: _tabController,
                       children: [
                         // Paid Packages Tab
-                        paidPackages.isNotEmpty?
-                          ListView.builder(
-                            itemCount: paidPackages.length,
-                            itemBuilder: (context, i) {
-                              return buttonWidget(
-                                paidPackages[i]['packageName']!,
-                                paidPackages[i]['CourseName'],
-                                () async {
-                                  getx.currentPackageName.value =
-                                      paidPackages[i]['packageName'];
-                                  getx.selectedPackageId.value =
-                                      int.parse(paidPackages[i]['packageId']);
+                        paidPackages.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: paidPackages.length,
+                                itemBuilder: (context, i) {
+                                  return buttonWidget(
+                                    paidPackages[i]['packageName']!,
+                                    paidPackages[i]['CourseName'],
+                                    () async {
+                                      if (checkVaildationOfPackage(
+                                          paidPackages[i]['ExpiryDate'])) {
+                                        if (paidPackages[i]['IsPaused'] ==
+                                            "0") {
+                                          if (paidPackages[i]
+                                                  ['IsActiveByUser'] ==
+                                              "0") {
+                                            onSweetAleartDialogwithDeny(
+                                                context,
+                                                () {
+                                                  updateTblPackageDataForFirsttimeActivation(
+                                                          "1",
+                                                          paidPackages[i]
+                                                              ['packageId'])
+                                                      .then((_) async {
+                                                    getAllPackageListOfStudent();
+                                                    getx.currentPackageName
+                                                            .value =
+                                                        paidPackages[i]
+                                                            ['packageName'];
+                                                    getx.selectedPackageId
+                                                            .value =
+                                                        int.parse(
+                                                            paidPackages[i]
+                                                                ['packageId']);
 
-                                  resetTblLocalNavigation();
-                                  await insertTblLocalNavigation(
-                                    "Package",
-                                    paidPackages[i]['packageId'],
-                                    paidPackages[i]['packageName'],
-                                  );
-                                  getLocalNavigationDetails();
+                                                    resetTblLocalNavigation();
+                                                    await insertTblLocalNavigation(
+                                                      "Package",
+                                                      paidPackages[i]
+                                                          ['packageId'],
+                                                      paidPackages[i]
+                                                          ['packageName'],
+                                                    );
+                                                    getLocalNavigationDetails();
 
-                                  widget.onItemSelected(i);
+                                                    widget.onItemSelected(i);
 
-                                  initialfunction(paidPackages[i]['packageId']);
+                                                    initialfunction(
+                                                        paidPackages[i]
+                                                            ['packageId']);
 
-                                  Get.to(
-                                    () => PackageDetailsPage(
-                                      paidPackages[i]['packageName'],
-                                      int.parse(paidPackages[i]['packageId']),
-                                      ExpiryDate: paidPackages[i]['ExpiryDate'],
-                                    ),
-                                    transition: Transition.cupertino,
-                                    duration: const Duration(milliseconds: 500),
+                                                    Get.to(
+                                                      () => PackageDetailsPage(
+                                                        paidPackages[i]
+                                                            ['packageName'],
+                                                        int.parse(
+                                                            paidPackages[i]
+                                                                ['packageId']),
+                                                        ExpiryDate:
+                                                            paidPackages[i]
+                                                                ['ExpiryDate'],
+                                                      ),
+                                                      transition:
+                                                          Transition.cupertino,
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                    );
+                                                  });
+                                                },
+                                                "Activate your Package",
+                                                "your Package is not activate.Click OK to activate.",
+                                                () {
+                                                  Get.back();
+                                                });
+                                          } else {
+                                            getx.currentPackageName.value =
+                                                paidPackages[i]['packageName'];
+                                            getx.selectedPackageId.value =
+                                                int.parse(paidPackages[i]
+                                                    ['packageId']);
+
+                                            resetTblLocalNavigation();
+                                            await insertTblLocalNavigation(
+                                              "Package",
+                                              paidPackages[i]['packageId'],
+                                              paidPackages[i]['packageName'],
+                                            );
+                                            getLocalNavigationDetails();
+
+                                            widget.onItemSelected(i);
+
+                                            initialfunction(
+                                                paidPackages[i]['packageId']);
+
+                                            Get.to(
+                                              () => PackageDetailsPage(
+                                                paidPackages[i]['packageName'],
+                                                int.parse(paidPackages[i]
+                                                    ['packageId']),
+                                                ExpiryDate: paidPackages[i]
+                                                    ['ExpiryDate'],
+                                              ),
+                                              transition: Transition.cupertino,
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                            );
+                                          }
+                                        } else //is paused
+                                        {
+                                          onSweetAleartDialog(context, () {
+                                            Get.back();
+                                          }, "Paused!",
+                                              "Your Package subscription is pause.");
+                                        }
+                                      } else //is Package Expire
+                                      {
+                                        print("expire false");
+                                        onSweetAleartDialog(context, () {
+                                          Get.back();
+                                        }, "Expired!",
+                                            "Your Package subscription was expired on \n ${formatDateString(paidPackages[i]['ExpiryDate'], "datetime")}.");
+                                      }
+                                    },
+                                    widget.selectedIndex == i,
+                                    hoverIndex == i,
+                                    i,
                                   );
                                 },
-                                widget.selectedIndex == i,
-                                hoverIndex == i,
-                                i,
-                              );
-                            },
-                          ):Text("No Package Avileble"),
-                        
+                              )
+                            : Text("No Package Avileble"),
+
                         // Free Packages Tab
-                       freePackages.isNotEmpty?
-                          ListView.builder(
-                            itemCount: freePackages.length,
-                            itemBuilder: (context, i) {
-                              return buttonWidget(
-                                freePackages[i]['packageName']!,
-                                freePackages[i]['CourseName'],
-                                () async {
-                                  getx.currentPackageName.value =
-                                      freePackages[i]['packageName'];
-                                  getx.selectedPackageId.value =
-                                      int.parse(freePackages[i]['packageId']);
+                        freePackages.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: freePackages.length,
+                                itemBuilder: (context, i) {
+                                  return buttonWidget(
+                                    freePackages[i]['packageName']!,
+                                    freePackages[i]['CourseName'],
+                                    () async {
+                                      if (checkVaildationOfPackage(
+                                          freePackages[i]['ExpiryDate'])) {
+                                        if (freePackages[i]['IsPaused'] ==
+                                            "0") {
+                                          if (freePackages[i]
+                                                  ['IsActiveByUser'] ==
+                                              "0") {
+                                            onSweetAleartDialogwithDeny(
+                                                context,
+                                                () {
+                                                  updateTblPackageDataForFirsttimeActivation(
+                                                          "1",
+                                                          freePackages[i]
+                                                              ['packageId'])
+                                                      .then((_) async {
+                                                    getAllPackageListOfStudent();
+                                                    getx.currentPackageName
+                                                            .value =
+                                                        freePackages[i]
+                                                            ['packageName'];
+                                                    getx.selectedPackageId
+                                                            .value =
+                                                        int.parse(
+                                                            freePackages[i]
+                                                                ['packageId']);
 
-                                  resetTblLocalNavigation();
-                                  await insertTblLocalNavigation(
-                                    "Package",
-                                    freePackages[i]['packageId'],
-                                    freePackages[i]['packageName'],
-                                  );
-                                  getLocalNavigationDetails();
+                                                    resetTblLocalNavigation();
+                                                    await insertTblLocalNavigation(
+                                                      "Package",
+                                                      freePackages[i]
+                                                          ['packageId'],
+                                                      freePackages[i]
+                                                          ['packageName'],
+                                                    );
+                                                    getLocalNavigationDetails();
 
-                                  widget.onItemSelected(i);
+                                                    widget.onItemSelected(i);
 
-                                  initialfunction(freePackages[i]['packageId']);
+                                                    initialfunction(
+                                                        freePackages[i]
+                                                            ['packageId']);
 
-                                  Get.to(
-                                    () => PackageDetailsPage(
-                                      freePackages[i]['packageName'],
-                                      int.parse(freePackages[i]['packageId']),
-                                      ExpiryDate: freePackages[i]['ExpiryDate'],
-                                    ),
-                                    transition: Transition.cupertino,
-                                    duration: const Duration(milliseconds: 500),
+                                                    Get.to(
+                                                      () => PackageDetailsPage(
+                                                        freePackages[i]
+                                                            ['packageName'],
+                                                        int.parse(
+                                                            freePackages[i]
+                                                                ['packageId']),
+                                                        ExpiryDate:
+                                                            freePackages[i]
+                                                                ['ExpiryDate'],
+                                                      ),
+                                                      transition:
+                                                          Transition.cupertino,
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                    );
+                                                  });
+                                                },
+                                                "Activate your Package",
+                                                "your Package is not activate.Click OK to activate.",
+                                                () {
+                                                  Get.back();
+                                                });
+                                          } else {
+                                            getx.currentPackageName.value =
+                                                freePackages[i]['packageName'];
+                                            getx.selectedPackageId.value =
+                                                int.parse(freePackages[i]
+                                                    ['packageId']);
+
+                                            resetTblLocalNavigation();
+                                            await insertTblLocalNavigation(
+                                              "Package",
+                                              freePackages[i]['packageId'],
+                                              freePackages[i]['packageName'],
+                                            );
+                                            getLocalNavigationDetails();
+
+                                            widget.onItemSelected(i);
+
+                                            initialfunction(
+                                                freePackages[i]['packageId']);
+
+                                            Get.to(
+                                              () => PackageDetailsPage(
+                                                freePackages[i]['packageName'],
+                                                int.parse(freePackages[i]
+                                                    ['packageId']),
+                                                ExpiryDate: freePackages[i]
+                                                    ['ExpiryDate'],
+                                              ),
+                                              transition: Transition.cupertino,
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                            );
+                                          }
+                                        } else //is paused
+                                        {
+                                          onSweetAleartDialog(context, () {
+                                            Get.back();
+                                          }, "Paused!",
+                                              "Your Package subscription is pause.");
+                                        }
+                                      } else //is Package Expire
+                                      {
+                                        print("expire false");
+                                        onSweetAleartDialog(context, () {
+                                          Get.back();
+                                        }, "Expired!",
+                                            "Your Package subscription was expired on \n  ${formatDateString(freePackages[i]['ExpiryDate'], "datetime")}.");
+                                      }
+                                    },
+                                    widget.selectedIndex == i,
+                                    hoverIndex == i,
+                                    i,
                                   );
                                 },
-                                widget.selectedIndex == i,
-                                hoverIndex == i,
-                                i,
-                              );
-                            },
-                          ):Text("No packages available at the moment."),
-                        
+                              )
+                            : Text("No packages available at the moment."),
+
                         // If there are no paid or free packages, show a message
                         // if (paidPackages.isEmpty && freePackages.isEmpty) ...[
                         //   const Center(
@@ -469,7 +641,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
 
               // Footer Section
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                 child: Column(
                   children: [
                     // Logout Button
@@ -494,7 +667,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16),
                         dense: true,
                       ),
                     ),
@@ -506,7 +680,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final socialMediaIcons = snapshot.data!
-                              .where((item) => item['ImageType'] == 'socialmediaicons')
+                              .where((item) =>
+                                  item['ImageType'] == 'socialmediaicons')
                               .toList();
                           if (socialMediaIcons.isEmpty) {
                             return const SizedBox();
@@ -527,12 +702,15 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                               SizedBox(
                                 height: 80,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: List.generate(
                                     socialMediaIcons.length,
                                     (index) => InkWell(
                                       onTap: () async {
-                                        final Uri url = Uri.parse(socialMediaIcons[index]['ImagePath']);
+                                        final Uri url = Uri.parse(
+                                            socialMediaIcons[index]
+                                                ['ImagePath']);
                                         if (await canLaunchUrl(url)) {
                                           await launchUrl(url);
                                         } else {
@@ -542,16 +720,22 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                                       child: Column(
                                         children: [
                                           SizedBox(
-                                            height: socialMediaIcons.length > 4 ? 20 : 35,
-                                            width: socialMediaIcons.length > 4 ? 20 : 35,
+                                            height: socialMediaIcons.length > 4
+                                                ? 20
+                                                : 35,
+                                            width: socialMediaIcons.length > 4
+                                                ? 20
+                                                : 35,
                                             child: SvgPicture.string(
-                                              socialMediaIcons[index]['ImageUrl'],
+                                              socialMediaIcons[index]
+                                                  ['ImageUrl'],
                                             ),
                                           ),
                                           Text(
                                             socialMediaIcons[index]['ImageId'],
                                             style: FontFamily.style.copyWith(
-                                                fontSize: 14, color: Colors.grey),
+                                                fontSize: 14,
+                                                color: Colors.grey),
                                           ),
                                         ],
                                       ),
@@ -579,7 +763,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>with SingleTickerP
                             const SizedBox(height: 5),
                             Text(
                               "Version ${getx.appVersion.value}",
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),

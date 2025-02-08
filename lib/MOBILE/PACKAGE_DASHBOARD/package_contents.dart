@@ -41,7 +41,9 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       case 'Live':
         Get.to(
           transition: Transition.cupertino,
-          () => LivePage(),
+          () => LivePage(
+            todayLiveClassList: filterMeetingListByPackage(),
+          ),
         );
 
         break;
@@ -89,37 +91,31 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       callData();
     });
     getx.isInsidePackage.value = true;
-    getVideoCount(); 
+    getVideoCount();
     getBooksCount();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getMeetingList(context);
     });
 
-
     super.initState();
   }
 
   // Video section data
-  RxBool hasData = false.obs; 
+  RxBool hasData = false.obs;
   int videoCountData = 0;
   int booksCountData = 0;
 
   RxInt allowedDuration = 0.obs;
   RxString formattedDuration = ''.obs;
 
-    getBooksCount() async {
+  getBooksCount() async {
     var data =
         await getAllPackageDetailsForBooksCount(widget.packageid.toString());
 
     if (data.isNotEmpty) {
-     
-      
-
-     setState(() {
-      booksCountData = data.length;
-       
-     });
-
+      setState(() {
+        booksCountData = data.length;
+      });
     }
     print(booksCountData);
   }
@@ -546,7 +542,6 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       required Color iconcolor,
       required String videoCount,
       required String booksCount,
-
       required String allowedDurationVideo}) {
     Getx getx = Get.put(Getx());
 
@@ -636,11 +631,11 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                                 children: [
                                   // Live Animation
                                   if (liveCount >= 1)
-                                  Lottie.asset(
-                                    'assets/liveanimation.json',
-                                    width: 70,
-                                    height: 70,
-                                  ), 
+                                    Lottie.asset(
+                                      'assets/liveanimation.json',
+                                      width: 70,
+                                      height: 70,
+                                    ),
 
                                   // Only show if liveCount is greater than 1
                                   if (liveCount > 1)
@@ -671,10 +666,10 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
                           : title == 'Book'
                               ? CircleAvatar(
                                   child: Text(
-                                    booksCount.toString(),
-                                    style:
-                                        FontFamily.style.copyWith(fontSize: 15),
-                                  ))
+                                  booksCount.toString(),
+                                  style:
+                                      FontFamily.style.copyWith(fontSize: 15),
+                                ))
                               : SizedBox(),
                   SizedBox(
                     width: 10,
@@ -718,4 +713,16 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       ),
     );
   }
+}
+
+List filterMeetingListByPackage() {
+  List mettinglist = [];
+  for (var item in getx.todaymeeting) {
+    if (item.packageId
+        .split(',')
+        .contains(getx.selectedPackageId.value.toString())) {
+      mettinglist.add(item);
+    }
+  }
+  return mettinglist;
 }

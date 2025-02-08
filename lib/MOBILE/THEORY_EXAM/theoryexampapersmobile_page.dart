@@ -17,7 +17,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
-import '../../constants/constants.dart';
 
 class TheoryExamPapesMobile extends StatefulWidget {
   Map paperNames = {};
@@ -85,7 +84,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                       return InkWell(
                         onTap: () async {
                           if (getx.isInternet.value) {
-                            var examcode = await getExamStatus( 
+                            var examcode = await getExamStatus(
                               context,
                               getx.loginuserdata[0].token,
                               theoryPaperList[index]['PaperId'].toString(),
@@ -149,7 +148,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                 ).then((value) {
                                   print(value);
 
-                                  if (value.isEmpty) { 
+                                  if (value.isEmpty) {
                                     _showDialogoferror(
                                         context,
                                         "Not publish!!",
@@ -444,8 +443,8 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                     ? null
                     : () async {
                         Get.back();
-                        if (File(getx
-                                    .userSelectedPathForDownloadFile.value.isEmpty
+                        if (File(getx.userSelectedPathForDownloadFile.value
+                                    .isEmpty
                                 ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
                                 : getx.userSelectedPathForDownloadFile.value +
                                     "\\${paperid}")
@@ -454,7 +453,8 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                 filePath: getx.userSelectedPathForDownloadFile
                                         .value.isEmpty
                                     ? '${getx.defaultPathForDownloadFile.value}\\${paperid}'
-                                    : getx.userSelectedPathForDownloadFile.value +
+                                    : getx.userSelectedPathForDownloadFile
+                                            .value +
                                         "\\${paperid}",
                                 isnet: false,
                               ));
@@ -466,7 +466,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                         }
                       },
                 // DownloadAnswerSheetAlert();
-            
+
                 child: Text(
                   File(getx.userSelectedPathForDownloadFile.value.isEmpty
                               ? '${getx.defaultPathForDownloadFile}\\${paperid}'
@@ -477,7 +477,7 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                       : 'Download Answer Sheet',
                   style: TextStyle(color: Colors.white),
                 )),
-          ), 
+          ),
 
           // ElevatedButton(
           //     style: ButtonStyle(

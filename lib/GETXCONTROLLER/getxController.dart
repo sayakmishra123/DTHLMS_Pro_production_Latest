@@ -40,7 +40,7 @@ class Getx extends GetxController {
   RxBool isWhatsAppOtpRequired = false.obs;
   RxBool isloadChatUrl = true.obs;
   RxBool show = false.obs;
-  RxString appVersion="".obs;
+  RxString appVersion = "".obs;
   RxList rankerList = [].obs;
   RxMap userRankDetails = {}.obs;
   RxInt ButtonControllerIndex = 0.obs;
@@ -58,20 +58,12 @@ class Getx extends GetxController {
   RxString loginId = ''.obs;
   RxBool otplineshow = false.obs;
 
-
-
-
-
-  
-
-    RxList<String?> selectedAnswers = <String?>[].obs;  RxInt currentQuestionIndex = 0.obs;
+  RxList<String?> selectedAnswers = <String?>[].obs;
+  RxInt currentQuestionIndex = 0.obs;
   // RxBool otpshow = false.obs;
   RxBool loginpasswordshow = true.obs;
   RxBool signuppasswordshow = true.obs;
   RxBool activationkeyshow = false.obs;
-
-    
-
 
   RxString signupotp = ''.obs;
   RxBool forgetpassword1 = false.obs;
@@ -120,6 +112,7 @@ class Getx extends GetxController {
   RxList name = [].obs; //chat
   RxString email = ''.obs;
   RxList<Map<String, dynamic>> studentPackage = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> studentAllPackage = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> sectionListOfPackage =
       <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> sectionlist = <Map<String, dynamic>>[].obs;
@@ -144,7 +137,8 @@ class Getx extends GetxController {
   RxList<Map<String, dynamic>> liveList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> tagListOfVideo = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> mcqListOfVideo = <Map<String, dynamic>>[].obs;
-   RxList<Map<String, dynamic>>reviewQuestionListOfVideo = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> reviewQuestionListOfVideo =
+      <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> pdfListOfVideo = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> bannerImageList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> videoHistory = <Map<String, dynamic>>[].obs;

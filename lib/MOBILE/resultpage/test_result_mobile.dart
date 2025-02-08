@@ -8,7 +8,7 @@ import 'package:dthlms/PC/testresult/indicator.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -620,7 +620,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
                             cells: <DataCell>[
                               // DataCell(Text(widget.examName,
                               // overflow: TextOverflow.ellipsis,
-                              
+
                               // )),
                               DataCell(Text(widget.submitedOn)),
                               DataCell(Text(widget.totalMarks.toString())),

@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/MOBILE/PROFILE/app_settings.dart';
 import 'package:dthlms/MOBILE/PROFILE/contact_us.dart';
 import 'package:dthlms/MOBILE/PROFILE/devicehistorymobile.dart';
@@ -12,11 +14,13 @@ import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
-import 'package:dthlms/constants/constants.dart';
+import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import '../HOMEPAGE/homepage_mobile.dart';
 
 class MyAccountScreen extends StatefulWidget {
@@ -95,7 +99,6 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
   Map<String, String> infoList = {};
 
   String qrData = '';
-
   @override
   void initState() {
     infoList = {
@@ -107,7 +110,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
       'UserId': getx.loginuserdata[0].nameId,
       'FranchaiseId': getx.loginuserdata[0].franchiseeId,
     };
-
+    getAllPackageListOfStudent();
     getFranchiseName = getFranchiseNameFromTblSetting();
     setState(() {
       qrData = jsonEncode(infoList);
@@ -266,15 +269,15 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                           () => DeviceHistoryMobile());
                     },
                   ),
-                  // MenuItem(
-                  //   icon: Icons.assignment,
-                  //   title: 'Exam History',
-                  //   onTap: () {
-                  //     Get.to(
-                  //         transition: Transition.cupertino,
-                  //         () => ExamHistoryMobile());
-                  //   },
-                  // ),
+                  MenuItem(
+                    icon: Icons.assignment,
+                    title: 'My Packages',
+                    onTap: () {
+                      Get.to(
+                          transition: Transition.cupertino,
+                          () => MyPackageMobile());
+                    },
+                  ),
                 ],
               ),
             ),
@@ -407,6 +410,35 @@ class MenuItem extends StatelessWidget {
         size: 15,
       ),
       onTap: onTap,
+    );
+  }
+}
+
+// Import for Platform checks
+
+class MyPackageMobile extends StatefulWidget {
+  const MyPackageMobile({Key? key}) : super(key: key);
+
+  @override
+  State<MyPackageMobile> createState() => _MyPackageMobileState();
+}
+
+class _MyPackageMobileState extends State<MyPackageMobile> {
+  Getx getx = Get.put(Getx());
+  int? _hoveredIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          "My Packages",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Material(child: MyPackage()),
     );
   }
 }
