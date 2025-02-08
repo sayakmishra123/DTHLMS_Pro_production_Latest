@@ -58,6 +58,8 @@ class Getx extends GetxController {
   RxString loginId = ''.obs;
   RxBool otplineshow = false.obs;
 
+  RxBool isDownloading = false.obs;
+
   RxList<String?> selectedAnswers = <String?>[].obs;
   RxInt currentQuestionIndex = 0.obs;
   // RxBool otpshow = false.obs;

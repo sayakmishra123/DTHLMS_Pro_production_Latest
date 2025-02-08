@@ -374,6 +374,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     paidPackages[i]['packageName']!,
                                     paidPackages[i]['CourseName'],
                                     () async {
+<<<<<<< HEAD
                                       if (checkVaildationOfPackage(
                                           paidPackages[i]['ExpiryDate'])) {
                                         if (paidPackages[i]['IsPaused'] ==
@@ -487,6 +488,38 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                         }, "Expired!",
                                             "Your Package subscription was expired on \n ${formatDateString(paidPackages[i]['ExpiryDate'], "datetime")}.");
                                       }
+=======
+                                      getx.currentPackageName.value =
+                                          paidPackages[i]['packageName'];
+                                      getx.selectedPackageId.value = int.parse(
+                                          paidPackages[i]['packageId']);
+
+                                      resetTblLocalNavigation();
+                                      await insertTblLocalNavigation(
+                                        "Package",
+                                        paidPackages[i]['packageId'],
+                                        paidPackages[i]['packageName'],
+                                      );
+                                      getLocalNavigationDetails();
+
+                                      widget.onItemSelected(i);
+
+                                      initialfunction(
+                                          paidPackages[i]['packageId']);
+
+                                      Get.to(
+                                        () => PackageDetailsPage(
+                                          paidPackages[i]['packageName'],
+                                          int.parse(
+                                              paidPackages[i]['packageId']),
+                                          ExpiryDate: paidPackages[i]
+                                              ['ExpiryDate'],
+                                        ),
+                                        transition: Transition.cupertino,
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                      );
+>>>>>>> e5bb140c4a7dafcf5b56f9d19db5321e98f3f7c2
                                     },
                                     widget.selectedIndex == i,
                                     hoverIndex == i,
@@ -505,6 +538,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     freePackages[i]['packageName']!,
                                     freePackages[i]['CourseName'],
                                     () async {
+<<<<<<< HEAD
                                       if (checkVaildationOfPackage(
                                           freePackages[i]['ExpiryDate'])) {
                                         if (freePackages[i]['IsPaused'] ==
@@ -618,6 +652,38 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                         }, "Expired!",
                                             "Your Package subscription was expired on \n  ${formatDateString(freePackages[i]['ExpiryDate'], "datetime")}.");
                                       }
+=======
+                                      getx.currentPackageName.value =
+                                          freePackages[i]['packageName'];
+                                      getx.selectedPackageId.value = int.parse(
+                                          freePackages[i]['packageId']);
+
+                                      resetTblLocalNavigation();
+                                      await insertTblLocalNavigation(
+                                        "Package",
+                                        freePackages[i]['packageId'],
+                                        freePackages[i]['packageName'],
+                                      );
+                                      getLocalNavigationDetails();
+
+                                      widget.onItemSelected(i);
+
+                                      initialfunction(
+                                          freePackages[i]['packageId']);
+
+                                      Get.to(
+                                        () => PackageDetailsPage(
+                                          freePackages[i]['packageName'],
+                                          int.parse(
+                                              freePackages[i]['packageId']),
+                                          ExpiryDate: freePackages[i]
+                                              ['ExpiryDate'],
+                                        ),
+                                        transition: Transition.cupertino,
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                      );
+>>>>>>> e5bb140c4a7dafcf5b56f9d19db5321e98f3f7c2
                                     },
                                     widget.selectedIndex == i,
                                     hoverIndex == i,

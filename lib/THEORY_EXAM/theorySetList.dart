@@ -1,18 +1,38 @@
 import 'dart:developer';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/THEORY_EXAM/theoryexamPaperList.dart';
 import 'package:flutter/material.dart';
-import 'package:dthlms/THEME_DATA/color/color.dart';
+// import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:get/get.dart';
-class TheoryPaperList extends StatelessWidget {
+
+class TheoryPaperList extends StatefulWidget {
   final RxList theorylist;
   final String type;
   final String img;
   final bool istype;
   TheoryPaperList(this.theorylist, this.type, this.img, this.istype,
       {super.key});
+
+  @override
+  State<TheoryPaperList> createState() => _TheoryPaperListState();
+}
+
+class _TheoryPaperListState extends State<TheoryPaperList> {
   RxList filteredList = [].obs;
+
   RxList mcqPaperList = [].obs;
+
+  Map<String, List<dynamic>> fetchedDataMap = {};
+
+  Future<void> getData(Map<String, dynamic> paperNames) async {
+    final setId = paperNames['SetId']; 
+    if (!fetchedDataMap.containsKey(setId)) {
+      fetchedDataMap[setId] = await fetchTheoryPapertList(setId);
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get screen size
@@ -27,8 +47,9 @@ class TheoryPaperList extends StatelessWidget {
             : 4; // Adjust the number of grid items per row based on screen width.
 
     // Filter the mcqSetList to only include "Quick Practice"
-    filteredList.value =
-        theorylist.where((item) => item["ServicesTypeName"] == type).toList();
+    filteredList.value = widget.theorylist
+        .where((item) => item["ServicesTypeName"] == widget.type)
+        .toList();
     log(filteredList.toString());
     return SizedBox(
       height: screenHeight * 0.8, // Make it responsive to screen height.
@@ -47,56 +68,110 @@ class TheoryPaperList extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final theoryItem = filteredList[index];
-                  return InkWell(
-                    onTap: () async {
-                      //                   mcqPaperList.clear();
-                      // mcqPaperList.value = await fetchMCQPapertList(paperNames['SetId']);
-                      Navigator.push( 
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TheoryExamPapes(
-                              theoryItem,
-                              theorylist,
-                              istype,
-                            ),
-                          ));
+                  final setId = theoryItem['SetId'];
 
-                      // _showPaperListDialog(context, mcqItem);
-                    },
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Card(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: ColorPage.white,
+                  // Fetch data only if not already fetched
+                  if (!fetchedDataMap.containsKey(setId)) {
+                    getData(theoryItem);
+                  }
+
+                  final currentDataLength = fetchedDataMap[setId]?.length ?? 0;
+
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      bool showSupportingText = constraints.maxWidth > 180;
+                      int calculatedMaxLines = (constraints.maxHeight ~/ 55)
+                          .clamp(1, 6); // Adjust dynamically
+
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TheoryExamPapes(
+                                theoryItem,
+                                widget.theorylist,
+                                widget.istype,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  img,
-                                  fit: BoxFit.contain,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 126, 197, 255),
+                                    radius: 30,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Image.asset('assets/exam.png'),
+                                    ),
+                                  ),
+                                                                Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Column(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor:
+                                          Colors.pink.withAlpha(50),
+                                      radius: 15.0,
+                                      child: Text(
+                                        currentDataLength.toString(),
+                                        style: FontFamily.style
+                                            .copyWith(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
+                                ],
+                              ),
+                         
+                              Text(
+                                theoryItem["SetName"] ??
+                                    'Question', // Use dynamic title
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              if (showSupportingText)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'MCQ exams test your knowledge with objective questions, requiring critical thinking and quick decision-making. '
+                                    'They help assess understanding across various topics efficiently.',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines:
+                                        calculatedMaxLines, // Dynamic maxLines
+                                    softWrap: true,
+                                    textAlign: TextAlign.justify,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          theoryItem["SetName"] ??
-                              'Question', // Use dynamic title
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
               ),
@@ -211,8 +286,8 @@ class TheoryPaperList extends StatelessWidget {
                                     backgroundImage:
                                         AssetImage('assets/mcq_img.png')),
                                 title: Text(
-                                  mcqPaperList[index]['PaperName'] ??
-                                      'Unnamed Paper',
+                                  // mcqPaperList[index]['PaperName'] ??
+                                  'Unnamed Paper',
                                   style: const TextStyle(fontSize: 14.0),
                                 ),
                               ),

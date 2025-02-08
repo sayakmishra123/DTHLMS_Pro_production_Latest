@@ -8,6 +8,7 @@ import 'package:dthlms/API/ERROR_MASSEGE/errorhandling.dart';
 import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
 import 'package:dthlms/constants.dart';
+// import 'package:dthlms/constants/constants.dart';
 import 'package:dthlms/log.dart';
 
 import 'package:flutter/material.dart';
@@ -526,6 +527,8 @@ Future<void> insertVideoplayInfo(
     int uploadflag,
     {String type = "video"}) async {
   try {
+    log(playBackSpeed.toString());
+    log(playNo.toString());
     // print(videoId.toString() + watchduration.toString());
 
     // Check if the PlayNo already exists in the database
@@ -533,18 +536,20 @@ Future<void> insertVideoplayInfo(
       SELECT * FROM TblvideoPlayInfo WHERE PlayNo = $playNo
     ''');
 
+    log(resultSet.toString());
+
     // If the record with the same PlayNo exists, update the watch duration
     if (resultSet.length > 0) {
       _db.execute('''
         UPDATE TblvideoPlayInfo
-        SET EndDuration = '$watchduration'
+        SET SpendTime = '$watchduration'
         WHERE PlayNo = $playNo
       ''');
       print("Update successful: WatchDuration updated for PlayNo $playNo");
     } else {
       // If the record does not exist, insert a new record
       _db.execute('''
-        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, EndDuration, Speed, StartTime, PlayNo,UploadFlag,Type)
+        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, SpendTime, Speed, StartTime, PlayNo,UploadFlag,Type)
         VALUES ('$videoId', '$startingTimeLine', '$watchduration', '$playBackSpeed', '$startClockTime', '$playNo','$uploadflag','$type')
       ''');
       // print("Insert successful: New record inserted");
@@ -552,6 +557,35 @@ Future<void> insertVideoplayInfo(
   } catch (e) {
     writeToFile(e, "insertVideoplayInfo");
     print("Error: ${e.toString()}");
+  }
+}
+
+Future<double> getTotalWatchTime(int videoId) async {
+  try {
+    // Fetch all records for the given videoId
+    final sql.ResultSet resultSet = await _db.select('''
+      SELECT * FROM TblvideoPlayInfo WHERE VideoId = $videoId
+    ''');
+
+    double totalWatchTime = 0.0;
+
+    // Iterate through the results and calculate total watch time
+    for (var row in resultSet) {
+      // Fetch EndDuration and Speed values from the result row
+      double endDuration = double.tryParse(row['SpendTime']) ?? 0.0;
+      double speed = double.tryParse(row['Speed']) ??
+          1.0; // Assuming speed defaults to 1 if invalid
+
+      // Calculate the total watch time for this row
+      totalWatchTime += (endDuration * speed);
+    }
+
+    print("Total Watch Time for VideoId $videoId: $totalWatchTime");
+
+    return totalWatchTime;
+  } catch (e) {
+    print("Error: ${e.toString()}");
+    return 0.0; // Return 0 in case of error
   }
 }
 
@@ -580,7 +614,7 @@ void creatTableVideoplayInfo() {
   _db.execute('''
 CREATE TABLE IF NOT EXISTS TblvideoPlayInfo(VideoId INTEGER,
 StartDuration TEXT,
-EndDuration TEXT,
+SpendTime TEXT,
 Speed TEXT,
 StartTime TEXT,
 PlayNo INTEGER,
@@ -633,7 +667,7 @@ String getLastEndDuration(int videoId) {
   try {
     // Ensure the database is initialized and accessible as _db
     final List<Map<String, dynamic>> result = _db.select('''
-      SELECT EndDuration 
+      SELECT SpendTime 
       FROM TblvideoPlayInfo 
       WHERE VideoId = ? 
       ORDER BY ROWID DESC 
@@ -642,8 +676,8 @@ String getLastEndDuration(int videoId) {
 
     // Check if the result is not empty and return the EndDuration value
     if (result.isNotEmpty) {
-      print(result.first['EndDuration'] + 'End Duration');
-      return result.first['EndDuration'] as String;
+      print(result.first['SpendTime'] + 'End Duration');
+      return result.first['SpendTime'] as String;
     } else {
       return "0"; // Return null if no result is found
     }
@@ -651,7 +685,7 @@ String getLastEndDuration(int videoId) {
     writeToFile(e, 'getLastEndDuration');
 
     // Handle any potential errors that may occur during the query
-    print('Error fetching EndDuration: ${e.toString()}');
+    print('Error fetching SpendTime: ${e.toString()}');
     return "0";
   }
 }
@@ -864,6 +898,48 @@ Future<void> updateVideoConsumeDuration(
   } catch (e) {
     writeToFile(e, 'updateVideoConsumeDuration');
     print('Failed to update details: ${e.toString()}');
+  }
+}
+
+Future<Map<String, String>> getPackageVideoWatchDuration({
+  required String packageId,
+  required String packageName,
+  required String fileIdType,
+  required String fileId,
+  required String fileIdName,
+  required String chapterId,
+}) async {
+  try {
+    // Query to fetch the details based on the given fields
+    final sql.ResultSet resultSet = await _db.select('''
+      SELECT AllowDuration, VideoDuration
+      FROM TblAllPackageDetails 
+      WHERE PackageId = '$packageId'
+      AND PackageName = '$packageName'
+      AND FileIdType = '$fileIdType'
+      AND FileId = '$fileId'
+      AND FileIdName = '$fileIdName'
+      AND ChapterId = '$chapterId'
+    ''');
+
+    // Check if any results were returned
+    if (resultSet.isNotEmpty) {
+      // Extract AllowDuration and VideoDuration from the first result row
+      String allowDuration = resultSet.first['AllowDuration'] ?? '';
+      String videoDuration = resultSet.first['VideoDuration'] ?? '';
+
+      // Return the result as a Map
+      return {
+        'AllowDuration': allowDuration,
+        'VideoDuration': videoDuration,
+      };
+    } else {
+      // If no matching record is found, return an empty map
+      return {};
+    }
+  } catch (e) {
+    print("Error: ${e.toString()}");
+    return {}; // Return an empty map in case of error
   }
 }
 
@@ -2197,6 +2273,14 @@ Future<List<Map<String, dynamic>>> fetchMCQSetList(String packageId) async {
   return tblMCQSetList;
 }
 
+Future<List<Map<String, dynamic>>> fetchPodcast(String packageId,FileIdType) async {
+  final sql.ResultSet result = _db.select(
+      'SELECT * FROM TblAllPackageDetails WHERE PackageId= ? AND FileIdType = ?',
+      [packageId, FileIdType]);
+
+  return result;
+}
+
 Future<List<Map<String, dynamic>>> fetchMCQPapertList(String setId) async {
   print("Set id is $setId");
   final sql.ResultSet resultSet =
@@ -2775,6 +2859,7 @@ Future<List<Map<String, dynamic>>> fetchTheoryPapertList(String setId) async {
       "PassMarks": row['PassMarks'],
       "DocumentUrl": row['DocumentUrl'],
       "AnswerSheet": row['AnswerSheet'],
+      'IsSubmitted': row['IsSubmitted'],
     });
     print("Data get papername form theory paper list: ${row['PaperName']}.");
   }
@@ -2981,12 +3066,12 @@ Future<dynamic> fetchUploadableVideoInfo() async {
     SELECT t.*
     FROM TblvideoPlayInfo t
     JOIN (
-        SELECT PlayNo, MAX(EndDuration) AS max_endduration
+        SELECT PlayNo, MAX(SpendTime) AS max_endduration
         FROM TblvideoPlayInfo
         WHERE UploadFlag = 0
         GROUP BY PlayNo
     ) sub 
-    ON t.PlayNo = sub.PlayNo AND t.EndDuration = sub.max_endduration
+    ON t.PlayNo = sub.PlayNo AND t.SpendTime = sub.max_endduration
     WHERE t.UploadFlag = 0;
     ''');
 
@@ -3001,12 +3086,12 @@ Future<dynamic> fetchUploadableVideoInfo() async {
     // Loop through each row and add it to the list
     for (var row in resultSet) {
       print(
-          "${row['VideoId']}\n,${row['StartDuration']}\n,${row['EndDuration']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
+          "${row['VideoId']}\n,${row['StartDuration']}\n,${row['SpendTime']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
       unUploadedVideoInfo.add({
         'Type': row['Type'],
         'VideoId': row['VideoId'],
         'StartDuration': row['StartDuration'],
-        'EndDuration': row['EndDuration'],
+        'SpendTime': row['SpendTime'],
         "Speed": row['Speed'],
         "StartTime":
             formatDateTimeTakeLastThreeNumber(row['StartTime'].toString()),
@@ -3575,7 +3660,7 @@ Future<List<Map<String, dynamic>>> getAllTblImages() async {
     // Ensure '_db' is your initialized database instance
     List<Map<String, dynamic>> result = _db.select('''
       SELECT * FROM TblImages''');
-    print("shubha getAllTblImages");
+    // print("shubha getAllTblImages");
     log(result.toString());
     return result; // Return all rows as a list of maps
   } catch (e) {

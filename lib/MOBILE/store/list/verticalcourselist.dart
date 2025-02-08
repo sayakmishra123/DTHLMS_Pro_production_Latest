@@ -5,7 +5,6 @@ import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class VerticalCourselist extends StatefulWidget {
   const VerticalCourselist({super.key});
 
@@ -97,14 +96,14 @@ class _VerticalCourselistState extends State<VerticalCourselist> {
       appBar: AppBar(
         title: Text('Courses'),
         actions: [
-          IconButton(
-              onPressed: () {
-                showSearch(context: context, delegate: SearchList());
-              },
-              icon: Icon(Icons.search)),
-          SortMenu(
-            onSortSelected: _sortEpisodes,
-          )
+          // IconButton(
+          //     onPressed: () {
+          //       showSearch(context: context, delegate: SearchList());
+          //     },
+          // icon: Icon(Icons.search)),
+          // SortMenu(
+          //   onSortSelected: _sortEpisodes,
+          // )
         ],
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),

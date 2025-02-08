@@ -3952,11 +3952,12 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                         theoryExamAnswerId:
                                                             "theoryExamAnswerId not done yeat",
                                                         examId: snapshot
-                                                                .data![index]
+                                                                .data![index] 
                                                             ['TheoryExamId'],
-                                                        pdfurl: snapshot
-                                                                .data![index][
-                                                            'CheckedDocumentUrl'],
+                                                            pdfurl:snapshot.data![
+                                                                    index][
+                                                                'CheckedDocumentUrl'], 
+                                                                questionanswersheet: '' ,
                                                       ));
                                             })
                                         : Text("Result not publish ")))

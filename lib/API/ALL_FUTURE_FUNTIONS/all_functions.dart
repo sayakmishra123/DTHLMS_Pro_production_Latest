@@ -409,6 +409,7 @@ Future getAllFolders(BuildContext context, token, String packageId) async {
 
 Future getAllFiles(BuildContext context, token, String packageId) async {
   // loader(context);
+
   Map data = packageId == "" ? {} : {'PackageId': packageId};
 
   try {
@@ -1891,6 +1892,8 @@ Future<String> uploadSheet(
 
 Future sendDocumentIdOfanswerSheets(
     BuildContext context, String token, int paperid, String documentId) async {
+  log('message');
+
   // // print(questionanswer);
   // loader(context);
   // List<Map<String, dynamic>> resultList = [];
@@ -2060,7 +2063,6 @@ Future<List<DeviceLoginHistoryDetails>> getDeviceLoginHistory(
     // print("Error rx: $e");
     return [];
   }
-
   // return fullBannerPackages;
 }
 
@@ -2094,7 +2096,6 @@ Future getExamStatus(
     // print("Error rx: $e");
     return 0;
   }
-
   // return fullBannerPackages;
 }
 
@@ -2492,6 +2493,7 @@ Future unUploadedVideoInfoInsert(
     context, List videolist, String token, bool isLive) async {
   // loader(context);
   try {
+    log(' video list : ' + videolist.toString());
     Map data = {"tblStudentPackageHistory": videolist};
 
     final res = await http.post(
@@ -2949,11 +2951,6 @@ Future<void> getMCQExamHistory(
               exam['SubmitDate'].toString(),
               exam['AttemptDate'].toString(),
               "1");
-          // Insert the exam data into your table
-          // await insertData(dataForInsert);  // Assuming insertData is an async function
-
-          // // print each inserted record (optional)
-          // // print('Inserted exam data: $dataForInsert');
         }
 
         ; // Return success after all records are inserted

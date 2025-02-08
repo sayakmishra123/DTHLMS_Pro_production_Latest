@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
@@ -8,12 +7,9 @@ import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
-import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/mobile_pdf_viewer.dart';
-import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
-import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
-import 'package:dthlms/PC/MCQ/MOCKTEST/termandcondition.dart';
+import 'package:dthlms/PC/PACKAGEDETAILS/book_list_page.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/podcastPage.dart';
 import 'package:dthlms/PC/STUDYMATERIAL/pdfViewer.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
@@ -22,15 +18,11 @@ import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/THEORY_EXAM/theorySetList.dart';
 import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
-import 'package:dthlms/test.dart';
 import 'package:dthlms/test1.dart';
-// import 'package:dthlms/getx/getxcontroller.getx.dart';
-// import 'package:dthlms/GETX/getxcontroller.getx.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info_plus/package_info_plus.dart' as pinfo;
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,19 +54,6 @@ class _PackageDetailsPageState extends State<PackageDetailsPage> {
   Getx getx = Get.put(Getx());
   int selectedIndex = -1;
 
-  // State variable for sidebar collapse
-
-  // @override
-  // void initState() {
-  //   getx.path2.value = '';
-  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //     packagedetails(context, widget.token, widget.packageId);
-  //   });
-  //   super.initState();
-  // }
-
-  // List
-
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -104,7 +83,7 @@ class _PackageDetailsPageState extends State<PackageDetailsPage> {
             Expanded(
               flex: 5,
               child: Column(
-                children: [
+                children: [  
                   Obx(
                     () => Expanded(
                       child: getx.isVideoDashBoard.value
@@ -121,7 +100,7 @@ class _PackageDetailsPageState extends State<PackageDetailsPage> {
                                   child: LiveDashboardUI(),
                                 )
                               : getx.isBookDashBoard.value
-                                  ? BookDashboard()
+                                  ? BookListPagePc()
                                   : getx.isBackupDashBoard.value
                                       ? SizedBox()
                                       :
@@ -207,22 +186,7 @@ class SlideBarPackageDetails extends StatefulWidget {
 
 class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
   Getx getx = Get.find<Getx>();
-  // List<Color> colors = [pagename
-  //   Colors.blue,
-  //   Colors.orange.shade900,
-  //   Colors.pink,
-  //   Colors.deepPurple,
-  //   Colors.indigo,
-  //   Colors.yellow,
-  //   Colors.green.shade900,
-  //   Colors.red,
-  //   Colors.green,
-  // ];
   int hoverIndex = -1;
-
-  // int colorchoose() {
-  //   return Random().nextInt(9);
-  // }
 
   String pagename = '';
 
@@ -270,7 +234,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
         getx.isBookDashBoard.value = false;
         getx.isMCQDashBoard.value = false;
         getx.isBackupDashBoard.value = false;
-        getx.isPDFDashBoard.value = false;    
+        getx.isPDFDashBoard.value = false;
         getx.isPodcastDashboard.value = false;
         break;
       case 'VideosBackup':
@@ -324,14 +288,96 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     }
   }
 
- 
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   initializeData();
+  // }
+
+  getPodcast() async {
+    podcastCount = await fetchPodcast(widget.packageId.toString(), 'Podcast');
+  }
+
+  void initializeData() async {
+    await section();
+    await getVideoCount();
+    await getBooksCount();
+    await getTheorySetList();
+    await getMCQSetList();
+    await getPodcast();
+    getMeetingList(context); // If this requires context, handle appropriately
+    setState(() {});
+  }
+
+  RxBool hasData = false.obs;
+  int videoCountData = 0;
+  int booksCountData = 0;
+
+  RxInt allowedDuration = 0.obs;
+  RxString formattedDuration = ''.obs;
+
+  RxList theorySetList = [].obs;
+  RxList uniqueServicesList = [].obs;
 
   @override
   void initState() {
-    section();
-    
+    // section();
+    // getVideoCount();
 
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   getMeetingList(context);
+    // });
+    // getBooksCount();
+    // getTheorySetList();
+    // getMCQSetList();
+    initializeData();
+    globalContext = context;
     super.initState();
+  }
+
+  List<Map<String, dynamic>> podcastCount = [];
+  RxList mcqSetList = [].obs;
+  RxList mcqPaperList = [].obs;
+  RxInt mcqTotalLength = 0.obs;
+  late BuildContext globalContext;
+
+  RxList uniqueServicesList2 = [].obs;
+  Future getMCQSetList() async {
+    if (getx.isInternet.value) {
+      fetchTblMCQHistory("").then((mcqhistoryList) {
+        unUploadedMcQHistoryInfoInsert(
+            globalContext, mcqhistoryList, getx.loginuserdata[0].token);
+      });
+    }
+
+    mcqSetList.value =
+        await fetchMCQSetList(getx.selectedPackageId.value.toString());
+    print(mcqSetList.toString());
+    Set<String> uniqueServices2 =
+        mcqSetList.map((item) => item['ServicesTypeName'] as String).toSet();
+
+// Convert Set to List if needed
+    uniqueServicesList2.value = uniqueServices2.toList();
+  }
+
+  Future getTheorySetList() async {
+    theorySetList.value =
+        await fetchTheorySetList(getx.selectedPackageId.value.toString());
+    Set<String> uniqueServices =
+        theorySetList.map((item) => item['ServicesTypeName'] as String).toSet();
+    uniqueServicesList.value = uniqueServices.toList();
+  }
+
+  getBooksCount() async {
+    var data =
+        await getAllPackageDetailsForBooksCount(widget.packageId.toString());
+
+    if (data.isNotEmpty) {
+      setState(() {
+        booksCountData = data.length;
+      });
+    }
+    print(booksCountData);
   }
 
   section() {
@@ -354,6 +400,31 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
       writeToFile(e, "formatDate");
       return 'Invalid Date';
     }
+  }
+
+  getVideoCount() async {
+    var data =
+        await getAllPackageDetailsForVideoCount(widget.packageId.toString());
+
+    if (data.isNotEmpty) {
+      hasData.value = false;
+      for (var i in data) {
+        if (i['AllowDuration'] != "") {
+          allowedDuration.value =
+              allowedDuration.value + int.parse(i['AllowDuration']);
+        }
+      }
+      videoCountData = data.length;
+
+      int seconds = allowedDuration.value;
+      int minutes = seconds ~/ 60;
+      int hours = minutes ~/ 60;
+
+      formattedDuration.value = hours > 0
+          ? "$hours hours ${minutes % 60} minutes"
+          : "$minutes minutes";
+    }
+    print(videoCountData);
   }
 
   @override
@@ -456,14 +527,26 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
                           //     icon: Icon(Icons.close))
                         ],
                       ),
-
                       getx.sectionListOfPackage.isNotEmpty
                           ? Expanded(
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                // physics: NeverScrollableScrollPhysics(),
                                 itemCount: getx.sectionListOfPackage.length,
                                 itemBuilder: (context, index) {
+                                  String todayDate = DateFormat('yyyy-MM-dd')
+                                      .format(DateTime.now());
+
+                                  int liveCount = getx.todaymeeting
+                                      .where((meeting) =>
+                                          meeting.scheduledOn != null &&
+                                          DateFormat('yyyy-MM-dd').format(
+                                                  meeting.scheduledOn) ==
+                                              todayDate &&
+                                          meeting.packageId ==
+                                              widget.packageId.toString())
+                                      .length;
+
                                   return getx.sectionListOfPackage[index]
                                                   ["section"] ==
                                               "PDF" ||
@@ -471,68 +554,52 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
                                                   ["section"] ==
                                               "YouTube"
                                       ? SizedBox()
-                                      : buttonWidget(
-                                          () {
-                                            if (widget.selectedIndex != index) {
-                                              resetTblLocalNavigationByOrderOnsection(
-                                                  1);
-                                              print(getx.sectionListOfPackage[
-                                                      index]['section'] +
-                                                  "wow mc");
+                                      : buttonWidget(() {
+                                          if (widget.selectedIndex != index) {
+                                            resetTblLocalNavigationByOrderOnsection(
+                                                1);
+                                            print(
+                                                getx.sectionListOfPackage[index]
+                                                        ['section'] +
+                                                    "wow mc");
 
-                                              insertTblLocalNavigation(
-                                                      "Section",
-                                                      widget.packageId
-                                                          .toString(),
-                                                      getx.sectionListOfPackage[
-                                                          index]["section"])
-                                                  .whenComplete(() => null);
+                                            insertTblLocalNavigation(
+                                                    "Section",
+                                                    widget.packageId.toString(),
+                                                    getx.sectionListOfPackage[
+                                                        index]["section"])
+                                                .whenComplete(() => null);
 
-                                              getMainChapter(widget.packageId);
+                                            getMainChapter(widget.packageId);
 
-                                              getLocalNavigationDetails();
+                                            getLocalNavigationDetails();
 
-                                              getx.selectedPackageId.value =
-                                                  widget.packageId;
-                                              widget.onItemSelected(index);
+                                            getx.selectedPackageId.value =
+                                                widget.packageId;
+                                            widget.onItemSelected(index);
 
-                                              paging(getx.sectionListOfPackage[
-                                                  index]["section"]);
-                                            }
-                                          },
+                                            paging(
+                                                getx.sectionListOfPackage[index]
+                                                    ["section"]);
+                                          }
+                                        },
                                           widget.selectedIndex == index,
                                           hoverIndex == index,
                                           index,
                                           getx.sectionListOfPackage[index]
                                               ["section"],
-                                        );
+                                          videoCountData.toString(), 
+                                          liveCount.toString(),
+                                          booksCountData.toString(),
+                                          theorySetList.length.toString(),
+                                          mcqSetList.length.toString(),
+                                          podcastCount.length.toString());
                                 },
                               ),
                             )
                           : Center(
                               child: Text("No section found"),
                             ),
-
-                      // Spacer(),
-                      //  Align(
-                      //   alignment: Alignment.bottomCenter,
-                      //    child: Opacity(
-                      //     opacity: 0.6,
-                      //     child: Column(
-                      //       children: [
-                      //         const SizedBox(height: 5),
-                      //         Text(
-                      //           "Version ${version.value}",
-                      //           style:
-                      //               TextStyle(fontSize: 12, color: Colors.grey),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //                            ),
-                      //  ),
-                      // SizedBox.expand(),
-                      // Spacer(),
-
                       Opacity(
                         opacity: 0.6,
                         child: Column(
@@ -577,7 +644,102 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     bool isHover,
     int index,
     String foldername,
+    String videoCount,
+    String liveCount,
+    String bookCount,
+    String testCount,
+    String mcqCount,
+    String podcustCount,
   ) {
+
+    
+  final List<Map<String, dynamic>> folderIcons = [
+    {
+      "section": "Video",
+      "icon": Icons.video_library,
+      "color": Colors.blue,
+      "subtitle": "Watch recorded videos and tutorials",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.green.shade200,
+        Colors.green.shade100
+      ],
+    },
+    {
+      "section": "Live",
+      "icon": Icons.live_tv,
+      "color": Colors.red,
+      "subtitle": "Join live streaming\nsessions",
+      'color2': [
+        // Light orange -> peach
+        const Color(0xFFFFF1D5),
+        const Color(0xFFFFE0AF),
+      ],
+    },
+    {
+      "section": "Podcast",
+      "icon": Icons.podcasts,
+      "color": Colors.orange,
+      "subtitle":
+          "Listen to insightful discussions and audio episodes anytime, anywhere.",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.brown.shade200,
+        Colors.brown.shade100
+      ],
+    },
+    {
+      "section": "MCQ",
+      "icon": Icons.question_answer,
+      "color": Colors.green,
+      "subtitle": "Practice multiple-choice questions",
+      'color2': [
+        // Light pink -> soft pink
+        Colors.blue.shade200,
+        Colors.blue.shade100
+      ],
+    },
+    {
+      "section": "Test",
+      "icon": Icons.book,
+      "color": Colors.purple,
+      "subtitle": "Read and review theoretical content",
+      "color2": [
+        // Light pink -> soft pink
+        Colors.orange.shade200,
+        Colors.orange.shade100
+      ],
+    },
+    {
+      "section": "Book",
+      "icon": Icons.library_books,
+      "color": Colors.brown,
+      "subtitle": "Access and manage your digital library",
+      "color2": [
+        // Light pink -> soft pink
+        const Color.fromARGB(255, 248, 177, 219),
+        const Color(0xFFFDD3E7),
+      ],
+    },
+  ];
+
+    List<Color> gradientColorsList(String foldername) {
+    final iconData = folderIcons.firstWhere(
+      (item) => item['section'] == foldername,
+      orElse: () => {
+        "icon": Icons.folder,
+        "color": Colors.blue,
+        "subtitle": '',
+        "color2": [
+          const Color(0xFFFFF1D5),
+          const Color(0xFFFFE0AF),
+        ]
+      },
+    );
+
+    // Return the showDetails widget with the appropriate icon and foldername
+    return iconData['color2'];
+  }
     Color backgroundColor =
         isActive ? Colors.blue.withOpacity(0.1) : Colors.white;
 
@@ -594,7 +756,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
           return Icon(Icons.video_library, color: Colors.blue);
         case "Live":
           return Icon(Icons.live_tv, color: Colors.red);
-        case "VideosBackup":
+        case "VideosBackup": 
           return Icon(Icons.backup, color: Colors.orange);
         case "MCQ":
           return Icon(Icons.question_answer, color: Colors.green);
@@ -612,24 +774,53 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
       }
     }
 
-    // Icon getFolderIcon(String foldername) {
-    //   switch (foldername) {
-    //     case "Videos":
-    //       return Icon(Icons.video_library, color: Colors.blue);
-    //     case "Live":
-    //       return Icon(Icons.live_tv, color: Colors.red);
-    //     case "VideosBackup":
-    //       return Icon(Icons.backup, color: Colors.orange);
-    //     case "MCQ":
-    //       return Icon(Icons.question_answer, color: Colors.green);
-    //     case "Theory":
-    //       return Icon(Icons.book, color: Colors.purple);
-    //     case "Book":
-    //       return Icon(Icons.library_books, color: Colors.brown);
-    //     default:
-    //       return Icon(Icons.folder, color: Colors.blue);
-    //   }
-    // }
+    getCountDetailsForAllFolder(String foldername) {
+      double fontSize = 16.0;
+      switch (foldername) {
+        case "Video":
+          return Text(
+            videoCount,
+            style: FontFamily.style.copyWith(
+              fontSize: fontSize,
+            ),
+          );
+        case "Live":
+          return Text(
+            liveCount,
+            style: FontFamily.style.copyWith(fontSize: fontSize),
+          );
+        case "VideosBackup":
+          return null;
+        case "MCQ":
+          // return null;
+          return Text(
+            mcqCount,
+            style: FontFamily.style.copyWith(fontSize: fontSize),
+          );
+        case "Theory":
+          return null;
+        case "Book":
+          return Text(
+            bookCount,
+            style: FontFamily.style.copyWith(
+              fontSize: fontSize,
+            ),
+          );
+        case "Test":
+          // return null;
+          return Text(
+            testCount,
+            style: FontFamily.style.copyWith(fontSize: fontSize),
+          );
+        case "Podcast":
+          return Text(
+            podcustCount,
+            style: FontFamily.style.copyWith(fontSize: fontSize),
+          );
+        default:
+          return null;
+      }
+    }
 
     return MouseRegion(
       onEnter: (_) {
@@ -649,12 +840,13 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
           child: Container(
             alignment: Alignment.topLeft,
             decoration: BoxDecoration(
-              color: backgroundColor,
+             gradient: LinearGradient(colors: gradientColorsList(foldername)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
               child: ListTile(
                 leading: getFolderIcon(foldername),
+                trailing: getCountDetailsForAllFolder(foldername),
                 title: Text(
                   foldername,
                   style: TextStyle(
@@ -1338,8 +1530,7 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
       child: filteredChapterDetails.isNotEmpty ||
               getx.alwaysShowFileDetailsOfpdf.isNotEmpty
           ? GridView.builder(
-              itemCount: filteredChapterDetails.length +
-                  getx.alwaysShowFileDetailsOfpdf.length,
+              itemCount: filteredChapterDetails.length + getx.alwaysShowFileDetailsOfpdf.length,
               scrollDirection: Axis.vertical,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: getx.isCollapsed.value ? 5 : 4,
@@ -2150,426 +2341,6 @@ class ExeRun {
   }
 }
 
-class BookDashboard extends StatefulWidget {
-  const BookDashboard({super.key});
-
-  @override
-  State<BookDashboard> createState() => _BookDashboardState();
-}
-
-class _BookDashboardState extends State<BookDashboard>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  String pageTitle = 'Study Material';
-//  late DthloginUserDetails ob;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getChapterFiles( 
-          parentId: 0, "Book", getx.selectedPackageId.value.toString());
-    });
-
-    DthloginUserDetails obj;
-
-    _tabController = TabController(length: 1, vsync: this);
-
-    _tabController.addListener(() {
-      setState(() {
-        switch (_tabController.index) {
-          case 0:
-            pageTitle = 'Study Material';
-            break;
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      // drawer: _buildSideNavigation(),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: Platform.isAndroid
-            ? IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(Icons.arrow_back))
-            : (getx.isCollapsed.value
-                ? IconButton(
-                    icon: Icon(Icons.list),
-                    onPressed: () {
-                      getx.isCollapsed.value = false;
-                    })
-                : SizedBox()),
-        elevation: 0,
-        shadowColor: Colors.grey,
-        surfaceTintColor: Colors.white,
-        backgroundColor: Colors.white,
-        title: Text(
-          "Study Materials",
-          style: FontFamily.styleb,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // _buildHeaderRow(),
-            _buildTabBar(),
-            Obx(
-              () => ListView.builder(
-                shrinkWrap: true,
-                itemCount: getx.booklist.length,
-                itemBuilder: (context, index) {
-                  var book = getx.booklist[index];
-                  return book['DocumentPath'] != '0' ||
-                          book['DocumentPath'] == null
-                      ? HoverListItem(
-                          title: book['FileIdName'],
-                          bookurl: book,
-                          index: index)
-                      : SizedBox();
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSideNavigation() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text(
-              'Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Dashboard'),
-          ),
-          ListTile(
-            leading: Icon(Icons.video_call),
-            title: Text('Meetings'),
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeaderRow() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            pageTitle,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          // Text(
-          //   pageTitle,
-          //   style: TextStyle(
-          //     color: Colors.black,
-          //     fontSize: 24,
-          //     fontWeight: FontWeight.bold,
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: TabBar(
-        tabAlignment: TabAlignment.start,
-        controller: _tabController,
-        labelColor: const Color.fromARGB(255, 0, 0, 0),
-        unselectedLabelColor: Colors.grey,
-        indicatorColor: Color.fromARGB(255, 3, 6, 223),
-        isScrollable: true, // Makes the TabBar scrollable if needed
-        tabs: [
-          Tab(text: 'Study Material'),
-        ],
-      ),
-    );
-  }
-}
-
-class HoverListItem extends StatefulWidget {
-  final String title;
-  final Map<String, dynamic> bookurl;
-  int index;
-  HoverListItem(
-      {Key? key,
-      required this.title,
-      required this.bookurl,
-      required this.index})
-      : super(key: key);
-
-  @override
-  State<HoverListItem> createState() => _HoverListItemState();
-}
-
-class _HoverListItemState extends State<HoverListItem> {
-  bool _isHovering = false;
-
-  /// Example: If you have a GetX controller
-  final getx = Get.put(Getx());
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      child: Container(
-        // Make the row height smaller
-        height: 50,
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        decoration: BoxDecoration(
-          color:
-              _isHovering ? const Color(0xFFE4EAF2) : const Color(0xFFE9EDF4),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: _isHovering
-              ? [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : [],
-        ),
-        child: Row(
-          children: [
-            // Left icon
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Card(
-                shape: ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                color: ColorPage.white, // from your custom color file
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  child: Image.asset(
-                    'assets/book_pdf.png',
-                    // Make the icon smaller if you want
-                    width: 30,
-                    height: 30,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-
-            // Title
-            Expanded(
-              child: Text(
-                widget.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-
-            const SizedBox(width: 8),
-
-            // Open Button
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    const Color.fromARGB(255, 47, 84, 248), // Button color
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                minimumSize: const Size(30, 30),
-              ),
-              onPressed: () {
-                // Example: Open PDF
-                if (Platform.isAndroid) {
-                  Get.to(
-                    transition: Transition.cupertino,
-                    () => ShowChapterPDFMobile(
-                      pdfUrl: widget.bookurl['DocumentPath'],
-                      title: widget.bookurl['FileIdName'],
-                      folderName: getPackagNameById(
-                        getx.selectedPackageId.toString(),
-                      ),
-                      isEncrypted: widget.bookurl["IsEncrypted"] == "true" ||
-                          widget.bookurl["IsEncrypted"] == "1",
-                    ),
-                  );
-                } else {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return ShowChapterPDF(
-                        pdfUrl: widget.bookurl['DocumentPath'],
-                        title: widget.bookurl['FileIdName'],
-                        folderName: getPackagNameById(
-                          getx.selectedPackageId.toString(),
-                        ),
-                        isEncrypted: widget.bookurl["IsEncrypted"] == "true" ||
-                            widget.bookurl["IsEncrypted"] == "1",
-                      );
-                    },
-                  ));
-
-                  // Get.to(
-                  //   transition: Transition.cupertino,
-                  //   () =>
-                  // );
-                }
-              },
-              child: const Text(
-                'Open',
-                style: TextStyle(color: Colors.white, fontSize: 8),
-              ),
-            ),
-
-            const SizedBox(width: 8),
-
-            // Delete Button
-
-            IconButton(
-              onPressed: _deleteFile,
-              icon: Icon(
-                Icons.delete,
-                color: Colors.red,
-              ),
-            )
-            // ElevatedButton(
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.red,
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(6),
-            //       ),
-            //       minimumSize: const Size(30, 30),
-            //     ),
-            //     onPressed: _deleteFile,
-            //     child: ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Delete the file from disk and (optionally) update the UI or show a message
-  Future<void> _deleteFile() async {
-    final filePath = getDownloadedPathOfPDF(
-        widget.bookurl['FileIdName'],
-        getPackagNameById(
-          getx.selectedPackageId.toString(),
-        ));
-
-    ArtDialogResponse? response = await ArtSweetAlert.show(
-        barrierDismissible: false,
-        context: context,
-        artDialogArgs: ArtDialogArgs(
-            // showCancelBtn: false,
-
-            // denyButtonText: "Cancel",
-            title: "Delete",
-            text: "${widget.bookurl['FileIdName']}",
-            showCancelBtn: true,
-            confirmButtonColor: Colors.red,
-            // confirmButtonText:
-            //     "                           Ok                            ",
-            // onConfirm: ,
-            type: ArtSweetAlertType.warning));
-
-    if (response == null) {
-      return;
-    }
-
-    // onPressed: () async {
-
-    //             },
-
-    if (response.isTapConfirmButton) {
-      if (filePath == '' || filePath.isEmpty) {
-        // If path is null/empty, show an error or do nothing
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No file path provided.')),
-        );
-        return;
-      }
-
-      final file = File(filePath);
-      // log(file.toString());
-      if (await file.exists()) {
-        try {
-          await file.delete();
-          // You might want to remove this item from a list in parent widget, or
-          // show a success message:
-
-          getx.booklist.removeAt(widget.index);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('File deleted: $filePath')),
-          );
-
-          // If you want to remove this item entirely from the UI, you could
-          // pass a callback in the constructor or use a state management approach.
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting file: $e')),
-          );
-        }
-      } else {
-        // File doesn’t exist
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('File not found: $filePath')),
-        );
-      }
-    }
-
-    return;
-  }
-
-  /// Example function that you mentioned in your code (not defined here),
-  /// so you may need your own implementation.
-  // String getPackagNameById(String packageId) {
-  //   // Return the folder name or package name for the given ID
-  //   // For demonstration, just return "Package_$packageId"
-  //   return "Package_$packageId";
-  // }
-}
-
 class DefaultDashBoardRight extends StatefulWidget {
   DefaultDashBoardRight({
     super.key,
@@ -2853,6 +2624,8 @@ class _McqDashboardState extends State<McqDashboard>
     super.initState();
   }
 
+
+
   RxList uniqueServicesList = [].obs;
   Future getMCQSetList() async {
     if (getx.isInternet.value) {
@@ -2954,7 +2727,7 @@ class _McqDashboardState extends State<McqDashboard>
                     builder: (_) {
                       // Check for the list data to display
                       // if (mcqSetList.isNotEmpty) {
-                      return McqList(
+                      return McqList(  
                           mcqSetList, tabTitle, 'assets/quick.png', istype);
                       // } else {
                       // return ; // Show "No Set Found" if the list is empty
@@ -3098,7 +2871,7 @@ class _TheoryExamPaperListState extends State<TheoryExamPaperList>
                     builder: (_) {
                       // Check for the list data to display
                       // if (mcqSetList.isNotEmpty) {
-                      return TheoryPaperList(
+                      return TheoryPaperList( 
                           theorySetList, tabTitle, 'assets/mcq_img.png', true);
                       // } else {
                       // return ; // Show "No Set Found" if the list is empty

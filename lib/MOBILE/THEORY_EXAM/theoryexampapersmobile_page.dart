@@ -17,6 +17,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../LOCAL_DATABASE/dbfunction/dbfunction.dart';
+<<<<<<< HEAD
+=======
+// import '../../constants/constants.dart';
+>>>>>>> e5bb140c4a7dafcf5b56f9d19db5321e98f3f7c2
 
 class TheoryExamPapesMobile extends StatefulWidget {
   Map paperNames = {};
@@ -160,6 +164,8 @@ class _TheoryExamPapesMobileState extends State<TheoryExamPapesMobile> {
                                                 ['PaperId']
                                             .toString());
                                   } else {
+                                    log(value["CheckedDocumentUrl"]);
+                                    log(decodedResponse['result']);
                                     Get.to(
                                         transition: Transition.cupertino,
                                         () => TestResultPageMobile(

@@ -14,7 +14,7 @@ import 'package:dthlms/MOBILE/SIM_INFORMATION/sim_information.dart';
 import 'package:dthlms/MODEL_CLASS/login_model.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
-import 'package:dthlms/notificationsave.dart'; 
+import 'package:dthlms/notificationsave.dart';
 import 'package:dthlms/routes/router.dart';
 import 'package:dthlms/security.dart';
 import 'package:flutter/foundation.dart';
@@ -34,16 +34,14 @@ import 'package:sqlcipher_library_windows/sqlcipher_library_windows.dart';
 import 'package:sqlite3/open.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:no_screenshot/no_screenshot.dart';
+// import 'package:no_screenshot/no_screenshot.dart';
 import 'notification_model.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-
   MediaKit.ensureInitialized();
-
   // ensureYQPInitialized();
-  Get.put(OnlineAudioPlayerController());
+  Get.put(OnlineAudioPlayerController()); 
 
   function() async {
     open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
@@ -85,21 +83,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   pageRouter router = pageRouter();
-  // late Future<void> userDetailsFuture;
+  // late Future<void> userDetailsFuture; 
 
   @override
   void initState() {
     super.initState();
     appVersionGet();
 
-// A
-// lue.toString() +
-//         "");
-
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setWindowDisplayAffinity();
-      });
+      }); 
       if (getx.isTimerOn.value) {
         Timer.periodic(Duration(seconds: 10), (timer) async {
           // print(getx.blackListProcess.length);
@@ -140,7 +134,6 @@ class _MyAppState extends State<MyApp> {
     getx.userImageLocalPath.value = prefs.getString("LocalImagePath") ?? "";
 
     if (userdataJson != null) {
-      // print("data found of login");
       Map<String, dynamic> userdataMap = jsonDecode(userdataJson);
       DthloginUserDetails userdata = DthloginUserDetails(
           firstName: userdataMap['firstName'].toString(),
@@ -380,7 +373,7 @@ class _DevelopermodeOnPageState extends State<DevelopermodeOnPage> {
       ],
     ).show();
   }
-
+ 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
