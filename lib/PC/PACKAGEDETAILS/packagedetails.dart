@@ -1512,8 +1512,7 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
       child: filteredChapterDetails.isNotEmpty ||
               getx.alwaysShowFileDetailsOfpdf.isNotEmpty
           ? GridView.builder(
-              itemCount: filteredChapterDetails.length +
-                  getx.alwaysShowFileDetailsOfpdf.length,
+              itemCount: filteredChapterDetails.length + getx.alwaysShowFileDetailsOfpdf.length,
               scrollDirection: Axis.vertical,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: getx.isCollapsed.value ? 5 : 4,

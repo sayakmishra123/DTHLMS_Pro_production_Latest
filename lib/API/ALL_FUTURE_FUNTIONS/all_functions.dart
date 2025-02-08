@@ -664,7 +664,9 @@ Future<void> getPackageData(BuildContext context, String token) async {
             package.courseId.toString(),
             package.courseName.toString(),
             package.isFree.toString(),
-            package.isDirectPlay.toString());
+            package.isDirectPlay.toString(),
+            package.IsActiveByUser,
+            package.IsPaused);
       });
 
       // Get.back();
@@ -2689,7 +2691,9 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               newPackage.courseId,
               newPackage.courseName,
               newPackage.isFree.toString(),
-              newPackage.isDirectPlay.toString());
+              newPackage.isDirectPlay.toString(),
+              newPackage.IsActiveByUser,
+              newPackage.IsPaused);
 
           // Delete the old package data (if needed)
           deletePartularPackageData(newPackage.packageId.toString(), context);
@@ -2725,7 +2729,9 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               courseId: "",
               courseName: "",
               isFree: false,
-              isDirectPlay: false),
+              isDirectPlay: false,
+              IsActiveByUser: '0',
+              IsPaused: "0"),
         );
 
         if (!isPackage) {
@@ -2763,7 +2769,9 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
                   newPackage.courseId,
                   newPackage.courseName,
                   newPackage.isFree.toString(),
-                  newPackage.isDirectPlay.toString());
+                  newPackage.isDirectPlay.toString(),
+                  newPackage.IsActiveByUser,
+                  newPackage.IsPaused);
 
               // print(
               // 'Package ${newPackage.packageId} has been updated in the database.');
@@ -3828,5 +3836,35 @@ appVersionGet() async {
     getx.appVersion.value = packageInfo.version;
   } catch (e) {
     writeToFile(e, "appVersionGet");
+  }
+}
+
+String formatDateString(String dateString, String type) {
+  print(dateString + "////" + type);
+  // Parse the input string into a DateTime object
+  try {
+    DateTime dateTime = DateTime.parse(dateString);
+
+    String formattedOutput;
+
+    if (type == 'time') {
+      // Format time only
+      formattedOutput = DateFormat('hh:mm a').format(dateTime);
+    } else if (type == 'date') {
+      // Format date only
+      formattedOutput = DateFormat('dd MMM, yyyy').format(dateTime);
+    } else if (type == 'datetime') {
+      // Format both date and time
+      formattedOutput = DateFormat('hh:mm a, dd MMM, yyyy').format(dateTime);
+    } else {
+      throw ArgumentError(
+          'Invalid type. Expected "time", "date", or "datetime".');
+    }
+
+    return formattedOutput;
+  } catch (e) {
+    writeToFile(e, "formatDateString");
+    print("${e.toString()}");
+    return "no date found";
   }
 }

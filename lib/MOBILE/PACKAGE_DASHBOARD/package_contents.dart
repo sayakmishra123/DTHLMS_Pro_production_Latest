@@ -42,7 +42,9 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
       case 'Live':
         Get.to(
           transition: Transition.cupertino,
-          () => LivePage(),
+          () => LivePage(
+            todayLiveClassList: filterMeetingListByPackage(),
+          ),
         );
 
         break;
@@ -891,4 +893,16 @@ SizedBox(
       ),
     );
   }
+}
+
+List filterMeetingListByPackage() {
+  List mettinglist = [];
+  for (var item in getx.todaymeeting) {
+    if (item.packageId
+        .split(',')
+        .contains(getx.selectedPackageId.value.toString())) {
+      mettinglist.add(item);
+    }
+  }
+  return mettinglist;
 }

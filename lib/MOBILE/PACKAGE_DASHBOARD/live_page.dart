@@ -1,5 +1,6 @@
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/Live/mobile_vcScreen.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_contents.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
@@ -9,8 +10,9 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class LivePage extends StatefulWidget {
-  const LivePage({super.key});
- 
+  final List todayLiveClassList;
+  const LivePage({super.key, required this.todayLiveClassList});
+
   @override
   State<LivePage> createState() => _LivePageState();
 }
@@ -18,12 +20,12 @@ class LivePage extends StatefulWidget {
 class _LivePageState extends State<LivePage> {
   Widget _buildGridView() {
     return ListView.builder(
-      shrinkWrap: true, 
+      shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: getx.todaymeeting.length,
+      itemCount: widget.todayLiveClassList.length,
       itemBuilder: (context, index) {
-        MeetingDeatils meeting = getx.todaymeeting[index];
-        return TutorCard( 
+        MeetingDeatils meeting = widget.todayLiveClassList[index];
+        return TutorCard(
           meeting: meeting,
           imageUrl: meeting.videoCategory == 'YouTube'
               ? 'assets/youtube.png'
@@ -45,8 +47,10 @@ class _LivePageState extends State<LivePage> {
   Widget _buildMeetingList() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child:
-          Obx(() => getx.todaymeeting.isEmpty ? Container() : _buildGridView()),
+      child: Obx(() =>
+          getx.todaymeeting.isEmpty && widget.todayLiveClassList.isEmpty
+              ? Container()
+              : _buildGridView()),
     );
   }
 
@@ -75,7 +79,9 @@ class _LivePageState extends State<LivePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getMeetingList(context); 
+      getMeetingList(context).then((_) {
+        filterMeetingListByPackage();
+      });
     });
   }
 
@@ -135,13 +141,15 @@ class TutorCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: 
-        [ const Color(0xFFFFF1D5),
-        const Color(0xFFFFE0AF),],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),borderRadius: BorderRadius.circular(12)
-      ),
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFFFFF1D5),
+              const Color(0xFFFFE0AF),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -176,7 +184,7 @@ class TutorCard extends StatelessWidget {
                     ],
                   ),
                 ),
-      
+
                 Lottie.asset('assets/liveanimation.json',
                     width: 70, height: 70),
                 // Rating
@@ -267,3 +275,4 @@ class TutorCard extends StatelessWidget {
     );
   }
 }
+ 

@@ -91,7 +91,6 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
   Map<String, String> infoList = {};
 
   String qrData = '';
-
   @override
   void initState() {
     infoList = {
@@ -103,7 +102,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
       'UserId': getx.loginuserdata[0].nameId,
       'FranchaiseId': getx.loginuserdata[0].franchiseeId,
     };
-
+    getAllPackageListOfStudent();
     getFranchiseName = getFranchiseNameFromTblSetting();
     setState(() {
       qrData = jsonEncode(infoList);
@@ -272,15 +271,15 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                           () => DeviceHistoryMobile());
                     },
                   ),
-                  // MenuItem(
-                  //   icon: Icons.assignment,
-                  //   title: 'Exam History',
-                  //   onTap: () {
-                  //     Get.to(
-                  //         transition: Transition.cupertino,
-                  //         () => ExamHistoryMobile());
-                  //   },
-                  // ),
+                  MenuItem(
+                    icon: Icons.assignment,
+                    title: 'My Packages',
+                    onTap: () {
+                      Get.to(
+                          transition: Transition.cupertino,
+                          () => MyPackageMobile());
+                    },
+                  ),
                 ],
               ),
             ),
@@ -413,6 +412,35 @@ class MenuItem extends StatelessWidget {
         size: 15,
       ),
       onTap: onTap,
+    );
+  }
+}
+
+// Import for Platform checks
+
+class MyPackageMobile extends StatefulWidget {
+  const MyPackageMobile({Key? key}) : super(key: key);
+
+  @override
+  State<MyPackageMobile> createState() => _MyPackageMobileState();
+}
+
+class _MyPackageMobileState extends State<MyPackageMobile> {
+  Getx getx = Get.put(Getx());
+  int? _hoveredIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          "My Packages",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Material(child: MyPackage()),
     );
   }
 }
