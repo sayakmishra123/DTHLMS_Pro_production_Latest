@@ -6,18 +6,26 @@ import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
 import 'package:dthlms/Live/details.dart';
+import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
+import 'package:dthlms/MOBILE/store/storemodelclass/storemodelclass.dart';
 import 'package:dthlms/MODEL_CLASS/social_media_links_model.dart';
+import 'package:dthlms/PC/MCQ/PRACTICE/termandcondition.dart';
 import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_infinite_marquee/flutter_infinite_marquee.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dthlms/ACTIVATION_WIDGET/enebelActivationcode.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/MOBILE/mobilenotification.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/packagedetails.dart';
@@ -32,7 +40,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:sidebarx/sidebarx.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import 'package:package_info_plus/package_info_plus.dart' as pinfo;
 import 'package:url_launcher/url_launcher.dart';
 
 TextStyle style = const TextStyle(fontFamily: 'AltoneRegular', fontSize: 20);
@@ -57,6 +68,8 @@ class _DthDashboardState extends State<DthDashboard> {
       getHomePageBannerImage(context, getx.loginuserdata[0].token);
       isTokenValid(getx.loginuserdata[0].token);
       if (getx.isInternet.value) {
+        // print(getx.isInternet.value.toString()+"\n\n\n\n\n\n\n\n\n");
+
         updatePackage(globalContext, getx.loginuserdata[0].token, true, "");
       }
 
@@ -158,11 +171,54 @@ class _DthDashboardState extends State<DthDashboard> {
   }
 }
 
+// class _ScreensExample extends StatelessWidget {
+//   const _ScreensExample({
+//     Key? key,
+//     required this.controller,
+//   }) : super(key: key);
+
+//   final SidebarXController controller;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
+//     return AnimatedBuilder(
+//       animation: controller,
+//       builder: (context, child) {
+//         final pageTitle = _getTitleByIndex(controller.selectedIndex);
+//         switch (controller.selectedIndex) {
+//           case 0:
+//             return ListView.builder(
+//               padding: const EdgeInsets.only(top: 10),
+//               itemBuilder: (context, index) => Container(
+//                 height: 100,
+//                 width: double.infinity,
+//                 margin: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+//                 decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(20),
+//                   color: Theme.of(context).canvasColor,
+//                   boxShadow: const [BoxShadow()],
+//                 ),
+//               ),
+//             );
+//           default:
+//             return Text(
+//               pageTitle,
+//               style: theme.textTheme.headlineSmall,
+//             );
+//         }
+//       },
+//     );
+//   }
+// }
+
 class DashboardSlideBar extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onItemSelected;
+  // final String headname;
   const DashboardSlideBar({
     super.key,
+    // required this.headname,
     required this.selectedIndex,
     required this.onItemSelected,
   });
@@ -174,7 +230,17 @@ class DashboardSlideBar extends StatefulWidget {
 class _DashboardSlideBarState extends State<DashboardSlideBar>
     with SingleTickerProviderStateMixin {
   Getx getx = Get.find<Getx>();
-
+  // List<Color> colors = [
+  //   Colors.blue,
+  //   Colors.orange,
+  //   Colors.pink,
+  //   Colors.lightBlue,
+  //   Colors.orange,
+  //   Colors.lightBlue,
+  //   Colors.orange,
+  //   Colors.pink,
+  //   Colors.green,
+  // ];
   int colorchoose() {
     return Random().nextInt(9);
   }
@@ -186,12 +252,22 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
- 
+// while(getx.studentPackage.length==0)
+
+// {
+// .whenComplete(() {
+    // getAllPackageListOfStudent();
+
+//       setState(() {}); });
+// }
 
     appVersionGet();
     Future.delayed(const Duration(seconds: 2)).whenComplete(() {
       getAllPackageListOfStudent().then((_) {});
     });
+    // getAllPackageListOfStudent().whenComplete(() {
+
+    // });
     getSocialMediaIcons(context, getx.loginuserdata[0].token);
     super.initState();
   }
@@ -298,36 +374,119 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     paidPackages[i]['packageName']!,
                                     paidPackages[i]['CourseName'],
                                     () async {
-                                      getx.currentPackageName.value =
-                                          paidPackages[i]['packageName'];
-                                      getx.selectedPackageId.value = int.parse(
-                                          paidPackages[i]['packageId']);
+                                      if (checkVaildationOfPackage(
+                                          paidPackages[i]['ExpiryDate'])) {
+                                        if (paidPackages[i]['IsPaused'] ==
+                                            "0") {
+                                          if (paidPackages[i]
+                                                  ['isActivateByUser'] ==
+                                              "0") {
+                                            onSweetAleartDialogwithDeny(
+                                                context,
+                                                () {
+                                                  updateTblPackageDataForFirsttimeActivation(
+                                                          "1",
+                                                          paidPackages[i]
+                                                              ['packageId'])
+                                                      .then((_) async {
+                                                    getAllPackageListOfStudent();
+                                                    getx.currentPackageName
+                                                            .value =
+                                                        paidPackages[i]
+                                                            ['packageName'];
+                                                    getx.selectedPackageId
+                                                            .value =
+                                                        int.parse(
+                                                            paidPackages[i]
+                                                                ['packageId']);
 
-                                      resetTblLocalNavigation();
-                                      await insertTblLocalNavigation(
-                                        "Package",
-                                        paidPackages[i]['packageId'],
-                                        paidPackages[i]['packageName'],
-                                      );
-                                      getLocalNavigationDetails();
+                                                    resetTblLocalNavigation();
+                                                    await insertTblLocalNavigation(
+                                                      "Package",
+                                                      paidPackages[i]
+                                                          ['packageId'],
+                                                      paidPackages[i]
+                                                          ['packageName'],
+                                                    );
+                                                    getLocalNavigationDetails();
 
-                                      widget.onItemSelected(i);
+                                                    widget.onItemSelected(i);
 
-                                      initialfunction(
-                                          paidPackages[i]['packageId']);
+                                                    initialfunction(
+                                                        paidPackages[i]
+                                                            ['packageId']);
 
-                                      Get.to(
-                                        () => PackageDetailsPage(
-                                          paidPackages[i]['packageName'],
-                                          int.parse(
-                                              paidPackages[i]['packageId']),
-                                          ExpiryDate: paidPackages[i]
-                                              ['ExpiryDate'],
-                                        ),
-                                        transition: Transition.cupertino,
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                      );
+                                                    Get.to(
+                                                      () => PackageDetailsPage(
+                                                        paidPackages[i]
+                                                            ['packageName'],
+                                                        int.parse(
+                                                            paidPackages[i]
+                                                                ['packageId']),
+                                                        ExpiryDate:
+                                                            paidPackages[i]
+                                                                ['ExpiryDate'],
+                                                      ),
+                                                      transition:
+                                                          Transition.cupertino,
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                    );
+                                                  });
+                                                },
+                                                "Activate your Package",
+                                                "your Package is not activate.Click OK to activate.",
+                                                () {
+                                                  Get.back();
+                                                });
+                                          } else {
+                                            getx.currentPackageName.value =
+                                                paidPackages[i]['packageName'];
+                                            getx.selectedPackageId.value =
+                                                int.parse(paidPackages[i]
+                                                    ['packageId']);
+
+                                            resetTblLocalNavigation();
+                                            await insertTblLocalNavigation(
+                                              "Package",
+                                              paidPackages[i]['packageId'],
+                                              paidPackages[i]['packageName'],
+                                            );
+                                            getLocalNavigationDetails();
+
+                                            widget.onItemSelected(i);
+
+                                            initialfunction(
+                                                paidPackages[i]['packageId']);
+
+                                            Get.to(
+                                              () => PackageDetailsPage(
+                                                paidPackages[i]['packageName'],
+                                                int.parse(paidPackages[i]
+                                                    ['packageId']),
+                                                ExpiryDate: paidPackages[i]
+                                                    ['ExpiryDate'],
+                                              ),
+                                              transition: Transition.cupertino,
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                            );
+                                          }
+                                        } else //is paused
+                                        {
+                                          onSweetAleartDialog(context, () {
+                                            Get.back();
+                                          }, "Paused!",
+                                              "Your Package subscription is pause.");
+                                        }
+                                      } else //is Package Expire
+                                      {
+                                        print("expire false");
+                                        onSweetAleartDialog(context, () {
+                                          Get.back();
+                                        }, "Expired!",
+                                            "Your Package subscription was expired on \n ${formatDateString(paidPackages[i]['ExpiryDate'], "datetime")}.");
+                                      }
                                     },
                                     widget.selectedIndex == i,
                                     hoverIndex == i,
@@ -346,36 +505,119 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     freePackages[i]['packageName']!,
                                     freePackages[i]['CourseName'],
                                     () async {
-                                      getx.currentPackageName.value =
-                                          freePackages[i]['packageName'];
-                                      getx.selectedPackageId.value = int.parse(
-                                          freePackages[i]['packageId']);
+                                      if (checkVaildationOfPackage(
+                                          freePackages[i]['ExpiryDate'])) {
+                                        if (freePackages[i]['IsPaused'] ==
+                                            "0") {
+                                          if (freePackages[i]
+                                                  ['isActivateByUser'] ==
+                                              "0") {
+                                            onSweetAleartDialogwithDeny(
+                                                context,
+                                                () {
+                                                  updateTblPackageDataForFirsttimeActivation(
+                                                          "1",
+                                                          freePackages[i]
+                                                              ['packageId'])
+                                                      .then((_) async {
+                                                    getAllPackageListOfStudent();
+                                                    getx.currentPackageName
+                                                            .value =
+                                                        freePackages[i]
+                                                            ['packageName'];
+                                                    getx.selectedPackageId
+                                                            .value =
+                                                        int.parse(
+                                                            freePackages[i]
+                                                                ['packageId']);
 
-                                      resetTblLocalNavigation();
-                                      await insertTblLocalNavigation(
-                                        "Package",
-                                        freePackages[i]['packageId'],
-                                        freePackages[i]['packageName'],
-                                      );
-                                      getLocalNavigationDetails();
+                                                    resetTblLocalNavigation();
+                                                    await insertTblLocalNavigation(
+                                                      "Package",
+                                                      freePackages[i]
+                                                          ['packageId'],
+                                                      freePackages[i]
+                                                          ['packageName'],
+                                                    );
+                                                    getLocalNavigationDetails();
 
-                                      widget.onItemSelected(i);
+                                                    widget.onItemSelected(i);
 
-                                      initialfunction(
-                                          freePackages[i]['packageId']);
+                                                    initialfunction(
+                                                        freePackages[i]
+                                                            ['packageId']);
 
-                                      Get.to(
-                                        () => PackageDetailsPage(
-                                          freePackages[i]['packageName'],
-                                          int.parse(
-                                              freePackages[i]['packageId']),
-                                          ExpiryDate: freePackages[i]
-                                              ['ExpiryDate'],
-                                        ),
-                                        transition: Transition.cupertino,
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                      );
+                                                    Get.to(
+                                                      () => PackageDetailsPage(
+                                                        freePackages[i]
+                                                            ['packageName'],
+                                                        int.parse(
+                                                            freePackages[i]
+                                                                ['packageId']),
+                                                        ExpiryDate:
+                                                            freePackages[i]
+                                                                ['ExpiryDate'],
+                                                      ),
+                                                      transition:
+                                                          Transition.cupertino,
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                    );
+                                                  });
+                                                },
+                                                "Activate your Package",
+                                                "your Package is not activate.Click OK to activate.",
+                                                () {
+                                                  Get.back();
+                                                });
+                                          } else {
+                                            getx.currentPackageName.value =
+                                                freePackages[i]['packageName'];
+                                            getx.selectedPackageId.value =
+                                                int.parse(freePackages[i]
+                                                    ['packageId']);
+
+                                            resetTblLocalNavigation();
+                                            await insertTblLocalNavigation(
+                                              "Package",
+                                              freePackages[i]['packageId'],
+                                              freePackages[i]['packageName'],
+                                            );
+                                            getLocalNavigationDetails();
+
+                                            widget.onItemSelected(i);
+
+                                            initialfunction(
+                                                freePackages[i]['packageId']);
+
+                                            Get.to(
+                                              () => PackageDetailsPage(
+                                                freePackages[i]['packageName'],
+                                                int.parse(freePackages[i]
+                                                    ['packageId']),
+                                                ExpiryDate: freePackages[i]
+                                                    ['ExpiryDate'],
+                                              ),
+                                              transition: Transition.cupertino,
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                            );
+                                          }
+                                        } else //is paused
+                                        {
+                                          onSweetAleartDialog(context, () {
+                                            Get.back();
+                                          }, "Paused!",
+                                              "Your Package subscription is pause.");
+                                        }
+                                      } else //is Package Expire
+                                      {
+                                        print("expire false");
+                                        onSweetAleartDialog(context, () {
+                                          Get.back();
+                                        }, "Expired!",
+                                            "Your Package subscription was expired on \n  ${formatDateString(freePackages[i]['ExpiryDate'], "datetime")}.");
+                                      }
                                     },
                                     widget.selectedIndex == i,
                                     hoverIndex == i,

@@ -340,7 +340,7 @@ Future<void> insertDownloadedFileData(String packageId, String fileId,
 void createTblPackageData() {
   _db.execute('''
     CREATE TABLE IF NOT EXISTS TblPackageData( 
-
+ 
      PackageId TEXT PRIMARY KEY,  
       PackageName TEXT,
       ExpiryDate TEXT,
@@ -352,7 +352,7 @@ void createTblPackageData() {
       IsFree TEXT,
       IsDirectPlay,
       IsPaused TEXT,
-      IsActiveByUser TEXT
+      isActivateByUser TEXT
     );
   ''');
   print('TblPackageData created with PackageId as the primary key!');
@@ -724,7 +724,7 @@ Future<void> insertOrUpdateTblPackageData(
     String isPasued,
     String isActivateByUser) async {
   _db.execute('''
-    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,IsActiveByUser,IsPaused) 
+    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,isActivateByUser,IsPaused) 
     VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay','$isActivateByUser','$isPasued')
     ON CONFLICT(PackageId) 
     DO UPDATE SET 
@@ -737,7 +737,7 @@ Future<void> insertOrUpdateTblPackageData(
       CourseId=excluded.CourseId,
       IsFree=excluded.IsFree,
       IsDirectPlay=excluded.IsDirectPlay,
-      IsActiveByUser=excluded.IsActiveByUser,
+      isActivateByUser=excluded.isActivateByUser,
       IsPaused=excluded.IsPaused;
       
       ;
@@ -1066,7 +1066,7 @@ Future<void> getAllPackageListOfStudent() async {
       'CourseName': row['CourseName'],
       'IsFree': row['IsFree'],
       'IsPaused': row['IsPaused'],
-      'IsActiveByUser': row['IsActiveByUser']
+      'isActivateByUser': row['isActivateByUser']
     };
     getx.studentAllPackage.add(packageData);
     // Check if the package is still valid and should be shown
@@ -3908,7 +3908,7 @@ Future<void> updateTblPackageDataForFirsttimeActivation(
   try {
     _db.execute('''
       UPDATE TblPackageData
-      SET IsActiveByUser = ?
+      SET isActivateByUser = ?
       WHERE PackageId = ?;
     ''', [activationValue, packageId]);
   } catch (e) {
@@ -3935,12 +3935,12 @@ bool checkIsPackageActiveByUser(String packageId) {
   // Execute the SQL query
   try {
     final sql.ResultSet resultSet = _db.select(
-        'SELECT IsActiveByUser FROM TblPackageData WHERE PackageId = ?',
+        'SELECT isActivateByUser FROM TblPackageData WHERE PackageId = ?',
         [packageId]);
 
     // Check if a result is returned and fetch the OptionName
     if (resultSet.isNotEmpty) {
-      return resultSet.first['IsActiveByUser'] as String == "1";
+      return resultSet.first['isActivateByUser'] as String == "1";
     }
     return false;
   } catch (e) {

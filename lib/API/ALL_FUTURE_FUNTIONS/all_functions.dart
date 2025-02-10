@@ -665,7 +665,7 @@ Future<void> getPackageData(BuildContext context, String token) async {
             package.courseName.toString(),
             package.isFree.toString(),
             package.isDirectPlay.toString(),
-            package.IsActiveByUser,
+            package.isActivateByUser,
             package.IsPaused);
       });
 
@@ -2692,7 +2692,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               newPackage.courseName,
               newPackage.isFree.toString(),
               newPackage.isDirectPlay.toString(),
-              newPackage.IsActiveByUser,
+              newPackage.isActivateByUser,
               newPackage.IsPaused);
 
           // Delete the old package data (if needed)
@@ -2730,7 +2730,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               courseName: "",
               isFree: false,
               isDirectPlay: false,
-              IsActiveByUser: '0',
+              isActivateByUser: '0',
               IsPaused: "0"),
         );
 
@@ -2770,7 +2770,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
                   newPackage.courseName,
                   newPackage.isFree.toString(),
                   newPackage.isDirectPlay.toString(),
-                  newPackage.IsActiveByUser,
+                  newPackage.isActivateByUser,
                   newPackage.IsPaused);
 
               // print(
