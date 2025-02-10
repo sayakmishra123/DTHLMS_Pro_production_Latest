@@ -2408,6 +2408,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           color: const Color.fromARGB(255, 243, 33, 33),
         ),
         DialogButton(
+          
           child: Obx(() => Text(
                 downloadProgress[1] == 100
                     ? "Play"
@@ -2467,7 +2468,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     }
                   }
                 },
-          color: link == 0 ? Colors.grey : ColorPage.blue,
+          color: link == '0' ? Colors.grey : ColorPage.blue,
         ),
       ],
     ).show();
@@ -2717,16 +2718,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                 )),
           ),
         ),
-        // : SizedBox(
-        //     height: 300,
-        //     child: Center(
-        //       child: Text(
-        //         " No image Found",
-        //         style:
-        //             FontFamily.font5.copyWith(color: ColorPage.colorblack),
-        //       ),
-        //     ),
-        //   )),
+
         Obx(
           () => getx.bannerImageList.isNotEmpty
               ? Positioned(
@@ -2859,35 +2851,15 @@ class HeadingBoxContent extends StatelessWidget {
   }
 }
 
-// import 'dart:io';
-// import 'package:device_info_plus/device_info_plus.dart';
-
-// Future<bool> isEmulator() async {
-//   final deviceInfo = DeviceInfoPlugin();
-
-//   if (Platform.isAndroid) {
-//     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-//     // Check for emulator-specific identifiers
-//     if (androidInfo.model.toLowerCase().contains('emulator') ||
-//         androidInfo.model.toLowerCase().contains('sdk') ||
-//         androidInfo.hardware.toLowerCase().contains('goldfish') ||
-//         androidInfo.hardware.toLowerCase().contains('ranchu') ||
-//         androidInfo.product.toLowerCase().contains('sdk_google')) {
-//       return true;
-//     }
-//   } else if (Platform.isIOS) {
-//     IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-//     // Check for iOS simulator
-//     if (iosInfo.model?.toLowerCase().contains('simulator') ?? false) {
-//       return true;
-//     }
-//   }
-
-//   // If the checks don't match, the device is not an emulator
-//   return false;
-// }
 
 Future<bool> isProcessRunning(String processName) async {
+  try{
   final result = await Process.run('tasklist', []);
   return result.stdout.toString().contains(processName);
+  }
+  catch(e)
+  {
+    writeToFile(e, 'isProcessRunning');
+    return false;
+  }
 }

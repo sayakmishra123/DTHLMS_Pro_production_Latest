@@ -81,6 +81,8 @@ class Downloadsheet {
     }
   }
 
+  
+  
   void cancelDownload() {
     cancelToken.cancel();
     getx.isDownloading.value = false;

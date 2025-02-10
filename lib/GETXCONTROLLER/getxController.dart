@@ -223,12 +223,12 @@ class Getx extends GetxController {
 
   @override
   void onInit() {
-    initConnectivity();
+    // initConnectivity();
 
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
-    databasecopy();
+    // databasecopy();
     super.onInit();
   }
 

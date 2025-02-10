@@ -171,7 +171,9 @@ void createtblPackageDetails() {
    DownloadedPath TEXT,
    VideoDuration TEXT,
    IsEncrypted TEXT,
-   SortedOrder TEXT
+   SortedOrder TEXT,
+   DurationLimitation TEXT,
+   ViewCount TEXT
    );
   ''');
 }
@@ -837,10 +839,10 @@ Future<void> insertPackageDetailsdata(
     String videoDuration,
     String DownloadedPath,
     String isEncrypted,
-    String sortedOrder) async {
+    String sortedOrder,String? viewCount,String? durationLimitation) async {
   _db.execute('''
-       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder) 
-      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder');
+       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder,DurationLimitation,ViewCount) 
+      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder','$durationLimitation','$viewCount');
     ''');
 
   // return null;

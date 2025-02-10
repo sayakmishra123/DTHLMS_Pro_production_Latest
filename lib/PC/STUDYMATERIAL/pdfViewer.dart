@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -78,7 +79,7 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
   }
 
   Future getPdf(String enkey) async {
-    print("calling decrypt function");
+    print(widget.isEncrypted);
     if (widget.isEncrypted) {
       getx.encryptedpdffile.value = await downloadAndSavePdf(
           widget.pdfUrl, widget.title, enkey, widget.folderName);
@@ -388,8 +389,11 @@ Future downloadAndSavePdf(
       String pdfUrl, String title, String enkey, String foldername) async {
 
     data = getDownloadedPathOfPDF(title, foldername);
-    print(data + " ssss ${this.title}");
-String fixedPath = data.replaceAll('/', '\\'); // Convert forward slashes to backslashes
+
+
+    print(data + " ssss ${title}");
+    log(pdfUrl);
+String fixedPath = data.replaceAll('/', '/'); // Convert forward slashes to backslashes
 File file = File(fixedPath);
  
 if (!file.existsSync()) {

@@ -124,6 +124,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> getUserDetails() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // prefs.clear();
+    // log(prefs.)
     getx.loginId.value = prefs.getString("LoginId") ?? '';
 
     String? userdataJson = prefs.getString('userDetails');
@@ -203,6 +204,7 @@ class _MyAppState extends State<MyApp> {
         future: getUserDetails(), // Call the future
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            log(getx.loginuserdata.toString());
             return const CircularProgressIndicator();
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));

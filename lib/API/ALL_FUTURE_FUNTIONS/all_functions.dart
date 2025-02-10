@@ -448,7 +448,7 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder);
+            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -470,7 +470,11 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
                   file.fileIdType ?? '',
                 ),
                 file.isEncrypted,
-                file.sortedOrder.toString())
+                file.sortedOrder.toString(),
+                file.viewCount,
+                file.durationLimitation
+
+                )
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);
@@ -531,7 +535,7 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder);
+            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -553,7 +557,7 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
                   file.fileIdType ?? '',
                 ),
                 file.isEncrypted,
-                file.sortedOrder.toString())
+                file.sortedOrder.toString(),file.viewCount??'',file.durationLimitation??'')
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);
