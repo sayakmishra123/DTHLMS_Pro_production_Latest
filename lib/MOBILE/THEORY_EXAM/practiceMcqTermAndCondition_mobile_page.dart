@@ -37,36 +37,6 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
       required this.paperId});
   RxBool checkbox = false.obs;
 
-  String formatDateString(String dateString, String type) {
-    print(dateString + "////" + type);
-    // Parse the input string into a DateTime object
-    try {
-      DateTime dateTime = DateTime.parse(dateString);
-
-      String formattedOutput;
-
-      if (type == 'time') {
-        // Format time only
-        formattedOutput = DateFormat('hh:mm a').format(dateTime);
-      } else if (type == 'date') {
-        // Format date only
-        formattedOutput = DateFormat('dd MMM, yyyy').format(dateTime);
-      } else if (type == 'datetime') {
-        // Format both date and time
-        formattedOutput = DateFormat('hh:mm a, dd MMM, yyyy').format(dateTime);
-      } else {
-        throw ArgumentError(
-            'Invalid type. Expected "time", "date", or "datetime".');
-      }
-
-      return formattedOutput;
-    } catch (e) {
-      writeToFile(e, "formatDateString");
-      print("${e.toString()}");
-      return "no date found";
-    }
-  }
-
   double textScale = 1.2;
 
   @override
@@ -242,14 +212,14 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 10, 
+                      width: 10,
                     ),
                     ElevatedButton(
                       onPressed: () async {
                         if (checkbox.value) {
                           var examcode = await getExamStatus(
                               context, getx.loginuserdata[0].token, paperId);
-                              var decodedResponse = jsonDecode(examcode);
+                          var decodedResponse = jsonDecode(examcode);
                           if (decodedResponse['statusCode'] == 200) {
                             Get.to(
                                 transition: Transition.cupertino,
@@ -282,7 +252,7 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                     .then((value) {
                                   print(value);
 
-                                  if (value.isEmpty) { 
+                                  if (value.isEmpty) {
                                     _showDialogoferror(context, "Not publish!!",
                                         "The result is not published yet.", () {
                                       Navigator.pop(context);
@@ -322,7 +292,8 @@ class TheoryExamTermAndConditionMobile extends StatelessWidget {
                                                   value['CheckedDocumentUrl']
                                                       .toString(),
                                               questionanswersheet:
-                                                decodedResponse['result'] ?? '',
+                                                  decodedResponse['result'] ??
+                                                      '',
                                             ));
                                   }
                                 });

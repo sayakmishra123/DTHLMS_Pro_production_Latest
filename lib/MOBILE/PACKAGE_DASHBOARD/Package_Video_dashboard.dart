@@ -219,12 +219,11 @@ class _MobilePackageVideoDashboardState
   search(value) {}
 
   RxBool isLoading = false.obs;
-  loade()async{
+  loade() async {
     isLoading.value = true;
 
     await Future.delayed(Duration(seconds: 1));
     isLoading.value = false;
-
   }
 
   @override
@@ -240,7 +239,6 @@ class _MobilePackageVideoDashboardState
                 title: "Are you sure?",
                 text: "You want to exite.",
                 confirmButtonText: "   Ok",
-                
                 onConfirm: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
@@ -256,7 +254,7 @@ class _MobilePackageVideoDashboardState
             automaticallyImplyLeading: false,
             leading: IconButton(
                 onPressed: () {
-                  onSweetAleartDialog(
+                  onSweetAleartDialogwithDeny(
                       context,
                       () {
                         Navigator.of(context).pop();
@@ -278,321 +276,391 @@ class _MobilePackageVideoDashboardState
                     getx.subjectDetails.isNotEmpty
                         ? getx.subjectDetails[0]["SubjectName"]
                         : "Subject Name",
-                    style: FontFamily.style.copyWith(color: Colors.white,fontSize: 16)),
+                    style: FontFamily.style
+                        .copyWith(color: Colors.white, fontSize: 16)),
               ),
             ),
-          ), 
+          ),
           body: Obx(
-            () => isLoading.value ?
-       Center(child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: SizedBox(
-          height: 30,
-          width: 30,
-          child: CircularProgressIndicator(
-            
-          ),
-        ),
-      )) :
-     Column(
-              children: [
-                // new added
-                Row(   
-                  children: [
-                    Expanded(
-  child: Obx(() {
-    // Show loading indicator when navigation list is empty or still loading
-    if (isLoading.value) {
-      return Center(child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: SizedBox(
-          height: 30,
-          width: 30,
-          child: CircularProgressIndicator(
-            
-          ),
-        ),
-      ));
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollControllerofNavigateBar.hasClients) {
-        scrollControllerofNavigateBar.jumpTo(
-            scrollControllerofNavigateBar.position.maxScrollExtent);
-      }
-    });
-
-    return SingleChildScrollView(
-      controller: scrollControllerofNavigateBar,
-      scrollDirection: Axis.horizontal, // Enables horizontal scrolling
-      child: Row(
-        children: [
-          for (var i = 0; i < getx.navigationList.length; i++)
-            getx.navigationList.isEmpty
-                ? Text("Blank")
-                : InkWell(
-                    onTap: () {
-                      if (i == 0) {
-                        // nothing
-                      } else if (i == 1 || i == 2) {
-                        print('press in video');
-                        resetTblLocalNavigationByOrder(2);
-
-                        getStartParentId(int.parse(
-                                getx.navigationList[1]['NavigationId']))
-                            .then((value) {
-                          print(value);
-                          getChapterContents(int.parse(value.toString()));
-                          getChapterFiles(
-                              parentId: int.parse(value.toString()),
-                              'Video',
-                              getx.selectedPackageId.value.toString());
-                          getChapterFiles(
-                              parentId: int.parse(value.toString()),
-                              'PDF',
-                              getx.selectedPackageId.value.toString());
-                        });
-                        getLocalNavigationDetails();
-                      } else if (i > 2) {
-                        resetTblLocalNavigationByOrder(i);
-                        insertTblLocalNavigation(
-                          "ParentId",
-                          getx.navigationList[i]['NavigationId'],
-                          getx.navigationList[i]["NavigationName"],
-                        );
-
-                        getChapterContents(int.parse(
-                            getx.navigationList[i]['NavigationId']));
-                        getChapterFiles(
-                            parentId: int.parse(
-                                getx.navigationList[i]['NavigationId']),
-                            'Video',
-                            getx.selectedPackageId.value.toString());
-                        getLocalNavigationDetails();
-                        getChapterFiles(
-                            parentId: int.parse(
-                                getx.navigationList[i]['NavigationId']),
-                            'PDF',
-                            getx.selectedPackageId.value.toString());
-                        getLocalNavigationDetails();
-                      }
-
-                      print(getx.alwaysShowChapterDetailsOfVideo.length);
-
-                      setState(() {
-                        filteredChapterDetails =
-                            getx.alwaysShowChapterDetailsOfVideo;
-                        filteredPdfDetails =
-                            getx.alwaysShowFileDetailsOfpdf;
-                        filteredvideoDetails =
-                            getx.alwaysShowChapterfilesOfVideo;
-                      });
-                    },
+            () => isLoading.value
+                ? Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        children: [
-                          if (i != 0) ...[
-                            ClipPath(
-                              clipper: NavigationClipper1(),
-                              child: Container(
-                                height: 30,
-                                width: 20,
-                                color: i == getx.navigationList.length - 1
-                                    ? Colors.blue
-                                    : Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50),
-                              ),
-                            ),
-                            ClipPath(
-                              child: Container(
-                                width: (() {
-                                  int nameLength = getx.navigationList[i]
-                                          ["NavigationName"]
-                                      .length;
-                                  if (nameLength >= 16) {
-                                    return 210.0;
-                                  } else if (nameLength >= 13) {
-                                    return 190.0;
-                                  } else if (nameLength >= 10) {
-                                    return 170.0;
-                                  } else if (nameLength >= 7) {
-                                    return 150.0;
-                                  } else {
-                                    return 100.0;
-                                  }
-                                })(),
-                                decoration: BoxDecoration(
-                                  color: i == getx.navigationList.length - 1
-                                      ? Colors.blue
-                                      : Colors.white,
-                                ),
-                                height: 30,
-                                child: Center(
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 10),
-                                    child: Text(
-                                        overflow: TextOverflow.ellipsis,
-                                        getx.navigationList[i]["NavigationName"],
-                                        style: FontFamily.styleb.copyWith(
-                                            fontSize: 14,
-                                            color: i ==
-                                                    getx.navigationList.length - 1
-                                                ? Colors.white
-                                                : Colors.black54)),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            ClipPath(
-                              clipper: NavigationClipper(),
-                              child: Container(
-                                height: 30,
-                                width: 20,
-                                color: i == getx.navigationList.length - 1
-                                    ? Colors.blue
-                                    : Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
+                    padding: const EdgeInsets.all(10),
+                    child: SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(),
                     ),
-                  ),
-        ],
-      ),
-    );
-  }),
-),
-
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  ))
+                : Column(
                     children: [
+                      // new added
                       Row(
                         children: [
-                          filecountWidget(
-                              getx.alwaysShowChapterfilesOfVideo.length,
-                              "assets/video2.png"),
-                          filecountWidget(
-                              getx.alwaysShowFileDetailsOfpdf.length,
-                              "assets/pdf.png"),
-                          filecountWidget(
-                              getx.alwaysShowChapterDetailsOfVideo.length,
-                              "assets/folder5.png"),
+                          Expanded(
+                            child: Obx(() {
+                              // Show loading indicator when navigation list is empty or still loading
+                              if (isLoading.value) {
+                                return Center(
+                                    child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ));
+                              }
+
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (scrollControllerofNavigateBar.hasClients) {
+                                  scrollControllerofNavigateBar.jumpTo(
+                                      scrollControllerofNavigateBar
+                                          .position.maxScrollExtent);
+                                }
+                              });
+
+                              return SingleChildScrollView(
+                                controller: scrollControllerofNavigateBar,
+                                scrollDirection: Axis
+                                    .horizontal, // Enables horizontal scrolling
+                                child: Row(
+                                  children: [
+                                    for (var i = 0;
+                                        i < getx.navigationList.length;
+                                        i++)
+                                      getx.navigationList.isEmpty
+                                          ? Text("Blank")
+                                          : InkWell(
+                                              onTap: () {
+                                                if (i == 0) {
+                                                  // nothing
+                                                } else if (i == 1 || i == 2) {
+                                                  print('press in video');
+                                                  resetTblLocalNavigationByOrder(
+                                                      2);
+
+                                                  getStartParentId(int.parse(
+                                                          getx.navigationList[1]
+                                                              ['NavigationId']))
+                                                      .then((value) {
+                                                    print(value);
+                                                    getChapterContents(
+                                                        int.parse(
+                                                            value.toString()));
+                                                    getChapterFiles(
+                                                        parentId: int.parse(
+                                                            value.toString()),
+                                                        'Video',
+                                                        getx.selectedPackageId
+                                                            .value
+                                                            .toString());
+                                                    getChapterFiles(
+                                                        parentId: int.parse(
+                                                            value.toString()),
+                                                        'PDF',
+                                                        getx.selectedPackageId
+                                                            .value
+                                                            .toString());
+                                                  });
+                                                  getLocalNavigationDetails();
+                                                } else if (i > 2) {
+                                                  resetTblLocalNavigationByOrder(
+                                                      i);
+                                                  insertTblLocalNavigation(
+                                                    "ParentId",
+                                                    getx.navigationList[i]
+                                                        ['NavigationId'],
+                                                    getx.navigationList[i]
+                                                        ["NavigationName"],
+                                                  );
+
+                                                  getChapterContents(int.parse(
+                                                      getx.navigationList[i]
+                                                          ['NavigationId']));
+                                                  getChapterFiles(
+                                                      parentId: int.parse(
+                                                          getx.navigationList[i]
+                                                              ['NavigationId']),
+                                                      'Video',
+                                                      getx.selectedPackageId
+                                                          .value
+                                                          .toString());
+                                                  getLocalNavigationDetails();
+                                                  getChapterFiles(
+                                                      parentId: int.parse(
+                                                          getx.navigationList[i]
+                                                              ['NavigationId']),
+                                                      'PDF',
+                                                      getx.selectedPackageId
+                                                          .value
+                                                          .toString());
+                                                  getLocalNavigationDetails();
+                                                }
+
+                                                print(getx
+                                                    .alwaysShowChapterDetailsOfVideo
+                                                    .length);
+
+                                                setState(() {
+                                                  filteredChapterDetails = getx
+                                                      .alwaysShowChapterDetailsOfVideo;
+                                                  filteredPdfDetails = getx
+                                                      .alwaysShowFileDetailsOfpdf;
+                                                  filteredvideoDetails = getx
+                                                      .alwaysShowChapterfilesOfVideo;
+                                                });
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10),
+                                                child: Row(
+                                                  children: [
+                                                    if (i != 0) ...[
+                                                      ClipPath(
+                                                        clipper:
+                                                            NavigationClipper1(),
+                                                        child: Container(
+                                                          height: 30,
+                                                          width: 20,
+                                                          color: i ==
+                                                                  getx.navigationList
+                                                                          .length -
+                                                                      1
+                                                              ? Colors.blue
+                                                              : Colors.white,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 10,
+                                                                  horizontal:
+                                                                      50),
+                                                        ),
+                                                      ),
+                                                      ClipPath(
+                                                        child: Container(
+                                                          width: (() {
+                                                            int nameLength = getx
+                                                                .navigationList[
+                                                                    i][
+                                                                    "NavigationName"]
+                                                                .length;
+                                                            if (nameLength >=
+                                                                16) {
+                                                              return 210.0;
+                                                            } else if (nameLength >=
+                                                                13) {
+                                                              return 190.0;
+                                                            } else if (nameLength >=
+                                                                10) {
+                                                              return 170.0;
+                                                            } else if (nameLength >=
+                                                                7) {
+                                                              return 150.0;
+                                                            } else {
+                                                              return 100.0;
+                                                            }
+                                                          })(),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: i ==
+                                                                    getx.navigationList
+                                                                            .length -
+                                                                        1
+                                                                ? Colors.blue
+                                                                : Colors.white,
+                                                          ),
+                                                          height: 30,
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          10),
+                                                              child: Text(
+                                                                  overflow: TextOverflow
+                                                                      .ellipsis,
+                                                                  getx.navigationList[
+                                                                          i][
+                                                                      "NavigationName"],
+                                                                  style: FontFamily.styleb.copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: i ==
+                                                                              getx.navigationList.length -
+                                                                                  1
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black54)),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      ClipPath(
+                                                        clipper:
+                                                            NavigationClipper(),
+                                                        child: Container(
+                                                          height: 30,
+                                                          width: 20,
+                                                          color: i ==
+                                                                  getx.navigationList
+                                                                          .length -
+                                                                      1
+                                                              ? Colors.blue
+                                                              : Colors.white,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 10,
+                                                                  horizontal:
+                                                                      50),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                  ],
+                                ),
+                              );
+                            }),
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 0),
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 5),
-                        width: MediaQuery.of(context).size.width - 40,
-                        child: TextFormField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.search,
-                              ),
-                              suffixIconColor:
-                                  Color.fromARGB(255, 197, 195, 195),
-                              hintText: 'Search',
-                              hintStyle: FontFamily.font9
-                                  .copyWith(color: ColorPage.brownshade),
-                              fillColor: Color.fromARGB(255, 255, 255, 255),
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(10))),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                filecountWidget(
+                                    getx.alwaysShowChapterfilesOfVideo.length,
+                                    "assets/video2.png"),
+                                filecountWidget(
+                                    getx.alwaysShowFileDetailsOfpdf.length,
+                                    "assets/pdf.png"),
+                                filecountWidget(
+                                    getx.alwaysShowChapterDetailsOfVideo.length,
+                                    "assets/folder5.png"),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-
-                Expanded(
-                  flex: 9,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
-                    child: Container(
-                      child: Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            flex: 3,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 0),
                             child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Obx(() {
-                                if (filteredChapterDetails.isEmpty &&
-                                    filteredPdfDetails.isEmpty &&
-                                    filteredvideoDetails.isEmpty) {
-                                  return Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.folder_open_outlined,
-                                          size: 30,
-                                          color: Colors.grey[600],
-                                        ),
-                                        Text(
-                                          'Empty',
-                                          style: FontFamily.style.copyWith(
-                                              color: Colors.grey, fontSize: 15),
-                                        ),
-                                      ],
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: TextFormField(
+                                controller: _searchController,
+                                decoration: InputDecoration(
+                                    suffixIcon: Icon(
+                                      Icons.search,
                                     ),
-                                  );
-                                }
-
-                                return ListView.builder(
-                                  itemCount: filteredChapterDetails.length +
-                                      filteredPdfDetails.length +
-                                      filteredvideoDetails.length,
-                                  scrollDirection: Axis.vertical,
-                                  itemBuilder: (context, index) {
-                                    if (filteredChapterDetails.length > index)
-                                      return buildListViewItem(
-                                          index, false, false);
-                                    else if (index <
-                                            (filteredChapterDetails.length +
-                                                filteredPdfDetails.length) &&
-                                        filteredPdfDetails.isNotEmpty)
-                                      return buildListViewItem(
-                                          index, true, false);
-                                    else
-                                      return buildListViewItem(
-                                          index -
-                                              (filteredChapterDetails.length +
-                                                  filteredPdfDetails.length),
-                                          false,
-                                          true);
-                                    //updated
-                                  },
-                                );
-                              }),
+                                    suffixIconColor:
+                                        Color.fromARGB(255, 197, 195, 195),
+                                    hintText: 'Search',
+                                    hintStyle: FontFamily.font9
+                                        .copyWith(color: ColorPage.brownshade),
+                                    fillColor:
+                                        Color.fromARGB(255, 255, 255, 255),
+                                    filled: true,
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                        borderRadius:
+                                            BorderRadius.circular(10))),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
+
+                      Expanded(
+                        flex: 9,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 7, horizontal: 10),
+                          child: Container(
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: Obx(() {
+                                      if (filteredChapterDetails.isEmpty &&
+                                          filteredPdfDetails.isEmpty &&
+                                          filteredvideoDetails.isEmpty) {
+                                        return Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.folder_open_outlined,
+                                                size: 30,
+                                                color: Colors.grey[600],
+                                              ),
+                                              Text(
+                                                'Empty',
+                                                style: FontFamily.style
+                                                    .copyWith(
+                                                        color: Colors.grey,
+                                                        fontSize: 15),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }
+
+                                      return ListView.builder(
+                                        itemCount:
+                                            filteredChapterDetails.length +
+                                                filteredPdfDetails.length +
+                                                filteredvideoDetails.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder: (context, index) {
+                                          if (filteredChapterDetails.length >
+                                              index)
+                                            return buildListViewItem(
+                                                index, false, false);
+                                          else if (index <
+                                                  (filteredChapterDetails
+                                                          .length +
+                                                      filteredPdfDetails
+                                                          .length) &&
+                                              filteredPdfDetails.isNotEmpty)
+                                            return buildListViewItem(
+                                                index, true, false);
+                                          else
+                                            return buildListViewItem(
+                                                index -
+                                                    (filteredChapterDetails
+                                                            .length +
+                                                        filteredPdfDetails
+                                                            .length),
+                                                false,
+                                                true);
+                                          //updated
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
@@ -1193,8 +1261,8 @@ Widget filecountWidget(int itemcount, String imagepath) {
   );
 }
 
-onSweetAleartDialog(context, VoidCallback ontap, String title, String subtitle,
-    VoidCallback ondeny) async {
+onSweetAleartDialogwithDeny(context, VoidCallback ontap, String title,
+    String subtitle, VoidCallback ondeny) async {
   await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
@@ -1203,7 +1271,7 @@ onSweetAleartDialog(context, VoidCallback ontap, String title, String subtitle,
           denyButtonText: "Cancel",
           title: "$title",
           text: "$subtitle",
-          confirmButtonText: "Ok",
+          confirmButtonText: "   Ok   ",
           onConfirm: ontap,
           onDeny: ondeny,
           type: ArtSweetAlertType.warning));

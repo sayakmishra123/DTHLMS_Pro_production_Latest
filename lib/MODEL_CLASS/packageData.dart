@@ -12,6 +12,8 @@ class PackageData {
   final String courseName;
   final bool isFree;
   final bool isDirectPlay;
+  final String IsActiveByUser;
+  final String IsPaused;
 
   PackageData(
       {required this.packageId,
@@ -26,24 +28,28 @@ class PackageData {
       required this.courseName,
       required this.courseId,
       required this.isFree,
-      required this.isDirectPlay});
+      required this.isDirectPlay,
+      required this.IsActiveByUser,
+      required this.IsPaused});
 
   // Factory method to create an instance from a JSON object
   factory PackageData.fromJson(Map<String, dynamic> json) {
     return PackageData(
-      packageId: json['PackageId'],
-      packageName: json['PackageName'],
-      packageExpiryDate: json['PackageExpiryDate'] ?? "no date",
-      isUpdated: json['IsUpdated'] ?? 0,
-      isActive: json['IsActive'] ?? false,
-      isBlocked: json['IsBlocked'] ?? false,
-      isDeleted: json["IsDeleted"] ?? false,
-      isShow: json['IsShow'] ?? 0,
-      lastUpdatedOn: json['LastUpdatedOn'] ?? 'no date',
-      courseId: json['CourseId'].toString() ?? '0',
-      courseName: json['CourseName'] ?? '0',
-      isFree: json['IsFree'] ?? false,
-      isDirectPlay: json['IsDirectPlay'] ?? false
-    );
+        packageId: json['PackageId'],
+        packageName: json['PackageName'],
+        packageExpiryDate: json['PackageExpiryDate'] ?? "no date",
+        isUpdated: json['IsUpdated'] ?? 0,
+        isActive: json['IsActive'] ?? false,
+        isBlocked: json['IsBlocked'] ?? false,
+        isDeleted: json["IsDeleted"] ?? false,
+        isShow: json['IsShow'] ?? 0,
+        lastUpdatedOn: json['LastUpdatedOn'] ?? 'no date',
+        courseId: json['CourseId'].toString() ?? '0',
+        courseName: json['CourseName'] ?? '0',
+        isFree: json['IsFree'] ?? false,
+        isDirectPlay: json['IsDirectPlay'] ?? false,
+        IsActiveByUser: "0", //json['IsActiveByUser'] ?? '0',
+        IsPaused: "0" //json['IsPaused'] ?? '0',
+        );
   }
 }

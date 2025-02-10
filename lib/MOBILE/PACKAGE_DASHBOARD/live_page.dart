@@ -1,15 +1,18 @@
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/Live/mobile_vcScreen.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_contents.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
+import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class LivePage extends StatefulWidget {
-  const LivePage({super.key});
- 
+  final List todayLiveClassList;
+  const LivePage({super.key, required this.todayLiveClassList});
+
   @override
   State<LivePage> createState() => _LivePageState();
 }
@@ -17,12 +20,12 @@ class LivePage extends StatefulWidget {
 class _LivePageState extends State<LivePage> {
   Widget _buildGridView() {
     return ListView.builder(
-      shrinkWrap: true, 
+      shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: getx.todaymeeting.length,
+      itemCount: widget.todayLiveClassList.length,
       itemBuilder: (context, index) {
-        MeetingDeatils meeting = getx.todaymeeting[index];
-        return TutorCard( 
+        MeetingDeatils meeting = widget.todayLiveClassList[index];
+        return TutorCard(
           meeting: meeting,
           imageUrl: meeting.videoCategory == 'YouTube'
               ? 'assets/youtube.png'
@@ -41,100 +44,13 @@ class _LivePageState extends State<LivePage> {
     );
   }
 
-  // Widget _buildCard(int index, MeetingDeatils meeting) {
-  //   return Card(
-  //     elevation: 4,
-  //     color: Colors.transparent,
-  //     child: Container(
-  //       color: Colors.black,
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(0.0),
-  //         child: LayoutBuilder(
-  //           builder: (context, constraints) {
-  //             return Padding(
-  //               padding: const EdgeInsets.all(8.0),
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 mainAxisAlignment: MainAxisAlignment.start,
-  //                 children: [
-  //                   Text(
-  //                     meeting.videoName.toUpperCase(),
-  //                     style: FontFamily.styleb.copyWith(
-  //                       color: Colors.blue,
-  //                     ),
-  //                   ),
-  //                   Column(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text(
-  //                         'Package: ${meeting.packageName}',
-  //                         style: FontFamily.styleb.copyWith(
-  //                           fontSize: 12,
-  //                           color: Colors.white54,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         'TopicName: ${meeting.topicName}',
-  //                         style: FontFamily.styleb.copyWith(
-  //                           fontSize: 12,
-  //                           color: Colors.white54,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         'Duration: ${meeting.videoDuration}',
-  //                         style: FontFamily.styleb.copyWith(
-  //                           fontSize: 12,
-  //                           color: Colors.white54,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   Row(
-  //                     mainAxisAlignment: MainAxisAlignment.end,
-  //                     children: [
-  //                       MaterialButton(
-  //                         hoverColor: Colors.white10,
-  //                         focusColor: Colors.red,
-  //                         highlightColor: Colors.blue[200],
-  //                         color: Colors.red,
-  //                         onPressed: () {
-  //                           // Navigate to MobileMeetingPage with the relevant information
-  //                           Get.to(
-  //                               transition: Transition.cupertino,
-  //                               () => MobileMeetingPage(
-  //                                     meeting: meeting,
-  //                                     meeting.projectId.toString(),
-  //                                     meeting.sessionId.toString(),
-  //                                     getx.loginuserdata[0].nameId,
-  //                                     "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
-  //                                     meeting.topicName,
-  //                                     meeting.liveUrl,
-  //                                     videoCategory: meeting.videoCategory,
-  //                                   ));
-  //                         },
-  //                         child: Text(
-  //                           'Join',
-  //                           style: TextStyle(color: Colors.white),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   )
-  //                 ],
-  //               ),
-  //             );
-  //           },
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildMeetingList() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child:
-          Obx(() => getx.todaymeeting.isEmpty ? Container() : _buildGridView()),
+      child: Obx(() =>
+          getx.todaymeeting.isEmpty && widget.todayLiveClassList.isEmpty
+              ? Container()
+              : _buildGridView()),
     );
   }
 
@@ -157,13 +73,15 @@ class _LivePageState extends State<LivePage> {
     );
   }
 
-  String pageTitle = 'Today Meetingss';
+  String pageTitle = 'Today Meetings';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getMeetingList(context);
+      getMeetingList(context).then((_) {
+        filterMeetingListByPackage();
+      });
     });
   }
 
@@ -174,7 +92,7 @@ class _LivePageState extends State<LivePage> {
         backgroundColor: ColorPage.blue,
         title: Text(
           'Live',
-          style: TextStyle(color: Colors.white, fontSize: 25),
+          style: FontFamily.styleb,
         ),
         actions: [],
       ),
@@ -223,13 +141,15 @@ class TutorCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: 
-        [ const Color(0xFFFFF1D5),
-        const Color(0xFFFFE0AF),],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),borderRadius: BorderRadius.circular(12)
-      ),
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFFFFF1D5),
+              const Color(0xFFFFE0AF),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -264,7 +184,7 @@ class TutorCard extends StatelessWidget {
                     ],
                   ),
                 ),
-      
+
                 Lottie.asset('assets/liveanimation.json',
                     width: 70, height: 70),
                 // Rating
@@ -355,3 +275,4 @@ class TutorCard extends StatelessWidget {
     );
   }
 }
+ 

@@ -56,7 +56,7 @@ void main(List<String> args) async {
           win.show();
         },
       );
-    } else if (Platform.isIOS) {
+    } else if (Platform.isAndroid) {
       // disableScreenshot();
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
