@@ -213,7 +213,7 @@ Future packactivationKey(
       await confirmActivationCode(context, 'Package activated', true);
       Get.back();
 
-      Platform.isAndroid
+      Platform.isIOS
           ? Get.offAll(() => HomePageMobile())
           : Get.offAll(() => DthDashboard());
     } else if (res.statusCode == 401) {
@@ -448,7 +448,7 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder);
+            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -470,7 +470,11 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
                   file.fileIdType ?? '',
                 ),
                 file.isEncrypted,
-                file.sortedOrder.toString())
+                file.sortedOrder.toString(),
+                file.viewCount,
+                file.durationLimitation
+
+                )
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);
@@ -531,7 +535,7 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder);
+            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -553,7 +557,7 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
                   file.fileIdType ?? '',
                 ),
                 file.isEncrypted,
-                file.sortedOrder.toString())
+                file.sortedOrder.toString(),file.viewCount??'',file.durationLimitation??'')
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);
@@ -669,7 +673,9 @@ Future<void> getPackageData(BuildContext context, String token) async {
             package.isPause,
               package.isActivateByUser,
             package.isViewCounter,
-            package.isisTotal);
+            package.isTotal,
+            package.pausedUpto,
+            package.pausedays);
       });
 
       // Get.back();
@@ -1005,8 +1011,8 @@ Future<void> getHomePageBannerImage(BuildContext context, String token) async {
       for (var item in resultData) {
         Map<String, dynamic> bannerData = Map<String, dynamic>.from(item);
         String imgUrl = await downloadBannerAndSave(bannerData['DocumentUrl']);
-        imgUrl = Platform.isWindows
-            ? imgUrl.replaceAll('/', '\\')
+        imgUrl = Platform.isMacOS
+            ? imgUrl.replaceAll('/', '/')
             : imgUrl.replaceAll('\\', '/');
         // log(imgUrl+ " this is downloaded banner image shubha");
         await insertOrUpdateTblImages(
@@ -2695,10 +2701,14 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               newPackage.courseName,
               newPackage.isFree.toString(),
               newPackage.isDirectPlay.toString(),
-              newPackage.isActivateByUser,
+              
               newPackage.isPause,
+              newPackage.isActivateByUser,
               newPackage.isViewCounter,
-              newPackage.isisTotal);
+              newPackage.isTotal,
+              newPackage.pausedUpto,
+              newPackage.pausedays
+              );
 
           // Delete the old package data (if needed)
           deletePartularPackageData(newPackage.packageId.toString(), context);
@@ -2738,7 +2748,9 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               isActivateByUser: '0',
               isPause: "0",
               isViewCounter: "0",
-              isisTotal: "0"),
+              isTotal: "0",
+              pausedUpto: "0",
+              pausedays: "0"),
         );
 
         if (!isPackage) {
@@ -2777,10 +2789,13 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
                   newPackage.courseName,
                   newPackage.isFree.toString(),
                   newPackage.isDirectPlay.toString(),
-                  newPackage.isActivateByUser,
+                  
                   newPackage.isPause,
+                  newPackage.isActivateByUser,
                   newPackage.isViewCounter,
-                  newPackage.isisTotal);
+                  newPackage.isTotal,
+                  newPackage.pausedUpto,
+                  newPackage.pausedays);
 
               // print(
               // 'Package ${newPackage.packageId} has been updated in the database.');
@@ -3876,4 +3891,52 @@ String formatDateString(String dateString, String type) {
     print("${e.toString()}");
     return "no date found";
   }
+}
+
+
+
+Future<bool> activePackageByStudent(
+  BuildContext context,
+  String token,
+  String packageId,
+  String studentPausedDays
+) async {
+  loader(context);
+  Map<String, dynamic> data = {"PackageId": packageId,
+  'StudentPausedDays':studentPausedDays
+  };
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.activePackageByStudent),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+      Get.back();
+
+      return true;
+    } else if (res.statusCode == 401) {
+      Get.back();
+      onTokenExpire(context);
+    } else {
+      Get.back();
+      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+    }
+  } catch (e) {
+    Get.back();
+    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    writeToFile(e, 'activePackageByStudent');
+  }
+  return false;
 }

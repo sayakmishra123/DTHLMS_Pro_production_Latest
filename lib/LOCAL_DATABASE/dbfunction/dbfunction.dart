@@ -171,7 +171,9 @@ void createtblPackageDetails() {
    DownloadedPath TEXT,
    VideoDuration TEXT,
    IsEncrypted TEXT,
-   SortedOrder TEXT
+   SortedOrder TEXT,
+   DurationLimitation TEXT,
+   ViewCount TEXT
    );
   ''');
 }
@@ -354,7 +356,9 @@ void createTblPackageData() {
       isPause TEXT,
       isActivateByUser TEXT,
       isTotal TEXT,
-      isViewCounter TEXT
+      isViewCounter TEXT,
+      PausedUpto TEXT,
+      Pausedays TEXT
     );
   ''');
   print('TblPackageData created with PackageId as the primary key!');
@@ -726,10 +730,12 @@ Future<void> insertOrUpdateTblPackageData(
     String isPasued,
     String isActivateByUser,
     String isviewCounter,
-    String isTotal) async {
+    String isTotal,
+    String pausedUpto,
+    String pausedays) async {
   _db.execute('''
-    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,isActivateByUser,isPause,isViewCounter,isTotal) 
-    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay','$isActivateByUser','$isPasued','$isviewCounter','$isTotal')
+    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,isActivateByUser,isPause,isViewCounter,isTotal,PausedUpto,Pausedays) 
+    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay','$isActivateByUser','$isPasued','$isviewCounter','$isTotal','$pausedUpto','$pausedays')
     ON CONFLICT(PackageId) 
     DO UPDATE SET 
       PackageName = excluded.PackageName,
@@ -743,8 +749,10 @@ Future<void> insertOrUpdateTblPackageData(
       IsDirectPlay=excluded.IsDirectPlay,
       isActivateByUser=excluded.isActivateByUser,
       isPause=excluded.isPause,
-        isViewCounter=excluded.isViewCounter,
-          isTotal=excluded.isTotal;
+      isViewCounter=excluded.isViewCounter,
+      isTotal=excluded.isTotal,
+      PausedUpto=excluded.PausedUpto,
+      Pausedays=excluded.Pausedays;
       
       
   ''');
@@ -849,10 +857,10 @@ Future<void> insertPackageDetailsdata(
     String videoDuration,
     String DownloadedPath,
     String isEncrypted,
-    String sortedOrder) async {
+    String sortedOrder,String? viewCount,String? durationLimitation) async {
   _db.execute('''
-       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder) 
-      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder');
+       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder,DurationLimitation,ViewCount) 
+      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder','$durationLimitation','$viewCount');
     ''');
 
   // return null;
@@ -1074,7 +1082,13 @@ Future<void> getAllPackageListOfStudent() async {
       'isPause': row['isPause'],
       'isActivateByUser': row['isActivateByUser']
     };
-    getx.studentAllPackage.add(packageData);
+
+       if (row['IsFree'] == 'false'
+     
+        ) {
+       getx.studentAllPackage.add(packageData);
+    }
+  
     // Check if the package is still valid and should be shown
     if (row['IsShow'] == '1'
         //  &&

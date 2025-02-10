@@ -369,12 +369,15 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
 
   Future downloadAndSavePdf(
       String pdfUrl, String title, String enkey, String foldername) async {
+
+// print(pdfUrl
+// +" pdf path ///////////////////");
     this.title = title;
     this.data = getDownloadedPathOfPDF(title, foldername);
-    print(data);
+    log(this.data+"///////////////////////////////////////////////");
 
     //  String enkey=await  getEncryptionKey(getx.loginuserdata[0].token);
-    if (!File(data).existsSync()) {
+    if (!File(this.data).existsSync()) {
       print("downloaing file.....");
       try {
         // Get the application's document directory
@@ -397,7 +400,7 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
 
         // Download the PDF using Dio
         Dio dio = Dio();
-        await dio.download(pdfUrl, filePath,
+        await dio.download(pdfUrl.replaceAll('"', ''), filePath,
             onReceiveProgress: (received, total) {
           if (total != -1) {
             print(
@@ -431,13 +434,14 @@ class _ShowChapterPDFMobileState extends State<ShowChapterPDFMobile> {
       }
     } else {
       if (widget.isEncrypted) {
-        final encryptedBytes = await readEncryptedPdfFromFile(data);
+        final encryptedBytes = await readEncryptedPdfFromFile(this.data);
         final decryptedPdfBytes = aesDecryptPdf(encryptedBytes, enkey);
         isLoading = false;
         return decryptedPdfBytes;
       } else {
-        return data;
+        return this.data;
       }
     }
   }
+
 }

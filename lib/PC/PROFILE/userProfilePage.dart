@@ -2528,7 +2528,7 @@ logoutConfirmationBox(context) async {
 
           onConfirm: () async {
             await handleLogoutProcess(context).then((v) {
-              if (Platform.isAndroid) {
+              if (Platform.isIOS) {
                 Navigator.pop(context);
               }
             });

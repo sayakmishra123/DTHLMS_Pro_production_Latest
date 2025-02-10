@@ -43,9 +43,9 @@ Future loginApi(
     } else if (Platform.isWindows) {
       deviceinfo = await ClsDeviceInfo.windowsInfo(context);
     } else if (Platform.isIOS) {
-      deviceinfo = await ClsDeviceInfo.androidInfo(context);
+      deviceinfo = await ClsDeviceInfo.iosInfo();
     } else if (Platform.isMacOS) {
-      deviceinfo = await ClsDeviceInfo.windowsInfo(context);
+      deviceinfo = await ClsDeviceInfo.macOsInfo();
     }
 
     if (Platform.isAndroid) {
@@ -100,15 +100,7 @@ Future loginApi(
       await prefs.setBool("isLogin", true);
       await prefs.setString('userDetails', userdataJson);
 
-      if (Platform.isWindows) {
-        createTableWhiteList();
-        createTableBlckList();
 
-        deleteBlackListTable();
-        deleteWhiteListTable();
-
-        backgroundlistApi(jsondata['result']['token']);
-      }
 
       deletetblpackage();
       createtblPackageDetails();
@@ -131,10 +123,7 @@ Future loginApi(
       createTblLocalNavigation();
       createDownloadFileData();
       createDownloadFileDataOfVideo();
-      if (Platform.isWindows) {
-        getx.blackListProcess.value = await fetchBlackList();
-        getx.whiteListProcess.value = await fetchWhiteList();
-      }
+
       getx.calenderEvents.clear();
 
       deleteAllFolders();
@@ -199,7 +188,7 @@ Future loginApi(
     Get.back();
     writeToFile(e, 'loginApi');
     ClsErrorMsg.fnErrorDialog(context, 'Login error',
-        e.toString().replaceAll("[", "").replaceAll("]", ""), e);
+'Error', e);
   }
 }
 
@@ -230,10 +219,12 @@ Future signupApi(
     } else if (Platform.isWindows) {
       deviceinfo = await ClsDeviceInfo.windowsInfo(context);
     } else if (Platform.isIOS) {
-      deviceinfo = ClsDeviceInfo.androidInfo(context);
+      deviceinfo = ClsDeviceInfo.iosInfo();
     } else if (Platform.isMacOS) {
-      deviceinfo = await ClsDeviceInfo.windowsInfo(context);
+      deviceinfo = await ClsDeviceInfo.macOsInfo();
     }
+
+    log(deviceinfo.toString());
 
     var signupdata = ClsMap().objSignupApi(
         signupuser,
@@ -262,7 +253,7 @@ Future signupApi(
         },
         body: jsonEncode(signupdata));
     var jsondata = json.decode(res.body);
-    // log(res.body);
+    log(res.body.toString());
 
     if (jsondata['isSuccess'] == true) {
       Get.back();
@@ -305,7 +296,7 @@ Future signupApi(
     writeToFile(e, 'signupApi');
     Get.back();
     ClsErrorMsg.fnErrorDialog(context, 'Signup error',
-      "Something Went Wrong!", e);
+        'Error', e);
   }
 }
 

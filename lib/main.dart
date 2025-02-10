@@ -44,7 +44,7 @@ void main(List<String> args) async {
   Get.put(OnlineAudioPlayerController()); 
 
   function() async {
-    open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
+    // open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
 
     testSQLCipherOnWindows();
     if (Platform.isWindows) {
@@ -90,10 +90,14 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     appVersionGet();
 
+// A
+// lue.toString() +
+//         "");
+
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        setWindowDisplayAffinity();
-      }); 
+        // setWindowDisplayAffinity();
+      });
       if (getx.isTimerOn.value) {
         Timer.periodic(Duration(seconds: 10), (timer) async {
           // print(getx.blackListProcess.length);
@@ -120,6 +124,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> getUserDetails() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // prefs.clear();
+    // log(prefs.)
     getx.loginId.value = prefs.getString("LoginId") ?? '';
 
     String? userdataJson = prefs.getString('userDetails');
@@ -167,7 +172,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: Color.fromARGB(255, 234, 237, 248),
         fontFamily: 'AmazonEmber',
-        textTheme: !Platform.isAndroid
+        textTheme: !Platform.isIOS
             ? GoogleFonts.outfitTextTheme(
                 TextTheme(
                   bodyLarge: TextStyle(fontSize: 12),
@@ -199,11 +204,13 @@ class _MyAppState extends State<MyApp> {
         future: getUserDetails(), // Call the future
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            log(getx.loginuserdata.toString());
             return const CircularProgressIndicator();
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return Platform.isAndroid
+            return 
+            Platform.isIOS
                 ? getx.isEmulator.value
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
@@ -275,13 +282,7 @@ singleInstance(args) async {
 Future<bool> isEmulator() async {
   final deviceInfo = DeviceInfoPlugin();
 
-  if (Platform.isAndroid) {
-    final androidInfo = await deviceInfo.androidInfo;
-    return androidInfo.isPhysicalDevice == false ||
-        androidInfo.brand.toLowerCase() == 'generic' ||
-        androidInfo.product.toLowerCase().contains('sdk') ||
-        androidInfo.model.contains('Emulator');
-  } else if (Platform.isIOS) {
+if (Platform.isIOS) {
     final iosInfo = await deviceInfo.iosInfo;
     return iosInfo.isPhysicalDevice == false ||
         iosInfo.model.toLowerCase().contains('simulator') ||

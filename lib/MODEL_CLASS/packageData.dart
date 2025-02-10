@@ -15,7 +15,9 @@ class PackageData {
   final String isActivateByUser;
   final String isPause;
   final String isViewCounter;
-  final String isisTotal;
+  final String isTotal;
+  final String pausedUpto;
+  final String pausedays;
 
   PackageData(
       {required this.packageId,
@@ -34,7 +36,12 @@ class PackageData {
       required this.isActivateByUser,
       required this.isPause,
       required this.isViewCounter,
-      required this.isisTotal});
+      required this.isTotal,
+      required this.pausedUpto,
+      required this.pausedays});
+      
+      
+     
     
 
   // Factory method to create an instance from a JSON object
@@ -56,7 +63,9 @@ class PackageData {
         isActivateByUser: json['isActivateByUser'].toString() , //json['isActivateByUser'] ?? '0',
         isPause:json['isPause'].toString(),
       isViewCounter: json['isViewCounter'].toString() ,
-      isisTotal: json['isTotal'].toString() 
+      isTotal: json['isTotal'].toString() ,
+      pausedUpto: json['pausedUpto'].toString(),
+      pausedays: json['pausedays'].toString(),
         );
   }
 }

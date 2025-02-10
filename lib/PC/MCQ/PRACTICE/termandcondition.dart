@@ -27,7 +27,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
   final String paperId;
   final bool isEncrypted;
 
-  bool windowsddevice = Platform.isWindows ? true : false;
+  // bool windowsddevice = Platform.isWindows ? true : false;
 
   TheoryExamTermAndCondition(
       {super.key,
@@ -144,7 +144,7 @@ class TheoryExamTermAndCondition extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: Platform.isAndroid ? 30 : 100, vertical: 20),
+              horizontal: Platform.isIOS ? 30 : 100, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

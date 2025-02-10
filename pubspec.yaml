@@ -116,7 +116,7 @@ dependencies:
   fos: ^0.0.8
   mime: ^1.0.6
   http_parser: ^4.0.2
-  no_screenshot: ^0.3.1
+  # no_screenshot: ^0.3.1
   # latext: ^0.4.1
   # flutter_math_fork: ^0.7.2
   flutter_widget_from_html: 0.15.3

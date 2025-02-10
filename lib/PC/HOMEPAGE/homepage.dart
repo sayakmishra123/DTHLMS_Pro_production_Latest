@@ -559,6 +559,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                 },
               ),
 
+             
               // Footer Section
               Container(
                 padding:
@@ -1155,74 +1156,75 @@ class _DashBoardRightState extends State<DashBoardRight> {
     );
   }
 
-  _logoutConfirmetionBox(context) {
-    var alertStyle = AlertStyle(
-      animationType: AnimationType.fromTop,
-      isCloseButton: false,
-      isOverlayTapDismiss: true,
-      alertPadding: const EdgeInsets.only(top: 200),
-      descStyle: const TextStyle(),
-      animationDuration: const Duration(milliseconds: 400),
-      alertBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-        side: const BorderSide(color: Colors.grey),
-      ),
-      titleStyle: const TextStyle(
-          color: Color.fromARGB(255, 243, 33, 33), fontWeight: FontWeight.bold),
-      constraints: const BoxConstraints.expand(width: 350),
-      overlayColor: const Color(0x55000000),
-      alertElevation: 0,
-      alertAlignment: Alignment.center,
-    );
-    Alert(
-      context: context,
-      type: AlertType.warning,
-      style: alertStyle,
-      title: "Are you sure you want to log out?",
-      // desc:
-      //     "",
-      buttons: [
-        DialogButton(
-          width: 150,
-          child: const Text("Cancel",
-              style: TextStyle(color: Colors.white, fontSize: 18)),
-          highlightColor: const Color.fromARGB(255, 203, 46, 46),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: const Color.fromARGB(255, 139, 19, 19),
-        ),
-        DialogButton(
-          width: 150,
-          highlightColor: const Color.fromARGB(255, 2, 2, 60),
-          child: const Text("Yes",
-              style: TextStyle(color: Colors.white, fontSize: 18)),
-          onPressed: () async {
-            Navigator.pop(context);
-            await logoutFunction(
-              context,
-              getx.loginuserdata[0].token,
-            );
+//   _logoutConfirmetionBox(context) {
+//     var alertStyle = AlertStyle(
+//       animationType: AnimationType.fromTop,
+//       isCloseButton: false,
+//       isOverlayTapDismiss: true,
+//       alertPadding: const EdgeInsets.only(top: 200),
+//       descStyle: const TextStyle(),
+//       animationDuration: const Duration(milliseconds: 400),
+//       alertBorder: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(20.0),
+//         side: const BorderSide(color: Colors.grey),
+//       ),
+//       titleStyle: const TextStyle(
+//           color: Color.fromARGB(255, 243, 33, 33), fontWeight: FontWeight.bold),
+//       constraints: const BoxConstraints.expand(width: 350),
+//       overlayColor: const Color(0x55000000),
+//       alertElevation: 0,
+//       alertAlignment: Alignment.center,
+//     );
+//     Alert(
+//       context: context,
+//       type: AlertType.warning,
+//       style: alertStyle,
+//       title: "Are you sure you want to log out?",
+//       // desc:
+//       //     "",
+//       buttons: [
+//         DialogButton(
+//           width: 150,
+//           child: const Text("Cancel",
+//               style: TextStyle(color: Colors.white, fontSize: 18)),
+//           highlightColor: const Color.fromARGB(255, 203, 46, 46),
+//           onPressed: () {
+//             Navigator.pop(context);
+//           },
+//           color: const Color.fromARGB(255, 139, 19, 19),
+//         ),
+//         DialogButton(
+//           width: 150,
+//           highlightColor: const Color.fromARGB(255, 2, 2, 60),
+//           child: const Text("Yes",
+//               style: TextStyle(color: Colors.white, fontSize: 18)),
+//           onPressed: () async {
+//             Navigator.pop(context);
+//             await logoutFunction(
+//               context,
+//               getx.loginuserdata[0].token,
+//             );
 
-            await clearSharedPreferencesExcept([
-              'SelectedDownloadPathOfVieo',
-              'SelectedDownloadPathOfFile',
-              'DefaultDownloadpathOfFile',
-              'DefaultDownloadpathOfVieo'
-            ]);
-            var prefs = await SharedPreferences.getInstance();
-            prefs.setString("LoginId", getx.loginuserdata[0].loginId);
+//             await clearSharedPreferencesExcept([
+//               'SelectedDownloadPathOfVieo',
+//               'SelectedDownloadPathOfFile',
+//               'DefaultDownloadpathOfFile',
+//               'DefaultDownloadpathOfVieo'
+//             ]);
+//             var prefs = await SharedPreferences.getInstance();
+//             prefs.setString("LoginId", getx.loginuserdata[0].loginId);
 
-            getx.loginuserdata.clear();
+//             getx.loginuserdata.clear();
 
-            Get.offAll(() => const DthLmsLogin());
-          },
-          color: const Color.fromARGB(255, 1, 12, 31),
-        ),
-      ],
-    ).show();
-  }
-
+//             Get.offAll(() => const DthLmsLogin());
+//           },
+//           color: const Color.fromARGB(255, 1, 12, 31),
+//         ),
+//       ],
+//     ).show();
+//   }
+// // 
+//   
   Future<void> clearSharedPreferencesExcept(List<String> keysToKeep) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -2335,7 +2337,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     final appDocDir;
     try {
       var prefs = await SharedPreferences.getInstance();
-      if (Platform.isAndroid) {
+      if (Platform.isIOS) {
         final path = await getApplicationDocumentsDirectory();
         appDocDir = path.path;
       } else {
@@ -2493,6 +2495,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           color: const Color.fromARGB(255, 243, 33, 33),
         ),
         DialogButton(
+          
           child: Obx(() => Text(
                 downloadProgress[1] == 100
                     ? "Play"
@@ -2552,7 +2555,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     }
                   }
                 },
-          color: link == 0 ? Colors.grey : ColorPage.blue,
+          color: link == '0' ? Colors.grey : ColorPage.blue,
         ),
       ],
     ).show();
@@ -2802,16 +2805,7 @@ class _HeadingBoxState extends State<HeadingBox> {
                 )),
           ),
         ),
-        // : SizedBox(
-        //     height: 300,
-        //     child: Center(
-        //       child: Text(
-        //         " No image Found",
-        //         style:
-        //             FontFamily.font5.copyWith(color: ColorPage.colorblack),
-        //       ),
-        //     ),
-        //   )),
+
         Obx(
           () => getx.bannerImageList.isNotEmpty
               ? Positioned(
@@ -2944,35 +2938,15 @@ class HeadingBoxContent extends StatelessWidget {
   }
 }
 
-// import 'dart:io';
-// import 'package:device_info_plus/device_info_plus.dart';
-
-// Future<bool> isEmulator() async {
-//   final deviceInfo = DeviceInfoPlugin();
-
-//   if (Platform.isAndroid) {
-//     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-//     // Check for emulator-specific identifiers
-//     if (androidInfo.model.toLowerCase().contains('emulator') ||
-//         androidInfo.model.toLowerCase().contains('sdk') ||
-//         androidInfo.hardware.toLowerCase().contains('goldfish') ||
-//         androidInfo.hardware.toLowerCase().contains('ranchu') ||
-//         androidInfo.product.toLowerCase().contains('sdk_google')) {
-//       return true;
-//     }
-//   } else if (Platform.isIOS) {
-//     IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-//     // Check for iOS simulator
-//     if (iosInfo.model?.toLowerCase().contains('simulator') ?? false) {
-//       return true;
-//     }
-//   }
-
-//   // If the checks don't match, the device is not an emulator
-//   return false;
-// }
 
 Future<bool> isProcessRunning(String processName) async {
+  try{
   final result = await Process.run('tasklist', []);
   return result.stdout.toString().contains(processName);
+  }
+  catch(e)
+  {
+    writeToFile(e, 'isProcessRunning');
+    return false;
+  }
 }
