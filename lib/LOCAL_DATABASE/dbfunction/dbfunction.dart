@@ -724,10 +724,12 @@ Future<void> insertOrUpdateTblPackageData(
     String isFree,
     String isDirectPlay,
     String isPasued,
-    String isActivateByUser) async {
+    String isActivateByUser,
+    String isviewCounter,
+    String isTotal) async {
   _db.execute('''
-    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,isActivateByUser,isPause) 
-    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay','$isActivateByUser','$isPasued')
+    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,isActivateByUser,isPause,isViewCounter,isTotal) 
+    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay','$isActivateByUser','$isPasued','$isviewCounter','$isTotal')
     ON CONFLICT(PackageId) 
     DO UPDATE SET 
       PackageName = excluded.PackageName,
@@ -740,9 +742,11 @@ Future<void> insertOrUpdateTblPackageData(
       IsFree=excluded.IsFree,
       IsDirectPlay=excluded.IsDirectPlay,
       isActivateByUser=excluded.isActivateByUser,
-      isPause=excluded.isPause;
+      isPause=excluded.isPause,
+        isViewCounter=excluded.isViewCounter,
+          isTotal=excluded.isTotal;
       
-      ;
+      
   ''');
   print("Insert or update on TblPackageData");
 }

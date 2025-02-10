@@ -14,6 +14,8 @@ class PackageData {
   final bool isDirectPlay;
   final String isActivateByUser;
   final String isPause;
+  final String isViewCounter;
+  final String isisTotal;
 
   PackageData(
       {required this.packageId,
@@ -30,7 +32,10 @@ class PackageData {
       required this.isFree,
       required this.isDirectPlay,
       required this.isActivateByUser,
-      required this.isPause});
+      required this.isPause,
+      required this.isViewCounter,
+      required this.isisTotal});
+    
 
   // Factory method to create an instance from a JSON object
   factory PackageData.fromJson(Map<String, dynamic> json) {
@@ -48,8 +53,10 @@ class PackageData {
         courseName: json['CourseName'] ?? '0',
         isFree: json['IsFree'] ?? false,
         isDirectPlay: json['IsDirectPlay'] ?? false,
-        isActivateByUser: "0", //json['isActivateByUser'] ?? '0',
-        isPause: "0" //json['IsPaused'] ?? '0',
+        isActivateByUser: json['isActivateByUser'].toString() , //json['isActivateByUser'] ?? '0',
+        isPause:json['isPause'].toString(),
+      isViewCounter: json['isViewCounter'].toString() ,
+      isisTotal: json['isTotal'].toString() 
         );
   }
 }

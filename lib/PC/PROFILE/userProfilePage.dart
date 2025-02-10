@@ -862,13 +862,17 @@ class _MyPackageState extends State<MyPackage> {
                                   child: ExpansionTile(
                                     trailing: getx.studentAllPackage[index]
                                                 ['isPause'] ==
-                                            "1"
+                                            "1" &&getx.studentAllPackage[index]
+                                                  ['IsFree'] ==
+                                              "false"
                                         ? Icon(Icons.gpp_maybe)
                                         : Icon(Icons.arrow_drop_down),
                                     children: [
                                       getx.studentAllPackage[index]
                                                   ['isPause'] ==
-                                              "1"
+                                              "1" && getx.studentAllPackage[index]
+                                                  ['IsFree'] ==
+                                              "false"
                                           ? Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -877,7 +881,11 @@ class _MyPackageState extends State<MyPackage> {
                                                     "Subscription of this Package is currently paused!")
                                               ],
                                             )
-                                          : Row(
+                                          :      getx.studentAllPackage[index]
+                                                  ['isPause'] ==
+                                              "0" && getx.studentAllPackage[index]
+                                                  ['IsFree'] ==
+                                              "false"? Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
@@ -942,7 +950,7 @@ class _MyPackageState extends State<MyPackage> {
                                                   ),
                                                 )
                                               ],
-                                            ),
+                                            ): SizedBox(),
                                     ],
                                     shape:
                                         Border.all(color: Colors.transparent),

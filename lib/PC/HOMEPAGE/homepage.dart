@@ -505,73 +505,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     freePackages[i]['packageName']!,
                                     freePackages[i]['CourseName'],
                                     () async {
-                                      if (checkVaildationOfPackage(
-                                          freePackages[i]['ExpiryDate'])) {
-                                        if (freePackages[i]['isPause'] ==
-                                            "0") {
-                                          if (freePackages[i]
-                                                  ['isActivateByUser'] ==
-                                              "0") {
-                                            onSweetAleartDialogwithDeny(
-                                                context,
-                                                () {
-                                                  updateTblPackageDataForFirsttimeActivation(
-                                                          "1",
-                                                          freePackages[i]
-                                                              ['packageId'])
-                                                      .then((_) async {
-                                                    getAllPackageListOfStudent();
-                                                    getx.currentPackageName
-                                                            .value =
-                                                        freePackages[i]
-                                                            ['packageName'];
-                                                    getx.selectedPackageId
-                                                            .value =
-                                                        int.parse(
-                                                            freePackages[i]
-                                                                ['packageId']);
 
-                                                    resetTblLocalNavigation();
-                                                    await insertTblLocalNavigation(
-                                                      "Package",
-                                                      freePackages[i]
-                                                          ['packageId'],
-                                                      freePackages[i]
-                                                          ['packageName'],
-                                                    );
-                                                    getLocalNavigationDetails();
-
-                                                    widget.onItemSelected(i);
-
-                                                    initialfunction(
-                                                        freePackages[i]
-                                                            ['packageId']);
-
-                                                    Get.to(
-                                                      () => PackageDetailsPage(
-                                                        freePackages[i]
-                                                            ['packageName'],
-                                                        int.parse(
-                                                            freePackages[i]
-                                                                ['packageId']),
-                                                        ExpiryDate:
-                                                            freePackages[i]
-                                                                ['ExpiryDate'],
-                                                      ),
-                                                      transition:
-                                                          Transition.cupertino,
-                                                      duration: const Duration(
-                                                          milliseconds: 500),
-                                                    );
-                                                  });
-                                                },
-                                                "Activate your Package",
-                                                "your Package is not activate.Click OK to activate.",
-                                                () {
-                                                  Get.back();
-                                                });
-                                          } else {
-                                            getx.currentPackageName.value =
+                                      getx.currentPackageName.value =
                                                 freePackages[i]['packageName'];
                                             getx.selectedPackageId.value =
                                                 int.parse(freePackages[i]
@@ -602,22 +537,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                               duration: const Duration(
                                                   milliseconds: 500),
                                             );
-                                          }
-                                        } else //is paused
-                                        {
-                                          onSweetAleartDialog(context, () {
-                                            Get.back();
-                                          }, "Paused!",
-                                              "Your Package subscription is pause.");
-                                        }
-                                      } else //is Package Expire
-                                      {
-                                        print("expire false");
-                                        onSweetAleartDialog(context, () {
-                                          Get.back();
-                                        }, "Expired!",
-                                            "Your Package subscription was expired on \n  ${formatDateString(freePackages[i]['ExpiryDate'], "datetime")}.");
-                                      }
+                                     
                                     },
                                     widget.selectedIndex == i,
                                     hoverIndex == i,
