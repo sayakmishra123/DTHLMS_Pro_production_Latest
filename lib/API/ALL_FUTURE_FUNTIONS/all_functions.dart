@@ -3899,11 +3899,11 @@ Future<bool> activePackageByStudent(
   BuildContext context,
   String token,
   String packageId,
-  String studentPausedDays
+
 ) async {
   loader(context);
   Map<String, dynamic> data = {"PackageId": packageId,
-  'StudentPausedDays':studentPausedDays
+ 
   };
 
   try {
@@ -3916,21 +3916,41 @@ Future<bool> activePackageByStudent(
       body: jsonEncode(data),
     );
     print(res.body);
-    if (res.statusCode == 200) {
       Map<String, dynamic> response = jsonDecode(res.body);
+    if (res.statusCode == 200) {
+    
 
       var result = jsonDecode(response['result']);
+    await updateTblPackageDataForFirsttimeActivation("1",result[0]['ValidityDate'],packageId).whenComplete((){
+      Get.back();
+    return true;
+
+
+    });
+
+// String  expdate=result['ValidityDate'];
 
       // log("${result} ////////////////// get infinite marquee details");
 
-      Get.back();
+      
 
-      return true;
+      // return true;
     } else if (res.statusCode == 401) {
+
+      // updateTblPackageDataForFirsttimeActivation("1",result[''],)
       Get.back();
       onTokenExpire(context);
     } else {
-      Get.back();
+            Get.back();
+        ClsErrorMsg.fnErrorDialog(
+          context,
+          'Error',
+          response['errorMessages']
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", ""),
+          res);
+
       // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
     }
   } catch (e) {

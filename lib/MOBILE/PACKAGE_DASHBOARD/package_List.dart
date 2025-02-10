@@ -273,10 +273,10 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                               paidPackages[index]['packageId']) ==
                           false) {
                         onSweetAleartDialogwithDeny(
-                            context,
+                            context,  
                             () {
-                              updateTblPackageDataForFirsttimeActivation(
-                                      "1", paidPackages[index]['packageId'])
+                             activePackageByStudent(context,  getx.loginuserdata[0].token, paidPackages[index]
+                                                                ['packageId'].toString(),)
                                   .then((_) async {
                                 setState(() {
                                   getAllPackageListOfStudent();
@@ -468,42 +468,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () async {
-                  if (checkVaildationOfPackage(
-                      freePackages[index]['ExpiryDate'])) {
-                    if (freePackages[index]['isPause'] == "0") {
-                      if (checkIsPackageActiveByUser(
-                              freePackages[index]['packageId']) ==
-                          false) {
-                        onSweetAleartDialogwithDeny(
-                            context,
-                            () {
-                              updateTblPackageDataForFirsttimeActivation(
-                                      "1", freePackages[index]['packageId'])
-                                  .then((_) async {
-                                getAllPackageListOfStudent();
-                                Get.back();
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return Mobile_Package_content(
-                                      packageid: int.parse(
-                                          freePackages[index]['packageId']),
-                                      packagename: freePackages[index]
-                                          ['packageName'],
-                                    );
-                                  },
-                                ));
-                                setState(() {});
-                              });
-                            },
-                            "Activate your Package",
-                            "your Package is not activate.Click OK to activate.",
-                            () {
-                              Get.back();
-                            });
-                      } else // everything is ok
-
-                      {
-                        Navigator.push(context, MaterialPageRoute(
+                  Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
                             return Mobile_Package_content(
                               packageid:
@@ -512,22 +477,6 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                             );
                           },
                         ));
-                      }
-                    } else //is paused
-                    {
-                      onSweetAleartDialog(context, () {
-                        Get.back();
-                      }, "Paused!", "Your Package subscription is pause.");
-                    }
-                  } else //is Package Expire
-                  {
-                    print("expire false");
-                    onSweetAleartDialog(context, () {
-                      Get.back();
-                    }, "Expired!",
-                        "Your Package subscription was expired on \n  ${formatDateString(freePackages[index]['ExpiryDate'], "datetime")}.");
-                  }
-
                   // Get.to(
                   //     transition: Transition.cupertino,
                   //     () => Mobile_Package_content(

@@ -384,10 +384,8 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                             onSweetAleartDialogwithDeny(
                                                 context,
                                                 () {
-                                                  updateTblPackageDataForFirsttimeActivation(
-                                                          "1",
-                                                          paidPackages[i]
-                                                              ['packageId'])
+                                                  activePackageByStudent(context,  getx.loginuserdata[0].token, paidPackages[i]
+                                                                ['packageId'].toString(),)
                                                       .then((_) async {
                                                     getAllPackageListOfStudent();
                                                     getx.currentPackageName

@@ -3923,14 +3923,15 @@ Future<void> updateTblPackageDataForPauseSubscription(
 
 Future<void> updateTblPackageDataForFirsttimeActivation(
   String activationValue,
+  String expirydate,
   String packageId,
 ) async {
   try {
     _db.execute('''
       UPDATE TblPackageData
-      SET isActivateByUser = ?
+      SET isActivateByUser = ?,ExpiryDate=?
       WHERE PackageId = ?;
-    ''', [activationValue, packageId]);
+    ''', [activationValue,expirydate, packageId]);
   } catch (e) {
     writeToFile(e, 'updateTblPackageDataForFirsttimeActivation');
     print('Failed to update details: ${e.toString()}');
