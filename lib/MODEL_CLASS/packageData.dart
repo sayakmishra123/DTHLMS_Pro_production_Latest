@@ -13,7 +13,7 @@ class PackageData {
   final bool isFree;
   final bool isDirectPlay;
   final String isActivateByUser;
-  final String IsPaused;
+  final String isPause;
 
   PackageData(
       {required this.packageId,
@@ -30,7 +30,7 @@ class PackageData {
       required this.isFree,
       required this.isDirectPlay,
       required this.isActivateByUser,
-      required this.IsPaused});
+      required this.isPause});
 
   // Factory method to create an instance from a JSON object
   factory PackageData.fromJson(Map<String, dynamic> json) {
@@ -49,7 +49,7 @@ class PackageData {
         isFree: json['IsFree'] ?? false,
         isDirectPlay: json['IsDirectPlay'] ?? false,
         isActivateByUser: "0", //json['isActivateByUser'] ?? '0',
-        IsPaused: "0" //json['IsPaused'] ?? '0',
+        isPause: "0" //json['IsPaused'] ?? '0',
         );
   }
 }

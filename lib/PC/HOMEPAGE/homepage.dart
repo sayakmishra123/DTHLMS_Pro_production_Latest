@@ -376,7 +376,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     () async {
                                       if (checkVaildationOfPackage(
                                           paidPackages[i]['ExpiryDate'])) {
-                                        if (paidPackages[i]['IsPaused'] ==
+                                        if (paidPackages[i]['isPause'] ==
                                             "0") {
                                           if (paidPackages[i]
                                                   ['isActivateByUser'] ==
@@ -507,7 +507,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     () async {
                                       if (checkVaildationOfPackage(
                                           freePackages[i]['ExpiryDate'])) {
-                                        if (freePackages[i]['IsPaused'] ==
+                                        if (freePackages[i]['isPause'] ==
                                             "0") {
                                           if (freePackages[i]
                                                   ['isActivateByUser'] ==

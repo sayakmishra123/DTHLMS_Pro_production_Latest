@@ -666,7 +666,7 @@ Future<void> getPackageData(BuildContext context, String token) async {
             package.isFree.toString(),
             package.isDirectPlay.toString(),
             package.isActivateByUser,
-            package.IsPaused);
+            package.isPause);
       });
 
       // Get.back();
@@ -2693,7 +2693,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               newPackage.isFree.toString(),
               newPackage.isDirectPlay.toString(),
               newPackage.isActivateByUser,
-              newPackage.IsPaused);
+              newPackage.isPause);
 
           // Delete the old package data (if needed)
           deletePartularPackageData(newPackage.packageId.toString(), context);
@@ -2731,7 +2731,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               isFree: false,
               isDirectPlay: false,
               isActivateByUser: '0',
-              IsPaused: "0"),
+              isPause: "0"),
         );
 
         if (!isPackage) {
@@ -2771,7 +2771,7 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
                   newPackage.isFree.toString(),
                   newPackage.isDirectPlay.toString(),
                   newPackage.isActivateByUser,
-                  newPackage.IsPaused);
+                  newPackage.isPause);
 
               // print(
               // 'Package ${newPackage.packageId} has been updated in the database.');

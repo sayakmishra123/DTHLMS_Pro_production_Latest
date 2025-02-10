@@ -268,7 +268,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                 onTap: () async {
                   if (checkVaildationOfPackage(
                       paidPackages[index]['ExpiryDate'])) {
-                    if (paidPackages[index]['IsPaused'] == "0") {
+                    if (paidPackages[index]['isPause'] == "0") {
                       if (checkIsPackageActiveByUser(
                               paidPackages[index]['packageId']) ==
                           false) {
@@ -470,7 +470,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                 onTap: () async {
                   if (checkVaildationOfPackage(
                       freePackages[index]['ExpiryDate'])) {
-                    if (freePackages[index]['IsPaused'] == "0") {
+                    if (freePackages[index]['isPause'] == "0") {
                       if (checkIsPackageActiveByUser(
                               freePackages[index]['packageId']) ==
                           false) {

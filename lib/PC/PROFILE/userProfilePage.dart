@@ -853,7 +853,7 @@ class _MyPackageState extends State<MyPackage> {
                                     ],
                                     borderRadius: BorderRadius.circular(20),
                                     color: getx.studentAllPackage[index]
-                                                ['IsPaused'] ==
+                                                ['isPause'] ==
                                             "1"
                                         ? Color.fromARGB(223, 244, 222, 187)
                                         : Color.fromARGB(255, 255, 255,
@@ -861,13 +861,13 @@ class _MyPackageState extends State<MyPackage> {
                                   ),
                                   child: ExpansionTile(
                                     trailing: getx.studentAllPackage[index]
-                                                ['IsPaused'] ==
+                                                ['isPause'] ==
                                             "1"
                                         ? Icon(Icons.gpp_maybe)
                                         : Icon(Icons.arrow_drop_down),
                                     children: [
                                       getx.studentAllPackage[index]
-                                                  ['IsPaused'] ==
+                                                  ['isPause'] ==
                                               "1"
                                           ? Row(
                                               mainAxisAlignment:
