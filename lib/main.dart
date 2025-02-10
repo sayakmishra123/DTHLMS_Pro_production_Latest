@@ -209,7 +209,8 @@ class _MyAppState extends State<MyApp> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return Platform.isIOS
+            return 
+            Platform.isIOS
                 ? getx.isEmulator.value
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
