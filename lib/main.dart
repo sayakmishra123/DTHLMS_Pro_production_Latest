@@ -41,7 +41,7 @@ void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   // ensureYQPInitialized();
-  Get.put(OnlineAudioPlayerController()); 
+  Get.put(OnlineAudioPlayerController());
 
   function() async {
     open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
@@ -83,7 +83,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   pageRouter router = pageRouter();
-  // late Future<void> userDetailsFuture; 
+  // late Future<void> userDetailsFuture;
 
   @override
   void initState() {
@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setWindowDisplayAffinity();
-      }); 
+      });
       if (getx.isTimerOn.value) {
         Timer.periodic(Duration(seconds: 10), (timer) async {
           // print(getx.blackListProcess.length);
@@ -373,7 +373,7 @@ class _DevelopermodeOnPageState extends State<DevelopermodeOnPage> {
       ],
     ).show();
   }
- 
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

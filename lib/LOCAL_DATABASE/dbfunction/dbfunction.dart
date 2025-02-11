@@ -49,8 +49,8 @@ void testSQLCipherOnWindows() async {
     print("Database password set: $dbPassword");
   }
 
-  getVersion();
-  _createDB();
+  // getVersion();
+  // _createDB();
   createtblPackageDetails();
   createtblMCQhistory();
   creatTableVideoplayInfo();
@@ -2253,7 +2253,8 @@ Future<List<Map<String, dynamic>>> fetchMCQSetList(String packageId) async {
   return tblMCQSetList;
 }
 
-Future<List<Map<String, dynamic>>> fetchPodcast(String packageId,FileIdType) async {
+Future<List<Map<String, dynamic>>> fetchPodcast(
+    String packageId, FileIdType) async {
   final sql.ResultSet result = _db.select(
       'SELECT * FROM TblAllPackageDetails WHERE PackageId= ? AND FileIdType = ?',
       [packageId, FileIdType]);
