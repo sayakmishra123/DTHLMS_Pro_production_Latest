@@ -229,7 +229,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                 'VideoId': int.parse(
                     widget.meeting!.videoId.toString().replaceAll(",", "")),
                 'StartDuration': "0",
-                'timespend': "0",
+                'TimeSpend': "0",
                 "Speed": "0",
                 "StartTime": startTime.substring(0, startTime.length - 3),
                 "PlayNo": int.parse(getx.loginuserdata[0].phoneNumber),
@@ -341,7 +341,7 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                 .toString()
                                 .replaceAll(",", "")),
                             'StartDuration': "0",
-                            'timespend': "0",
+                            'TimeSpend': "0",
                             "Speed": "0",
                             "StartTime":
                                 startTime.substring(0, startTime.length - 3),

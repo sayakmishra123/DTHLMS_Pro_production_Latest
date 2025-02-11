@@ -9,6 +9,7 @@ import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/mobile_pdf_viewer.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/podcastPlayerMobile.dart';
 // import 'package:dthlms/MOBILE/HOMEPAGE/homepage_mobile.dart';
 import 'package:dthlms/MOBILE/VIDEO/mobilevideoplay.dart';
+import 'package:dthlms/PC/PACKAGEDETAILS/podcastPlayer.dart';
 import 'package:dthlms/PC/STUDYMATERIAL/pdfViewer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
@@ -961,10 +962,10 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
                               onPressed: () {
                                 if (podcast['DocumentPath'] != "0" &&
                                     getx.isInternet.value) {
-                                  _downloadPodcast(
+                                  downloadPodcast(
                                     podcast['DocumentPath'],
                                     '${podcast['FileIdName']}',
-                                    index,
+                                    index,downloadProgress,downloadingIndexes
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -1035,6 +1036,7 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
     try {
       setState(() {
         downloadingIndexes.add(index);
+
         downloadProgress[index] = 0.0;
       });
 
@@ -1079,148 +1081,7 @@ class _PodCastListLeftState extends State<PodCastListLeft> {
   String? _videoFilePath;
 
   bool isDownloading = false;
-  // double downloadProgress = 0.0;
-//  Future<void> _startDownload(int index) async {
-//     setState(() {
-//       isDownloading = true;
-//       selectedVideoIndex = index;
-//       downloadProgress = 0.0; // Initialize progress to 0
-//     });
-
-//     // Simulate a download delay with progress
-//     for (int i = 1; i <= 100; i++) {
-//       await Future.delayed(Duration(milliseconds: 30)); // Simulate time delay for each percentage
-//       setState(() {
-//         downloadProgress = i / 100; // Update progress
-//       });
-//     }
-
-//     setState(() {
-//       isDownloading = false;
-//       // selectedVideoIndex = null; // Reset index after download
-//       downloadProgress = 0.0; // Reset progress after download
-//     });
-//   }
-  Future<void> startDownload(int index, String Link, String title) async {
-    if (Link == "0") {
-      print("ZVideo link is $Link");
-      return;
-    }
-
-    final appDocDir;
-    final cancelToken =
-        CancelToken(); // Create a new CancelToken for this download
-    cancelTokens[index] =
-        cancelToken; // Store the token to allow cancellation later
-
-    try {
-      var prefs = await SharedPreferences.getInstance();
-      final path = await getApplicationDocumentsDirectory();
-      appDocDir = path.path;
-
-      getx.defaultPathForDownloadVideo.value =
-          appDocDir + '/$origin' + '/Downloaded_videos';
-      prefs.setString("DefaultDownloadpathOfVieo",
-          appDocDir + '/$origin' + '/Downloaded_videos');
-      print(getx.userSelectedPathForDownloadVideo.value +
-          " it is user selected path");
-
-      String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
-          ? appDocDir + '/$origin' + '/Downloaded_videos' + '/$title'
-          : getx.userSelectedPathForDownloadVideo.value + '/$title';
-
-      String tempPath = appDocDir + '/temp' + '/$title';
-
-      await Directory(appDocDir + '/temp').create(recursive: true);
-
-      // Set a timeout duration (e.g., 60 seconds) for the download process
-      const downloadTimeout = Duration(seconds: 60);
-      int previousProgress = 0;
-      DateTime lastProgressUpdate = DateTime.now();
-
-      await dio.download(
-        Link,
-        tempPath,
-        cancelToken: cancelToken, // Pass the CancelToken to the download method
-        onReceiveProgress: (received, total) {
-          if (total != -1) {
-            double progress = (received / total * 100);
-            setState(() {
-              downloadProgress[index] = progress;
-            });
-
-            // Track the last time progress was updated
-            if (progress != previousProgress) {
-              lastProgressUpdate = DateTime.now();
-              previousProgress = progress.toInt();
-            }
-          }
-        },
-      ).timeout(downloadTimeout, onTimeout: () {
-        // If the download took longer than the timeout
-        cancelToken.cancel(); // Cancel the download
-        return Future.error('Download Timeout');
-      });
-
-      // Check if the download progress got stuck (e.g., progress hasn't updated in the last 10 seconds)
-      if (DateTime.now().difference(lastProgressUpdate) >
-          Duration(seconds: 30)) {
-        cancelToken.cancel(); // Cancel the download
-        showErrorDialog(context, 'Download Stuck',
-            'The download seems to be stuck. Please try again.');
-        return;
-      }
-
-      // After download is complete, copy the file to the final location
-      final tempFile = File(tempPath);
-      final finalFile = File(savePath);
-
-      await finalFile.parent.create(recursive: true);
-      await tempFile.copy(savePath);
-      await tempFile.delete();
-
-      // Success case: Update the progress to 100% and set the video file path
-      setState(() {
-        downloadProgress[index] = 100.0; // Mark the download as completed
-        _videoFilePath = savePath;
-        getx.playingVideoId.value =
-            getx.alwaysShowChapterfilesOfVideo[index]["FileId"];
-      });
-
-      print('$savePath video saved to this location');
-
-      await insertDownloadedFileData(
-          getx.alwaysShowChapterfilesOfVideo[index]["PackageId"],
-          getx.alwaysShowChapterfilesOfVideo[index]["FileId"],
-          savePath,
-          'Video',
-          title);
-
-      insertVideoDownloadPath(
-        getx.alwaysShowChapterfilesOfVideo[index]["FileId"],
-        getx.alwaysShowChapterfilesOfVideo[index]["PackageId"],
-        savePath,
-        context,
-      );
-    } catch (e) {
-      writeToFile(e, "startDownload");
-      if (e is DioException && CancelToken.isCancel(e)) {
-        print("Download canceled for index $index");
-      } else {
-        print(e.toString() + " error on download");
-        setState(() {
-          // Reset progress to 0 if there's an error
-          downloadProgress[index] = 0;
-        });
-        // Only show error dialog if there's a failure in the download process
-        showErrorDialog(context, 'Download Failed',
-            'An error occurred during the download. Please try again.');
-      }
-    } finally {
-      cancelTokens.remove(
-          index); // Remove the CancelToken when the download completes or fails
-    }
-  }
+  
 
 // Method to show an error dialog
   void showErrorDialog(BuildContext context, String title, String message) {

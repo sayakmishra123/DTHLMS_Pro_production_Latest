@@ -105,10 +105,10 @@ class _TestResultPageState extends State<TestResultPage> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             // Navigator.of(context).pop();
             requestForRecheckAnswerSheet(
-                    context, getx.loginuserdata[0].token, widget.examId, '')
+                    context, getx.loginuserdata[0].token, widget.examId,reason )
                 .then((value) {
               if (value) {
                 onActionDialogBox("Requested", "Request send Successfully!",
@@ -122,7 +122,7 @@ class _TestResultPageState extends State<TestResultPage> {
                   Navigator.of(context).pop();
                 }, context, false);
               }
-            });
+            }); 
             // recheckAnswerSheetRequest(context,getx.loginuserdata[0].token,widget.theoryExamAnswerId);
           },
           btn1: 'Cancel',
@@ -144,7 +144,7 @@ class _TestResultPageState extends State<TestResultPage> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             Navigator.of(context).pop();
             // Add logic for downloading the answer sheet
           },
@@ -167,7 +167,7 @@ class _TestResultPageState extends State<TestResultPage> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             Navigator.of(context).pop();
             // Add logic for downloading the question paper
           },
@@ -212,7 +212,7 @@ class _TestResultPageState extends State<TestResultPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Result',
+          'Resul',
           style: FontFamily.styleb.copyWith(fontSize: 25),
         ),
       ),
@@ -295,7 +295,7 @@ class _TestResultPageState extends State<TestResultPage> {
                                             width: 10,
                                           ),
                                           Text(
-                                            'Basic Info',
+                                            'B Info',
                                             style: TextStyle(
                                                 color: Colors.blue,
                                                 fontSize: 20),

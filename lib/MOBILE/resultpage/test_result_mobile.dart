@@ -68,8 +68,23 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
-            Navigator.of(context).pop();
+          OnConfirm: (String reason) {
+            requestForRecheckAnswerSheet(
+                    context, getx.loginuserdata[0].token, widget.examId,reason )
+                .then((value) {
+              if (value) {
+                onActionDialogBox("Requested", "Request send Successfully!",
+                    () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }, context, true);
+              } else {
+                onActionDialogBox("Request Failed!!", "", () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }, context, false);
+              }
+            });
             // Add logic for rechecking the answer sheet
           },
           btn1: 'Cancel',
@@ -91,7 +106,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             Navigator.of(context).pop();
             // Add logic for downloading the answer sheet
           },
@@ -114,7 +129,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             Navigator.of(context).pop();
             // Add logic for downloading the question paper
           },

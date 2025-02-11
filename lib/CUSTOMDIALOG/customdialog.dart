@@ -8,7 +8,7 @@ class CustomDialog extends StatefulWidget {
   final String btn2;
   final String linkText;
   final void Function()? OnCancell;
-  final void Function()? OnConfirm;
+  final void Function(String)? OnConfirm;
 
   CustomDialog({
     required this.title,
@@ -142,7 +142,12 @@ class _CustomDialogState extends State<CustomDialog> {
                       ),
                       SizedBox(width: 15),
                       TextButton(
-                        onPressed: widget.OnConfirm,
+                        onPressed:(){
+                           if (widget.OnConfirm != null) {
+                        widget.OnConfirm!(_controller.text);  
+                      }
+
+                        },
                         child: Text(widget.btn2),
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(

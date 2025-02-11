@@ -208,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               pageIndex.value = 4;
                             }, pageIndex.value == 4 ? true : false),
                             _buildDrawerItem(
-                                Icons.settings_outlined, "App Settings", () {
+                                Icons.settings_outlined, "File Manager", () {
                               pageIndex.value = 5;
                               // showDialog(
                               //   context: context,
@@ -255,7 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   });
                             }, pageIndex.value == 5 ? true : false),
                             _buildDrawerItem(Icons.help_outline_rounded,
-                                "Need help? Let's chat", () {
+                                "FAQ's", () {
                               pageIndex.value = 6;
                             }, pageIndex.value == 6 ? true : false),
                             // _buildDrawerItem(Icons.history, "History", () {
@@ -271,6 +271,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             //     Icons.history_sharp, "Exam History", () {
                             //   pageIndex.value = 9;
                             // }, pageIndex.value == 9 ? true : false),
+
+                             _buildDrawerItem(
+                                Icons.person_2_outlined, "Manage Account", () {
+                              pageIndex.value = 10;
+                            }, pageIndex.value == 10 ? true : false),
                           ],
                         ),
                       ),
@@ -438,6 +443,7 @@ class _ProfilePageState extends State<ProfilePage> {
     HistoryDashboard(),
     DeviceHistory(),
     ExamHistory(),
+    Container(),
   ];
 }
 
@@ -494,7 +500,7 @@ class _AppSettingsState extends State<AppSettings> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             Navigator.of(context).pop();
             _restoreToDefaultPaths();
           },
@@ -608,7 +614,7 @@ class _AppSettingsState extends State<AppSettings> {
             Row(
               children: [
                 Text(
-                  'App Settings',
+                  'File Manager',
                   style: FontFamily.styleb.copyWith(
                     color: const Color.fromARGB(255, 68, 68, 68),
                   ),
@@ -654,7 +660,7 @@ class _AppSettingsState extends State<AppSettings> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'PDF Download Path',
+                'File Download Path',
                 style: FontFamily.styleb.copyWith(
                   fontSize: 15,
                   color: Color.fromARGB(255, 68, 68, 68),
@@ -852,25 +858,22 @@ class _MyPackageState extends State<MyPackage> {
                                       ),
                                     ],
                                     borderRadius: BorderRadius.circular(20),
-                                    color: getx.studentAllPackage[index]
-                                                ['isPause'] ==
-                                            "1"
+                                    color: checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487")
                                         ? Color.fromARGB(223, 244, 222, 187)
                                         : Color.fromARGB(255, 255, 255,
                                             255), // Default color
                                   ),
                                   child: ExpansionTile(
-                                    trailing: getx.studentAllPackage[index]
-                                                ['isPause'] ==
-                                            "1" &&getx.studentAllPackage[index]
+                                    trailing:  checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") &&getx.studentAllPackage[index]
                                                   ['IsFree'] ==
                                               "false"
                                         ? Icon(Icons.gpp_maybe)
                                         : Icon(Icons.arrow_drop_down),
                                     children: [
-                                      getx.studentAllPackage[index]
-                                                  ['isPause'] ==
-                                              "1" && getx.studentAllPackage[index]
+                                       checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") && getx.studentAllPackage[index]
                                                   ['IsFree'] ==
                                               "false"
                                           ? Row(
@@ -881,11 +884,12 @@ class _MyPackageState extends State<MyPackage> {
                                                     "Subscription of this Package is currently paused!")
                                               ],
                                             )
-                                          :      getx.studentAllPackage[index]
-                                                  ['isPause'] ==
-                                              "0" && getx.studentAllPackage[index]
+                                          :     !checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") && getx.studentAllPackage[index]
                                                   ['IsFree'] ==
-                                              "false"? Row(
+                                              "false" && int.parse(getx.studentAllPackage[index]
+                                                  ['Pausedays'] )>1
+                                              ? Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
@@ -928,6 +932,8 @@ class _MyPackageState extends State<MyPackage> {
                                                         getx.studentAllPackage[
                                                                 index]
                                                             ['ExpiryDate'],
+                                                            double.parse(getx.studentAllPackage[index]
+                                                  ['Pausedays'] )
                                                       );
                                                     },
                                                     shape:
@@ -1005,7 +1011,7 @@ class _MyPackageState extends State<MyPackage> {
     );
   }
 
-  void _showValuePicker(String packageId, String expirydate) {
+  void _showValuePicker(String packageId, String expirydate, double maxpauseDays) {
     final valueController = Get.put(ValueController());
     valueController.selectedValue.value = 1;
 
@@ -1018,9 +1024,9 @@ class _MyPackageState extends State<MyPackage> {
         children: [
           SizedBox(height: 10),
           SleekCircularSlider(
-            initialValue: valueController.selectedValue.value,
+            initialValue: 1,
             min: 1,
-            max: 30.1,
+            max: maxpauseDays,
             onChange: (double value) {
               valueController.selectedValue.value = value;
             },
@@ -1054,19 +1060,16 @@ class _MyPackageState extends State<MyPackage> {
             onSweetAleartDialogwithDeny(
               context,
               () {
-                updateTblPackageDataForPauseSubscription(
-                  "1",
-                  packageId,
-                  addDaysToExpiryDate(
-                      expirydate, valueController.selectedValue.toInt()),
-                ).then((_) {
-                  onPauseSuccessfull(
+                pauseSubscription(context,getx.loginuserdata[0].token,packageId,valueController.selectedValue.toInt().toString()).then((value) {
+                
+                   onPauseSuccessfull(
                       context, valueController.selectedValue.toInt(), () {
                     Get.back();
                     Get.back();
                     Get.back();
                     getAllPackageListOfStudent();
-                  });
+                  },value);
+                 
                 });
               },
               "Are You Sure?",
@@ -1315,7 +1318,7 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                   children: [
                     Expanded(
                       child: RatingBar.builder(
-                        initialRating: 3,
+                        initialRating: 5,
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
@@ -2226,6 +2229,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         filled: true,
         fillColor: Colors.transparent,
       ),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
         // Custom validation logic
         if (value == null || value.isEmpty) {
@@ -2315,7 +2319,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             // Add your logic to handle the name change request submission here
             Navigator.of(context).pop();
             // Optionally, show a message or trigger an action after submission
@@ -3992,23 +3996,23 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
   );
 }
 
-onPauseSuccessfull(context, int day, VoidCallback ontap) {
+onPauseSuccessfull(context, int day, VoidCallback ontap, bool success) {
   Alert(
     context: context,
-    type: AlertType.success,
+    type: success?AlertType.success:AlertType.info,
     style: AlertStyle(
       titleStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       descStyle: FontFamily.font6,
       isCloseButton: false,
     ),
-    title: "Done",
-    desc: "Your Subscription is pause for $day days!",
+    title: success?"Done":"Something went wrong",
+    desc: success?"Your Subscription is pause for $day days!":"",
     buttons: [
       DialogButton(
         child: Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
         highlightColor: ColorPage.blue,
         onPressed: ontap,
-        color: const Color.fromARGB(255, 65, 207, 43),
+        color:success? const Color.fromARGB(255, 65, 207, 43):Color.fromARGB(255, 207, 43, 43),
       ),
     ],
   ).show();

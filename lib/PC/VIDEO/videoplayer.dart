@@ -1275,7 +1275,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             Navigator.of(context).pop();
           },
           btn1: 'Cancel',

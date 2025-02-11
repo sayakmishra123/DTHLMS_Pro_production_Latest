@@ -548,14 +548,14 @@ Future<void> insertVideoplayInfo(
     if (resultSet.length > 0) {
       _db.execute('''
         UPDATE TblvideoPlayInfo
-        SET timespend = '$watchduration'
+        SET TimeSpend = '$watchduration'
         WHERE PlayNo = $playNo
       ''');
       print("Update successful: WatchDuration updated for PlayNo $playNo");
     } else {
       // If the record does not exist, insert a new record
       _db.execute('''
-        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, timespend, Speed, StartTime, PlayNo,UploadFlag,Type)
+        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, TimeSpend, Speed, StartTime, PlayNo,UploadFlag,Type)
         VALUES ('$videoId', '$startingTimeLine', '$watchduration', '$playBackSpeed', '$startClockTime', '$playNo','$uploadflag','$type')
       ''');
       // print("Insert successful: New record inserted");
@@ -578,7 +578,7 @@ Future<double> getTotalWatchTime(int videoId) async {
     // Iterate through the results and calculate total watch time
     for (var row in resultSet) {
       // Fetch EndDuration and Speed values from the result row
-      double endDuration = double.tryParse(row['timespend']) ?? 0.0;
+      double endDuration = double.tryParse(row['TimeSpend']) ?? 0.0;
       double speed = double.tryParse(row['Speed']) ??
           1.0; // Assuming speed defaults to 1 if invalid
 
@@ -620,7 +620,7 @@ void creatTableVideoplayInfo() {
   _db.execute('''
 CREATE TABLE IF NOT EXISTS TblvideoPlayInfo(VideoId INTEGER,
 StartDuration TEXT,
-timespend TEXT,
+TimeSpend TEXT,
 Speed TEXT,
 StartTime TEXT,
 PlayNo INTEGER,
@@ -673,7 +673,7 @@ String getLastEndDuration(int videoId) {
   try {
     // Ensure the database is initialized and accessible as _db
     final List<Map<String, dynamic>> result = _db.select('''
-      SELECT timespend 
+      SELECT TimeSpend 
       FROM TblvideoPlayInfo 
       WHERE VideoId = ? 
       ORDER BY ROWID DESC 
@@ -682,8 +682,8 @@ String getLastEndDuration(int videoId) {
 
     // Check if the result is not empty and return the EndDuration value
     if (result.isNotEmpty) {
-      print(result.first['timespend'] + 'End Duration');
-      return result.first['timespend'] as String;
+      print(result.first['TimeSpend'] + 'End Duration');
+      return result.first['TimeSpend'] as String;
     } else {
       return "0"; // Return null if no result is found
     }
@@ -691,7 +691,7 @@ String getLastEndDuration(int videoId) {
     writeToFile(e, 'getLastEndDuration');
 
     // Handle any potential errors that may occur during the query
-    print('Error fetching timespend: ${e.toString()}');
+    print('Error fetching TimeSpend: ${e.toString()}');
     return "0";
   }
 }
@@ -1080,7 +1080,10 @@ Future<void> getAllPackageListOfStudent() async {
       'CourseName': row['CourseName'],
       'IsFree': row['IsFree'],
       'isPause': row['isPause'],
-      'isActivateByUser': row['isActivateByUser']
+      'isActivateByUser': row['isActivateByUser'],
+      'isTotal':row['isTotal'],
+      'isViewCounter':row['isViewCounter'],
+      'Pausedays':row['Pausedays'],
     };
 
        if (row['IsFree'] == 'false'
@@ -3086,12 +3089,12 @@ Future<dynamic> fetchUploadableVideoInfo() async {
     SELECT t.*
     FROM TblvideoPlayInfo t
     JOIN (
-        SELECT PlayNo, MAX(timespend) AS max_endduration
+        SELECT PlayNo, MAX(TimeSpend) AS max_endduration
         FROM TblvideoPlayInfo
         WHERE UploadFlag = 0
         GROUP BY PlayNo
     ) sub 
-    ON t.PlayNo = sub.PlayNo AND t.timespend = sub.max_endduration
+    ON t.PlayNo = sub.PlayNo AND t.TimeSpend = sub.max_endduration
     WHERE t.UploadFlag = 0;
     ''');
 
@@ -3106,12 +3109,12 @@ Future<dynamic> fetchUploadableVideoInfo() async {
     // Loop through each row and add it to the list
     for (var row in resultSet) {
       print(
-          "${row['VideoId']}\n,${row['StartDuration']}\n,${row['timespend']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
+          "${row['VideoId']}\n,${row['StartDuration']}\n,${row['TimeSpend']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
       unUploadedVideoInfo.add({
         'Type': row['Type'],
         'VideoId': row['VideoId'],
         'StartDuration': row['StartDuration'],
-        'timespend': row['timespend'],
+        'TimeSpend': row['TimeSpend'],
         "Speed": row['Speed'],
         "StartTime":
             formatDateTimeTakeLastThreeNumber(row['StartTime'].toString()),
@@ -3908,13 +3911,13 @@ Future<List<PackageInfo>> fetchAllData() async {
 }
 
 Future<void> updateTblPackageDataForPauseSubscription(
-    String pauseValue, String packageId, String expireyDate) async {
+    String pauseValue, String packageId, String expireyDate,String pauseUpto) async {
   try {
     _db.execute('''
       UPDATE TblPackageData
-      SET isPause = ?,ExpiryDate=?
+      SET isPause = ?,ExpiryDate=?,PausedUpto=?
       WHERE PackageId = ?;
-    ''', [pauseValue, expireyDate, packageId]);
+    ''', [pauseValue, expireyDate,pauseUpto, packageId]);
   } catch (e) {
     writeToFile(e, 'updateTblPackageDataForPauseSubscription');
     print('Failed to update details: ${e.toString()}');

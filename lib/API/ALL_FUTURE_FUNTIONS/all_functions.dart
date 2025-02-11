@@ -3960,3 +3960,79 @@ Future<bool> activePackageByStudent(
   }
   return false;
 }
+
+
+Future<bool> pauseSubscription(
+  BuildContext context,
+  String token,
+  String packageId,
+  String studentPauseDay
+
+) async {
+  loader(context);
+  Map<String, dynamic> data = {"PackageId": packageId,
+  'StudentPausedDays':studentPauseDay
+ 
+  };
+
+  // try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    print(res.body);
+      Map<String, dynamic> response = jsonDecode(res.body);
+    if (res.statusCode == 200) {
+    
+
+      var result = jsonDecode(response['result']);
+
+
+
+    await  updateTblPackageDataForPauseSubscription(
+                  "1",
+                  packageId,
+                 result[0]['ExpiryDate'],
+                 result[0]['PausedUpto']
+
+                );
+ 
+
+Get.back();
+
+       return true;
+
+      // return true;
+    } else if (res.statusCode == 401) {
+
+      // updateTblPackageDataForFirsttimeActivation("1",result[''],)
+      Get.back();
+      onTokenExpire(context);
+        return false;
+    } else {
+            Get.back();
+        ClsErrorMsg.fnErrorDialog(
+          context,
+          'Error',
+          response['errorMessages']
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", ""),
+          res);
+            return false;
+
+      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+    }
+  // } catch (e) {
+  //   Get.back();
+    
+  //   // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+  //   writeToFile(e, 'activePackageByStudent');
+  //     return false;
+  // }
+
+}

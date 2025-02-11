@@ -268,7 +268,8 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                 onTap: () async {
                   if (checkVaildationOfPackage(
                       paidPackages[index]['ExpiryDate'])) {
-                    if (paidPackages[index]['isPause'] == "0") {
+                    if (!checkVaildationOfPackage(
+                                          paidPackages[index]['PausedUpto']??"2020-02-08T12:47:52.487")) {
                       if (checkIsPackageActiveByUser(
                               paidPackages[index]['packageId']) ==
                           false) {

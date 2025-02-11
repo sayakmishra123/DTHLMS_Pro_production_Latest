@@ -29,6 +29,7 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
   RxString playingPodcastPath = ''.obs;
   Rx<Duration> currentDuration = Duration.zero.obs;
   Rx<Duration> totalDuration = Duration.zero.obs;
+  String platformWisePathSeparator=Platform.isWindows?"\\":"/";
 
   @override
   void initState() {
@@ -47,40 +48,8 @@ class _PodCastPlayerState extends State<PodCastPlayer> {
     });
   }
 
-  Future<void> _downloadPodcast(String url, String fileName, int index) async {
-    final appDocDir = await getApplicationDocumentsDirectory();
-    Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
-    var prefs = await SharedPreferences.getInstance();
+ 
 
-    getx.defaultPathForDownloadFile.value = dthLmsDir.path;
-    prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
-
-    String savePath = getx.userSelectedPathForDownloadFile.isEmpty
-        ? dthLmsDir.path +'/Podcast/$fileName'
-        : getx.userSelectedPathForDownloadFile.value + '/Podcast/$fileName';
-
-    try {
-      downloadingIndexes.add(index);
-      downloadProgress[index] = 0.0;
-
-      await dio.download(
-        url,
-        savePath,
-        onReceiveProgress: (received, total) {
-          if (total != -1) {
-            downloadProgress[index] = (received / total * 100);
-          }
-        },
-      );
-
-      getx.podcastFileList[index]['DownloadedPath'] = savePath;
-    } catch (e) {
-      print('Download error: $e');
-    } finally {
-      downloadingIndexes.remove(index);
-      downloadProgress.remove(index);
-    }
-  }
 void _playPodcast(String filePath) async {
   log("Original Path: $filePath");
 
@@ -100,10 +69,10 @@ void _playPodcast(String filePath) async {
   }
 
   // Ensure file has a valid audio extension
-  List<String> validExtensions = ['mp3', 'wav', 'aac', 'm4a'];
+  List<String> validExtensions = ['mp3', 'wav', 'aac', 'm4a',];
   String fileExtension = filePath.split('.').last.toLowerCase();
 
-  if (!validExtensions.contains(fileExtension)) {
+  if (!validExtensions.contains(fileExtension) && !Platform.isWindows) {
     Get.snackbar("Error", "Unsupported audio format ($fileExtension)",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
@@ -162,9 +131,9 @@ void _playPodcast(String filePath) async {
                   final isDownloaded = File(getx
                               .userSelectedPathForDownloadFile.isEmpty
                           ? getx.defaultPathForDownloadFile +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}'
                           : getx.userSelectedPathForDownloadFile.value +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}')
                       .existsSync();
 
                   print(isDownloaded.toString());
@@ -176,25 +145,25 @@ void _playPodcast(String filePath) async {
                       color: playingPodcastPath.value ==
                               (getx.userSelectedPathForDownloadFile.isEmpty
                                   ? getx.defaultPathForDownloadFile +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}'
                                   : getx.userSelectedPathForDownloadFile.value +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}')
                           ? Colors.blue[100]
                           : Colors.white,
                       child: ListTile(
                         onTap: () {
                           if (File(getx.userSelectedPathForDownloadFile.isEmpty
                                   ? getx.defaultPathForDownloadFile +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}'
                                   : getx.userSelectedPathForDownloadFile.value +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}')
                               .existsSync()) {
                             playingPodcastPath.value = getx
                                     .userSelectedPathForDownloadFile.isEmpty
                                 ? getx.defaultPathForDownloadFile +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}'
                                 : getx.userSelectedPathForDownloadFile.value +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}';
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}';
                             _playPodcast(playingPodcastPath.value);
                           }
                         },
@@ -216,20 +185,20 @@ void _playPodcast(String filePath) async {
                               )
                             : File(getx.userSelectedPathForDownloadFile.isEmpty
                                         ? getx.defaultPathForDownloadFile +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}'
                                         : getx.userSelectedPathForDownloadFile
                                                 .value +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}')
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}')
                                     .existsSync()
                                 ? IconButton(
                                     icon: playingPodcastPath.value ==
                                             (getx.userSelectedPathForDownloadFile
                                                     .isEmpty
                                                 ? getx.defaultPathForDownloadFile +
-                                                    '/Podcast/${getx.podcastFileList[index]['FileIdName']}'
+                                                    '${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}'
                                                 : getx.userSelectedPathForDownloadFile
                                                         .value +
-                                                    '/Podcast/${getx.podcastFileList[index]['FileIdName']}')
+                                                    '${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}')
                                         ? Icon(Icons.pause)
                                         : Icon(Icons.play_arrow),
                                     onPressed: () {
@@ -237,10 +206,10 @@ void _playPodcast(String filePath) async {
                                               .userSelectedPathForDownloadFile
                                               .isEmpty
                                           ? getx.defaultPathForDownloadFile +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}'
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}'
                                           : getx.userSelectedPathForDownloadFile
                                                   .value +
-'/Podcast/${getx.podcastFileList[index]['FileIdName']}';
+'${platformWisePathSeparator}Podcast${platformWisePathSeparator}${getx.podcastFileList[index]['FileIdName']}';
                                       _playPodcast(playingPodcastPath.value);
                                     },
                                   )
@@ -251,11 +220,11 @@ void _playPodcast(String filePath) async {
                                                   ['DocumentPath'] !=
                                               "0" &&
                                           getx.isInternet.value) {
-                                        _downloadPodcast(
+                                        downloadPodcast(
                                           getx.podcastFileList[index]
                                               ['DocumentPath'],
                                           '${getx.podcastFileList[index]['FileIdName']}',
-                                          index,
+                                          index, downloadProgress,downloadingIndexes
                                         );
                                         setState(() {});
                                       } else {
@@ -470,5 +439,56 @@ void _playPodcast(String filePath) async {
         ],
       ),
     );
+  }
+}
+
+
+ Future<void> downloadPodcast(String url, String fileName, int index ,Map downloadProgress,Set downloadingIndexes ) async {
+
+
+    final Dio dio = Dio();
+  Getx getx = Get.put(Getx());
+  final appDocDir = await getApplicationDocumentsDirectory();
+  Directory dthLmsDir = Platform.isWindows?Directory('${appDocDir.path}\\$origin'): Directory('${appDocDir.path}/$origin');
+  var prefs = await SharedPreferences.getInstance();
+
+  getx.defaultPathForDownloadFile.value = dthLmsDir.path;
+  prefs.setString("DefaultDownloadpathOfFile", dthLmsDir.path);
+
+  // Extract file extension from URL
+  String fileExtension = url.split('.').last.split('?').first; // Handling query parameters
+  String fullFileName = '$fileName';
+
+  String savePath = Platform.isWindows?getx.userSelectedPathForDownloadFile.isEmpty
+      ? '${dthLmsDir.path}\\Podcast\\$fullFileName'
+      : '${getx.userSelectedPathForDownloadFile.value}\\Podcast\\$fullFileName':  getx.userSelectedPathForDownloadFile.isEmpty
+      ? '${dthLmsDir.path}/Podcast/$fullFileName'
+      : '${getx.userSelectedPathForDownloadFile.value}/Podcast/$fullFileName';
+
+
+
+
+      
+
+  try {
+    downloadingIndexes.add(index);
+    downloadProgress[index] = 0.0;
+
+    await dio.download(
+      url,
+      savePath,
+      onReceiveProgress: (received, total) {
+        if (total != -1) {
+          downloadProgress[index] = (received / total * 100);
+        }
+      },
+    );
+
+    getx.podcastFileList[index]['DownloadedPath'] = savePath;
+  } catch (e) {
+    print('Download error: $e');
+  } finally {
+    downloadingIndexes.remove(index);
+    downloadProgress.remove(index);
   }
 }
