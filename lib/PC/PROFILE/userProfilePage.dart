@@ -208,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               pageIndex.value = 4;
                             }, pageIndex.value == 4 ? true : false),
                             _buildDrawerItem(
-                                Icons.settings_outlined, "File Manager", () {
+                                Icons.settings_outlined, "App Setting", () {
                               pageIndex.value = 5;
                               // showDialog(
                               //   context: context,
@@ -272,10 +272,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             //   pageIndex.value = 9;
                             // }, pageIndex.value == 9 ? true : false),
 
-                             _buildDrawerItem(
-                                Icons.person_2_outlined, "Manage Account", () {
-                              pageIndex.value = 10;
-                            }, pageIndex.value == 10 ? true : false),
                           ],
                         ),
                       ),
@@ -434,7 +430,7 @@ class _ProfilePageState extends State<ProfilePage> {
     MyPackage(),
     ChangePasswordWidget(),
     FeedbackWidget(),
-    _privacyPolicy(),
+  PrivacyPollicyWidget(),
     Container(
       color: Colors.transparent,
     ),
@@ -443,7 +439,7 @@ class _ProfilePageState extends State<ProfilePage> {
     HistoryDashboard(),
     DeviceHistory(),
     ExamHistory(),
-    Container(),
+  
   ];
 }
 
@@ -615,7 +611,7 @@ class _AppSettingsState extends State<AppSettings> {
             Row(
               children: [
                 Text(
-                  'File Manager',
+                  'App Setting',
                   style: FontFamily.styleb.copyWith(
                     color: const Color.fromARGB(255, 68, 68, 68),
                   ),
@@ -1216,6 +1212,95 @@ class ChangePasswordWidget extends StatelessWidget {
   }
 }
 
+
+
+// import 'package:flutter/material.dart';
+
+class MangaeAccountWidget extends StatefulWidget {
+  @override
+  _MangaeAccountWidgetState createState() => _MangaeAccountWidgetState();
+}
+
+class _MangaeAccountWidgetState extends State<MangaeAccountWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Left Container for Logout and Delete Account buttons
+            Container(
+              height: MediaQuery.of(context).size.height*0.8,
+              width: MediaQuery.of(context).size.width*0.5 ,
+              constraints: BoxConstraints(maxWidth: 700),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 3,
+                    color: Color.fromARGB(255, 157, 157, 157),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Logout Button
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add logout functionality here
+                      print("User logged out");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue, // Background color
+                      foregroundColor: Colors.white, // Text color
+                      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 5,
+                    ),
+                    child: Text(
+                      "Logout",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  SizedBox(height: 20), // Spacing between buttons
+                  // Delete Account Button
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add delete account functionality here
+                      print("Account deletion requested");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Background color
+                      foregroundColor: Colors.white, // Text color
+                      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 5,
+                    ),
+                    child: Text(
+                      "Delete Account",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
 class FeedbackWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1255,6 +1340,10 @@ class FeedbackBox extends StatefulWidget {
   @override
   State<FeedbackBox> createState() => _FeedbackBoxState();
 }
+
+TextEditingController feedBackController  =TextEditingController();
+double starCount=5.0;
+
 
 class _FeedbackBoxState extends State<FeedbackBox> {
   @override
@@ -1331,6 +1420,7 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                         ),
                         onRatingUpdate: (rating) {
                           print(rating);
+                          starCount=rating;
                         },
                       ),
                     ),
@@ -1351,7 +1441,7 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                 SizedBox(height: 5),
 
                 // Current Password
-                FeedbackTextField(),
+                FeedbackTextField(feedbackController: feedBackController,),
                 SizedBox(height: 50),
 
                 Row(
@@ -1362,7 +1452,37 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                             borderRadius: BorderRadius.circular(25)),
                         height: 80,
                         color: ColorPage.mainBlue,
-                        onPressed: () {},
+                        onPressed: () {
+
+                       
+
+if(getx.isInternet.value){
+  uploadStudentFeedBackOfApp(context,getx.loginuserdata[0].token,feedBackController.text,starCount.toString()).then((value){
+
+
+    if(value){
+      onSweetAleartDialog(context,(){
+         Get.back();
+
+      },"successfully submitted","Thank you for your feedback 😊",true);
+    }
+    else{
+         onSweetAleartDialog(context,(){
+          Get.back();
+
+      },"Something went wrong!","",false);
+    }
+  });
+
+}
+else{
+  onNoInternetConnection(context, (){
+    Get.back();
+  });
+}
+
+
+                        },
                         child: Text(
                           'Submit feedback',
                           style: FontFamily.style.copyWith(
@@ -1383,17 +1503,44 @@ class _FeedbackBoxState extends State<FeedbackBox> {
   }
 }
 
-class FeedbackTextField extends StatelessWidget {
+class FeedbackTextField extends StatefulWidget {
+    TextEditingController feedbackController;
+
+   FeedbackTextField({required this.feedbackController});
+  @override
+  State<FeedbackTextField> createState() => _FeedbackTextFieldState();
+}
+
+initState(
+
+  
+) {
+ 
+ 
+  // TODO: implement initState
+  
+}
+
+
+class _FeedbackTextFieldState extends State<FeedbackTextField> {
+ 
+ 
   @override
   Widget build(BuildContext context) {
+  
     return Padding(
       padding: const EdgeInsets.all(16.0), // Adjust padding as needed
       child: TextFormField(
-        initialValue: 'My feedback!!', // Initial text as per the image
-        maxLines: 4, // Adjust the number of lines as needed
+        controller: widget.feedbackController ,
+
+        maxLines: 4,
+        
+        // initialValue: 'My feedback!!', // Initial text as per the image
+        // Adjust the number of lines as needed
         decoration: InputDecoration(
           // labelText: 'Additional feedback',
           alignLabelWithHint: true, // Align label with the hint text
+          hintText: "My feedBack!!",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10), // Rounded corners
             borderSide: BorderSide(
@@ -1432,6 +1579,42 @@ Widget _privacyPolicy() {
       ),
     ),
   );
+}
+
+
+class PrivacyPollicyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Left Container for form fields
+            Container(
+              constraints: BoxConstraints(maxWidth: 700),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: ColorPage.white,
+                // Uncomment below if you want to add shadow
+                // boxShadow: [
+                //   BoxShadow(
+                //     blurRadius: 3,
+                //     color: Color.fromARGB(255, 157, 157, 157),
+                //   ),
+                // ],
+              ),
+
+              child: Center(child: Text("Privacy Policy"),),
+              // child: FeedbackBox(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class DeviceHistory extends StatefulWidget {
@@ -1481,6 +1664,9 @@ class _DeviceHistoryState extends State<DeviceHistory> {
       ),
     );
   }
+
+
+
 
   Widget _buildDeviceList() {
     return FutureBuilder(

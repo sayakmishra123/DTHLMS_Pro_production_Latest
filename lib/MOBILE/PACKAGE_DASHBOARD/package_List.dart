@@ -317,7 +317,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                     {
                       onSweetAleartDialog(context, () {
                         Get.back();
-                      }, "Paused!", "Your Package subscription is pause.");
+                      }, "Paused!", "Your Package subscription is pause.",false);
                     }
                   } else //is Package Expire
                   {
@@ -325,7 +325,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                     onSweetAleartDialog(context, () {
                       Get.back();
                     }, "Expired!",
-                        "Your Package subscription was expired on \n  ${formatDateString(paidPackages[index]['ExpiryDate'], "datetime")}.");
+                        "Your Package subscription was expired on \n  ${formatDateString(paidPackages[index]['ExpiryDate'], "datetime")}.",false);
                   }
                 },
                 child: Container(

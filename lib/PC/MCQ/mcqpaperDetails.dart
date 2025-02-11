@@ -183,7 +183,7 @@ class _McqPaperDetailsState extends State<McqPaperDetails> {
                             
                             
                             else{
-                              onSweetAleartDialog(context,(){Get.back();},"Something went wrong !!","");
+                              onSweetAleartDialog(context,(){Get.back();},"Something went wrong !!","",false);
                             }
                             // List rankData = await getRankDataOfMockTest(
                             //   context,

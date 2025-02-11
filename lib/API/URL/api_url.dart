@@ -105,5 +105,8 @@ class ClsUrlApi {
        static const pausePackageByStudent =
       "/api/AuthDataGet/ExecuteJson/spAppApi/61";
 
+        static const sendStudentFeedBack =
+      "/api/AuthDataGet/ExecuteJson/spAppApi/62";
+
 
 }

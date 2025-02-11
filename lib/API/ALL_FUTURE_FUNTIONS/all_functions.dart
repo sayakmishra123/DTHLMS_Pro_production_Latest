@@ -692,8 +692,9 @@ Future<void> getPackageData(BuildContext context, String token) async {
 }
 
 onSweetAleartDialog(
-    context, VoidCallback ontap, String title, String subtitle) async {
+    context, VoidCallback ontap, String title, String subtitle , bool success) async {
   await ArtSweetAlert.show(
+
       barrierDismissible: false,
       context: context,
       artDialogArgs: ArtDialogArgs(
@@ -705,7 +706,7 @@ onSweetAleartDialog(
           confirmButtonText:
               "                           Ok                            ",
           onConfirm: ontap,
-          type: ArtSweetAlertType.warning));
+          type:success? ArtSweetAlertType.success: ArtSweetAlertType.warning));
 }
 
 onTokenExpire(
@@ -3810,48 +3811,7 @@ Future<String> getAnswerSheetURLforStudent(
   return returnValue;
 }
 
-Future<bool> uploadStudentFeedBack(
-  BuildContext context,
-  String token,
-  String feedBackList,
-) async {
-  loader(context);
-  Map<String, dynamic> data = {"ExamId": feedBackList};
 
-  try {
-    var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadStudentFeedback),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(data),
-    );
-    print(res.body);
-    if (res.statusCode == 200) {
-      Map<String, dynamic> response = jsonDecode(res.body);
-
-      var result = jsonDecode(response['result']);
-
-      // log("${result} ////////////////// get infinite marquee details");
-
-      Get.back();
-
-      return true;
-    } else if (res.statusCode == 401) {
-      Get.back();
-      onTokenExpire(context);
-    } else {
-      Get.back();
-      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
-    }
-  } catch (e) {
-    Get.back();
-    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-    writeToFile(e, 'uploadStudentFeedBack');
-  }
-  return false;
-}
 
 appVersionGet() async {
   try {
@@ -3975,7 +3935,7 @@ Future<bool> pauseSubscription(
  
   };
 
-  // try {
+  try {
     var res = await http.post(
       Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
       headers: <String, String>{
@@ -4027,12 +3987,103 @@ Get.back();
 
       // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
     }
-  // } catch (e) {
-  //   Get.back();
+  } catch (e) {
+    Get.back();
     
-  //   // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-  //   writeToFile(e, 'activePackageByStudent');
-  //     return false;
-  // }
+    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    writeToFile(e, 'activePackageByStudent');
+      return false;
+  }
 
+}
+
+
+Future<bool> uploadStudentFeedBackofVideo(
+  BuildContext context,
+  String token,
+  String feedBackList,
+) async {
+  loader(context);
+  Map<String, dynamic> data = {"FeedbackList": feedBackList};
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadStudentFeedback),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+      Get.back();
+
+      return true;
+    } else if (res.statusCode == 401) {
+      Get.back();
+      onTokenExpire(context);
+    } else {
+      Get.back();
+      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+    }
+  } catch (e) {
+    Get.back();
+    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    writeToFile(e, 'uploadStudentFeedBack');
+  }
+  return false;
+}
+
+
+
+Future<bool> uploadStudentFeedBackOfApp(
+  BuildContext context,
+  String token,
+  String feedback,
+  String star,
+) async {
+  loader(context);
+  Map<String, dynamic> data = {"FeedBack": feedback,
+  'StarCount':star};
+
+  try {
+    var res = await http.post(
+      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.sendStudentFeedBack),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      Map<String, dynamic> response = jsonDecode(res.body);
+
+      var result = jsonDecode(response['result']);
+
+      // log("${result} ////////////////// get infinite marquee details");
+
+      Get.back();
+
+      return true;
+    } else if (res.statusCode == 401) {
+      Get.back();
+      onTokenExpire(context);
+    } else {
+      Get.back();
+      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+    }
+  } catch (e) {
+    Get.back();
+    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+    writeToFile(e, 'uploadStudentFeedBackOfApp');
+  }
+  return false;
 }
