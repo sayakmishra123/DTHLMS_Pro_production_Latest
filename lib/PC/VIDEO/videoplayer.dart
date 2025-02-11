@@ -1281,6 +1281,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
           btn1: 'Cancel',
           btn2: 'Delete',
           linkText: 'Learn more about deleting videos',
+          isTextfeild: false,
         );
       },
     );

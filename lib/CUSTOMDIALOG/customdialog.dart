@@ -9,6 +9,7 @@ class CustomDialog extends StatefulWidget {
   final String linkText;
   final void Function()? OnCancell;
   final void Function(String)? OnConfirm;
+  final bool isTextfeild;
 
   CustomDialog({
     required this.title,
@@ -18,6 +19,7 @@ class CustomDialog extends StatefulWidget {
     this.btn1 = 'Cancel',
     this.btn2 = 'Confirm',
     this.linkText = 'Learn more',
+    required this.isTextfeild,
   });
 
   @override
@@ -81,6 +83,7 @@ class _CustomDialogState extends State<CustomDialog> {
               SizedBox(height: 20),
 
               // Instruction text before the text field
+              if( widget.isTextfeild)
               Row(
                 children: [
                   Text(
@@ -93,10 +96,12 @@ class _CustomDialogState extends State<CustomDialog> {
                   ),
                 ],
               ),
+                if( widget.isTextfeild)
               SizedBox(height: 10),
 
               // TextField for input
-              TextField(
+              if( widget.isTextfeild)
+             TextField(
                 controller: _controller,
                 maxLines: 4, // Makes the TextField behave like a text area
                 decoration: InputDecoration(
@@ -107,6 +112,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   fillColor: Colors.white,
                 ),
               ),
+                if( widget.isTextfeild)
               SizedBox(height: 20),
 
               // Buttons row

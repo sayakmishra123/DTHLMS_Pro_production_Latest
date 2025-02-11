@@ -90,6 +90,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
           btn1: 'Cancel',
           btn2: 'Submit',
           linkText: 'Learn more about rechecking',
+          isTextfeild: true,
         );
       },
     );
@@ -113,6 +114,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
           btn1: 'Cancel',
           btn2: 'Download',
           linkText: 'Learn more about downloading',
+          isTextfeild: false,
         );
       },
     );
@@ -136,6 +138,7 @@ class _TestResultPageMobileState extends State<TestResultPageMobile> {
           btn1: 'Cancel',
           btn2: 'Download',
           linkText: 'Learn more about question papers',
+          isTextfeild: false,
         );
       },
     );

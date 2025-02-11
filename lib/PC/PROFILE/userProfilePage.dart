@@ -507,6 +507,7 @@ class _AppSettingsState extends State<AppSettings> {
           btn1: 'Cancel',
           btn2: 'Restore',
           linkText: 'Learn more',
+          isTextfeild: false,
         );
       },
     );
@@ -2332,6 +2333,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           btn1: 'Cancel',
           btn2: 'Request',
           linkText: 'Learn more',
+          isTextfeild: false,
         );
       },
     );

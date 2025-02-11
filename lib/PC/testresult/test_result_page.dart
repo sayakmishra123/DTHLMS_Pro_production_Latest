@@ -128,6 +128,7 @@ class _TestResultPageState extends State<TestResultPage> {
           btn1: 'Cancel',
           btn2: 'Submit',
           linkText: 'Learn more about rechecking',
+          isTextfeild: true,
         );
       },
     );
@@ -151,6 +152,7 @@ class _TestResultPageState extends State<TestResultPage> {
           btn1: 'Cancel',
           btn2: 'Download',
           linkText: 'Learn more about downloading',
+          isTextfeild: false,
         );
       },
     );
@@ -174,6 +176,7 @@ class _TestResultPageState extends State<TestResultPage> {
           btn1: 'Cancel',
           btn2: 'Download',
           linkText: 'Learn more about question papers',
+          isTextfeild: false,
         );
       },
     );
@@ -212,7 +215,7 @@ class _TestResultPageState extends State<TestResultPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Resul',
+          'Result',
           style: FontFamily.styleb.copyWith(fontSize: 25),
         ),
       ),
@@ -295,7 +298,7 @@ class _TestResultPageState extends State<TestResultPage> {
                                             width: 10,
                                           ),
                                           Text(
-                                            'B Info',
+                                            'Basic Info',
                                             style: TextStyle(
                                                 color: Colors.blue,
                                                 fontSize: 20),

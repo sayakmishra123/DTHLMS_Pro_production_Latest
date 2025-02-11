@@ -3748,7 +3748,7 @@ Future<bool> requestForRecheckAnswerSheet(
 
       var result = jsonDecode(response['result']);
 
-      // log("${result} ////////////////// get infinite marquee details");
+      // log("${result} ////////////////// getrecheck request res");
 
       returnValue = true;
 
