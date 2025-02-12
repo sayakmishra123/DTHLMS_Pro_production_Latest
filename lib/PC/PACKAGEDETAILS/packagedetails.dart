@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
-import 'package:dthlms/API/URL/api_url.dart';
+// import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/API/url/api_url.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
