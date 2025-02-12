@@ -403,11 +403,11 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
           int hours = minutes ~/ 60;
 
           formattedDuration.value = hours > 0
-              ? "$hours hours ${minutes % 60} minutes"
-              : "$minutes minutes";
+              ? "$hours hr ${minutes % 60} min"
+              : "$minutes min";
               getx.totalAllowDuration.value=hours > 0
-              ? "$hours hours ${minutes % 60} minutes"
-              : "$minutes minutes";
+              ? "$hours hr ${minutes % 60} min"
+              : "$minutes min";
 
         }
         print(videoCountData);
@@ -1105,29 +1105,66 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                             ),
                             Padding(
                                   padding: const EdgeInsets.only(left: 20),
-                                   child: Text(
-                                   "total Videos :  ${getx.totalVideocount.value}",
-                                                                   style: FontFamily.font4),
-                                 ),
+                                   child:Text.rich(
+            TextSpan(
+              text: 'Total Videos :',
+              children: <InlineSpan>[
+                TextSpan(
+                  text: "  ${getx.totalVideocount.value}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ]
+            )
+          ),
+        ),
+                                   
+                                   
+                                   
+                                   
+                                 
 
  
                                  Padding(
                                   padding: const EdgeInsets.only(left: 20),
-                                   child: Text(
-                                   "total Duration: ${getx.totalAllowDuration.value}",
-                                                                   style: FontFamily.font4),
+                                   child: Text.rich(
+            TextSpan(
+              text: 'Total Duration :',
+              children: <InlineSpan>[
+                TextSpan(
+                  text:  " ${getx.totalAllowDuration.value}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ]
+            )
+          ),
                                  ),
                                  Padding(
                                    padding: const EdgeInsets.only(left: 10),
-                                   child: Text(
-                                                                  "Consume Duration: ${breakSecondIntoHourAndMinute(getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
-                                                                   style: FontFamily.font4),
+                                   child: Text.rich(
+            TextSpan(
+              text: 'Consume Duration :',
+              children: <InlineSpan>[
+                TextSpan(
+                  text:   " ${breakSecondIntoHourAndMinute(getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ]
+            )
+          ),
                                  ),
                                 Padding(
                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Text(
-                                                                 "Remaining Duration: ${breakSecondIntoHourAndMinute(getx.totalAllowDurationinSeconds.value-getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
-                                  style: FontFamily.font4),
+                                  child: Text.rich(
+            TextSpan(
+              text: 'Remaining Durations :',
+              children: <InlineSpan>[
+                TextSpan(
+                  text:   "${breakSecondIntoHourAndMinute(getx.totalAllowDurationinSeconds.value-getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ]
+            )
+          ),
                                 ),
                           ],
                         ),
@@ -1586,10 +1623,10 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                         index - filteredChapterDetails.length]["DocumentPath"],
                     title: getx.alwaysShowFileDetailsOfpdf[
                         index - filteredChapterDetails.length]["FileIdName"],
-                    folderName: getPackagNameById(getx
+                    folderName: getPackagDataFieldValuebyId(getx
                         .alwaysShowFileDetailsOfpdf[
                             index - filteredChapterDetails.length]["PackageId"]
-                        .toString()),
+                        .toString(),"PackageName"),
                     isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
                                 filteredChapterDetails.length]["IsEncrypted"] ==
                             "1"
@@ -1718,10 +1755,10 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                           filteredChapterDetails.length]["DocumentPath"],
                       title: getx.alwaysShowFileDetailsOfpdf[
                           index - filteredChapterDetails.length]["FileIdName"],
-                      folderName: getPackagNameById(getx
+                      folderName: getPackagDataFieldValuebyId(getx
                           .alwaysShowFileDetailsOfpdf[index -
                               filteredChapterDetails.length]["PackageId"]
-                          .toString()),
+                          .toString(),"PackageName"),
                       isEncrypted: getx.alwaysShowFileDetailsOfpdf[
                                       index - filteredChapterDetails.length]
                                   ["IsEncrypted"] ==
@@ -1816,49 +1853,57 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
         () => Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: filteredFileDetails.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    // physics: NeverScrollableScrollPhysics(),
-                    itemCount: filteredFileDetails.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onDoubleTap: () async {
-                          //               if(await isProcessRunning("dthlmspro_video_player")==false){
-                          //    run_Video_Player_exe(filteredFileDetails[index]['DocumentPath']);
-
-                          // }
-
-                          print(filteredFileDetails[index]['DocumentPath'] +
-                              "  this is video link");
-                          Get.to(
-                              transition: Transition.cupertino,
-                              () => VideoPlayer(
-                                    filteredFileDetails[index]['DocumentPath'],
-                                  ));
-
-                          print("object find");
-                        },
-                        onTap: () {
-                          setState(() {
-                            selectedVideoIndex = index;
-                          });
-
-                          handleTap(index);
-                        },
-                        child: Card(
-                          color: selectedVideoIndex == index
-                              ? ColorPage.colorbutton.withOpacity(0.9)
-                              : Color.fromARGB(255, 245, 243, 248),
-                          child: ListTile(
-                            leading: Image.asset(
-                              "assets/video2.png",
-                              scale: 19,
-                              color: selectedVideoIndex == index
-                                  ? ColorPage.white.withOpacity(0.85)
-                                  : ColorPage.colorbutton,
-                            ),
-                            subtitle: Text(
-                              'Duration:  ${filteredFileDetails[index]['VideoDuration']}',
+                ?ListView.builder(
+  shrinkWrap: true,
+  itemCount: filteredFileDetails.length,
+  itemBuilder: (context, index) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        print(filteredFileDetails[index]['DocumentPath'] + "  this is video link");
+        Get.to(
+          transition: Transition.cupertino,
+          () => VideoPlayer(
+            filteredFileDetails[index]['DocumentPath'],
+          ),
+        );
+        print("object find");
+      },
+      onTap: () {
+        setState(() {
+          selectedVideoIndex = index;
+        });
+        handleTap(index);
+      },
+      child: Card(
+        color: selectedVideoIndex == index
+            ? ColorPage.colorbutton.withOpacity(0.9)
+            : Color.fromARGB(255, 245, 243, 248),
+        child: Column(
+          children: [
+            ListTile(
+              leading: Image.asset(
+                "assets/video2.png",
+                scale: 19,
+                color: selectedVideoIndex == index
+                    ? ColorPage.white.withOpacity(0.85)
+                    : ColorPage.colorbutton,
+              ),
+              subtitle: getPackagDataFieldValuebyId(getx.selectedPackageId.toString(), "isTotal") != "0"
+                  ? Text(
+                      'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['VideoDuration'].toString()))}',
+                      style: TextStyle(
+                        color: selectedVideoIndex == index
+                            ? ColorPage.white.withOpacity(0.9)
+                            : ColorPage.grey,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['VideoDuration'].toString()))}',
                               style: TextStyle(
                                 color: selectedVideoIndex == index
                                     ? ColorPage.white.withOpacity(0.9)
@@ -1866,43 +1911,96 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                            title: Text(
-                              filteredFileDetails[index]['FileIdName'],
-                              style: GoogleFonts.inter().copyWith(
+                            SizedBox(width: 15),
+                            Text(
+                              'Total watch duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['AllowDuration'].toString()))}',
+                              style: TextStyle(
                                 color: selectedVideoIndex == index
-                                    ? ColorPage.white
-                                    : ColorPage.colorblack,
+                                    ? ColorPage.white.withOpacity(0.9)
+                                    : ColorPage.grey,
                                 fontWeight: FontWeight.w800,
-                                fontSize:
-                                    selectedvideoListIndex == index ? 20 : null,
-                                // color: selectedListIndex == index
-                                //     ? Colors.amber[900]
-                                //     : Colors.black,
                               ),
                             ),
-                            trailing: SizedBox(
-                              child: IconButton(
-                                  onPressed: () {
-                                    Get.to(
-                                        transition: Transition.cupertino,
-                                        () => VideoPlayer(
-                                              filteredFileDetails[index]
-                                                  ['FileIdName'],
-                                            ));
-                                  },
-                                  icon: Icon(
-                                    Icons.play_circle,
-                                    color: selectedVideoIndex == index
-                                        ? ColorPage.white
-                                        : ColorPage.colorbutton,
-                                  )),
-                            ),
-                          ),
+                          ],
                         ),
-                      );
-                    },
-                  )
-                : Center(
+                        Row(
+                          children: [
+                            Text(
+                              'Consume duration:  ${breakSecondIntoHourAndMinute(getTotalConsumeDurationOfVideo(filteredFileDetails[index]['FileId'].toString(),int.parse(filteredFileDetails[index]['ConsumeDuration'].toString())))}',
+                              style: TextStyle(
+                                color: selectedVideoIndex == index
+                                    ? ColorPage.white.withOpacity(0.9)
+                                    : ColorPage.grey,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            SizedBox(width: 15),
+                            Text(
+                              'Remaining duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['AllowDuration'].toString()) - getTotalConsumeDurationOfVideo(filteredFileDetails[index]['FileId'].toString(),int.parse(filteredFileDetails[index]['ConsumeDuration'].toString()) ))}',
+                              style: TextStyle(
+                                color: selectedVideoIndex == index
+                                    ? ColorPage.white.withOpacity(0.9)
+                                    : ColorPage.grey,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+              title: Row(
+                children: [
+                  Text(
+                    filteredFileDetails[index]['FileIdName'],
+                    style: GoogleFonts.inter().copyWith(
+                      color: selectedVideoIndex == index
+                          ? ColorPage.white
+                          : ColorPage.colorblack,
+                      fontWeight: FontWeight.w800,
+                      fontSize: selectedvideoListIndex == index ? 20 : null,
+                    ),
+                  ),
+                ],
+              ),
+              trailing: SizedBox(
+                child: IconButton(
+                  onPressed: () {
+                    Get.to(
+                      transition: Transition.cupertino,
+                      () => VideoPlayer(
+                        filteredFileDetails[index]['FileIdName'],
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.play_circle,
+                    color: selectedVideoIndex == index
+                        ? ColorPage.white
+                        : ColorPage.colorbutton,
+                  ),
+                ),
+              ),
+            ),
+            // Linear progress bar 
+            if (true)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: LinearProgressIndicator(
+
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green), 
+                  backgroundColor: Colors.green.withOpacity(0.3), 
+                  value:calculateVideoWatchProgress(getTotalConsumeDurationOfVideo(filteredFileDetails[index]['FileId'].toString(),int.parse(filteredFileDetails[index]['ConsumeDuration'].toString())),int.parse(filteredFileDetails[index]['VideoDuration'].toString())), // Progress value
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  },
+)
+
+               
+               : Center(
                     child: Text('No data found'),
                   )),
       ),
@@ -2299,62 +2397,45 @@ class ExeRun {
 
   String exeFilePath = '';
 
-  Future<void> runingExelive(MeetingDeatils meetingDeatils) async {
-    late String exePath;
-    late String token;
-    exePath = "exefiles/live/abc.exe";
-    print("exePath: $exePath");
-    print("meetingDeatils.packageId: ${meetingDeatils.packageId.toString()}");
-    print(
-        "User's Full Name: ${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}");
-    print("User Name ID: ${getx.loginuserdata[0].nameId.toString()}");
-    print(
-        "Meeting Details - Session ID: ${meetingDeatils.sessionId.toString()}");
-    print(
-        "Meeting Details - Topic Name: ${meetingDeatils.topicName.toString()}");
-    print("Meeting Details - Live URL: ${meetingDeatils.liveUrl.toString()}");
-    print(
-        "Meeting Details - Video Category: ${meetingDeatils.videoCategory.toString()}");
-    print("Database Path: ${getx.dbPath.value}");
-    print("Meeting Details - Video ID: ${meetingDeatils.videoId}");
-    print("User's Phone Number: ${getx.loginuserdata[0].phoneNumber}");
-    print("User's Token: ${getx.loginuserdata[0].token}");
-    print("Origin: $origin");
-    print(
-        "API URL: https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}");
-    print("Group Chat: ${meetingDeatils.groupChat!}");
-    print("Personal Chat: ${meetingDeatils.personalChat!}");
+ Future<void> runingExelive(MeetingDeatils meetingDeatils) async {
+    String exePath = "exefiles/live/abc.exe"; // Adjust path as needed
 
-    print(
-        "${meetingDeatils.liveUrl.toString() + "   " + getx.loginuserdata[0].firstName.toString() + " " + getx.loginuserdata[0].lastName + getx.loginuserdata[0].nameId.toString() + "/// " + meetingDeatils.sessionId.toString() + "////// category  " + meetingDeatils.videoCategory.toString() + "  ////" + meetingDeatils.packageId.toString()}");
+    if (exePath.isEmpty) {
+      print("Error: Executable path is empty!");
+      return;
+    }
 
-    if (exePath.isNotEmpty) {
-      await Process.run(
-        'cmd',
-        [
-          '/c',
-          'start',
-          exePath,
-          meetingDeatils.packageId.toString(),
-          getx.loginuserdata[0].firstName.toString() +
-              " " +
-              getx.loginuserdata[0].lastName,
-          getx.loginuserdata[0].nameId.toString(),
-          meetingDeatils.sessionId.toString(),
-          meetingDeatils.topicName.toString(),
-          meetingDeatils.liveUrl.toString(),
-          meetingDeatils.videoCategory.toString(),
-          getx.dbPath.value,
-          meetingDeatils.videoId,
-          getx.loginuserdata[0].phoneNumber,
-          getx.loginuserdata[0].token,
-          origin,
-          "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
-          meetingDeatils.groupChat!,
-          meetingDeatils.personalChat!
-        ],
-        runInShell: true,
-      );
+    // Extracting user details dynamically
+    var user = getx.loginuserdata[0];
+
+    List<String> arguments = [
+      meetingDeatils.packageId.toString(),
+      "${user.firstName} ${user.lastName}",
+      user.nameId.toString(),
+      meetingDeatils.sessionId.toString(),
+      meetingDeatils.topicName.toString(),
+      meetingDeatils.liveUrl.toString(),
+      meetingDeatils.videoCategory.toString(),
+      getx.dbPath.value, // Database path
+      meetingDeatils.videoId.toString(),
+      user.phoneNumber.toString(),
+      user.token,
+      "com.dlp.avjpro",
+      "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
+      meetingDeatils.groupChat ?? "",
+      meetingDeatils.personalChat ?? ""
+    ];
+
+    try {
+      print("Running EXE: $exePath with arguments: $arguments");
+
+      ProcessResult result = await Process.run(exePath, arguments);
+
+      print("Exit Code: ${result.exitCode}");
+      print("Output: ${result.stdout}");
+      print("Error: ${result.stderr}");
+    } catch (e) {
+      print("Error running executable: $e");
     }
   }
 
@@ -3014,18 +3095,38 @@ onExitPage(context, VoidCallback ontap, VoidCallback onCanceltap) async {
 
 
 
-String breakSecondIntoHourAndMinute(int seconds){
-   
-          int minutes = seconds ~/ 60;
-          int hours = minutes ~/ 60;
+String breakSecondIntoHourAndMinute(int seconds) {
+  int minutes = seconds ~/ 60;
+  int hours = minutes ~/ 60;
 
-         return  hours > 0
-              ? "$hours hours ${minutes % 60} minutes"
-              : "$minutes minutes";
+  if (minutes < 1) {
+    return "$seconds sec";
+  }
 
+  return hours > 0
+      ? "$hours hr ${minutes % 60} min "
+      : "$minutes min";
+}
+
+ double calculateVideoWatchProgress(int consume,int videoduration){
+  double consumeDuration=consume.toDouble();
+  double videoDuration=videoduration.toDouble();
+
+  double watchPercentage=(consumeDuration/videoDuration)*100;
+  if(watchPercentage>100){
+    return 1.0;
+  }
+  else{
+    return watchPercentage/100;
+  }
 
 }
 
 
+// int getTotalConsumeDurationOfVideo(int consumeduration, int localConsumeduration){
+//   return consumeduration+localConsumeduration;
+
+
+// }
 
    
