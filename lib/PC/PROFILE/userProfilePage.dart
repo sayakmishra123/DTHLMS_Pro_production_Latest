@@ -1627,6 +1627,9 @@ class DeviceHistory extends StatefulWidget {
 class _DeviceHistoryState extends State<DeviceHistory> {
   Getx getx = Get.put(Getx());
 
+
+  
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

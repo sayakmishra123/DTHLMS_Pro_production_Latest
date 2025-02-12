@@ -9,6 +9,7 @@ import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/CUSTOMDIALOG/customdialog.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
 import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
@@ -596,9 +597,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                 child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 25, vertical: 10),
-                                    child: videoPlayerRight()
+                                    child: 
+                                    // videoPlayerRight()
 
-                                    //  page[selectedIndexOfVideoList],
+                                     page[selectedIndexOfVideoList],
                                     )
 
                                 // child: isDownloadPathExitsOnVideoList()
@@ -1387,8 +1389,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
             getx.alwaysShowChapterfilesOfVideo[index]["FileId"];
         videoPlay.updateVideoLink(savePath, []);
         setState(() {});
+        onSweetAleartDialogwithDeny(context,(){
+          Get.back();
 
-        fetchUploadableVideoInfo().then((valueList) async {
+          fetchUploadableVideoInfo().then((valueList) async {
           print(valueList);
           if (getx.isInternet.value) {
             unUploadedVideoInfoInsert(
@@ -1426,6 +1430,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
             ));
           }
         });
+        },"Downloaded","Do you want to Play the Video?",(){
+          Get.back();
+        });
+
+        
       });
 
       print('$savePath video saved to this location');
@@ -2519,7 +2528,7 @@ class _TagsState extends State<Tags> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.9,
-      child: ScrollConfiguration(
+      child: getx.tagListOfVideo.length<1?Center(child: Text("No Tag here",style: TextStyle(fontWeight: FontWeight.bold),)):  ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ListView.builder(
           itemCount: getx.tagListOfVideo.length,
@@ -2687,9 +2696,9 @@ class _McqState extends State<Mcq> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return  Container(
       height: MediaQuery.of(context).size.height * 0.8,
-      child: PageView.builder(
+      child:  mcqData.length<1?Center(child: Text("No MCQ here",style: TextStyle(fontWeight: FontWeight.bold),)):  PageView.builder(
         controller: _pageController,
         onPageChanged: (index) {
           qindex.value = index;
