@@ -9,6 +9,7 @@ import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/CUSTOMDIALOG/customdialog.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
 import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
@@ -33,6 +34,8 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:path/path.dart' as p;
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:http/http.dart' as http;
+
+import '../../API/url/api_url.dart';
 
 class VideoPlayer extends StatefulWidget {
   final String videoLink;
@@ -594,12 +597,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
                                   ],
                                 ),
                                 child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 25, vertical: 10),
-                                    child: videoPlayerRight()
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25, vertical: 10),
+                                  child:
+                                      // videoPlayerRight()
 
-                                    //  page[selectedIndexOfVideoList],
-                                    )
+                                      page[selectedIndexOfVideoList],
+                                )
 
                                 // child: isDownloadPathExitsOnVideoList()
                                 //     ? videoPlayerRight()
@@ -1383,45 +1387,55 @@ class _VideoPlayerState extends State<VideoPlayer> {
             getx.alwaysShowChapterfilesOfVideo[index]["FileId"];
         videoPlay.updateVideoLink(savePath, []);
         setState(() {});
+        onSweetAleartDialogwithDeny(
+            context,
+            () {
+              Get.back();
 
-        fetchUploadableVideoInfo().then((valueList) async {
-          print(valueList);
-          if (getx.isInternet.value) {
-            unUploadedVideoInfoInsert(
-                context, valueList, getx.loginuserdata[0].token, false);
-          }
-          if (await isProcessRunning("dthlmspro_video_player") == false) {
-            run_Video_Player_exe(
-                savePath,
-                getx.loginuserdata[0].token,
-                getx.playingVideoId.value,
-                getx.selectedPackageId.value.toString(),
-                getx.dbPath.value);
-          }
-          if (await isProcessRunning("dthlmspro_video_player") == true) {
-            Get.showSnackbar(GetSnackBar(
-              isDismissible: true,
-              shouldIconPulse: true,
-              icon: const Icon(
-                Icons.video_chat,
-                color: Colors.white,
-              ),
-              snackPosition: SnackPosition.TOP,
-              title: 'Player is already open',
-              message: 'Please check your taskbar.',
-              mainButton: TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: const Text(
-                  'Ok',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              duration: const Duration(seconds: 3),
-            ));
-          }
-        });
+              fetchUploadableVideoInfo().then((valueList) async {
+                print(valueList);
+                if (getx.isInternet.value) {
+                  unUploadedVideoInfoInsert(
+                      context, valueList, getx.loginuserdata[0].token, false);
+                }
+                if (await isProcessRunning("dthlmspro_video_player") == false) {
+                  run_Video_Player_exe(
+                      savePath,
+                      getx.loginuserdata[0].token,
+                      getx.playingVideoId.value,
+                      getx.selectedPackageId.value.toString(),
+                      getx.dbPath.value);
+                }
+                if (await isProcessRunning("dthlmspro_video_player") == true) {
+                  Get.showSnackbar(GetSnackBar(
+                    isDismissible: true,
+                    shouldIconPulse: true,
+                    icon: const Icon(
+                      Icons.video_chat,
+                      color: Colors.white,
+                    ),
+                    snackPosition: SnackPosition.TOP,
+                    title: 'Player is already open',
+                    message: 'Please check your taskbar.',
+                    mainButton: TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text(
+                        'Ok',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    duration: const Duration(seconds: 3),
+                  ));
+                }
+              });
+            },
+            "Downloaded",
+            "Do you want to Play the Video?",
+            () {
+              Get.back();
+            });
       });
 
       print('$savePath video saved to this location');
@@ -2515,41 +2529,48 @@ class _TagsState extends State<Tags> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.9,
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: ListView.builder(
-          itemCount: getx.tagListOfVideo.length,
-          itemBuilder: (context, index) {
-            return Material(
-              color: Colors.transparent,
-              child: ListTile(
-                onTap: () {
-                  videoPlay.seekTo(
-                      parseDuration(getx.tagListOfVideo[index]['VideoTime']));
+      child: getx.tagListOfVideo.length < 1
+          ? Center(
+              child: Text(
+              "No Tag here",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ))
+          : ScrollConfiguration(
+              behavior:
+                  ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              child: ListView.builder(
+                itemCount: getx.tagListOfVideo.length,
+                itemBuilder: (context, index) {
+                  return Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      onTap: () {
+                        videoPlay.seekTo(parseDuration(
+                            getx.tagListOfVideo[index]['VideoTime']));
+                      },
+                      title: Text(
+                        getx.tagListOfVideo[index]['TagName'],
+                        style: FontFamily.styleb
+                            .copyWith(fontSize: 16, color: Colors.grey[700]),
+                      ),
+                      subtitle: Text(
+                        getx.tagListOfVideo[index]['VideoTime'],
+                        style: FontFamily.styleb
+                            .copyWith(fontSize: 14, color: Colors.grey[500]),
+                      ),
+                      leading: Icon(
+                        Icons.timeline,
+                        size: 18,
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 15,
+                      ),
+                    ),
+                  );
                 },
-                title: Text(
-                  getx.tagListOfVideo[index]['TagName'],
-                  style: FontFamily.styleb
-                      .copyWith(fontSize: 16, color: Colors.grey[700]),
-                ),
-                subtitle: Text(
-                  getx.tagListOfVideo[index]['VideoTime'],
-                  style: FontFamily.styleb
-                      .copyWith(fontSize: 14, color: Colors.grey[500]),
-                ),
-                leading: Icon(
-                  Icons.timeline,
-                  size: 18,
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 15,
-                ),
               ),
-            );
-          },
-        ),
-      ),
+            ),
     );
   }
 
@@ -2685,236 +2706,257 @@ class _McqState extends State<Mcq> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
-      child: PageView.builder(
-        controller: _pageController,
-        onPageChanged: (index) {
-          qindex.value = index;
-        },
-        itemCount: mcqData.length,
-        itemBuilder: (context, index) {
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Question container
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      child: mcqData.length < 1
+          ? Center(
+              child: Text(
+              "No MCQ here",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ))
+          : PageView.builder(
+              controller: _pageController,
+              onPageChanged: (index) {
+                qindex.value = index;
+              },
+              itemCount: mcqData.length,
+              itemBuilder: (context, index) {
+                return SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      offset: Offset(8, 8),
-                                      blurRadius: 10,
-                                    )
-                                  ]),
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              child: Column(
-                                children: [
-                                  SizedBox(width: 20),
-                                  Text(
-                                    textAlign: TextAlign.center,
-                                    mcqData[index].mcqQuestion,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 20),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 10),
-                                    color: Colors.black26,
-                                    height: 3,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10),
-                                        child: Text(
-                                          "${index + 1} / ${mcqData.length}",
+                      // Question container
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            offset: Offset(8, 8),
+                                            blurRadius: 10,
+                                          )
+                                        ]),
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(width: 20),
+                                        Text(
+                                          textAlign: TextAlign.center,
+                                          mcqData[index].mcqQuestion,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w600,
-                                              fontSize: 12),
+                                              fontSize: 20),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                // Answer options container
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                  child: SizedBox(
-                    height: 600,
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20),
-                        Expanded(
-                          child: ListView.builder(
-                            physics: mcqData[index].options.length < 5
-                                ? NeverScrollableScrollPhysics()
-                                : AlwaysScrollableScrollPhysics(),
-                            itemCount: mcqData[index].options.length,
-                            itemBuilder: (context, optionIndex) {
-                              String optionName = mcqData[index]
-                                  .options[optionIndex]
-                                  .optionName;
-                              int questionId = int.parse(mcqData[index].mcqId);
-
-                              // Get the correct answer index (converting from String to int)
-                              int correctAnswerIndex = int.parse(
-                                      answer.firstWhere(
-                                          (map) => map.containsKey(
-                                              mcqData[index].mcqId),
-                                          orElse: () => {
-                                                mcqData[index].mcqId: "0"
-                                              })[mcqData[index].mcqId]!) -
-                                  1; // Convert to zero-based index
-
-                              bool isSelected = userAns[questionId] ==
-                                  optionIndex; // Check if selected index matches
-                              bool isCorrect =
-                                  optionIndex == correctAnswerIndex;
-                              // Correct if the index matches the correct answer
-                              bool isAnswered = userAns.containsKey(questionId);
-
-                              // Determine the color of each tile based on the selection and correctness
-                              Color tileColor;
-                              if (isAnswered) {
-                                if (isSelected && isCorrect) {
-                                  tileColor = Colors.green;
-                                } else if (isSelected && !isCorrect) {
-                                  tileColor = Colors.red;
-                                } else if (isCorrect) {
-                                  tileColor = Colors.green;
-                                } else {
-                                  tileColor = Colors.white; // default color
-                                }
-                              } else {
-                                tileColor = Colors.white; // default color
-                              }
-
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 600),
-                                  curve: Curves.easeInOut,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    color: tileColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 10,
-                                        offset: Offset(0, 5),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () {
-                                        setState(() {
-                                          if (!userAns
-                                              .containsKey(questionId)) {
-                                            userAns[questionId] =
-                                                optionIndex; // Store the index of the selected answer
-                                          }
-                                        });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: Text(
-                                              optionName,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 15),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 20, horizontal: 10),
+                                          color: Colors.black26,
+                                          height: 3,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 10),
+                                              child: Text(
+                                                "${index + 1} / ${mcqData.length}",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                        // Previous, Next and Submit/Reset buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            MaterialButton(
-                              height: 40,
-                              color: Colors.blue,
-                              padding: EdgeInsets.all(16),
-                              shape: ContinuousRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              onPressed: () {
-                                if (index > 0) {
-                                  _pageController.previousPage(
-                                    duration: Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                              },
-                              child: Text(
-                                'Previous',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            MaterialButton(
-                              height: 40,
-                              color: Colors.blue,
-                              padding: EdgeInsets.all(16),
-                              shape: ContinuousRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              onPressed: () {
-                                if (index < mcqData.length - 1) {
-                                  _pageController.nextPage(
-                                    duration: Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
-                                } else if (index == mcqData.length - 1) {
-                                  _resetQuiz();
-                                }
-                              },
-                              child: Text(
-                                index == mcqData.length - 1 ? 'Reset' : 'Next',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      // Answer options container
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        child: SizedBox(
+                          height: 600,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              Expanded(
+                                child: ListView.builder(
+                                  physics: mcqData[index].options.length < 5
+                                      ? NeverScrollableScrollPhysics()
+                                      : AlwaysScrollableScrollPhysics(),
+                                  itemCount: mcqData[index].options.length,
+                                  itemBuilder: (context, optionIndex) {
+                                    String optionName = mcqData[index]
+                                        .options[optionIndex]
+                                        .optionName;
+                                    int questionId =
+                                        int.parse(mcqData[index].mcqId);
+
+                                    // Get the correct answer index (converting from String to int)
+                                    int correctAnswerIndex = int.parse(
+                                            answer.firstWhere(
+                                                (map) => map.containsKey(
+                                                    mcqData[index].mcqId),
+                                                orElse: () => {
+                                                      mcqData[index].mcqId: "0"
+                                                    })[mcqData[index].mcqId]!) -
+                                        1; // Convert to zero-based index
+
+                                    bool isSelected = userAns[questionId] ==
+                                        optionIndex; // Check if selected index matches
+                                    bool isCorrect =
+                                        optionIndex == correctAnswerIndex;
+                                    // Correct if the index matches the correct answer
+                                    bool isAnswered =
+                                        userAns.containsKey(questionId);
+
+                                    // Determine the color of each tile based on the selection and correctness
+                                    Color tileColor;
+                                    if (isAnswered) {
+                                      if (isSelected && isCorrect) {
+                                        tileColor = Colors.green;
+                                      } else if (isSelected && !isCorrect) {
+                                        tileColor = Colors.red;
+                                      } else if (isCorrect) {
+                                        tileColor = Colors.green;
+                                      } else {
+                                        tileColor =
+                                            Colors.white; // default color
+                                      }
+                                    } else {
+                                      tileColor = Colors.white; // default color
+                                    }
+
+                                    return Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: AnimatedContainer(
+                                        duration: Duration(milliseconds: 600),
+                                        curve: Curves.easeInOut,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          color: tileColor,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 10,
+                                              offset: Offset(0, 5),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            onTap: () {
+                                              setState(() {
+                                                if (!userAns
+                                                    .containsKey(questionId)) {
+                                                  userAns[questionId] =
+                                                      optionIndex; // Store the index of the selected answer
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16),
+                                                  child: Text(
+                                                    optionName,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 15),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              // Previous, Next and Submit/Reset buttons
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  MaterialButton(
+                                    height: 40,
+                                    color: Colors.blue,
+                                    padding: EdgeInsets.all(16),
+                                    shape: ContinuousRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    onPressed: () {
+                                      if (index > 0) {
+                                        _pageController.previousPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      'Previous',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                  MaterialButton(
+                                    height: 40,
+                                    color: Colors.blue,
+                                    padding: EdgeInsets.all(16),
+                                    shape: ContinuousRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    onPressed: () {
+                                      if (index < mcqData.length - 1) {
+                                        _pageController.nextPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      } else if (index == mcqData.length - 1) {
+                                        _resetQuiz();
+                                      }
+                                    },
+                                    child: Text(
+                                      index == mcqData.length - 1
+                                          ? 'Reset'
+                                          : 'Next',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 

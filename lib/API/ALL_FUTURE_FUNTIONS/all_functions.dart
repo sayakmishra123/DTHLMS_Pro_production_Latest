@@ -694,8 +694,8 @@ Future<void> getPackageData(BuildContext context, String token) async {
   }
 }
 
-onSweetAleartDialog(
-    context, VoidCallback ontap, String title, String subtitle) async {
+onSweetAleartDialog(context, VoidCallback ontap, String title, String subtitle,
+    bool success) async {
   await ArtSweetAlert.show(
       barrierDismissible: false,
       context: context,
@@ -708,7 +708,8 @@ onSweetAleartDialog(
           confirmButtonText:
               "                           Ok                            ",
           onConfirm: ontap,
-          type: ArtSweetAlertType.warning));
+          type:
+              success ? ArtSweetAlertType.success : ArtSweetAlertType.warning));
 }
 
 onTokenExpire(
@@ -3810,49 +3811,6 @@ Future<String> getAnswerSheetURLforStudent(
   return returnValue;
 }
 
-Future<bool> uploadStudentFeedBack(
-  BuildContext context,
-  String token,
-  String feedBackList,
-) async {
-  loader(context);
-  Map<String, dynamic> data = {"ExamId": feedBackList};
-
-  try {
-    var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadStudentFeedback),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(data),
-    );
-    print(res.body);
-    if (res.statusCode == 200) {
-      Map<String, dynamic> response = jsonDecode(res.body);
-
-      var result = jsonDecode(response['result']);
-
-      // log("${result} ////////////////// get infinite marquee details");
-
-      Get.back();
-
-      return true;
-    } else if (res.statusCode == 401) {
-      Get.back();
-      onTokenExpire(context);
-    } else {
-      Get.back();
-      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
-    }
-  } catch (e) {
-    Get.back();
-    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-    writeToFile(e, 'uploadStudentFeedBack');
-  }
-  return false;
-}
-
 appVersionGet() async {
   try {
     pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
@@ -3974,39 +3932,52 @@ Future<bool> pauseSubscription(BuildContext context, String token,
   Map<String, dynamic> response = jsonDecode(res.body);
   if (res.statusCode == 200) {
     var result = jsonDecode(response['result']);
+    try {
+      var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(data),
+      );
+      print(res.body);
+      Map<String, dynamic> response = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+        await updateTblPackageDataForPauseSubscription(
+            "1", packageId, result[0]['ExpiryDate'], result[0]['PausedUpto']);
 
-    await updateTblPackageDataForPauseSubscription(
-        "1", packageId, result[0]['ExpiryDate'], result[0]['PausedUpto']);
+        Get.back();
 
-    Get.back();
+        return true;
 
-    return true;
+        // return true;
+      } else if (res.statusCode == 401) {
+        // updateTblPackageDataForFirsttimeActivation("1",result[''],)
+        Get.back();
+        onTokenExpire(context);
+        return false;
+      } else {
+        Get.back();
+        ClsErrorMsg.fnErrorDialog(
+            context,
+            'Error',
+            response['errorMessages']
+                .toString()
+                .replaceAll("[", "")
+                .replaceAll("]", ""),
+            res);
+        return false;
 
-    // return true;
-  } else if (res.statusCode == 401) {
-    // updateTblPackageDataForFirsttimeActivation("1",result[''],)
-    Get.back();
-    onTokenExpire(context);
-    return false;
-  } else {
-    Get.back();
-    ClsErrorMsg.fnErrorDialog(
-        context,
-        'Error',
-        response['errorMessages']
-            .toString()
-            .replaceAll("[", "")
-            .replaceAll("]", ""),
-        res);
-    return false;
+        // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+      }
+    } catch (e) {
+      Get.back();
 
-    // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+      // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+      writeToFile(e, 'activePackageByStudent');
+      return false;
+    }
   }
-  // } catch (e) {
-  //   Get.back();
-
-  //   // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-  //   writeToFile(e, 'activePackageByStudent');
-  //     return false;
-  // }
+  return false;
 }

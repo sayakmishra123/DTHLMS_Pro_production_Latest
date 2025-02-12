@@ -479,7 +479,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                           onSweetAleartDialog(context, () {
                                             Get.back();
                                           }, "Paused!",
-                                              "Your Package subscription is pause.");
+                                              "Your Package subscription is pause.",false);
                                         }
                                       } else //is Package Expire
                                       {
@@ -487,7 +487,7 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                         onSweetAleartDialog(context, () {
                                           Get.back();
                                         }, "Expired!",
-                                            "Your Package subscription was expired on \n ${formatDateString(paidPackages[i]['ExpiryDate'], "datetime")}.");
+                                            "Your Package subscription was expired on \n ${formatDateString(paidPackages[i]['ExpiryDate'], "datetime")}.",false);
                                       }
                                     },
                                     widget.selectedIndex == i,

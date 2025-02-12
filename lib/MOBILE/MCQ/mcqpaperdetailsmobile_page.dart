@@ -202,7 +202,7 @@ class _McqPaperDetailsMobileState extends State<McqPaperDetailsMobile> {
                                     } else {
                                       onSweetAleartDialog(context, () {
                                         Get.back();
-                                      }, "Something went wrong !!", "");
+                                      }, "Something went wrong !!", "",false);
                                     }
                                   } else {
                                     if (isExpired(mcqPaperList[index]
