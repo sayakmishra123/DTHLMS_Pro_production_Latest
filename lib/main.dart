@@ -44,7 +44,7 @@ void main(List<String> args) async {
   Get.put(OnlineAudioPlayerController()); 
 
   function() async {
-    // open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
+    open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
 
     testSQLCipherOnWindows();
     if (Platform.isWindows) {
@@ -172,7 +172,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: Color.fromARGB(255, 234, 237, 248),
         fontFamily: 'AmazonEmber',
-        textTheme: !Platform.isIOS
+        textTheme: !Platform.isAndroid
             ? GoogleFonts.outfitTextTheme(
                 TextTheme(
                   bodyLarge: TextStyle(fontSize: 12),
@@ -210,7 +210,7 @@ class _MyAppState extends State<MyApp> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             return 
-            Platform.isIOS
+            Platform.isAndroid
                 ? getx.isEmulator.value
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
@@ -282,7 +282,7 @@ singleInstance(args) async {
 Future<bool> isEmulator() async {
   final deviceInfo = DeviceInfoPlugin();
 
-if (Platform.isIOS) {
+if (Platform.isAndroid) {
     final iosInfo = await deviceInfo.iosInfo;
     return iosInfo.isPhysicalDevice == false ||
         iosInfo.model.toLowerCase().contains('simulator') ||

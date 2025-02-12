@@ -202,7 +202,7 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: Platform.isIOS ? 30 : 100, vertical: 20),
+              horizontal: Platform.isAndroid ? 30 : 100, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

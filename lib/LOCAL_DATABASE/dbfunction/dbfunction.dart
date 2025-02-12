@@ -173,7 +173,9 @@ void createtblPackageDetails() {
    IsEncrypted TEXT,
    SortedOrder TEXT,
    DurationLimitation TEXT,
-   ViewCount TEXT
+   ViewCount TEXT,
+   Description TEXT,
+   DisplayName TEXT
    );
   ''');
 }
@@ -683,7 +685,8 @@ String getLastEndDuration(int videoId) {
     // Check if the result is not empty and return the EndDuration value
     if (result.isNotEmpty) {
       print(result.first['TimeSpend'] + 'End Duration');
-      return result.first['TimeSpend'] as String;
+      String lastDuration= result.first['TimeSpend'] as String;
+      return lastDuration=="null"?"0":lastDuration;
     } else {
       return "0"; // Return null if no result is found
     }
@@ -857,10 +860,10 @@ Future<void> insertPackageDetailsdata(
     String videoDuration,
     String DownloadedPath,
     String isEncrypted,
-    String sortedOrder,String? viewCount,String? durationLimitation) async {
+    String sortedOrder,String? viewCount,String? durationLimitation, String description,String displayName) async {
   _db.execute('''
-       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder,DurationLimitation,ViewCount) 
-      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder','$durationLimitation','$viewCount');
+       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder,DurationLimitation,ViewCount,Description,DisplayName) 
+      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder','$durationLimitation','$viewCount','$description','$displayName');
     ''');
 
   // return null;
@@ -1037,6 +1040,16 @@ Future<void> readPackageDetailsdata() async {
       'AllowNo': row['AllowNo'],
       'DocumentPath': row['DocumentPath'],
       'DownloadedPath': row['DownloadedPath'],
+      'SortedOrder':row['SortedOrder'],
+      'IsEncrypted':row['IsEncrypted'],
+      'DurationLimitation':row['DurationLimitation'],
+      'ViewCount':row['ViewCount'],
+      'Description':row['Description'],
+      'DisplayName':row['DisplayName']
+
+
+
+
     };
     getx.calenderEvents.add(details);
     if (row['FileIdType'] == "Test") {
@@ -1279,15 +1292,27 @@ Future<void> getChapterFiles(String fileType, String packageId,
       if (resultSet.length != 0) {}
       resultSet.forEach((row) {
         final details = {
-          'FileIdName': row['FileIdName'],
-          'FileId': row['FileId'],
-          'AllowDuration': row['AllowDuration'],
-          'ConsumeDuration': row['ConsumeDuration'],
-          'DocumentPath': row['DocumentPath'],
-          'ConsumeNos': row['ConsumeNos'],
-          'AllowNo': row['AllowNo'],
-          'PackageId': row['PackageId'],
-          'DownloadedPath': row['DownloadedPath'],
+           'PackageId': row['PackageId'],
+      'FileId': row['FileId'],
+      'FileIdName': row['FileIdName'],
+      'ChapterId': row['ChapterId'] ?? "0",
+      'ScheduleOn': row['ScheduleOn'],
+      'FileIdType': row['FileIdType'],
+      'SessionId': row['SessionId'] ?? "0",
+      'PackageName': row['PackageName'],
+      'VideoDuration': row['VideoDuration'],
+      'AllowDuration': row['AllowDuration'],
+      'ConsumeDuration': row['ConsumeDuration'],
+      'ConsumeNos': row['ConsumeNos'],
+      'AllowNo': row['AllowNo'],
+      'DocumentPath': row['DocumentPath'],
+      'DownloadedPath': row['DownloadedPath'],
+      'SortedOrder':row['SortedOrder'],
+      'IsEncrypted':row['IsEncrypted'],
+      'DurationLimitation':row['DurationLimitation'],
+      'ViewCount':row['ViewCount'],
+      'Description':row['Description'],
+      'DisplayName':row['DisplayName']
         };
         getx.alwaysShowChapterfilesOfVideo.add(details);
       });
@@ -3971,3 +3996,93 @@ bool checkIsPackageActiveByUser(String packageId) {
     return false;
   }
 }
+
+
+int getLocalConsumeDurationOfPackage(String packageId){
+try{
+  
+  List<String>videoIdList=getVideoIdListOfPackage(packageId);
+
+print(videoIdList.length);
+  if(videoIdList.isNotEmpty){
+    String placeholders = List.filled(videoIdList.length, '?').join(',');
+     final sql.ResultSet resultSet = _db.select(
+      'SELECT * FROM TblvideoPlayInfo WHERE UploadFlag="0" AND VideoId IN ($placeholders)',
+      videoIdList);
+if(resultSet.isNotEmpty){
+  
+        double totalDuration = 0.0;
+
+  for (final row in resultSet) {
+    double speed = double.parse(row['Speed']??"0");
+    double endDuration = double.parse(row['TimeSpend']=="null"?"0":row['TimeSpend']??"0") ;
+    totalDuration += speed * endDuration;
+  }
+   int seconds =totalDuration.toInt();
+  
+          int minutes = seconds ~/ 60;
+          int hours = minutes ~/ 60;
+
+       totalDuration.toInt();
+
+}
+
+  }
+}catch(e){
+  writeToFile(e, "getLocalConsumeDurationOfPackage");
+
+}
+  return 0;
+}
+
+
+List<String>  getVideoIdListOfPackage(String packageId){
+   List<String> videoIdList=[];
+  try{
+     final sql.ResultSet resultSet = _db.select(
+        'SELECT FileId FROM TblAllPackageDetails WHERE PackageId = ? AND FileIdType=?',
+        [packageId,'Video']);
+
+    videoIdList = resultSet.map((row) => row['FileId'] as String).toList();
+    return videoIdList;
+  }
+  catch(e){
+    writeToFile(e, "getVideoIdListOfPackage");
+  }
+        return videoIdList;
+}
+
+
+ int getTotalConsumeDurationOfVideo(String videoId){
+
+try{
+    final sql.ResultSet resultSet = _db.select(
+        'SELECT * FROM TblvideoPlayInfo WHERE VideoId = ? AND UploadFlag=?',
+        [videoId,"0"]);
+
+        if(resultSet.isNotEmpty){
+  
+        double totalDuration = 0.0;
+
+  for (final row in resultSet) {
+    double speed = double.parse(row['Speed']??"0");
+    double endDuration = double.parse(row['TimeSpend']=="null"?"0":row['TimeSpend']??"0") ;
+    totalDuration += speed * endDuration;
+  }
+   int seconds =totalDuration.toInt();
+  
+          int minutes = seconds ~/ 60;
+          int hours = minutes ~/ 60;
+
+         return totalDuration.toInt();
+
+}
+
+}catch(e){
+  writeToFile(e, getTotalConsumeDurationOfVideo);
+
+}
+return 0;
+}
+
+

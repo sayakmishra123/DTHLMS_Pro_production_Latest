@@ -688,7 +688,7 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
 //
 
   Future permission() async {
-    if (Platform.isIOS) {
+    if (Platform.isAndroid) {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final IosDeviceInfo info = await deviceInfoPlugin.iosInfo;
       // if ((info.version.sdkInt) >= 33) {

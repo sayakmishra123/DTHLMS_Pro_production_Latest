@@ -1332,7 +1332,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
     final appDocDir;
     try {
       var prefs = await SharedPreferences.getInstance();
-      if (Platform.isIOS) {
+      if (Platform.isAndroid) {
         final path = await getApplicationDocumentsDirectory();
         appDocDir = path.path;
       } else {
@@ -2384,8 +2384,8 @@ class _AskDoubtState extends State<AskDoubt> {
                 children: [
                   Image.file(
                     _selectedImage!,
-                    width: Platform.isIOS ? 150 : 500,
-                    height: Platform.isIOS ? 150 : 300,
+                    width: Platform.isAndroid ? 150 : 500,
+                    height: Platform.isAndroid ? 150 : 300,
                     fit: BoxFit.contain,
                   ),
                   SizedBox(

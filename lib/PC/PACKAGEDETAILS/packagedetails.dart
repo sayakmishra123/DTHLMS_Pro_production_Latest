@@ -395,14 +395,20 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
           allowedDuration.value =
               allowedDuration.value + int.parse(i['AllowDuration']);
           videoCountData.value = data.length;
+          getx.totalVideocount.value=data.length;
 
           int seconds = allowedDuration.value;
+          getx.totalAllowDurationinSeconds.value=allowedDuration.value;
           int minutes = seconds ~/ 60;
           int hours = minutes ~/ 60;
 
           formattedDuration.value = hours > 0
               ? "$hours hours ${minutes % 60} minutes"
               : "$minutes minutes";
+              getx.totalAllowDuration.value=hours > 0
+              ? "$hours hours ${minutes % 60} minutes"
+              : "$minutes minutes";
+
         }
         print(videoCountData);
       }
@@ -995,6 +1001,7 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
   void initState() {
     super.initState();
     getListStructure();
+    
     filteredChapterDetails = getx.alwaysShowChapterDetailsOfVideo;
     filteredFileDetails =
         getx.alwaysShowChapterfilesOfVideo; // Initialize with full list
@@ -1085,11 +1092,45 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                            getx.subjectDetails.isNotEmpty
-                                ? getx.subjectDetails[0]["SubjectName"]
-                                : "Subject Name",
-                            style: FontFamily.font),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text(
+                                  getx.subjectDetails.isNotEmpty
+                                      ? getx.subjectDetails[0]["SubjectName"]
+                                      : "Subject Name",
+                                  style: FontFamily.font
+                                  ),
+                            ),
+                            Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                   child: Text(
+                                   "total Videos :  ${getx.totalVideocount.value}",
+                                                                   style: FontFamily.font4),
+                                 ),
+
+ 
+                                 Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                   child: Text(
+                                   "total Duration: ${getx.totalAllowDuration.value}",
+                                                                   style: FontFamily.font4),
+                                 ),
+                                 Padding(
+                                   padding: const EdgeInsets.only(left: 10),
+                                   child: Text(
+                                                                  "Consume Duration: ${breakSecondIntoHourAndMinute(getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
+                                                                   style: FontFamily.font4),
+                                 ),
+                                Padding(
+                                 padding: const EdgeInsets.only(left: 10),
+                                  child: Text(
+                                                                 "Remaining Duration: ${breakSecondIntoHourAndMinute(getx.totalAllowDurationinSeconds.value-getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
+                                  style: FontFamily.font4),
+                                ),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 5),
@@ -1817,7 +1858,7 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                                   : ColorPage.colorbutton,
                             ),
                             subtitle: Text(
-                              'Duration:  ${filteredFileDetails[index]['AllowDuration']}',
+                              'Duration:  ${filteredFileDetails[index]['VideoDuration']}',
                               style: TextStyle(
                                 color: selectedVideoIndex == index
                                     ? ColorPage.white.withOpacity(0.9)
@@ -2970,3 +3011,21 @@ onExitPage(context, VoidCallback ontap, VoidCallback onCanceltap) async {
   //   ],
   // ).show();
 }
+
+
+
+String breakSecondIntoHourAndMinute(int seconds){
+   
+          int minutes = seconds ~/ 60;
+          int hours = minutes ~/ 60;
+
+         return  hours > 0
+              ? "$hours hours ${minutes % 60} minutes"
+              : "$minutes minutes";
+
+
+}
+
+
+
+   

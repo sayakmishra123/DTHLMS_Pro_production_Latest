@@ -181,7 +181,7 @@ class _VideoPlayerMcqState extends State<VideoPlayerMcq> {
               ),
               fullscreen: MaterialDesktopVideoControlsThemeData(),
               child: Container(
-                height: Platform.isIOS ? 280 : 390,
+                height: Platform.isAndroid ? 280 : 390,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                 ),

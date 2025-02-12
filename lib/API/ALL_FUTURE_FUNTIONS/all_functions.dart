@@ -197,7 +197,10 @@ Future packactivationKey(
           'Origin': origin,
         },
         body: jsonEncode(data));
-    // // print(res.body);
+    print(res.body);
+
+    var jsondata=jsonDecode(res.body);
+    print(res.body);
     if (res.statusCode == 201) {
       deleteAllFolders();
       deleteAllPackage();
@@ -213,7 +216,7 @@ Future packactivationKey(
       await confirmActivationCode(context, 'Package activated', true);
       Get.back();
 
-      Platform.isIOS
+      Platform.isAndroid
           ? Get.offAll(() => HomePageMobile())
           : Get.offAll(() => DthDashboard());
     } else if (res.statusCode == 401) {
@@ -221,10 +224,10 @@ Future packactivationKey(
     } else if (res.statusCode == 400) {
       Get.back();
 
-      await confirmActivationCode(context, 'Package activation failed', false);
+      await confirmActivationCode(context, jsondata['errorMessages'].toString().replaceAll("[", "").replaceAll("]", ""), false);
     } else {
       Get.back();
-      await confirmActivationCode(context, 'Package activation failed', false);
+      await confirmActivationCode(context, jsondata['errorMessages'].toString().replaceAll("[", "").replaceAll("]", ""), false);
     }
   } catch (e) {
     writeToFile(e, 'packactivationKey');
@@ -448,7 +451,9 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount);
+            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount,
+            description: file.description,
+            displayName: file.displayName);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -472,7 +477,9 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
                 file.isEncrypted,
                 file.sortedOrder.toString(),
                 file.viewCount,
-                file.durationLimitation
+                file.durationLimitation,
+                file.description,
+                file.displayName
 
                 )
             .whenComplete(() {
@@ -535,7 +542,7 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount);
+            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount,description: file.description,displayName: file.displayName);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -557,7 +564,7 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
                   file.fileIdType ?? '',
                 ),
                 file.isEncrypted,
-                file.sortedOrder.toString(),file.viewCount??'',file.durationLimitation??'')
+                file.sortedOrder.toString(),file.viewCount??'',file.durationLimitation??'',file.description,file.displayName)
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);

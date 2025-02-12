@@ -1628,7 +1628,7 @@ class _DeviceHistoryState extends State<DeviceHistory> {
   Getx getx = Get.put(Getx());
 
 
-  
+
 
   @override
   Widget build(BuildContext context) {
@@ -2723,7 +2723,7 @@ logoutConfirmationBox(context) async {
 
           onConfirm: () async {
             await handleLogoutProcess(context).then((v) {
-              if (Platform.isIOS) {
+              if (Platform.isAndroid) {
                 Navigator.pop(context);
               }
             });
