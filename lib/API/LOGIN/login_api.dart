@@ -100,8 +100,6 @@ Future loginApi(
       await prefs.setBool("isLogin", true);
       await prefs.setString('userDetails', userdataJson);
 
-
-
       deletetblpackage();
       createtblPackageDetails();
 
@@ -133,7 +131,7 @@ Future loginApi(
       getPackageData(context, jsondata['result']['token']);
       getAllFolders(context, jsondata['result']['token'], "");
       getAllFiles(context, jsondata['result']['token'], "");
-      getAllFreeFiles(context,jsondata['result']['token'],"");
+      getAllFreeFiles(context, jsondata['result']['token'], "");
       getVideoComponents(context, jsondata['result']['token'], "");
       getMCQExamHistory(context, jsondata['result']['token']);
       getVideowatchHistory(context, jsondata['result']['token']);
@@ -187,8 +185,7 @@ Future loginApi(
   } catch (e) {
     Get.back();
     writeToFile(e, 'loginApi');
-    ClsErrorMsg.fnErrorDialog(context, 'Login error',
-'Error', e);
+    ClsErrorMsg.fnErrorDialog(context, 'Login error', 'Error', e);
   }
 }
 
@@ -295,8 +292,7 @@ Future signupApi(
   } catch (e) {
     writeToFile(e, 'signupApi');
     Get.back();
-    ClsErrorMsg.fnErrorDialog(context, 'Signup error',
-        'Error', e);
+    ClsErrorMsg.fnErrorDialog(context, 'Signup error', 'Error', e);
   }
 }
 

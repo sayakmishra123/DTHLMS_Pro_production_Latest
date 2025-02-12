@@ -101,7 +101,7 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
             "MCQQuestionUrl": question['MCQQuestionUrl'],
             "MCQQuestionTag": question['MCQQuestionTag'],
             "MCQQuestionMarks": question['MCQQuestionMarks'],
-            "PassageDetails":question["PassageDetails"],
+            "PassageDetails": question["PassageDetails"],
             // List of options for the question
           };
 
@@ -202,7 +202,7 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: Platform.isIOS ? 30 : 100, vertical: 20),
+              horizontal: Platform.isAndroid ? 30 : 100, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -270,7 +270,7 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
                     textScaler: TextScaler.linear(1.4),
                   ),
                   Text(
-                    'Total Duration :${(double.parse(widget.duration).toInt())~/60} minutes',
+                    'Total Duration :${(double.parse(widget.duration).toInt()) ~/ 60} minutes',
                     style: TextStyle(fontWeight: FontWeight.bold),
                     textScaler: TextScaler.linear(1.4),
                   )
@@ -331,41 +331,6 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
                                 .then((_) {
                               // Get.to(() => PracticeMcqExamPage());
                               Get.to(() => RankedCompetitionMcqPc(
-                                totalMarks: widget.totalMarks,
-                                    examStartTime: widget.startTime,
-                                    paperId: widget.paperId,
-                                    mcqlist: mcqdata,
-                                    answerList: answerdata,
-                                    paperName: widget.paperName,
-                                    duration: widget.duration,
-                                    attempt: attempt,
-                                    examType:"Quick Practice" ,
-                                    isAnswerSheetShow: false,
-                                    totalDuration:widget.duration ,
-                                    userAnswer:{} ,
-
-                                  ));
-                            });
-                          }
-
-                          if (widget.type == "Comprehensive") {
-                            if(isTimeExpiredofComprehensive(widget.startTime,widget.endDate)=="true"){
-                              
-
-
-
-
-
-                            await inserTblMCQhistory(
-                                    widget.paperId,
-                                    'Comprehensive',
-                                    widget.paperName,
-                                    '',
-                                    '',
-                                    attempt,
-                                    "0")
-                                .then((_) {
-                              Get.off(() => RankedCompetitionMcqPc(
                                     totalMarks: widget.totalMarks,
                                     examStartTime: widget.startTime,
                                     paperId: widget.paperId,
@@ -374,33 +339,56 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
                                     paperName: widget.paperName,
                                     duration: widget.duration,
                                     attempt: attempt,
-                                    isAnswerSheetShow: true,
-                                    examType:"Comprehensive" ,
-                                    totalDuration:widget.duration ,
+                                    examType: "Quick Practice",
+                                    isAnswerSheetShow: false,
+                                    totalDuration: widget.duration,
                                     userAnswer: {},
                                   ));
                             });
+                          }
+
+                          if (widget.type == "Comprehensive") {
+                            if (isTimeExpiredofComprehensive(
+                                    widget.startTime, widget.endDate) ==
+                                "true") {
+                              await inserTblMCQhistory(
+                                      widget.paperId,
+                                      'Comprehensive',
+                                      widget.paperName,
+                                      '',
+                                      '',
+                                      attempt,
+                                      "0")
+                                  .then((_) {
+                                Get.off(() => RankedCompetitionMcqPc(
+                                      totalMarks: widget.totalMarks,
+                                      examStartTime: widget.startTime,
+                                      paperId: widget.paperId,
+                                      mcqlist: mcqdata,
+                                      answerList: answerdata,
+                                      paperName: widget.paperName,
+                                      duration: widget.duration,
+                                      attempt: attempt,
+                                      isAnswerSheetShow: true,
+                                      examType: "Comprehensive",
+                                      totalDuration: widget.duration,
+                                      userAnswer: {},
+                                    ));
+                              });
+                            } else if (isTimeExpiredofComprehensive(
+                                    widget.startTime, widget.endDate) ==
+                                "expire") {
+                              _onTermDeniey(context, "Exam Time Expired",
+                                  "Your exam has expired");
+                            } else {
+                              _onTermDeniey(context, "Exam Not Started",
+                                  "Your exam is yet to begin");
                             }
-                            else if(isTimeExpiredofComprehensive(widget.startTime,widget.endDate)=="expire"){
-                               _onTermDeniey(context, "Exam Time Expired",
-                                    "Your exam has expired");
-
-
-                            }
-                            else{
-                                _onTermDeniey(context, "Exam Not Started",
-                                    "Your exam is yet to begin");
-
-                            }
-
-
-
                           }
                           if (widget.type == "Ranked Competition") {
                             if (getx.isInternet.value) {
                               String examStatus = widget.duration;
-                              
-                              
+
                               // isTimeExpired(
                               //     widget.startTime, double.parse(widget.duration).toInt());
 
@@ -421,20 +409,19 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
                                         "0")
                                     .then((_) {
                                   Get.off(() => RankedCompetitionMcqPc(
-                                    totalMarks: widget.totalMarks,
-                                        examStartTime: widget.startTime,
-                                        paperId: widget.paperId,
-                                        mcqlist: mcqdata,
-                                        answerList: answerdata,
-                                        paperName: widget.paperName,
-                                        duration:widget.duration,
-                                        attempt: attempt,
-                                        totalDuration: widget.duration,
-                                        userAnswer: widget.userAnswer,
-                                        isAnswerSheetShow:
-                                            widget.isAnswerSheetShow,
-                                           examType:  'Ranked Competition'
-                                      ));
+                                      totalMarks: widget.totalMarks,
+                                      examStartTime: widget.startTime,
+                                      paperId: widget.paperId,
+                                      mcqlist: mcqdata,
+                                      answerList: answerdata,
+                                      paperName: widget.paperName,
+                                      duration: widget.duration,
+                                      attempt: attempt,
+                                      totalDuration: widget.duration,
+                                      userAnswer: widget.userAnswer,
+                                      isAnswerSheetShow:
+                                          widget.isAnswerSheetShow,
+                                      examType: 'Ranked Competition'));
                                 });
                               }
                             } else {
@@ -517,6 +504,7 @@ class _MockMcqTermAndConditionState extends State<MockMcqTermAndCondition> {
     ).show();
   }
 }
+
 String isTimeExpiredofComprehensive(String timestamp, String expiryTimestamp) {
   // Parse the given timestamp and expiryTimestamp into DateTime objects
   DateTime originalTime = DateTime.parse(timestamp);
@@ -542,13 +530,11 @@ String isTimeExpiredofComprehensive(String timestamp, String expiryTimestamp) {
     print("Condition met: Current Time is before Start Time, returning false.");
     return "false";
   } else {
-    print("Condition met: Current Time is after Expiry Time, returning expire.");
+    print(
+        "Condition met: Current Time is after Expiry Time, returning expire.");
     return "expire";
   }
 }
-
-
-
 
 String isTimeExpired(String timestamp, int duration) {
   // Parse the given timestamp into a DateTime object
@@ -576,10 +562,6 @@ String isTimeExpired(String timestamp, int duration) {
         "Condition met: $expiryTime Time is after $now Time and Expiry Time is before Current Time.    ${expiryTime.difference(now).inMinutes.toString()}");
     return expiryTime.difference(now).inSeconds.toString();
     // return 3600.toString();
-
-
-
-
   } else if (expiryTime.isBefore(now)) {
     print("Condition met: Expiry Time is after Current Time.");
     return "expire";

@@ -44,7 +44,7 @@ void main(List<String> args) async {
   Get.put(OnlineAudioPlayerController());
 
   function() async {
-    // open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
+    open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
 
     testSQLCipherOnWindows();
     if (Platform.isWindows) {
@@ -172,7 +172,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: Color.fromARGB(255, 234, 237, 248),
         fontFamily: 'AmazonEmber',
-        textTheme: !Platform.isIOS
+        textTheme: !Platform.isAndroid
             ? GoogleFonts.outfitTextTheme(
                 TextTheme(
                   bodyLarge: TextStyle(fontSize: 12),
@@ -209,7 +209,7 @@ class _MyAppState extends State<MyApp> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return Platform.isIOS
+            return Platform.isAndroid
                 ? getx.isEmulator.value
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
@@ -271,10 +271,14 @@ Future<List> getSimCardsData(BuildContext context) async {
 // }
 
 singleInstance(args) async {
-  await WindowsSingleInstance.ensureSingleInstance(args, "custom_identifier",
-      bringWindowToFront: true, onSecondWindow: (args) {
-    // print(args);
-  });
+  await WindowsSingleInstance.ensureSingleInstance(
+    args,
+    "custom_identifier",
+    bringWindowToFront: true,
+    onSecondWindow: (args) {
+      // print(args);
+    },
+  );
   // print(args);
 }
 

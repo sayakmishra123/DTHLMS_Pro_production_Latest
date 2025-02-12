@@ -76,7 +76,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
       loginemail.text = getx.loginuserdata[0].loginId;
       loginpassword.text = getx.loginuserdata[0].password;
     }
-    formfieldsize = Platform.isIOS ? 300 : formfieldsize;
+    formfieldsize = Platform.isAndroid ? 300 : formfieldsize;
     getCountrycodeListFunction().whenComplete(() {
       setState(() {});
     });
@@ -1767,7 +1767,7 @@ class _DthLmsLoginState extends State<DthLmsLogin> {
                       ],
                     ),
                   )
-                : Platform.isIOS
+                : Platform.isAndroid
                     ? const Mobilelogin()
                     : Container(
                         color: ColorPage.colorblack,

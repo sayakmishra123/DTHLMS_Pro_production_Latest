@@ -26,7 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PackageDetailsPage extends StatefulWidget { 
+class PackageDetailsPage extends StatefulWidget {
   final String packageName;
   final int packageId;
   final String ExpiryDate;
@@ -197,7 +197,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
         getx.isLiveDashBoard.value = false;
         getx.isTheoryDashBoard.value = false;
         getx.isBookDashBoard.value = false;
-        getx.isMCQDashBoard.value = false; 
+        getx.isMCQDashBoard.value = false;
         getx.isBackupDashBoard.value = false;
         getx.isPDFDashBoard.value = false;
         getx.isPodcastDashboard.value = false;
@@ -288,7 +288,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     }
   }
 
-  getPodcast() async { 
+  getPodcast() async {
     podcastCount = await fetchPodcast(widget.packageId.toString(), 'Podcast');
   }
 
@@ -386,8 +386,9 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
     }
   }
 
-  getVideoCount() async { 
-    var data = await getAllPackageDetailsForVideoCount(widget.packageId.toString());
+  getVideoCount() async {
+    var data =
+        await getAllPackageDetailsForVideoCount(widget.packageId.toString());
     if (data.isNotEmpty) {
       hasData.value = false;
       for (var i in data) {
@@ -564,7 +565,7 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
                                               paging(getx.sectionListOfPackage[
                                                   index]["section"]);
                                             }
-                                          }, 
+                                          },
                                               widget.selectedIndex == index,
                                               hoverIndex == index,
                                               index,
@@ -1512,7 +1513,8 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
       child: filteredChapterDetails.isNotEmpty ||
               getx.alwaysShowFileDetailsOfpdf.isNotEmpty
           ? GridView.builder(
-              itemCount: filteredChapterDetails.length + getx.alwaysShowFileDetailsOfpdf.length,
+              itemCount: filteredChapterDetails.length +
+                  getx.alwaysShowFileDetailsOfpdf.length,
               scrollDirection: Axis.vertical,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: getx.isCollapsed.value ? 5 : 4,
@@ -2259,61 +2261,44 @@ class ExeRun {
   String exeFilePath = '';
 
   Future<void> runingExelive(MeetingDeatils meetingDeatils) async {
-    late String exePath;
-    late String token;
-    exePath = "exefiles/live/abc.exe";
-    print("exePath: $exePath");
-    print("meetingDeatils.packageId: ${meetingDeatils.packageId.toString()}");
-    print(
-        "User's Full Name: ${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}");
-    print("User Name ID: ${getx.loginuserdata[0].nameId.toString()}");
-    print(
-        "Meeting Details - Session ID: ${meetingDeatils.sessionId.toString()}");
-    print(
-        "Meeting Details - Topic Name: ${meetingDeatils.topicName.toString()}");
-    print("Meeting Details - Live URL: ${meetingDeatils.liveUrl.toString()}");
-    print(
-        "Meeting Details - Video Category: ${meetingDeatils.videoCategory.toString()}");
-    print("Database Path: ${getx.dbPath.value}");
-    print("Meeting Details - Video ID: ${meetingDeatils.videoId}");
-    print("User's Phone Number: ${getx.loginuserdata[0].phoneNumber}");
-    print("User's Token: ${getx.loginuserdata[0].token}");
-    print("Origin: $origin");
-    print(
-        "API URL: https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}");
-    print("Group Chat: ${meetingDeatils.groupChat!}");
-    print("Personal Chat: ${meetingDeatils.personalChat!}");
+    String exePath = "exefiles/live/abc.exe"; // Adjust path as needed
 
-    print(
-        "${meetingDeatils.liveUrl.toString() + "   " + getx.loginuserdata[0].firstName.toString() + " " + getx.loginuserdata[0].lastName + getx.loginuserdata[0].nameId.toString() + "/// " + meetingDeatils.sessionId.toString() + "////// category  " + meetingDeatils.videoCategory.toString() + "  ////" + meetingDeatils.packageId.toString()}");
+    if (exePath.isEmpty) {
+      print("Error: Executable path is empty!");
+      return;
+    }
 
-    if (exePath.isNotEmpty) {
-      await Process.run(
-        'cmd',
-        [
-          '/c',
-          'start',
-          exePath,
-          meetingDeatils.packageId.toString(),
-          getx.loginuserdata[0].firstName.toString() +
-              " " +
-              getx.loginuserdata[0].lastName,
-          getx.loginuserdata[0].nameId.toString(),
-          meetingDeatils.sessionId.toString(),
-          meetingDeatils.topicName.toString(),
-          meetingDeatils.liveUrl.toString(),
-          meetingDeatils.videoCategory.toString(),
-          getx.dbPath.value,
-          meetingDeatils.videoId,
-          getx.loginuserdata[0].phoneNumber,
-          getx.loginuserdata[0].token,
-          origin,
-          "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
-          meetingDeatils.groupChat!,
-          meetingDeatils.personalChat!
-        ],
-        runInShell: true,
-      );
+    // Extracting user details dynamically
+    var user = getx.loginuserdata[0];
+
+    List<String> arguments = [
+      meetingDeatils.packageId.toString(),
+      "${user.firstName} ${user.lastName}",
+      user.nameId.toString(),
+      meetingDeatils.sessionId.toString(),
+      meetingDeatils.topicName.toString(),
+      meetingDeatils.liveUrl.toString(),
+      meetingDeatils.videoCategory.toString(),
+      getx.dbPath.value, // Database path
+      meetingDeatils.videoId.toString(),
+      user.phoneNumber.toString(),
+      user.token,
+      "com.dlp.avjpro",
+      "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
+      meetingDeatils.groupChat ?? "",
+      meetingDeatils.personalChat ?? ""
+    ];
+
+    try {
+      print("Running EXE: $exePath with arguments: $arguments");
+
+      ProcessResult result = await Process.run(exePath, arguments);
+
+      print("Exit Code: ${result.exitCode}");
+      print("Output: ${result.stdout}");
+      print("Error: ${result.stderr}");
+    } catch (e) {
+      print("Error running executable: $e");
     }
   }
 

@@ -254,8 +254,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   });
                             }, pageIndex.value == 5 ? true : false),
-                            _buildDrawerItem(Icons.help_outline_rounded,
-                                "FAQ's", () {
+                            _buildDrawerItem(
+                                Icons.help_outline_rounded, "FAQ's", () {
                               pageIndex.value = 6;
                             }, pageIndex.value == 6 ? true : false),
                             // _buildDrawerItem(Icons.history, "History", () {
@@ -272,7 +272,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             //   pageIndex.value = 9;
                             // }, pageIndex.value == 9 ? true : false),
 
-                             _buildDrawerItem(
+                            _buildDrawerItem(
                                 Icons.person_2_outlined, "Manage Account", () {
                               pageIndex.value = 10;
                             }, pageIndex.value == 10 ? true : false),
@@ -860,23 +860,31 @@ class _MyPackageState extends State<MyPackage> {
                                     ],
                                     borderRadius: BorderRadius.circular(20),
                                     color: checkVaildationOfPackage(
-                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487")
+                                            getx.studentAllPackage[index]
+                                                    ['PausedUpto'] ??
+                                                "2020-02-08T12:47:52.487")
                                         ? Color.fromARGB(223, 244, 222, 187)
                                         : Color.fromARGB(255, 255, 255,
                                             255), // Default color
                                   ),
                                   child: ExpansionTile(
-                                    trailing:  checkVaildationOfPackage(
-                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") &&getx.studentAllPackage[index]
-                                                  ['IsFree'] ==
-                                              "false"
+                                    trailing: checkVaildationOfPackage(getx
+                                                        .studentAllPackage[
+                                                    index]['PausedUpto'] ??
+                                                "2020-02-08T12:47:52.487") &&
+                                            getx.studentAllPackage[index]
+                                                    ['IsFree'] ==
+                                                "false"
                                         ? Icon(Icons.gpp_maybe)
                                         : Icon(Icons.arrow_drop_down),
                                     children: [
-                                       checkVaildationOfPackage(
-                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") && getx.studentAllPackage[index]
-                                                  ['IsFree'] ==
-                                              "false"
+                                      checkVaildationOfPackage(
+                                                  getx.studentAllPackage[index]
+                                                          ['PausedUpto'] ??
+                                                      "2020-02-08T12:47:52.487") &&
+                                              getx.studentAllPackage[index]
+                                                      ['IsFree'] ==
+                                                  "false"
                                           ? Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -885,79 +893,90 @@ class _MyPackageState extends State<MyPackage> {
                                                     "Subscription of this Package is currently paused!")
                                               ],
                                             )
-                                          :     !checkVaildationOfPackage(
-                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") && getx.studentAllPackage[index]
-                                                  ['IsFree'] ==
-                                              "false" && int.parse(getx.studentAllPackage[index]
-                                                  ['Pausedays'] )>1
+                                          : !checkVaildationOfPackage(
+                                                      getx.studentAllPackage[index]
+                                                              ['PausedUpto'] ??
+                                                          "2020-02-08T12:47:52.487") &&
+                                                  getx.studentAllPackage[index]
+                                                          ['IsFree'] ==
+                                                      "false" &&
+                                                  int.parse(
+                                                          getx.studentAllPackage[index]['Pausedays']) >
+                                                      1
                                               ? Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Container(
-                                                  height:
-                                                      40, // Height of the button
-                                                  width:
-                                                      140, // Width of the button
-                                                  decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      colors: [
-                                                        Color.fromARGB(
-                                                            255, 255, 64, 64),
-                                                        Color.fromARGB(
-                                                            255, 255, 89, 125)
-                                                      ], // Lighter colors
-                                                      begin: Alignment.topLeft,
-                                                      end:
-                                                          Alignment.bottomRight,
-                                                    ),
-                                                    borderRadius: BorderRadius
-                                                        .circular(Platform
-                                                                .isAndroid
-                                                            ? 5
-                                                            : 10), // Reduced radius
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors
-                                                            .black12, // Lighter shadow
-                                                        offset: Offset(0, 4),
-                                                        blurRadius: 6,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      height:
+                                                          40, // Height of the button
+                                                      width:
+                                                          140, // Width of the button
+                                                      decoration: BoxDecoration(
+                                                        gradient:
+                                                            LinearGradient(
+                                                          colors: [
+                                                            Color.fromARGB(255,
+                                                                255, 64, 64),
+                                                            Color.fromARGB(255,
+                                                                255, 89, 125)
+                                                          ], // Lighter colors
+                                                          begin:
+                                                              Alignment.topLeft,
+                                                          end: Alignment
+                                                              .bottomRight,
+                                                        ),
+                                                        borderRadius: BorderRadius
+                                                            .circular(Platform
+                                                                    .isAndroid
+                                                                ? 5
+                                                                : 10), // Reduced radius
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors
+                                                                .black12, // Lighter shadow
+                                                            offset:
+                                                                Offset(0, 4),
+                                                            blurRadius: 6,
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                  child: MaterialButton(
-                                                    onPressed: () {
-                                                      _showValuePicker(
-                                                        getx.studentAllPackage[
-                                                            index]['packageId'],
-                                                        getx.studentAllPackage[
-                                                                index]
-                                                            ['ExpiryDate'],
-                                                            double.parse(getx.studentAllPackage[index]
-                                                  ['Pausedays'] )
-                                                      );
-                                                    },
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    child: Text(
-                                                      "Pause Subscription",
-                                                      style: TextStyle(
-                                                        color: Colors
-                                                            .white, // Text color
-                                                        fontSize:
-                                                            10, // Font size
-                                                        fontWeight: FontWeight
-                                                            .bold, // Font weight
+                                                      child: MaterialButton(
+                                                        onPressed: () {
+                                                          _showValuePicker(
+                                                              getx.studentAllPackage[
+                                                                      index]
+                                                                  ['packageId'],
+                                                              getx.studentAllPackage[
+                                                                      index][
+                                                                  'ExpiryDate'],
+                                                              double.parse(getx
+                                                                          .studentAllPackage[
+                                                                      index][
+                                                                  'Pausedays']));
+                                                        },
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                        ),
+                                                        child: Text(
+                                                          "Pause Subscription",
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .white, // Text color
+                                                            fontSize:
+                                                                10, // Font size
+                                                            fontWeight: FontWeight
+                                                                .bold, // Font weight
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
+                                                    )
+                                                  ],
                                                 )
-                                              ],
-                                            ): SizedBox(),
+                                              : SizedBox(),
                                     ],
                                     shape:
                                         Border.all(color: Colors.transparent),
@@ -1012,7 +1031,8 @@ class _MyPackageState extends State<MyPackage> {
     );
   }
 
-  void _showValuePicker(String packageId, String expirydate, double maxpauseDays) {
+  void _showValuePicker(
+      String packageId, String expirydate, double maxpauseDays) {
     final valueController = Get.put(ValueController());
     valueController.selectedValue.value = 1;
 
@@ -1061,16 +1081,19 @@ class _MyPackageState extends State<MyPackage> {
             onSweetAleartDialogwithDeny(
               context,
               () {
-                pauseSubscription(context,getx.loginuserdata[0].token,packageId,valueController.selectedValue.toInt().toString()).then((value) {
-                
-                   onPauseSuccessfull(
+                pauseSubscription(
+                        context,
+                        getx.loginuserdata[0].token,
+                        packageId,
+                        valueController.selectedValue.toInt().toString())
+                    .then((value) {
+                  onPauseSuccessfull(
                       context, valueController.selectedValue.toInt(), () {
                     Get.back();
                     Get.back();
                     Get.back();
                     getAllPackageListOfStudent();
-                  },value);
-                 
+                  }, value);
                 });
               },
               "Are You Sure?",
@@ -2382,69 +2405,69 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   ),
                   Row(
                     children: [
-                      SizedBox( 
+                      SizedBox(
                         height: 100,
                         width: 100,
                         child: InkWell(
-                          onTap: () {
-                            // Show a larger QR code when tapped
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return Dialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "Scan QR Code",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(height: 20),
-                                        QrImageView(
-  data: qrData,
-  version: QrVersions.auto,
-  size: 320,
-  gapless: false,
-  embeddedImage: AssetImage(logopath),
-  embeddedImageStyle: QrEmbeddedImageStyle(
-    size: Size(80, 80),
-  ),
-),
-                                        SizedBox(height: 20),
-                                        ElevatedButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: Text(
-                                              "Close",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            )),
-                                      ],
+                            onTap: () {
+                              // Show a larger QR code when tapped
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: QrImageView(
-  data: qrData,
-  version: QrVersions.auto,
-  size: 320,
-  gapless: false,
-  embeddedImage: AssetImage(logopath),
-  embeddedImageStyle: QrEmbeddedImageStyle(
-    size: Size(20, 20),
-  ),
-)
-                        ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "Scan QR Code",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(height: 20),
+                                          QrImageView(
+                                            data: qrData,
+                                            version: QrVersions.auto,
+                                            size: 320,
+                                            gapless: false,
+                                            embeddedImage: AssetImage(logopath),
+                                            embeddedImageStyle:
+                                                QrEmbeddedImageStyle(
+                                              size: Size(80, 80),
+                                            ),
+                                          ),
+                                          SizedBox(height: 20),
+                                          ElevatedButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: Text(
+                                                "Close",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: QrImageView(
+                              data: qrData,
+                              version: QrVersions.auto,
+                              size: 320,
+                              gapless: false,
+                              embeddedImage: AssetImage(logopath),
+                              embeddedImageStyle: QrEmbeddedImageStyle(
+                                size: Size(20, 20),
+                              ),
+                            )),
                       ),
                     ],
                   )
@@ -2534,7 +2557,7 @@ logoutConfirmationBox(context) async {
 
           onConfirm: () async {
             await handleLogoutProcess(context).then((v) {
-              if (Platform.isIOS) {
+              if (Platform.isAndroid) {
                 Navigator.pop(context);
               }
             });
@@ -3976,12 +3999,12 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                         theoryExamAnswerId:
                                                             "theoryExamAnswerId not done yeat",
                                                         examId: snapshot
-                                                                .data![index] 
+                                                                .data![index]
                                                             ['TheoryExamId'],
-                                                            pdfurl:snapshot.data![
-                                                                    index][
-                                                                'CheckedDocumentUrl'], 
-                                                                questionanswersheet: '' ,
+                                                        pdfurl: snapshot
+                                                                .data![index][
+                                                            'CheckedDocumentUrl'],
+                                                        questionanswersheet: '',
                                                       ));
                                             })
                                         : Text("Result not publish ")))
@@ -4001,20 +4024,22 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
 onPauseSuccessfull(context, int day, VoidCallback ontap, bool success) {
   Alert(
     context: context,
-    type: success?AlertType.success:AlertType.info,
+    type: success ? AlertType.success : AlertType.info,
     style: AlertStyle(
       titleStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       descStyle: FontFamily.font6,
       isCloseButton: false,
     ),
-    title: success?"Done":"Something went wrong",
-    desc: success?"Your Subscription is pause for $day days!":"",
+    title: success ? "Done" : "Something went wrong",
+    desc: success ? "Your Subscription is pause for $day days!" : "",
     buttons: [
       DialogButton(
         child: Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
         highlightColor: ColorPage.blue,
         onPressed: ontap,
-        color:success? const Color.fromARGB(255, 65, 207, 43):Color.fromARGB(255, 207, 43, 43),
+        color: success
+            ? const Color.fromARGB(255, 65, 207, 43)
+            : Color.fromARGB(255, 207, 43, 43),
       ),
     ],
   ).show();

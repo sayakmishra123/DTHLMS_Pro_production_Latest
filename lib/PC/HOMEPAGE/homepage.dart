@@ -376,17 +376,21 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     () async {
                                       if (checkVaildationOfPackage(
                                           paidPackages[i]['ExpiryDate'])) {
-                                        if ( !checkVaildationOfPackage(
-                                          paidPackages[i]['PausedUpto']??"2020-02-08T12:47:52.487")) {
+                                        if (!checkVaildationOfPackage(
+                                            paidPackages[i]['PausedUpto'] ??
+                                                "2020-02-08T12:47:52.487")) {
                                           if (paidPackages[i]
                                                   ['isActivateByUser'] ==
                                               "0") {
                                             onSweetAleartDialogwithDeny(
                                                 context,
                                                 () {
-                                                  activePackageByStudent(context,  getx.loginuserdata[0].token, paidPackages[i]
-                                                                ['packageId'].toString(),)
-                                                      .then((_) async {
+                                                  activePackageByStudent(
+                                                    context,
+                                                    getx.loginuserdata[0].token,
+                                                    paidPackages[i]['packageId']
+                                                        .toString(),
+                                                  ).then((_) async {
                                                     getAllPackageListOfStudent();
                                                     getx.currentPackageName
                                                             .value =
@@ -503,39 +507,36 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                                     freePackages[i]['packageName']!,
                                     freePackages[i]['CourseName'],
                                     () async {
-
                                       getx.currentPackageName.value =
-                                                freePackages[i]['packageName'];
-                                            getx.selectedPackageId.value =
-                                                int.parse(freePackages[i]
-                                                    ['packageId']);
+                                          freePackages[i]['packageName'];
+                                      getx.selectedPackageId.value = int.parse(
+                                          freePackages[i]['packageId']);
 
-                                            resetTblLocalNavigation();
-                                            await insertTblLocalNavigation(
-                                              "Package",
-                                              freePackages[i]['packageId'],
-                                              freePackages[i]['packageName'],
-                                            );
-                                            getLocalNavigationDetails();
+                                      resetTblLocalNavigation();
+                                      await insertTblLocalNavigation(
+                                        "Package",
+                                        freePackages[i]['packageId'],
+                                        freePackages[i]['packageName'],
+                                      );
+                                      getLocalNavigationDetails();
 
-                                            widget.onItemSelected(i);
+                                      widget.onItemSelected(i);
 
-                                            initialfunction(
-                                                freePackages[i]['packageId']);
+                                      initialfunction(
+                                          freePackages[i]['packageId']);
 
-                                            Get.to(
-                                              () => PackageDetailsPage(
-                                                freePackages[i]['packageName'],
-                                                int.parse(freePackages[i]
-                                                    ['packageId']),
-                                                ExpiryDate: freePackages[i]
-                                                    ['ExpiryDate'],
-                                              ),
-                                              transition: Transition.cupertino,
-                                              duration: const Duration(
-                                                  milliseconds: 500),
-                                            );
-                                     
+                                      Get.to(
+                                        () => PackageDetailsPage(
+                                          freePackages[i]['packageName'],
+                                          int.parse(
+                                              freePackages[i]['packageId']),
+                                          ExpiryDate: freePackages[i]
+                                              ['ExpiryDate'],
+                                        ),
+                                        transition: Transition.cupertino,
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                      );
                                     },
                                     widget.selectedIndex == i,
                                     hoverIndex == i,
@@ -557,7 +558,6 @@ class _DashboardSlideBarState extends State<DashboardSlideBar>
                 },
               ),
 
-             
               // Footer Section
               Container(
                 padding:
@@ -1221,8 +1221,8 @@ class _DashBoardRightState extends State<DashBoardRight> {
 //       ],
 //     ).show();
 //   }
-// // 
-//   
+// //
+//
   Future<void> clearSharedPreferencesExcept(List<String> keysToKeep) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -2335,7 +2335,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     final appDocDir;
     try {
       var prefs = await SharedPreferences.getInstance();
-      if (Platform.isIOS) {
+      if (Platform.isAndroid) {
         final path = await getApplicationDocumentsDirectory();
         appDocDir = path.path;
       } else {
@@ -2493,7 +2493,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           color: const Color.fromARGB(255, 243, 33, 33),
         ),
         DialogButton(
-          
           child: Obx(() => Text(
                 downloadProgress[1] == 100
                     ? "Play"
@@ -2803,7 +2802,6 @@ class _HeadingBoxState extends State<HeadingBox> {
                 )),
           ),
         ),
-
         Obx(
           () => getx.bannerImageList.isNotEmpty
               ? Positioned(
@@ -2936,14 +2934,11 @@ class HeadingBoxContent extends StatelessWidget {
   }
 }
 
-
 Future<bool> isProcessRunning(String processName) async {
-  try{
-  final result = await Process.run('tasklist', []);
-  return result.stdout.toString().contains(processName);
-  }
-  catch(e)
-  {
+  try {
+    final result = await Process.run('tasklist', []);
+    return result.stdout.toString().contains(processName);
+  } catch (e) {
     writeToFile(e, 'isProcessRunning');
     return false;
   }

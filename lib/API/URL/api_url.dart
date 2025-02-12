@@ -13,6 +13,7 @@ class ClsUrlApi {
       "/api/AuthDataGet/ExecuteJson/spAppApi/48";
   static const getNotificationsDetailsApi =
       "/api/AuthDataGet/ExecuteJson/spAppApi/52";
+
   static const getIconDataApi = "/api/AuthDataGet/ExecuteJson/spAppApi/49";
   static const signupEndpoint = "/api/auth/studentregister/";
   static const getUserConfirmationTypeEndpoint =
@@ -100,10 +101,8 @@ class ClsUrlApi {
   static const uploadStudentFeedback =
       "/api/AuthDataGet/ExecuteJson/spAppApi/56";
 
-        static const activePackageByStudent =
+  static const activePackageByStudent =
       "/api/AuthDataGet/ExecuteJson/spAppApi/60";
-       static const pausePackageByStudent =
+  static const pausePackageByStudent =
       "/api/AuthDataGet/ExecuteJson/spAppApi/61";
-
-
 }
