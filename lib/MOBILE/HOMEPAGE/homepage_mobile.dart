@@ -1722,7 +1722,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     final appDocDir;
     try {
       var prefs = await SharedPreferences.getInstance();
-      if (Platform.isAndroid) {
+      if (Platform.isIOS) {
         final path = await getApplicationDocumentsDirectory();
         appDocDir = path.path;
       } else {

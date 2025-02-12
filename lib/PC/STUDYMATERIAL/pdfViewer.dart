@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -86,6 +87,8 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
       getx.unEncryptedPDFfile.value = await downloadAndSavePdf( 
           widget.pdfUrl, widget.title, enkey, widget.folderName);
     }
+
+    log(  getx.unEncryptedPDFfile.value .toString());
   }
 
   double _currentZoomLevel = 1.0;
@@ -274,17 +277,25 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
                                   ) // Error message
                                 else
                                   Expanded(
-                                      child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            MediaQuery.of(context).size.width *
-                                                0.1),
-                                    child: SfPdfViewer.memory(
-                                        enableDoubleTapZooming: true,
-                                        pageSpacing: 20,
-                                        controller: _pdfViewerController,
-                                        getx.encryptedpdffile.value),
-                                  )),
+  child: Obx(() {
+    String pdfFilePath = getx.unEncryptedPDFfile.value.trim();
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * 0.1,
+      ),
+      child: pdfFilePath.isNotEmpty
+          ? SfPdfViewer.memory(
+              getx.encryptedpdffile.value,
+              enableDoubleTapZooming: true,
+              pageSpacing: 20,
+              controller: _pdfViewerController,
+            )
+          : Center(child: Text("Something went wrong")),
+    );
+  }),
+),
+
                               ],
                             ))
                             // Display PDF
@@ -368,16 +379,18 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
                 ),
               ],
             ),
-            body: Obx(
-              () => getx.unEncryptedPDFfile.value != null || getx.unEncryptedPDFfile.value != "" || getx.unEncryptedPDFfile.value != " "
-                  ? SfPdfViewer.file(
-                      File(getx.unEncryptedPDFfile.value),
-                      controller: _pdfViewerController,
-                    )
-                  : Center(
-                      child: Text("Something went Wrong"),
-                    ),
-            ));
+           body: Obx(() {
+  String pdfFilePath = getx.unEncryptedPDFfile.value.trim();
+  
+  return pdfFilePath.isNotEmpty
+      ? SfPdfViewer.file(
+          File(pdfFilePath),
+          controller: _pdfViewerController,
+        )
+      : Center(child: Text("Something went wrong"));
+}),
+
+            );
   }
 
   String data = "";
@@ -386,9 +399,13 @@ class ShowChapterPDFState extends State<ShowChapterPDF> {
 
 Future downloadAndSavePdf(
       String pdfUrl, String title, String enkey, String foldername) async {
+try{
 
     data = getDownloadedPathOfPDF(title, foldername);
-    print(data + " ssss ${this.title}");
+
+
+    print(data + " ssss ${title}");
+    log(pdfUrl);
 String fixedPath = data.replaceAll('/', '\\'); // Convert forward slashes to backslashes
 File file = File(fixedPath);
  
@@ -396,7 +413,7 @@ if (!file.existsSync()) {
       print("Downloading file.....");
       try {
         // Get the application's document directory
-        final appDocDir = await getApplicationDocumentsDirectory();
+        final appDocDir = await getApplicationSupportDirectory();
  
         // Create the folder structure: com.si.dthLive/notes
         Directory dthLmsDir = Directory('${appDocDir.path}/$origin');
@@ -458,6 +475,10 @@ if (!file.existsSync()) {
       } else {
         return data;
       }
+    }}
+    catch(e)
+    {
+      writeToFile(e, "downloadAndSavePdf");
     }
   } 
 

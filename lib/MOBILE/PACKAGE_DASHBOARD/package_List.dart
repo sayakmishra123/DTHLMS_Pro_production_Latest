@@ -1,4 +1,5 @@
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/package_contents.dart';
 import 'package:dthlms/constants.dart';
 import 'package:flutter/material.dart';
@@ -23,16 +24,15 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
 
   @override
   void initState() {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getMeetingList(context);
     });
-        getAllPackageListOfStudent().whenComplete(() {
+    getAllPackageListOfStudent().whenComplete(() {
       setState(() {
         updateTabs();
       });
     });
     super.initState();
-
   }
 
   void updateTabs() {
@@ -46,7 +46,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
       tabs.add(Text("Packages", style: FontFamily.font2));
       tabViews.add(buildPackageListView(context));
     }
- 
+
     // Check for "Free" availability
     final freePackages =
         getx.studentPackage.where((pkg) => pkg['IsFree'] == 'true').toList();
@@ -250,7 +250,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
     // Return the showDetails widget with the appropriate icon and foldername
     return Icon(
       iconData['icon'],
-      color: iconData['color'], 
+      color: iconData['color'],
     );
   }
 
@@ -266,21 +266,67 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () async {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return Mobile_Package_content(
-                        packageid: int.parse(paidPackages[index]['packageId']),
-                        packagename: paidPackages[index]['packageName'],
-                      );
-                    },
-                  ));
-                  // Get.to(
-                  //     transition: Transition.cupertino,
-                  // () => Mobile_Package_content(
-                  //       packageid:
-                  //           int.parse(paidPackages[index]['packageId']),
-                  //       packagename: paidPackages[index]['packageName'],
-                  //     ));
+                  if (checkVaildationOfPackage(
+                      paidPackages[index]['ExpiryDate'])) {
+                    if (!checkVaildationOfPackage(
+                                          paidPackages[index]['PausedUpto']??"2020-02-08T12:47:52.487")) {
+                      if (checkIsPackageActiveByUser(
+                              paidPackages[index]['packageId']) ==
+                          false) {
+                        onSweetAleartDialogwithDeny(
+                            context,  
+                            () {
+                             activePackageByStudent(context,  getx.loginuserdata[0].token, paidPackages[index]
+                                                                ['packageId'].toString(),)
+                                  .then((_) async {
+                                setState(() {
+                                  getAllPackageListOfStudent();
+                                  Get.back();
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return Mobile_Package_content(
+                                        packageid: int.parse(
+                                            paidPackages[index]['packageId']),
+                                        packagename: paidPackages[index]
+                                            ['packageName'],
+                                      );
+                                    },
+                                  ));
+                                });
+                              });
+                            },
+                            "Activate your Package",
+                            "your Package is not activate.Click OK to activate.",
+                            () {
+                              Get.back();
+                            });
+                      } else // everything is ok
+
+                      {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return Mobile_Package_content(
+                              packageid:
+                                  int.parse(paidPackages[index]['packageId']),
+                              packagename: paidPackages[index]['packageName'],
+                            );
+                          },
+                        ));
+                      }
+                    } else //is paused
+                    {
+                      onSweetAleartDialog(context, () {
+                        Get.back();
+                      }, "Paused!", "Your Package subscription is pause.");
+                    }
+                  } else //is Package Expire
+                  {
+                    print("expire false");
+                    onSweetAleartDialog(context, () {
+                      Get.back();
+                    }, "Expired!",
+                        "Your Package subscription was expired on \n  ${formatDateString(paidPackages[index]['ExpiryDate'], "datetime")}.");
+                  }
                 },
                 child: Container(
                   height: 150,
@@ -424,13 +470,14 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
               return InkWell(
                 onTap: () async {
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return Mobile_Package_content(
-                        packageid: int.parse(freePackages[index]['packageId']),
-                        packagename: freePackages[index]['packageName'],
-                      );
-                    },
-                  ));
+                          builder: (context) {
+                            return Mobile_Package_content(
+                              packageid:
+                                  int.parse(freePackages[index]['packageId']),
+                              packagename: freePackages[index]['packageName'],
+                            );
+                          },
+                        ));
                   // Get.to(
                   //     transition: Transition.cupertino,
                   //     () => Mobile_Package_content(

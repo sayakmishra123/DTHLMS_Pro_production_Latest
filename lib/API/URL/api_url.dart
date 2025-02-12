@@ -99,4 +99,11 @@ class ClsUrlApi {
       "/api/AuthDataGet/ExecuteJson/spAppApi/55";
   static const uploadStudentFeedback =
       "/api/AuthDataGet/ExecuteJson/spAppApi/56";
+
+        static const activePackageByStudent =
+      "/api/AuthDataGet/ExecuteJson/spAppApi/60";
+       static const pausePackageByStudent =
+      "/api/AuthDataGet/ExecuteJson/spAppApi/61";
+
+
 }

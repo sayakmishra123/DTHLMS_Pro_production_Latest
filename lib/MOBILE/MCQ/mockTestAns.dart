@@ -2,6 +2,7 @@ import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/PC/MCQ/MOCKTEST/resultMcqTest.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/math_equation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,17 +13,15 @@ class MocktestAnswer extends StatefulWidget {
   final String paperId;
   final List questionData;
   final String type;
-  const MocktestAnswer({required this.paperId, required this.questionData, required this.type});
- 
+  const MocktestAnswer(
+      {required this.paperId, required this.questionData, required this.type});
 
   @override
   State<MocktestAnswer> createState() => _MocktestAnswerState();
 }
 
 class _MocktestAnswerState extends State<MocktestAnswer> {
-
-
-   Getx getxController = Get.put(Getx());
+  Getx getxController = Get.put(Getx());
   // final List<McqItem> mcqData= Get.arguments['mcqData'];
   //  final Map<int, int> userAns = Get.arguments['userAns'];
   // final List<Map<int, int>> correctAnswers = Get.arguments['correctAnswers'];
@@ -96,8 +95,8 @@ class _MocktestAnswerState extends State<MocktestAnswer> {
                   left: BorderSide(color: ColorPage.appbarcolor, width: 3),
                 ),
               ),
-              child:    Container(
-                height: MediaQuery.of(context).size.height -100,
+              child: Container(
+                height: MediaQuery.of(context).size.height - 100,
                 child: ListView.builder(
                     itemCount: widget.questionData.length,
                     itemBuilder: (context, index) {
@@ -115,15 +114,22 @@ class _MocktestAnswerState extends State<MocktestAnswer> {
                         child: ListTile(
                           title: Padding(
                             padding: const EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              '${index + 1}. ${widget.questionData[index]['question name']}',
-                              style: GoogleFonts.inter(
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
+                            child: widget.questionData[index]['question name']
+                                    .toString()
+                                    .contains('<?xml')
+                                ? MathEquation(
+                                    mathMl:
+                                        '${index + 1}. ${widget.questionData[index]['question name']}',
+                                  )
+                                : Text(
+                                    '${index + 1}. ${widget.questionData[index]['question name']}',
+                                    style: GoogleFonts.inter(
+                                      textStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
                           ),
                           subtitle: Card(
                             elevation: 0,
@@ -133,54 +139,68 @@ class _MocktestAnswerState extends State<MocktestAnswer> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Your Answer: ',
-                                          style: TextStyle(
-                                            color: Colors
-                                                .blue, // Choose your preferred color
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              '${widget.questionData[index]['userselectedanswer'].join(", ")}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
+                                  Text(
+                                    "Your Answer :",
+                                    style: TextStyle(
+                                      color: Colors
+                                          .blue, // Choose your preferred color
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Correct Answer: ',
-                                          style: TextStyle(
-                                            color: Colors
-                                                .green, // Choose your preferred color
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                       TextSpan(
-                                            text:getQuestionTypeFromId(widget.questionData[index]['questionid'].toString())=="One Word Answer"?getOneWordAnswerFromQuestionId(widget.questionData[index]['questionid'].toString()):
-
-
-
-                                                '${widget.questionData[index]['correctanswer'].join(", ")}',
+                                  widget.questionData[index]
+                                              ['userselectedanswer']
+                                          .toString()
+                                          .contains('<?xml')
+                                      ? MathEquation(
+                                          mathMl: widget.questionData[index]
+                                                  ['userselectedanswer']
+                                              .join(", "),
+                                        )
+                                      : RichText(
+                                          text: TextSpan(
+                                            text:
+                                                '${widget.questionData[index]['userselectedanswer'].join(", ")}',
                                             style: TextStyle(
                                               color: Colors.black,
                                             ),
                                           ),
-                                      ],
+                                        ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "Correct Answer: ",
+                                    style: TextStyle(
+                                      color: Colors
+                                          .green, // Choose your preferred color
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
+                                  widget.questionData[index]['correctanswer']
+                                          .toString()
+                                          .contains('<?xml')
+                                      ? MathEquation(
+                                          mathMl: widget.questionData[index]
+                                                  ['correctanswer']
+                                              .join(", "),
+                                        )
+                                      : RichText(
+                                          text: TextSpan(
+                                            text: getQuestionTypeFromId(widget
+                                                        .questionData[index]
+                                                            ['questionid']
+                                                        .toString()) ==
+                                                    "One Word Answer"
+                                                ? getOneWordAnswerFromQuestionId(
+                                                    widget.questionData[index]
+                                                            ['questionid']
+                                                        .toString())
+                                                : '${widget.questionData[index]['correctanswer'].join(", ")}',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
                                 ],
                               ),
                             ),
@@ -188,14 +208,21 @@ class _MocktestAnswerState extends State<MocktestAnswer> {
                           trailing: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              
-                                widget.type=="Ranked Competition"?widget.questionData[index]['ObtainMarks'].toString():calculateTotalMarkOfQuestion(widget.questionData[index]
-                                ['questionid'].toString(),widget.questionData[index]
-                                ['userselectedanswer id'],getQuestionTypeFromId(widget.questionData[index]
-                                ['questionid'].toString())).toString(),
+                              widget.type == "Ranked Competition"
+                                  ? widget.questionData[index]['ObtainMarks']
+                                      .toString()
+                                  : calculateTotalMarkOfQuestion(
+                                          widget.questionData[index]
+                                                  ['questionid']
+                                              .toString(),
+                                          widget.questionData[index]
+                                              ['userselectedanswer id'],
+                                          getQuestionTypeFromId(widget
+                                              .questionData[index]['questionid']
+                                              .toString()))
+                                      .toString(),
                               style: TextStyle(
-                                  color:
-                                      const Color.fromARGB(255, 71, 71, 71),
+                                  color: const Color.fromARGB(255, 71, 71, 71),
                                   fontSize: 10),
                             ),
                           ),
@@ -203,9 +230,6 @@ class _MocktestAnswerState extends State<MocktestAnswer> {
                       );
                     }),
               ),
-            
-            
-            
             ),
           ],
         ),

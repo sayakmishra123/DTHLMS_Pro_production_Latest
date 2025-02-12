@@ -171,7 +171,9 @@ void createtblPackageDetails() {
    DownloadedPath TEXT,
    VideoDuration TEXT,
    IsEncrypted TEXT,
-   SortedOrder TEXT
+   SortedOrder TEXT,
+   DurationLimitation TEXT,
+   ViewCount TEXT
    );
   ''');
 }
@@ -340,7 +342,7 @@ Future<void> insertDownloadedFileData(String packageId, String fileId,
 void createTblPackageData() {
   _db.execute('''
     CREATE TABLE IF NOT EXISTS TblPackageData( 
-
+ 
      PackageId TEXT PRIMARY KEY,  
       PackageName TEXT,
       ExpiryDate TEXT,
@@ -350,7 +352,13 @@ void createTblPackageData() {
       CourseId TEXT,
       CourseName TEXT,
       IsFree TEXT,
-      IsDirectPlay
+      IsDirectPlay,
+      isPause TEXT,
+      isActivateByUser TEXT,
+      isTotal TEXT,
+      isViewCounter TEXT,
+      PausedUpto TEXT,
+      Pausedays TEXT
     );
   ''');
   print('TblPackageData created with PackageId as the primary key!');
@@ -540,14 +548,14 @@ Future<void> insertVideoplayInfo(
     if (resultSet.length > 0) {
       _db.execute('''
         UPDATE TblvideoPlayInfo
-        SET SpendTime = '$watchduration'
+        SET TimeSpend = '$watchduration'
         WHERE PlayNo = $playNo
       ''');
       print("Update successful: WatchDuration updated for PlayNo $playNo");
     } else {
       // If the record does not exist, insert a new record
       _db.execute('''
-        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, SpendTime, Speed, StartTime, PlayNo,UploadFlag,Type)
+        INSERT INTO TblvideoPlayInfo (VideoId, StartDuration, TimeSpend, Speed, StartTime, PlayNo,UploadFlag,Type)
         VALUES ('$videoId', '$startingTimeLine', '$watchduration', '$playBackSpeed', '$startClockTime', '$playNo','$uploadflag','$type')
       ''');
       // print("Insert successful: New record inserted");
@@ -570,7 +578,7 @@ Future<double> getTotalWatchTime(int videoId) async {
     // Iterate through the results and calculate total watch time
     for (var row in resultSet) {
       // Fetch EndDuration and Speed values from the result row
-      double endDuration = double.tryParse(row['SpendTime']) ?? 0.0;
+      double endDuration = double.tryParse(row['TimeSpend']) ?? 0.0;
       double speed = double.tryParse(row['Speed']) ??
           1.0; // Assuming speed defaults to 1 if invalid
 
@@ -612,7 +620,7 @@ void creatTableVideoplayInfo() {
   _db.execute('''
 CREATE TABLE IF NOT EXISTS TblvideoPlayInfo(VideoId INTEGER,
 StartDuration TEXT,
-SpendTime TEXT,
+TimeSpend TEXT,
 Speed TEXT,
 StartTime TEXT,
 PlayNo INTEGER,
@@ -665,7 +673,7 @@ String getLastEndDuration(int videoId) {
   try {
     // Ensure the database is initialized and accessible as _db
     final List<Map<String, dynamic>> result = _db.select('''
-      SELECT SpendTime 
+      SELECT TimeSpend 
       FROM TblvideoPlayInfo 
       WHERE VideoId = ? 
       ORDER BY ROWID DESC 
@@ -674,8 +682,8 @@ String getLastEndDuration(int videoId) {
 
     // Check if the result is not empty and return the EndDuration value
     if (result.isNotEmpty) {
-      print(result.first['SpendTime'] + 'End Duration');
-      return result.first['SpendTime'] as String;
+      print(result.first['TimeSpend'] + 'End Duration');
+      return result.first['TimeSpend'] as String;
     } else {
       return "0"; // Return null if no result is found
     }
@@ -683,7 +691,7 @@ String getLastEndDuration(int videoId) {
     writeToFile(e, 'getLastEndDuration');
 
     // Handle any potential errors that may occur during the query
-    print('Error fetching SpendTime: ${e.toString()}');
+    print('Error fetching TimeSpend: ${e.toString()}');
     return "0";
   }
 }
@@ -718,10 +726,16 @@ Future<void> insertOrUpdateTblPackageData(
     String courseId,
     String courseName,
     String isFree,
-    String isDirectPlay) async {
+    String isDirectPlay,
+    String isPasued,
+    String isActivateByUser,
+    String isviewCounter,
+    String isTotal,
+    String pausedUpto,
+    String pausedays) async {
   _db.execute('''
-    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay) 
-    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay')
+    INSERT INTO TblPackageData(PackageId, PackageName, ExpiryDate, IsUpdate, IsShow, LastUpdatedOn,CourseId,CourseName,IsFree,IsDirectPlay,isActivateByUser,isPause,isViewCounter,isTotal,PausedUpto,Pausedays) 
+    VALUES ('$packageId', '$packageName', '$expiryDate', '$isUpdate', '$isShow', '$lastUpdatedOn','$courseId','$courseName','$isFree','$isDirectPlay','$isActivateByUser','$isPasued','$isviewCounter','$isTotal','$pausedUpto','$pausedays')
     ON CONFLICT(PackageId) 
     DO UPDATE SET 
       PackageName = excluded.PackageName,
@@ -732,9 +746,15 @@ Future<void> insertOrUpdateTblPackageData(
       CourseName=excluded.CourseName,
       CourseId=excluded.CourseId,
       IsFree=excluded.IsFree,
-      IsDirectPlay=excluded.IsDirectPlay;
+      IsDirectPlay=excluded.IsDirectPlay,
+      isActivateByUser=excluded.isActivateByUser,
+      isPause=excluded.isPause,
+      isViewCounter=excluded.isViewCounter,
+      isTotal=excluded.isTotal,
+      PausedUpto=excluded.PausedUpto,
+      Pausedays=excluded.Pausedays;
       
-      ;
+      
   ''');
   print("Insert or update on TblPackageData");
 }
@@ -837,10 +857,10 @@ Future<void> insertPackageDetailsdata(
     String videoDuration,
     String DownloadedPath,
     String isEncrypted,
-    String sortedOrder) async {
+    String sortedOrder,String? viewCount,String? durationLimitation) async {
   _db.execute('''
-       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder) 
-      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder');
+       INSERT INTO TblAllPackageDetails(PackageId,PackageName,FileIdType,FileId,FileIdName,ChapterId,AllowDuration,ConsumeDuration,ConsumeNos,AllowNo,DocumentPath,ScheduleOn,SessionId,DownloadedPath,VideoDuration,IsEncrypted,SortedOrder,DurationLimitation,ViewCount) 
+      VALUES ('$packageId','$packageName','$fileIdType','$fileId','$fileIdName','$chapterId','$allowDuration','$consumeDuration','$consumeNos','$allowNo','$documentPath','$scheduleOn','$sessionId','$DownloadedPath','$videoDuration','$isEncrypted','$sortedOrder','$durationLimitation','$viewCount');
     ''');
 
   // return null;
@@ -1037,23 +1057,46 @@ Future<void> getAllPackageListOfStudent() async {
       print("Error on clear studentPackageList: ${e.toString()}");
     }
   }
+  if (getx.studentAllPackage.isNotEmpty) {
+    try {
+      getx.studentAllPackage.clear();
+    } catch (e) {
+      writeToFile(e, 'getAllPackageListOfStudent');
+      print("Error on clear studentPackageList: ${e.toString()}");
+    }
+  }
 
   resultSet.forEach((row) {
     // Parse ExpiryDate from string to DateTime
     DateTime expiryDate = DateTime.parse(row['ExpiryDate']);
     DateTime currentDate = DateTime.now();
 
+    Map<String, dynamic> packageData = {
+      'packageId': row['PackageId'],
+      'packageName': row['PackageName'],
+      'ExpiryDate': row['ExpiryDate'],
+      'IsShow': row['IsShow'],
+      'LastUpdatedOn': row['LastUpdatedOn'],
+      'CourseName': row['CourseName'],
+      'IsFree': row['IsFree'],
+      'isPause': row['isPause'],
+      'isActivateByUser': row['isActivateByUser'],
+      'isTotal':row['isTotal'],
+      'isViewCounter':row['isViewCounter'],
+      'Pausedays':row['Pausedays'],
+    };
+
+       if (row['IsFree'] == 'false'
+     
+        ) {
+       getx.studentAllPackage.add(packageData);
+    }
+  
     // Check if the package is still valid and should be shown
-    if (row['IsShow'] == '1' && expiryDate.isAfter(currentDate)) {
-      Map<String, dynamic> packageData = {
-        'packageId': row['PackageId'],
-        'packageName': row['PackageName'],
-        'ExpiryDate': row['ExpiryDate'],
-        'IsShow': row['IsShow'],
-        'LastUpdatedOn': row['LastUpdatedOn'],
-        'CourseName': row['CourseName'],
-        'IsFree': row['IsFree'],
-      };
+    if (row['IsShow'] == '1'
+        //  &&
+        //  expiryDate.isAfter(currentDate)
+        ) {
       getx.studentPackage.add(packageData);
     }
   });
@@ -3047,12 +3090,12 @@ Future<dynamic> fetchUploadableVideoInfo() async {
     SELECT t.*
     FROM TblvideoPlayInfo t
     JOIN (
-        SELECT PlayNo, MAX(SpendTime) AS max_endduration
+        SELECT PlayNo, MAX(TimeSpend) AS max_endduration
         FROM TblvideoPlayInfo
         WHERE UploadFlag = 0
         GROUP BY PlayNo
     ) sub 
-    ON t.PlayNo = sub.PlayNo AND t.SpendTime = sub.max_endduration
+    ON t.PlayNo = sub.PlayNo AND t.TimeSpend = sub.max_endduration
     WHERE t.UploadFlag = 0;
     ''');
 
@@ -3067,12 +3110,12 @@ Future<dynamic> fetchUploadableVideoInfo() async {
     // Loop through each row and add it to the list
     for (var row in resultSet) {
       print(
-          "${row['VideoId']}\n,${row['StartDuration']}\n,${row['SpendTime']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
+          "${row['VideoId']}\n,${row['StartDuration']}\n,${row['TimeSpend']}\n,${row['Speed']}\n,${row['StartTime']},\n${row['PlayNo']}");
       unUploadedVideoInfo.add({
         'Type': row['Type'],
         'VideoId': row['VideoId'],
         'StartDuration': row['StartDuration'],
-        'SpendTime': row['SpendTime'],
+        'TimeSpend': row['TimeSpend'],
         "Speed": row['Speed'],
         "StartTime":
             formatDateTimeTakeLastThreeNumber(row['StartTime'].toString()),
@@ -3866,4 +3909,66 @@ Future<List<PackageInfo>> fetchAllData() async {
   }
 
   return packageList;
+}
+
+Future<void> updateTblPackageDataForPauseSubscription(
+    String pauseValue, String packageId, String expireyDate,String pauseUpto) async {
+  try {
+    _db.execute('''
+      UPDATE TblPackageData
+      SET isPause = ?,ExpiryDate=?,PausedUpto=?
+      WHERE PackageId = ?;
+    ''', [pauseValue, expireyDate,pauseUpto, packageId]);
+  } catch (e) {
+    writeToFile(e, 'updateTblPackageDataForPauseSubscription');
+    print('Failed to update details: ${e.toString()}');
+  }
+}
+
+Future<void> updateTblPackageDataForFirsttimeActivation(
+  String activationValue,
+  String expirydate,
+  String packageId,
+) async {
+  try {
+    _db.execute('''
+      UPDATE TblPackageData
+      SET isActivateByUser = ?,ExpiryDate=?
+      WHERE PackageId = ?;
+    ''', [activationValue,expirydate, packageId]);
+  } catch (e) {
+    writeToFile(e, 'updateTblPackageDataForFirsttimeActivation');
+    print('Failed to update details: ${e.toString()}');
+  }
+}
+
+String addDaysToExpiryDate(String mainTime, int additionalDays) {
+  DateTime dateTime = DateTime.parse(mainTime);
+  DateTime updatedDateTime = dateTime.add(Duration(days: additionalDays));
+  String updatedDateTimeString = updatedDateTime.toIso8601String();
+  return updatedDateTimeString;
+}
+
+bool checkVaildationOfPackage(String expDate) {
+  DateTime expiryDate = DateTime.parse(expDate);
+  DateTime currentDate = DateTime.now();
+
+  return expiryDate.isAfter(currentDate);
+}
+
+bool checkIsPackageActiveByUser(String packageId) {
+  // Execute the SQL query
+  try {
+    final sql.ResultSet resultSet = _db.select(
+        'SELECT isActivateByUser FROM TblPackageData WHERE PackageId = ?',
+        [packageId]);
+
+    // Check if a result is returned and fetch the OptionName
+    if (resultSet.isNotEmpty) {
+      return resultSet.first['isActivateByUser'] as String == "1";
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
 }

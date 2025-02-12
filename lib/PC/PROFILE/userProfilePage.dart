@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
@@ -9,11 +10,14 @@ import 'package:dthlms/CUSTOMDIALOG/customdialog.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/LOGIN/loginpage_mobile.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
+import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/LOGIN/login.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/packagedetails.dart';
 import 'package:dthlms/PC/testresult/test_result_page.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
+import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
@@ -28,6 +32,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 bool eye = false;
 
@@ -95,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      Get.back();
+                                      Get.to(() => DthDashboard());
                                     },
                                     child: Icon(
                                       Icons.arrow_back,
@@ -184,10 +189,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Icons.person_outline_rounded, 'Details', () {
                               pageIndex.value = 0;
                             }, pageIndex.value == 0 ? true : false),
-                            // _buildDrawerItem(Icons.feed_outlined, 'My Packages',
-                            //     () {
-                            //   pageIndex.value = 1;
-                            // }, pageIndex.value == 1 ? true : false),
+                            _buildDrawerItem(Icons.feed_outlined, 'My Packages',
+                                () {
+                              pageIndex.value = 1;
+                            }, pageIndex.value == 1 ? true : false),
                             _buildDrawerItem(
                                 Icons.lock_outline_rounded, 'Change password',
                                 () {
@@ -203,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               pageIndex.value = 4;
                             }, pageIndex.value == 4 ? true : false),
                             _buildDrawerItem(
-                                Icons.settings_outlined, "App Settings", () {
+                                Icons.settings_outlined, "File Manager", () {
                               pageIndex.value = 5;
                               // showDialog(
                               //   context: context,
@@ -250,7 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   });
                             }, pageIndex.value == 5 ? true : false),
                             _buildDrawerItem(Icons.help_outline_rounded,
-                                "Need help? Let's chat", () {
+                                "FAQ's", () {
                               pageIndex.value = 6;
                             }, pageIndex.value == 6 ? true : false),
                             // _buildDrawerItem(Icons.history, "History", () {
@@ -266,6 +271,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             //     Icons.history_sharp, "Exam History", () {
                             //   pageIndex.value = 9;
                             // }, pageIndex.value == 9 ? true : false),
+
+                             _buildDrawerItem(
+                                Icons.person_2_outlined, "Manage Account", () {
+                              pageIndex.value = 10;
+                            }, pageIndex.value == 10 ? true : false),
                           ],
                         ),
                       ),
@@ -433,6 +443,7 @@ class _ProfilePageState extends State<ProfilePage> {
     HistoryDashboard(),
     DeviceHistory(),
     ExamHistory(),
+    Container(),
   ];
 }
 
@@ -489,13 +500,14 @@ class _AppSettingsState extends State<AppSettings> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             Navigator.of(context).pop();
             _restoreToDefaultPaths();
           },
           btn1: 'Cancel',
           btn2: 'Restore',
           linkText: 'Learn more',
+          isTextfeild: false,
         );
       },
     );
@@ -603,7 +615,7 @@ class _AppSettingsState extends State<AppSettings> {
             Row(
               children: [
                 Text(
-                  'App Settings',
+                  'File Manager',
                   style: FontFamily.styleb.copyWith(
                     color: const Color.fromARGB(255, 68, 68, 68),
                   ),
@@ -649,7 +661,7 @@ class _AppSettingsState extends State<AppSettings> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'PDF Download Path',
+                'File Download Path',
                 style: FontFamily.styleb.copyWith(
                   fontSize: 15,
                   color: Color.fromARGB(255, 68, 68, 68),
@@ -765,6 +777,10 @@ class DetailsWidget extends StatelessWidget {
   }
 }
 
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'; // for platform checks
+
 class MyPackage extends StatefulWidget {
   const MyPackage({Key? key}) : super(key: key);
 
@@ -774,220 +790,359 @@ class MyPackage extends StatefulWidget {
 
 class _MyPackageState extends State<MyPackage> {
   Getx getx = Get.put(Getx());
-  List<Map<String, dynamic>> packages = [
-    {
-      'packageName': 'Package A',
-      'packageDescription': 'This is the first package.',
-      'packageId': 'pkg001',
-      'packageExp': 'Expires in 30 days',
-      'packageImg':
-          'https://i.pinimg.com/564x/fa/41/d1/fa41d199e9be453fe1f0dc103e4c615f.jpg',
-    },
-    {
-      'packageName': 'Package B',
-      'packageDescription': 'This is the second package.',
-      'packageId': 'pkg002',
-      'packageExp': 'Expires in 60 days',
-      'packageImg':
-          'https://i.pinimg.com/564x/57/4a/6e/574a6e25f3dc08a3d4b9cbb228edc639.jpg',
-    },
-    {
-      'packageName': 'Package C',
-      'packageDescription': 'This is the third package.',
-      'packageId': 'pkg003',
-      'packageExp': 'Expires in 90 days',
-      'packageImg':
-          'https://i.pinimg.com/564x/20/12/48/201248d22f7c3d05b57df2e79e330f2f.jpg',
-    },
-    {
-      'packageName': 'Package D',
-      'packageDescription': 'This is the fourth package.',
-      'packageId': 'pkg004',
-      'packageExp': 'Expires in 120 days',
-      'packageImg':
-          'https://i.pinimg.com/564x/2d/d7/ac/2dd7acb0ba58bb95ad3119d9cdadc658.jpg',
-    },
-  ];
   int? _hoveredIndex;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Left Container for form fields
-            Container(
-                constraints: const BoxConstraints(maxWidth: 700),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  color: ColorPage
-                      .white, // Ensure you have defined ColorPage.white
-                  // Uncomment below if you want to add shadow
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //       blurRadius: 3,
-                  //       color: Color.fromARGB(255, 157, 157, 157)),
-                  // ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'My Packages',
-                            style: FontFamily.styleb.copyWith(
-                                color: const Color.fromARGB(255, 68, 68, 68)),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          Text('This is my package -2024',
-                              style: FontFamily.style.copyWith(
-                                  color: Colors.grey[400], fontSize: 15)),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Expanded(
-                          child: ListView.builder(
-                        itemCount: getx.studentPackage.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: InkWell(
-                              hoverColor: Colors.red,
-                              onTap: () async {
-                                getx.selectedPackageId.value = int.parse(
-                                    getx.studentPackage[index]['packageId']);
-                                resetTblLocalNavigation();
-                                await insertTblLocalNavigation(
-                                    "Package",
-                                    getx.studentPackage[index]['packageId'],
-                                    getx.studentPackage[index]['packageName']);
-                                getLocalNavigationDetails();
+    // Get the screen width and height for responsive design
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
-                                Get.to(
-                                  transition: Transition.cupertino,
-                                  () => PackageDetailsPage(
-                                    getx.studentPackage[index]['packageName'],
-                                    int.parse(
-                                      getx.studentPackage[index]['packageId'],
-                                    ),
-                                    ExpiryDate: getx.studentPackage[index]
-                                        ['ExpiryDate'],
-                                  ),
-                                );
-                              },
-                              child: MouseRegion(
-                                onEnter: (_) =>
-                                    setState(() => _hoveredIndex = index),
-                                onExit: (_) =>
-                                    setState(() => _hoveredIndex = null),
-                                child: Container(
+    bool isAndroid = Platform.isAndroid;
+
+    return Container(
+      height: screenHeight - 100,
+      margin: const EdgeInsets.symmetric(vertical: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Left Container for form fields
+          Container(
+            width: Platform.isAndroid ? screenWidth : screenWidth / 2.3,
+            // constraints: BoxConstraints(
+            //     maxWidth: screenWidth > 600
+            //         ? 700
+            //         : screenWidth), // Adjust width based on screen size
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color: ColorPage.white, // Ensure ColorPage.white is defined
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Package Title
+                  Platform.isAndroid
+                      ? SizedBox()
+                      : Row(
+                          children: [
+                            Text(
+                              'My Packages',
+                              style: FontFamily.styleb.copyWith(
+                                  color: Color.fromARGB(255, 68, 68, 68)),
+                            ),
+                          ],
+                        ),
+                  SizedBox(height: 5),
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: getx.studentAllPackage.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: InkWell(
+                            hoverColor: Colors.red,
+                            onTap: () async {},
+                            child: MouseRegion(
+                              child: Obx(
+                                () => Container(
                                   padding: EdgeInsets.all(8.0),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: _hoveredIndex == index
-                                        ? Colors.grey[100] // Color when hovered
-                                        : Colors.transparent, // Default color
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: 65,
-                                            height: 80,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        packages[index]
-                                                            ['packageImg']),
-                                                    fit: BoxFit.cover)),
-                                            child: SizedBox(),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: 250,
-                                                child: Text(
-                                                  getx.studentPackage[index]
-                                                      ['packageName'],
-                                                  style: FontFamily.styleb
-                                                      .copyWith(
-                                                          color: const Color
-                                                              .fromARGB(
-                                                              221, 53, 53, 53)),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              SizedBox(
-                                                width: 300,
-                                                child: Text(
-                                                  packages[index]
-                                                      ['packageDescription'],
-                                                  style: FontFamily.style
-                                                      .copyWith(
-                                                          fontSize: 14,
-                                                          color:
-                                                              Colors.grey[400]),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12, // Lighter shadow
+                                        offset: Offset(0, 4),
+                                        blurRadius: 6,
                                       ),
-                                      Container(
-                                        padding: EdgeInsets.all(4.0),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            color: const Color.fromARGB(
-                                                255, 234, 237, 248)),
-                                        child: Icon(
-                                          Icons.arrow_outward_rounded,
-                                          size: 18,
-                                        ),
-                                      )
                                     ],
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487")
+                                        ? Color.fromARGB(223, 244, 222, 187)
+                                        : Color.fromARGB(255, 255, 255,
+                                            255), // Default color
+                                  ),
+                                  child: ExpansionTile(
+                                    trailing:  checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") &&getx.studentAllPackage[index]
+                                                  ['IsFree'] ==
+                                              "false"
+                                        ? Icon(Icons.gpp_maybe)
+                                        : Icon(Icons.arrow_drop_down),
+                                    children: [
+                                       checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") && getx.studentAllPackage[index]
+                                                  ['IsFree'] ==
+                                              "false"
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                    "Subscription of this Package is currently paused!")
+                                              ],
+                                            )
+                                          :     !checkVaildationOfPackage(
+                                         getx.studentAllPackage[index]['PausedUpto']??"2020-02-08T12:47:52.487") && getx.studentAllPackage[index]
+                                                  ['IsFree'] ==
+                                              "false" && int.parse(getx.studentAllPackage[index]
+                                                  ['Pausedays'] )>1
+                                              ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  height:
+                                                      40, // Height of the button
+                                                  width:
+                                                      140, // Width of the button
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        Color.fromARGB(
+                                                            255, 255, 64, 64),
+                                                        Color.fromARGB(
+                                                            255, 255, 89, 125)
+                                                      ], // Lighter colors
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    ),
+                                                    borderRadius: BorderRadius
+                                                        .circular(Platform
+                                                                .isAndroid
+                                                            ? 5
+                                                            : 10), // Reduced radius
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors
+                                                            .black12, // Lighter shadow
+                                                        offset: Offset(0, 4),
+                                                        blurRadius: 6,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: MaterialButton(
+                                                    onPressed: () {
+                                                      _showValuePicker(
+                                                        getx.studentAllPackage[
+                                                            index]['packageId'],
+                                                        getx.studentAllPackage[
+                                                                index]
+                                                            ['ExpiryDate'],
+                                                            double.parse(getx.studentAllPackage[index]
+                                                  ['Pausedays'] )
+                                                      );
+                                                    },
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: Text(
+                                                      "Pause Subscription",
+                                                      style: TextStyle(
+                                                        color: Colors
+                                                            .white, // Text color
+                                                        fontSize:
+                                                            10, // Font size
+                                                        fontWeight: FontWeight
+                                                            .bold, // Font weight
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ): SizedBox(),
+                                    ],
+                                    shape:
+                                        Border.all(color: Colors.transparent),
+                                    leading: Container(
+                                      width: 65,
+                                      height: 80,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        image: DecorationImage(
+                                          image: AssetImage("$logopath"),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      child: SizedBox(),
+                                    ),
+                                    subtitle: Text(
+                                      "Validate till: ${formatDateString(getx.studentAllPackage[index]['ExpiryDate'], "datetime")}",
+                                      style: FontFamily.style.copyWith(
+                                          color: Colors.grey[400],
+                                          fontSize:
+                                              Platform.isAndroid ? 10 : 14),
+                                    ),
+                                    title: Row(
+                                      children: [
+                                        Text(
+                                          getx.studentAllPackage[index]
+                                              ['packageName'],
+                                          style: FontFamily.styleb.copyWith(
+                                              fontSize:
+                                                  Platform.isAndroid ? 12 : 20,
+                                              color: Color.fromARGB(
+                                                  221, 53, 53, 53)),
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          );
-                        },
-                      ))
-                    ],
-                  ),
-                )),
-            // Right Container for FAQs (currently commented out)
-          ],
-        ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  void _showValuePicker(String packageId, String expirydate, double maxpauseDays) {
+    final valueController = Get.put(ValueController());
+    valueController.selectedValue.value = 1;
+
+    // Show the RFlutterAlert dialog
+    Alert(
+      context: Get.context!,
+      type: AlertType.none,
+      title: "Select how many days you want to pause your Subscription",
+      content: Column(
+        children: [
+          SizedBox(height: 10),
+          SleekCircularSlider(
+            initialValue: 1,
+            min: 1,
+            max: maxpauseDays,
+            onChange: (double value) {
+              valueController.selectedValue.value = value;
+            },
+            innerWidget: (value) {
+              return Center(
+                child: Text(
+                  "Pause for\n   ${value.toInt()} days",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              );
+            },
+            appearance: CircularSliderAppearance(
+              customWidths: CustomSliderWidths(
+                trackWidth: 10,
+                progressBarWidth: 12,
+                handlerSize: 15,
+              ),
+              customColors: CustomSliderColors(
+                progressBarColor: Colors.blueAccent,
+                trackColor: Colors.grey.shade300,
+                dotColor: Colors.blueAccent,
+              ),
+              size: 200,
+            ),
+          ),
+        ],
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: () {
+            onSweetAleartDialogwithDeny(
+              context,
+              () {
+                pauseSubscription(context,getx.loginuserdata[0].token,packageId,valueController.selectedValue.toInt().toString()).then((value) {
+                
+                   onPauseSuccessfull(
+                      context, valueController.selectedValue.toInt(), () {
+                    Get.back();
+                    Get.back();
+                    Get.back();
+                    getAllPackageListOfStudent();
+                  },value);
+                 
+                });
+              },
+              "Are You Sure?",
+              "You want to Pause your subscription!",
+              () {
+                Navigator.of(context).pop();
+              },
+            );
+            print("Value confirmed: ${valueController.selectedValue.toInt()}");
+          },
+          child: Text(
+            "Confirm",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
+          ),
+          color: Colors.blueAccent,
+        ),
+      ],
+    ).show();
+  }
+}
+
+class ValueController extends GetxController {
+  var selectedValue = 1.0.obs; // Make it observable (Rx variable)
+}
+
+class CircularSliderPainter extends CustomPainter {
+  final double value;
+  CircularSliderPainter(this.value);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.grey.shade300
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10;
+
+    Paint activePaint = Paint()
+      ..color = Colors.blueAccent
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10;
+
+    // Draw the background circle (inactive track)
+    canvas.drawArc(
+      Rect.fromCircle(
+          center: Offset(size.width / 2, size.height), radius: size.width / 2),
+      pi, // Start angle (half-circle)
+      pi, // Sweep angle (half-circle)
+      false,
+      paint,
+    );
+
+    // Draw the active part of the circle (filled portion)
+    double sweepAngle =
+        (pi * (value - 1) / 29); // Value proportional to the arc
+    canvas.drawArc(
+      Rect.fromCircle(
+          center: Offset(size.width / 2, size.height), radius: size.width / 2),
+      pi, // Start angle
+      sweepAngle, // Sweep angle based on the value
+      false,
+      activePaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
 
@@ -1164,7 +1319,7 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                   children: [
                     Expanded(
                       child: RatingBar.builder(
-                        initialRating: 3,
+                        initialRating: 5,
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
@@ -2075,6 +2230,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         filled: true,
         fillColor: Colors.transparent,
       ),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
         // Custom validation logic
         if (value == null || value.isEmpty) {
@@ -2164,7 +2320,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           OnCancell: () {
             Navigator.of(context).pop();
           },
-          OnConfirm: () {
+          OnConfirm: (String reason) {
             // Add your logic to handle the name change request submission here
             Navigator.of(context).pop();
             // Optionally, show a message or trigger an action after submission
@@ -2177,6 +2333,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           btn1: 'Cancel',
           btn2: 'Request',
           linkText: 'Learn more',
+          isTextfeild: false,
         );
       },
     );
@@ -2225,7 +2382,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   ),
                   Row(
                     children: [
-                      SizedBox(
+                      SizedBox( 
                         height: 100,
                         width: 100,
                         child: InkWell(
@@ -2251,10 +2408,15 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         ),
                                         SizedBox(height: 20),
                                         QrImageView(
-                                          data: qrData,
-                                          version: QrVersions.auto,
-                                          size: 300, // Bigger QR Code
-                                        ),
+  data: qrData,
+  version: QrVersions.auto,
+  size: 320,
+  gapless: false,
+  embeddedImage: AssetImage(logopath),
+  embeddedImageStyle: QrEmbeddedImageStyle(
+    size: Size(80, 80),
+  ),
+),
                                         SizedBox(height: 20),
                                         ElevatedButton(
                                             onPressed: () =>
@@ -2273,10 +2435,15 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                             );
                           },
                           child: QrImageView(
-                            data: qrData,
-                            version: QrVersions.auto,
-                            size: 100, // Small QR Code
-                          ),
+  data: qrData,
+  version: QrVersions.auto,
+  size: 320,
+  gapless: false,
+  embeddedImage: AssetImage(logopath),
+  embeddedImageStyle: QrEmbeddedImageStyle(
+    size: Size(20, 20),
+  ),
+)
                         ),
                       ),
                     ],
@@ -2367,7 +2534,7 @@ logoutConfirmationBox(context) async {
 
           onConfirm: () async {
             await handleLogoutProcess(context).then((v) {
-              if (Platform.isAndroid) {
+              if (Platform.isIOS) {
                 Navigator.pop(context);
               }
             });
@@ -3809,12 +3976,12 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
                                                         theoryExamAnswerId:
                                                             "theoryExamAnswerId not done yeat",
                                                         examId: snapshot
-                                                                .data![index]
+                                                                .data![index] 
                                                             ['TheoryExamId'],
-                                                        pdfurl: snapshot
-                                                                .data![index][
-                                                            'CheckedDocumentUrl'],
-                                                        questionanswersheet: '',
+                                                            pdfurl:snapshot.data![
+                                                                    index][
+                                                                'CheckedDocumentUrl'], 
+                                                                questionanswersheet: '' ,
                                                       ));
                                             })
                                         : Text("Result not publish ")))
@@ -3829,4 +3996,26 @@ Widget _buildTheoryExamDetailsList(BuildContext context) {
       }
     },
   );
+}
+
+onPauseSuccessfull(context, int day, VoidCallback ontap, bool success) {
+  Alert(
+    context: context,
+    type: success?AlertType.success:AlertType.info,
+    style: AlertStyle(
+      titleStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      descStyle: FontFamily.font6,
+      isCloseButton: false,
+    ),
+    title: success?"Done":"Something went wrong",
+    desc: success?"Your Subscription is pause for $day days!":"",
+    buttons: [
+      DialogButton(
+        child: Text("OK", style: TextStyle(color: Colors.white, fontSize: 18)),
+        highlightColor: ColorPage.blue,
+        onPressed: ontap,
+        color:success? const Color.fromARGB(255, 65, 207, 43):Color.fromARGB(255, 207, 43, 43),
+      ),
+    ],
+  ).show();
 }

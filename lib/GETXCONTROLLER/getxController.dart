@@ -114,6 +114,7 @@ class Getx extends GetxController {
   RxList name = [].obs; //chat
   RxString email = ''.obs;
   RxList<Map<String, dynamic>> studentPackage = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> studentAllPackage = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> sectionListOfPackage =
       <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> sectionlist = <Map<String, dynamic>>[].obs;
@@ -223,12 +224,12 @@ class Getx extends GetxController {
 
   @override
   void onInit() {
-    initConnectivity();
+    // initConnectivity();
 
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
-    databasecopy();
+    // databasecopy();
     super.onInit();
   }
 
