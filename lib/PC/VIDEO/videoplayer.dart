@@ -80,7 +80,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
     page = [
       Pdf(),
       Mcq(),
-      Tags(videoPlay: videoPlay), // Pass videoPlay instance here
+      Tags(), // Pass videoPlay instance here
       AskDoubt()
     ];
     videoPlay.updateVideoLink(getx.playLink.value, []);
@@ -1262,6 +1262,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
     );
   }
 
+ 
+ 
+ 
+ 
   deleteVideo() {
     deleteWarning();
   }
@@ -1518,6 +1522,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
       ),
     );
   }
+
+
+
+
+
 
   Widget videoPlayerRight() {
     return Container(
@@ -2507,8 +2516,8 @@ class _AskDoubtState extends State<AskDoubt> {
 }
 
 class Tags extends StatefulWidget {
-  final VideoPlayClass videoPlay;
-  const Tags({super.key, required this.videoPlay});
+  // final VideoPlayClass videoPlay;
+  // const Tags({super.key, required this.videoPlay});
 
   @override
   State<Tags> createState() => _TagsState();
@@ -2518,7 +2527,7 @@ class _TagsState extends State<Tags> {
   late VideoPlayClass videoPlay;
   @override
   void initState() {
-    videoPlay = widget.videoPlay;
+    // videoPlay = widget.videoPlay;
     // TODO: implement in
     // itState
     super.initState();

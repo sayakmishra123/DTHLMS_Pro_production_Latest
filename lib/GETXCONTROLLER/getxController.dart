@@ -135,6 +135,8 @@ class Getx extends GetxController {
       <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> podcastFileList = <Map<String, dynamic>>[].obs;
 
+  RxBool isVideoPlayer=false.obs;
+
   RxList<Map<String, dynamic>> navigationList = <Map<String, dynamic>>[].obs;
   RxList<dynamic> blackListProcess = <dynamic>[].obs;
   RxList<dynamic> whiteListProcess = <dynamic>[].obs;

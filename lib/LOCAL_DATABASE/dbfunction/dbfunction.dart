@@ -1320,11 +1320,7 @@ Future<void> getChapterFiles(String fileType, String packageId,
       if (getx.alwaysShowChapterDetailsOfVideo.length == 0 &&
           getx.alwaysShowFileDetailsOfpdf.length == 0 &&
           getx.alwaysShowChapterfilesOfVideo.length != 0) {
-        Platform.isWindows
-            ? Get.to(
-                transition: Transition.cupertino,
-                () => VideoPlayer(isPathExitsOnVideoList()))
-            : null;
+     getx.isVideoPlayer.value=true;
         // : Get.to(() => MobileVideoPlayer( videoLink: getx.alwaysShowChapterfilesOfVideo[0]['DocumentPath'],));
         // : Get.to(() =>);
       }
@@ -3977,6 +3973,9 @@ String addDaysToExpiryDate(String mainTime, int additionalDays) {
 bool checkVaildationOfPackage(String expDate) {
   DateTime expiryDate = DateTime.parse(expDate);
   DateTime currentDate = DateTime.now();
+  if(expDate=='1900-01-01T00:00:00'){
+    return true;
+  }
 
   return expiryDate.isAfter(currentDate);
 }
