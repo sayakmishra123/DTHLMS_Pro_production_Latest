@@ -47,115 +47,50 @@ class MyCupertinoPopupMenu extends StatelessWidget {
 
   void _showCupertinoMenu(BuildContext context) {
     showCupertinoModalPopup<void>(
-          context: context,
-    builder: (BuildContext context) => CupertinoActionSheet(
-    // title:  Text('Options ${sessionId} / ${userid}'),
-    actions: <CupertinoActionSheetAction>[
-    CupertinoActionSheetAction(
-    onPressed: () {
-    // log(sessionId.toString());
-    Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-    return SafeArea(
-    child: Material(
-    color: Colors.transparent,
-    child: ChatUi(
-    sessionId, userid, username, meeting: meeting,
-
-    // username
-    ),
-    ));
-    }));
-    // Navigator.pop(context);
-    },
-    child: const Text('Chat'),
-    ),
-
-
-
-      CupertinoActionSheetAction(
-        onPressed: () {
-          // log(sessionId.toString());
-          Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return SafeArea(
-                child: Material(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        // title:  Text('Options ${sessionId} / ${userid}'),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              // log(sessionId.toString());
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return SafeArea(
+                    child: Material(
                   color: Colors.transparent,
-                  child: StudentPollPage(sessionId:sessionId, teacherName:'',meeting:meeting),
+                  child: ChatUi(
+                    sessionId, userid, username, meeting: meeting,
+
+                    // username
+                  ),
+                ));
+              }));
+              // Navigator.pop(context);
+            },
+            child: const Text('Chat'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              // log(sessionId.toString());
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return SafeArea(
+                    child: Material(
+                  color: Colors.transparent,
+                  child: StudentPollPage(
+                      sessionId: sessionId, teacherName: '', meeting: meeting),
                   // child: ChatUi(
                   //   sessionId, userid, username, meeting: meeting,
                   //
                   //   // username
                   // ),
                 ));
-          }));
-          // Navigator.pop(context);
-        },
-        child: const Text('Management'),
-      ),
-
-
-
-
-
-
-
-
-
-
-
-          // CupertinoActionSheetAction(
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //       if (vcController.peersList.isNotEmpty || vcController.screenShareList.isNotEmpty) {
-          //         return SafeArea(
-          //           child: Material(
-          //             color: Colors.transparent,
-          //             child: Column(
-          //               children: [
-          //                 const SizedBox(height: 40),
-          //                 Row(
-          //                   children: [
-          //                     const SizedBox(width: 15),
-          //                     Container(
-          //                       height: 40,
-          //                       width: 80,
-          //                       decoration: BoxDecoration(
-          //                         borderRadius: BorderRadius.circular(20),
-          //                         color: Colors.transparent,
-          //                         border: Border.all(width: 2, color: Colors.white),
-          //                       ),
-          //                       child: Center(
-          //                         child: Text(
-          //                           vcController.peersList.length.toString(),
-          //                           style: const TextStyle(
-          //                             fontFamily: 'ocenwide',
-          //                             fontSize: 16,
-          //                             color: Colors.white,
-          //                           ),
-          //                         ),
-          //                       ),
-          //                     ),
-          //                   ],
-          //                 ),
-          //                 const SizedBox(height: 20),
-          //                 // Add other widgets for video display here
-          //               ],
-          //             ),
-          //           ),
-          //         );
-          //       }
-          //       else
-          //         {
-          //          return NoParticipantsScreen();
-          //         }
-          //     }));
-          //     // Navigator.pop(context);
-          //   },
-          //   child: const Text('Participants'),
-          // ),
-          //
+              }));
+              // Navigator.pop(context);
+            },
+            child: const Text('Management'),
+          ),
         ],
         cancelButton: CupertinoActionSheetAction(
           isDefaultAction: true,
