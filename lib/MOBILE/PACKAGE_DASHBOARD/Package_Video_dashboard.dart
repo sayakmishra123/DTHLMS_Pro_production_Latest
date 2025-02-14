@@ -950,312 +950,341 @@ class _MobilePackageVideoDashboardState
                   //     ? ColorPage.colorbutton.withOpacity(0.9)
                   // :
                   Color.fromARGB(255, 255, 255, 255),
-              child: ListTile(
-                leading: Padding(
-                  padding: const EdgeInsets.only(left: 0),
-                  child: Image.asset(
-                    "assets/video2.png",
-                    scale: 19,
-                    // color:
-                    //  selectedVideoIndex == index
-                    //     ? ColorPage.white.withOpacity(0.85)
-                    //     :
-
-                    // ColorPage.colorbutton,
-                  ),
-                ),
-                subtitle: getPackagDataFieldValuebyId(
-                            getx.selectedPackageId.toString(), "isTotal") !=
-                        "0"
-                    ? Text(
-                        'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['VideoDuration'].toString()))}',
-                        style: TextStyle(
-                          color: ColorPage.grey,
-                          fontSize: 8,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      )
-                    : Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['VideoDuration'].toString()))}   Limit:  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['AllowDuration'].toString()))}',
-                            style: TextStyle(
-                              color: ColorPage.grey,
-                              fontSize: 8,
-                              // fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          Text(
-                            'Consume:  ${breakSecondIntoHourAndMinute(getTotalConsumeDurationOfVideo(filteredvideoDetails[index]['FileId'].toString(), int.parse(filteredvideoDetails[index]['ConsumeDuration'].toString())))}    Remaining :  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['AllowDuration'].toString()) - getTotalConsumeDurationOfVideo(filteredvideoDetails[index]['FileId'].toString(), int.parse(filteredvideoDetails[index]['ConsumeDuration'].toString())))}',
-                            style: TextStyle(
-                              color: ColorPage.grey,
-                              fontSize: 8,
-                              // fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                // Text(
-                //   'Duration: ${filteredvideoDetails[index]['AllowDuration']}',
-                //   style: TextStyle(
-                //     color:
-
-                //         // selectedVideoIndex == index
-                //         //     ? ColorPage.white.withOpacity(0.9)
-                //         //     :
-
-                //         ColorPage.grey,
-                //     fontWeight: FontWeight.w800,
-                //   ),
-                // ),
-                title: Text(
-                  filteredvideoDetails[index]['DisplayName'],
-                  style: GoogleFonts.inter().copyWith(
-                    color:
-
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Padding(
+                      padding: const EdgeInsets.only(left: 0),
+                      child: Image.asset(
+                        "assets/video2.png",
+                        scale: 19,
+                        // color:
                         //  selectedVideoIndex == index
-                        //     ? ColorPage.white
+                        //     ? ColorPage.white.withOpacity(0.85)
                         //     :
-
-                        ColorPage.colorblack,
-                    fontWeight: FontWeight.w800,
-                    fontSize: selectedvideoListIndex == index ? 20 : null,
-                    // color: selectedListIndex == index
-                    //     ? Colors.amber[900]
-                    //     : Colors.black,
-                  ),
-                ),
-                trailing: Wrap(
-                  spacing: 5,
-                  children: [  
-
-                    
-                     downloadProgress[index] == 0 &&
-                            File(getx.userSelectedPathForDownloadVideo.isEmpty
-                                        ? getx.defaultPathForDownloadVideo
-                                                .value +
-                                            '/' +
-                                            filteredvideoDetails[index]
-                                                ['FileIdName']
-                                        : getx.userSelectedPathForDownloadVideo
-                                                .value +
-                                            '/' +
-                                            filteredvideoDetails[index]
-                                                ['FileIdName'])
-                                    .existsSync() ==
-                                false &&  getVideoPlayModeFromPackageId(
-                                                              getx.selectedPackageId
-                                                                  .value
-                                                                  .toString()) ==
-                                                          "true"?Padding(
-                                                            padding: const EdgeInsets.only(right: 10),
-                                                            child: InkWell(
-                                                            
-                                                               onTap: () {
-                                                                getx.playLink.value =
-                                                                    getx.alwaysShowChapterfilesOfVideo[
-                                                                            index][
-                                                                        'DocumentPath'];
-                                                                      
-                                                                print(getx.alwaysShowChapterfilesOfVideo[
-                                                                            index][
-                                                                        'DocumentPath'] +
-                                                                    "////////");
-                                                                print(getx.playLink
-                                                                        .value +
-                                                                    "////////////");
-                                                                      
-                                                                if (getx
-                                                                    .isInternet.value) {
-                                                            
-                                                                       fetchUploadableVideoInfo()
-                                                                                                    .then((valueList) async {
-                                                                                                  if (getx.isInternet.value) {
-                                                                                                    unUploadedVideoInfoInsert(
-                                                                                                        context,
-                                                                                                        valueList,
-                                                                                                        getx.loginuserdata[0].token,
-                                                                                                        false);
-                                                                                                  }
-                                                                                                });
-                                                                                                getx.playingVideoId.value =
-                                                                                                    filteredvideoDetails[index]['FileId']
-                                                                                                        .toString();
-                                                                                              
-                                                                                                print(filteredvideoDetails.toString() +
-                                                                                                    "////////////////////////////////////////////////////777777777777777777777777");
-                                                                                                Get.to(() => MobileVideoPlayer(
-                                                                                                      videoLink: getx.playLink.value,
-                                                                                                      Videoindex:
-                                                                                                          findIndexInAlwaysShowChapterFiles(
-                                                                                                              filteredvideoDetails[index]
-                                                              ['FileId']
-                                                                                                                  .toString()),
-                                                                                                      videoList: filteredvideoDetails,
-                                                                                                      singleplay:
-                                                                                                          filteredvideoDetails.length > 1
-                                                                                                              ? true
-                                                                                                              : false,
-                                                                                                              isPlayOnline: true,
-                                                                                                    ));
-                                                                      
-                                                                 
-                                                                 
-                                                                } else {
-                                                                  onNoInternetConnection(
-                                                                      context, () {
-                                                                    Get.back();
-                                                                  });
-                                                                }
-                                                              },
-                                                              child: Icon(
-                                                               
-                                                                 
-                                                                  Icons.play_circle_fill,
-                                                                  color: ColorPage
-                                                                      .colorbutton,
-                                                                
-                                                              ),
-                                                            ),
-                                                          ):SizedBox(),
-                    downloadProgress[index] == 0 &&
-                            File(getx.userSelectedPathForDownloadVideo.isEmpty
-                                        ? getx.defaultPathForDownloadVideo
-                                                .value +
-                                            '/' +
-                                            filteredvideoDetails[index]
-                                                ['FileIdName']
-                                        : getx.userSelectedPathForDownloadVideo
-                                                .value +
-                                            '/' +
-                                            filteredvideoDetails[index]
-                                                ['FileIdName'])
-                                    .existsSync() ==
-                                false
-                        ? 
-                            
-                             InkWell(
-                              onTap: () {
-                              startDownload(
-                                  index,
-                                  filteredvideoDetails[index]['DocumentPath'],
-                                  filteredvideoDetails[index]['FileIdName']);
-                            },
-                               child: Icon(
-                                Icons.download,
-                                color:
-                                    // selectedVideoIndex == index
-                                    //     ? ColorPage.white.withOpacity(0.9)
-                                    //     :
-                               
-                                    ColorPage.grey,
-                                                             ),
-                             )
-                          
-                        : downloadProgress[index] < 100 &&
-                                downloadProgress[index] > 0
-                            ? SizedBox(
-                                width: 50,
-                                child: Row(
-                                  children: [
-                                    CircularPercentIndicator(
-                                      radius: 15.0,
-                                      lineWidth: 4.0,
-                                      percent: downloadProgress[index] / 100,
-                                      center: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          "${downloadProgress[index].toInt()}%",
-                                          style: TextStyle(fontSize: 10.0),
-                                        ),
-                                      ),
-                                      progressColor: ColorPage.colorbutton,
-                                    ),
-                                    InkWell(
-                                       onTap: () {
-                                        cancelDownload(index);
-                                      },
-                                      child: Icon(
-                                       
-                                        
-                                          FontAwesome.close,
-                                          color:
-                                      
-                                              // selectedVideoIndex == index
-                                              //     ? ColorPage.white.withOpacity(0.9)
-                                              //     :
-                                      
-                                              ColorPage.grey,
-                                        
-                                      ),
-                                    ),
-                                  ],
+                  
+                        // ColorPage.colorbutton,
+                      ),
+                    ),
+                    subtitle: getPackagDataFieldValuebyId(
+                                getx.selectedPackageId.toString(), "isTotal") !=
+                            "0"
+                        ? Text(
+                            'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['VideoDuration'].toString()))}',
+                            style: TextStyle(
+                              color: ColorPage.grey,
+                              fontSize: 8,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          )
+                        : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['VideoDuration'].toString()))}   Limit:  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['AllowDuration'].toString()))}',
+                                style: TextStyle(
+                                  color: ColorPage.grey,
+                                  fontSize: 8,
+                                  // fontWeight: FontWeight.w800,
                                 ),
-                              )
-                            : InkWell(
-                               onTap: () {
-                                  fetchUploadableVideoInfo()
-                                      .then((valueList) async {
-                                    if (getx.isInternet.value) {
-                                      unUploadedVideoInfoInsert(
-                                          context,
-                                          valueList,
-                                          getx.loginuserdata[0].token,
-                                          false);
-                                    }
-                                  });
-                                  getx.playingVideoId.value =
-                                      filteredvideoDetails[index]['FileId']
-                                          .toString();
-                                  getx.playLink.value = getx
-                                          .userSelectedPathForDownloadVideo
-                                          .isEmpty
-                                      ? getx.defaultPathForDownloadVideo
-                                              .value +
-                                          '/' +
-                                          filteredvideoDetails[index]
-                                              ['FileIdName']
-                                      : getx.userSelectedPathForDownloadVideo
-                                              .value +
-                                          '/' +
-                                          filteredvideoDetails[index]
-                                              ['FileIdName'];
-                                  print(filteredvideoDetails.toString() +
-                                      "////////////////////////////////////////////////////777777777777777777777777");
-                                  Get.to(() => MobileVideoPlayer(
-                                        videoLink: getx.playLink.value,
-                                        Videoindex:
-                                            findIndexInAlwaysShowChapterFiles(
+                              ),
+                              Text(
+                                'Consume:  ${breakSecondIntoHourAndMinute(getTotalConsumeDurationOfVideo(filteredvideoDetails[index]['FileId'].toString(), int.parse(filteredvideoDetails[index]['ConsumeDuration'].toString())))}    Remaining :  ${breakSecondIntoHourAndMinute(int.parse(filteredvideoDetails[index]['AllowDuration'].toString()) - getTotalConsumeDurationOfVideo(filteredvideoDetails[index]['FileId'].toString(), int.parse(filteredvideoDetails[index]['ConsumeDuration'].toString())))}',
+                                style: TextStyle(
+                                  color: ColorPage.grey,
+                                  fontSize: 8,
+                                  // fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
+                  
+                    // Text(
+                    //   'Duration: ${filteredvideoDetails[index]['AllowDuration']}',
+                    //   style: TextStyle(
+                    //     color:
+                  
+                    //         // selectedVideoIndex == index
+                    //         //     ? ColorPage.white.withOpacity(0.9)
+                    //         //     :
+                  
+                    //         ColorPage.grey,
+                    //     fontWeight: FontWeight.w800,
+                    //   ),
+                    // ),
+                    title: Text(
+                      filteredvideoDetails[index]['DisplayName'],
+                      style: GoogleFonts.inter().copyWith(
+                        color:
+                  
+                            //  selectedVideoIndex == index
+                            //     ? ColorPage.white
+                            //     :
+                  
+                            ColorPage.colorblack,
+                        fontWeight: FontWeight.w800,
+                        fontSize: selectedvideoListIndex == index ? 20 : null,
+                        // color: selectedListIndex == index
+                        //     ? Colors.amber[900]
+                        //     : Colors.black,
+                      ),
+                    ),
+                    trailing: Wrap(
+                      spacing: 5,
+                      children: [  
+                  
+                        
+                         downloadProgress[index] == 0 &&
+                                File(getx.userSelectedPathForDownloadVideo.isEmpty
+                                            ? getx.defaultPathForDownloadVideo
+                                                    .value +
+                                                '/' +
                                                 filteredvideoDetails[index]
-                                                        ['FileId']
-                                                    .toString()),
-                                        videoList: filteredvideoDetails,
-                                        singleplay:
-                                            filteredvideoDetails.length > 1
-                                                ? true
-                                                : false,
-                                                isPlayOnline: false,
-                                      ));
+                                                    ['FileIdName']
+                                            : getx.userSelectedPathForDownloadVideo
+                                                    .value +
+                                                '/' +
+                                                filteredvideoDetails[index]
+                                                    ['FileIdName'])
+                                        .existsSync() ==
+                                    false &&  getVideoPlayModeFromPackageId(
+                                                                  getx.selectedPackageId
+                                                                      .value
+                                                                      .toString()) ==
+                                                              "true"?Padding(
+                                                                padding: const EdgeInsets.only(right: 10),
+                                                                child: InkWell(
+                                                                
+                                                                   onTap: () {
+                                                                    getx.playLink.value =
+                                                                        getx.alwaysShowChapterfilesOfVideo[
+                                                                                index][
+                                                                            'DocumentPath'];
+                                                                          
+                                                                    print(getx.alwaysShowChapterfilesOfVideo[
+                                                                                index][
+                                                                            'DocumentPath'] +
+                                                                        "////////");
+                                                                    print(getx.playLink
+                                                                            .value +
+                                                                        "////////////");
+                                                                          
+                                                                    if (getx
+                                                                        .isInternet.value) {
+                                                                
+                                                                           fetchUploadableVideoInfo()
+                                                                                                        .then((valueList) async {
+                                                                                                      if (getx.isInternet.value) {
+                                                                                                        unUploadedVideoInfoInsert(
+                                                                                                            context,
+                                                                                                            valueList,
+                                                                                                            getx.loginuserdata[0].token,
+                                                                                                            false);
+                                                                                                      }
+                                                                                                    });
+                                                                                                    getx.playingVideoId.value =
+                                                                                                        filteredvideoDetails[index]['FileId']
+                                                                                                            .toString();
+                                                                                                  
+                                                                                                    print(filteredvideoDetails.toString() +
+                                                                                                        "////////////////////////////////////////////////////777777777777777777777777");
+                                                                                                    Get.to(() => MobileVideoPlayer(
+                                                                                                          videoLink: getx.playLink.value,
+                                                                                                          Videoindex:
+                                                                                                              findIndexInAlwaysShowChapterFiles(
+                                                                                                                  filteredvideoDetails[index]
+                                                                  ['FileId']
+                                                                                                                      .toString()),
+                                                                                                          videoList: filteredvideoDetails,
+                                                                                                          singleplay:
+                                                                                                              filteredvideoDetails.length > 1
+                                                                                                                  ? true
+                                                                                                                  : false,
+                                                                                                                  isPlayOnline: true,
+                                                                                                        ));
+                                                                          
+                                                                     
+                                                                     
+                                                                    } else {
+                                                                      onNoInternetConnection(
+                                                                          context, () {
+                                                                        Get.back();
+                                                                      });
+                                                                    }
+                                                                  },
+                                                                  child: Icon(
+                                                                   
+                                                                     
+                                                                      Icons.play_circle_fill,
+                                                                      color: ColorPage
+                                                                          .colorbutton,
+                                                                    
+                                                                  ),
+                                                                ),
+                                                              ):SizedBox(),
+                        downloadProgress[index] == 0 &&
+                                File(getx.userSelectedPathForDownloadVideo.isEmpty
+                                            ? getx.defaultPathForDownloadVideo
+                                                    .value +
+                                                '/' +
+                                                filteredvideoDetails[index]
+                                                    ['FileIdName']
+                                            : getx.userSelectedPathForDownloadVideo
+                                                    .value +
+                                                '/' +
+                                                filteredvideoDetails[index]
+                                                    ['FileIdName'])
+                                        .existsSync() ==
+                                    false
+                            ? 
+                                
+                                 InkWell(
+                                  onTap: () {
+                                  startDownload(
+                                      index,
+                                      filteredvideoDetails[index]['DocumentPath'],
+                                      filteredvideoDetails[index]['FileIdName']);
                                 },
-                              child: Icon(
-                               
-                              
-                                    Icons.play_circle,
+                                   child: Icon(
+                                    Icons.download,
                                     color:
-                              
-                                        //  selectedVideoIndex == index
+                                        // selectedVideoIndex == index
                                         //     ? ColorPage.white.withOpacity(0.9)
                                         //     :
-                              
+                                   
                                         ColorPage.grey,
-                                  ),
-                            ),
+                                                                 ),
+                                 )
                               
-                  ],
-                ),
+                            : downloadProgress[index] < 100 &&
+                                    downloadProgress[index] > 0
+                                ? SizedBox(
+                                    width: 50,
+                                    child: Row(
+                                      children: [
+                                        CircularPercentIndicator(
+                                          radius: 15.0,
+                                          lineWidth: 4.0,
+                                          percent: downloadProgress[index] / 100,
+                                          center: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              "${downloadProgress[index].toInt()}%",
+                                              style: TextStyle(fontSize: 10.0),
+                                            ),
+                                          ),
+                                          progressColor: ColorPage.colorbutton,
+                                        ),
+                                        InkWell(
+                                           onTap: () {
+                                            cancelDownload(index);
+                                          },
+                                          child: Icon(
+                                           
+                                            
+                                              FontAwesome.close,
+                                              color:
+                                          
+                                                  // selectedVideoIndex == index
+                                                  //     ? ColorPage.white.withOpacity(0.9)
+                                                  //     :
+                                          
+                                                  ColorPage.grey,
+                                            
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : InkWell(
+                                   onTap: () {
+                                      fetchUploadableVideoInfo()
+                                          .then((valueList) async {
+                                        if (getx.isInternet.value) {
+                                          unUploadedVideoInfoInsert(
+                                              context,
+                                              valueList,
+                                              getx.loginuserdata[0].token,
+                                              false);
+                                        }
+                                      });
+                                      getx.playingVideoId.value =
+                                          filteredvideoDetails[index]['FileId']
+                                              .toString();
+                                      getx.playLink.value = getx
+                                              .userSelectedPathForDownloadVideo
+                                              .isEmpty
+                                          ? getx.defaultPathForDownloadVideo
+                                                  .value +
+                                              '/' +
+                                              filteredvideoDetails[index]
+                                                  ['FileIdName']
+                                          : getx.userSelectedPathForDownloadVideo
+                                                  .value +
+                                              '/' +
+                                              filteredvideoDetails[index]
+                                                  ['FileIdName'];
+                                      print(filteredvideoDetails.toString() +
+                                          "////////////////////////////////////////////////////777777777777777777777777");
+                                      Get.to(() => MobileVideoPlayer(
+                                            videoLink: getx.playLink.value,
+                                            Videoindex:
+                                                findIndexInAlwaysShowChapterFiles(
+                                                    filteredvideoDetails[index]
+                                                            ['FileId']
+                                                        .toString()),
+                                            videoList: filteredvideoDetails,
+                                            singleplay:
+                                                filteredvideoDetails.length > 1
+                                                    ? true
+                                                    : false,
+                                                    isPlayOnline: false,
+                                          ));
+                                    },
+                                  child: Icon(
+                                   
+                                  
+                                        Icons.play_circle,
+                                        color:
+                                  
+                                            //  selectedVideoIndex == index
+                                            //     ? ColorPage.white.withOpacity(0.9)
+                                            //     :
+                                  
+                                            ColorPage.grey,
+                                      ),
+                                ),
+                                  
+                      ],
+                    ),
+                  ),
+                
+                Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0),
+                                          child: LinearProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.green),
+                                            backgroundColor:
+                                                Colors.green.withOpacity(0.3),
+                                            value: calculateVideoWatchProgress(
+                                                getTotalConsumeDurationOfVideo(
+                                                    filteredvideoDetails[index]
+                                                            ['FileId']
+                                                        .toString(),
+                                                    int.parse(filteredvideoDetails[
+                                                                index]
+                                                            ['ConsumeDuration']
+                                                        .toString())),
+                                                int.parse(filteredvideoDetails[
+                                                        index]['VideoDuration']
+                                                    .toString())), // Progress value
+                                          ),
+                                        ),
+                
+                ],
               ),
             ),
           )

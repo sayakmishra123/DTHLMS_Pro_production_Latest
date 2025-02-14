@@ -729,7 +729,7 @@ onSweetAleartDialog(context, VoidCallback ontap, String title, String subtitle,
           title: "$title",
           text: "$subtitle",
           confirmButtonText:
-              "                           Ok                            ",
+              "                      Ok                       ",
           onConfirm: ontap,
           type:
               success ? ArtSweetAlertType.success : ArtSweetAlertType.warning));

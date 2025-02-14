@@ -4167,7 +4167,7 @@ try{
   return totalDuration.toInt();
 
 }catch(e){
-  writeToFile(e, getTotalConsumeDurationOfVideo);
+  writeToFile(e, getTotalConsumeDurationOfPackage);
   return 0;
 
 }

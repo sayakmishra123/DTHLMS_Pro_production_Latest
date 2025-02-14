@@ -368,10 +368,12 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 // Title of the package or video
                                 Text(
                                   paidPackages[index]['packageName']!,
-                                  style: FontFamily.styleb.copyWith(
-                                      color:
-                                          const Color.fromARGB(255, 6, 0, 87),
-                                      fontSize: 18),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color:
+                                        const Color.fromARGB(255, 4, 42, 211),
+                                  ),
                                   maxLines: 1,
                                   overflow:
                                       TextOverflow.ellipsis, // Handle overflow
@@ -380,8 +382,10 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 // Subtitle or description
                                 Text(
                                   '${paidPackages[index]['CourseName']}', // Replace with actual subtitle
-                                  style: FontFamily.styleb.copyWith(
-                                      color: Colors.grey, fontSize: 14),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
                                   maxLines: 1,
                                   overflow:
                                       TextOverflow.ellipsis, // Handle overflow
@@ -390,12 +394,13 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
 
                                 Text(
                                   'ExpiryDate: ${formatDate(paidPackages[index]['ExpiryDate']) ?? 'N/A'}',
-                                  style: FontFamily.styleb.copyWith(
-                                      color: Colors.grey.withAlpha(100),
-                                      fontSize: 12),
+                                  style:TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.blue,
+                                  ),
                                 ),
 
-                                SizedBox(height: 5),
+                                SizedBox(height: 2),
 
                                 // Text(
                                 //   'Last Updated On: ${formatDate(getx.studentPackage[index]['LastUpdatedOn']) ?? 'N/A'}',
@@ -413,7 +418,7 @@ class _Mobile_Package_ListState extends State<Mobile_Package_List> {
                                 //         itemBorderWidth: 3, // Border width around the images
                                 //       )
                                 SizedBox(
-                                  height: 50,
+                                  height: 45,
                                   child: Center(
                                     child: Stack(
                                       alignment: AlignmentDirectional.center,
