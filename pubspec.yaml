@@ -130,7 +130,7 @@ dependencies:
   # hive:
   # hive_flutter:
   # flutter_bloc: ^8.1.6
-  crypto: ^3.0.6
+  crypto: ^3.0.3
 
   pdfx: 2.6.0
   pdf:

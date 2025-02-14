@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/API/URL/api_url.dart';
 import 'package:dthlms/CUSTOMDIALOG/customdialog.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
+import 'package:dthlms/GLOBAL_WIDGET/loader.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
@@ -34,6 +36,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:convert/convert.dart';
+// import 'package:crypto/crypto.dart';
+// import 'dart:io';
 
 class PackageDetailsPage extends StatefulWidget { 
   final String packageName;
@@ -415,8 +420,8 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
               ? "$hours hr ${minutes % 60} min"
               : "$minutes min";
               getx.totalAllowDuration.value=hours > 0
-              ? "$hours hr ${minutes % 60} min"
-              : "$minutes min";
+              ? "$hours h ${minutes % 60} m"
+              : "$minutes m";
 
         }
         print(videoCountData);
@@ -1396,7 +1401,7 @@ Future<String> getVideosDirectoryPath() async {
                               ElevatedButton(
                                 
           onPressed: (){
-            pickVideoFile();
+            pickVideoFile(context);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blueAccent, // Button background color
@@ -2392,7 +2397,7 @@ Widget videoPlayerRight(bool expanded){
                                                           ),
                                           title: Text(
                                             getx.alwaysShowChapterfilesOfVideo[
-                                                    index]["FileIdName"] 
+                                                    index]["DisplayName"] 
                                                 ,
                                             style: GoogleFonts.inter().copyWith(
                                               fontWeight: FontWeight.w800,
@@ -2403,7 +2408,7 @@ Widget videoPlayerRight(bool expanded){
                                             ),
                                           ),
                                           trailing: SizedBox(
-                                            width: 130,
+                                            width: 150,
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
@@ -4192,7 +4197,8 @@ String breakSecondIntoHourAndMinute(int seconds) {
 // }
 
    
- Future<void> pickVideoFile() async {
+ Future<void> pickVideoFile( BuildContext context) async {
+  loader(context);
     // Pick a file with the video type filter
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -4205,9 +4211,77 @@ String breakSecondIntoHourAndMinute(int seconds) {
       if (filePath != null) {
         // Print the file path
         print("Selected Video Path: $filePath");
+
+      //  String filehashValue=await  calculateFileHash(filePath );
+      //  print(filehashValue);
+      //   print(filehashValue);
+
+        if(checkIsVideoIdBelongsTothisPackage(getx.selectedPackageId.value.toString(),p.basename(filePath))){
+          Get.back();
+
+          run_Video_Player_exe(filePath, getx.loginuserdata[0].token, getVideoIdFromSelectedFile(p.basename(filePath)), getx.selectedPackageId.value.toString(), getx.dbPath.value);
+print(getVideoIdFromSelectedFile(p.basename(filePath)));
+        }else{
+          Get.back();
+          onSweetAleartDialog(context,(){Get.back();},"Video not found","This video does not belong to the selected package!",false);
+          
+        }
+
+
+      }
+      else{
+        Get.back();
+         onSweetAleartDialog(context,(){Get.back();},"Video not found","Something went wrong",false);
+
       }
     } else {
+      Get.back();
       // If no file was selected
       print("No file selected");
     }
   }
+
+
+
+  String getVideoIdFromFilePath(String fileName) {
+  // Use a regular expression to capture the last set of digits before '.dthf'
+  RegExp regExp = RegExp(r'_(\d+)\.dthf');
+  Match? match = regExp.firstMatch(fileName);
+  
+  if (match != null) {
+    return match.group(1)!; 
+  }
+  
+  return ''; 
+}
+
+
+// Future<Digest?> getFileMd5(String path) async {
+//   try {
+//     final reader = ChunkedStreamReader(File(path).openRead());
+//     const chunkSize = 4096;
+//     var output = AccumulatorSink<Digest>();
+//     var input = md5.startChunkedConversion(output);
+
+//     try {
+//       while (true) {
+//         final chunk = await reader.readChunk(chunkSize);
+//         if (chunk.isEmpty) {
+//           // End of file
+//           break;
+//         }
+//         input.add(chunk);
+//       }
+//     } finally {
+//       // Ensure the stream is cancelled properly
+//       await reader.cancel();
+//     }
+
+//     input.close();
+//     return output.events.single;
+//   } catch (e) {
+//     // Return null or an empty result if any error occurs
+//     print("Error reading file: $e");
+//     return null;
+//   }
+// }

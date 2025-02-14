@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/API/ERROR_MASSEGE/errorhandling.dart';
 
@@ -3998,10 +3999,13 @@ bool checkIsPackageActiveByUser(String packageId) {
 }
 
 
-int getLocalConsumeDurationOfPackage(String packageId){
+int getLocalConsumeDurationOfPackage(String packageId,){
 try{
   
   List<String>videoIdList=getVideoIdListOfPackage(packageId);
+  int packageduration=getTotalConsumeDurationOfPackage(packageId);
+
+    double totalDuration = 0.0;
 
 print(videoIdList.length);
   if(videoIdList.isNotEmpty){
@@ -4011,7 +4015,7 @@ print(videoIdList.length);
       videoIdList);
 if(resultSet.isNotEmpty){
   
-        double totalDuration = 0.0;
+      
 
   for (final row in resultSet) {
     double speed = double.parse(row['Speed']??"0");
@@ -4023,9 +4027,10 @@ if(resultSet.isNotEmpty){
           int minutes = seconds ~/ 60;
           int hours = minutes ~/ 60;
 
-       totalDuration.toInt();
+     
 
 }
+return  totalDuration.toInt()+packageduration;
 
   }
 }catch(e){
@@ -4086,5 +4091,92 @@ try{
 }
 
 }
+
+
+bool checkIsVideoIdBelongsTothisPackage(String packageId,String videoname) {
+  // Execute the SQL query
+  try {
+    final sql.ResultSet resultSet = _db.select(
+        'SELECT PackageId FROM TblAllPackageDetails WHERE FileIdName = ?',
+        [videoname]);
+
+   
+    if (resultSet.isNotEmpty) {
+    
+      String pID= resultSet.first['PackageId'] as String;
+      if(pID==packageId){
+        return true;
+      }
+    }
+   
+  } catch (e) {
+   writeToFile(e, "checkIsVideoIdBelongsTothisPackage");
+  }
+  return false;
+ 
+}
+
+String getVideoIdFromSelectedFile(String videoname){
+
+   try {
+    final sql.ResultSet resultSet = _db.select(
+        'SELECT FileId FROM TblAllPackageDetails WHERE FileIdName = ?',
+        [videoname]);
+
+   
+    if (resultSet.isNotEmpty) {
+    
+    return  resultSet.first['FileId'] as String;
+    
+    }
+   
+  } catch (e) {
+   writeToFile(e, "checkIsVideoIdBelongsTothisPackage");
+  }
+  return '';
+ 
+}
+
+
+
+ int getTotalConsumeDurationOfPackage(String packageId ){
+ double totalDuration = 0.0;
+try{
+    final sql.ResultSet resultSet = _db.select(
+        'SELECT * FROM TblAllPackageDetails WHERE PackageId = ? AND FileIdType=?',
+        [packageId,"Video"]);
+
+        if(resultSet.isNotEmpty){
+  
+       
+
+  for (final row in resultSet) {
+    // double speed = double.parse(row['Speed']??"0");
+    double endDuration = double.parse(row['ConsumeDuration']=="null"?"0":row['ConsumeDuration']??"0") ;
+    totalDuration +=  endDuration;
+  }
+   int seconds =totalDuration.toInt();
+  
+          int minutes = seconds ~/ 60;
+          int hours = minutes ~/ 60;
+
+       
+
+}
+  return totalDuration.toInt();
+
+}catch(e){
+  writeToFile(e, getTotalConsumeDurationOfVideo);
+  return 0;
+
+}
+
+}
+
+
+
+
+
+
 
 

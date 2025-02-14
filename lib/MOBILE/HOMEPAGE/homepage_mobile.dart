@@ -760,6 +760,7 @@ void controlScroller() {
                                                         'FileIdName'])
                                             .existsSync()) {
                                           Get.to(() => MobileVideoPlayer(
+                                            isPlayOnline: false,
                                                 videoList: [],
                                                 videoLink: getx.playLink.value,
                                                 Videoindex: 0,
@@ -926,7 +927,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 "ScheduledOn": item['ScheduledOn'],
                 "DocumentPath": item['DocumentPath'],
                 "DownloadedPath": item['DownloadedPath'],
-                "SessionId": item['SessionId']
+                "SessionId": item['SessionId'],
+                'DisplayName':item['DisplayName']
               }
             ],
             startTime: DateTime.parse(item['ScheduleOn']),
@@ -1385,6 +1387,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       .toString();
 
                               Get.to(() => MobileVideoPlayer(
+                                isPlayOnline: false,
                                     videoList: [],
                                     videoLink: getx.playLink.value,
                                     Videoindex: 0,
@@ -1546,7 +1549,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       color: Colors.white,
                                     ))
                           : null,
-                      title: Text(appointment.subject,
+                      title: Text( appointment.location == "Video"? (appointment.resourceIds![0] as Map<
+                                                  String,
+                                                  dynamic>)['DisplayName']
+                                              .toString():  appointment.subject,
                           overflow: TextOverflow.ellipsis,
                           style: FontFamily.style.copyWith(
                               color: ColorPage.colorblack,
@@ -1888,6 +1894,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               Get.back();
 
               Get.to(() => MobileVideoPlayer(
+                isPlayOnline: false,
                     videoList: [],
                     videoLink: getx.playLink.value,
                     Videoindex: 0,

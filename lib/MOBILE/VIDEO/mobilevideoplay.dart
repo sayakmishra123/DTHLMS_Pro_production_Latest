@@ -42,6 +42,7 @@ class MobileVideoPlayer extends StatefulWidget {
   final String? fileId;
   final List<dynamic> videoList;
   final bool? singleplay;
+  final bool isPlayOnline;
 
   MobileVideoPlayer(
       {required this.videoLink,
@@ -50,6 +51,7 @@ class MobileVideoPlayer extends StatefulWidget {
       this.packageId,
       this.fileId,
       required this.videoList,
+      required this.isPlayOnline,
       this.singleplay});
 
   @override
@@ -591,7 +593,7 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
                           Row(
                             children: [
                               Expanded(
-                                  child: Text("${videoDetails["FileIdName"]}",
+                                  child: Text("${videoDetails["DisplayName"]}",
                                       style: FontFamily.style
                                           .copyWith(fontSize: 18))),
                             ],
@@ -690,7 +692,8 @@ class _MobileVideoPlayerState extends State<MobileVideoPlayer>
   Future permission() async {
     if (Platform.isAndroid) {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-      final IosDeviceInfo info = await deviceInfoPlugin.iosInfo;
+      // final IosDeviceInfo info = await deviceInfoPlugin.iosInfo;
+        final AndroidDeviceInfo info = await deviceInfoPlugin.androidInfo;
       // if ((info.version.sdkInt) >= 33) {
       // } else {}
     } else {}

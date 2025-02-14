@@ -1556,7 +1556,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           : item['FileIdType'] == 'Test'
                               ? ColorPage.testSeries
                               : ColorPage.history,
-              subject: item['DisplayName'],
+              subject: item['FileIdName'],
               notes: item['FileIdName'],
               location: item['FileIdType'],
             );
@@ -1595,7 +1595,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                             : item['FileIdType'] == 'Test'
                                 ? ColorPage.testSeries
                                 : ColorPage.history,
-                subject: item['DisplayName'],
+                subject: item['FileIdName'],
                 notes: item['FileIdName'],
                 location: item['FileIdType'],
               );
@@ -2209,7 +2209,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               ),
                             )
                           : const SizedBox(),
-                  title: Text(appointment.subject,
+                  title: Text( appointment.location == "Video"? (appointment.resourceIds![0] as Map<
+                                                  String,
+                                                  dynamic>)['DisplayName']
+                                              .toString():appointment.subject,
                       overflow: TextOverflow.ellipsis,
                       style: FontFamily.style.copyWith(
                           color: ColorPage.colorblack,

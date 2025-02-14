@@ -94,9 +94,7 @@ class VideoPlayClass {
             )
           :
           // Playlist(),
-          Media(!File(videoLink).existsSync()
-              ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-              : videoLink),
+          Media( videoLink),
       play: false,
     );
   }
