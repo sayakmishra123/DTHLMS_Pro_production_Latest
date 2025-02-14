@@ -1578,13 +1578,6 @@ class PrivacyPollicyWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: ColorPage.white,
-                // Uncomment below if you want to add shadow
-                // boxShadow: [
-                //   BoxShadow(
-                //     blurRadius: 3,
-                //     color: Color.fromARGB(255, 157, 157, 157),
-                //   ),
-                // ],
               ),
 
               child: Center(
@@ -1622,20 +1615,6 @@ class _DeviceHistoryState extends State<DeviceHistory> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Container(
-            //   padding: EdgeInsets.all(8),
-            //   decoration: BoxDecoration(
-            //       color: const Color.fromARGB(255, 63, 164, 247),
-            //       borderRadius: BorderRadius.circular(8)),
-            //   child: Text(
-            //     'Device List',
-            //     style: GoogleFonts.aBeeZee(
-            //         textStyle: TextStyle(
-            //             fontWeight: FontWeight.bold,
-            //             fontSize: 16,
-            //             color: Colors.black)),
-            //   ),
-            // ),
             _buildFilterBar(),
             SizedBox(
               height: MediaQuery.of(context).size.height - 300,

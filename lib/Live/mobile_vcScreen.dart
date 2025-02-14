@@ -212,12 +212,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
       await vcController.inMeetClient
           .join(sessionId: widget.sessionId.toString());
 
-      // log(widget.sessionId.toString());
-      // log(widget.userid.toString());
-      // log(widget.username.toString());
-
-      // await MeetingService.joinMeeting(widget.sessionId.toString(),
-      //     widget.userid.toString(), widget.username);
       print(
           "User ${widget.username} (${widget.userid}) joined the meeting with session ID ${widget.sessionId}.");
     }
@@ -422,38 +416,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                     child: Column(
                       children: [
                         YoutubeLive(widget.link, widget.username, true),
-                        // YoutubeLive(link: widget.link!),
-
-                        // Container(
-                        //   height: 300,
-                        //   width: MediaQuery.of(context).size.width,
-                        //   padding: const EdgeInsets.only(top: 30),
-                        //   child: YPlayer(
-
-                        //     aspectRatio: 20/9,
-                        //     loadingWidget: CircularProgressIndicator(color: ColorPage.colorbutton,),
-                        //     placeholder:Image.asset("assets/video.png",scale: 10,),
-
-                        //     bottomButtonBarMargin: EdgeInsets.all(8),
-                        //     seekBarMargin: EdgeInsets.all(10),
-
-                        //     // onEnterFullScreen: (){
-                        //     //   getx.isFullscreen.value = true;
-                        //     // },
-                        //     // onExitFullScreen: (){
-                        //     //   getx.isFullscreen.value = false;
-                        //     // },
-                        //     fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
-                        //     fullscreenSeekBarMargin: EdgeInsets.only(bottom: 15),
-                        //     youtubeUrl: widget.link!,
-                        //     color: const Color.fromARGB(255, 54, 168, 244), // New property for customizing controls color
-                        //     // materialProgressColors and cupertinoProgressColors are no longer available
-                        //   ),
-                        // ),
                         SizedBox(
                           height: 30,
                         ),
-
                         Obx(
                           () => SizedBox(
                             width: MediaQuery.of(context).size.width,
@@ -650,7 +615,10 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                             "You're close the meeting...\nAre you sure?",
                                                                         description:
                                                                             '',
-                                                                        ok: () {},
+                                                                        ok: () {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
                                                                       ),
                                                                     );
                                                                   },
@@ -865,7 +833,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                               await inMeetClient.enableWebcam();
                                                                             } else {
                                                                               await inMeetClient.disableWebcam();
-                                                                              vcController.localRenderer = null;
                                                                             }
                                                                           } catch (e) {
                                                                             writeToFile(e,

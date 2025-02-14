@@ -20,6 +20,8 @@ class AllPackageDetails {
   final int sortedOrder;
   final String viewCount;
   final String durationLimitation;
+  final String description;
+  final String displayName;
 
   AllPackageDetails(
       {required this.packageId,
@@ -38,7 +40,8 @@ class AllPackageDetails {
       required this.videoDuration,
       required this.DownloadedPath,
       required this.isEncrypted,
-      required this.sortedOrder,required this.durationLimitation,required this.viewCount});
+      
+      required this.sortedOrder,required this.durationLimitation,required this.viewCount,required this.description,required this.displayName,});
 
   // Factory method to create a FileInfo instance from JSON
   factory AllPackageDetails.fromJson(Map<String, dynamic> json) {
@@ -61,7 +64,9 @@ class AllPackageDetails {
       isEncrypted: json['isEncrypted'].toString(),
       sortedOrder: json['SortedOrder'] ?? 0,
       durationLimitation: json['DurationLimitation'] ?? '0',
-      viewCount: json['ViewCount'] ?? '0'
+      viewCount: json['ViewCount'] ?? '0',
+      description: json['Description'] ?? '',
+      displayName: json['DisplayName'] ?? '',
     );
   }
 
@@ -86,7 +91,9 @@ class AllPackageDetails {
       'isEncrypted': isEncrypted,
       'SortedOrder': sortedOrder,
       'DurationLimitation':durationLimitation,
-      'ViewCount':viewCount
+      'ViewCount':viewCount,
+      'Description':description,
+      'DisplayName':displayName,
     };
   }
 

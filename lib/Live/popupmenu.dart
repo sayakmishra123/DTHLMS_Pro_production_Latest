@@ -22,9 +22,8 @@ class MyCupertinoPopupMenu extends StatelessWidget {
     required this.vcController,
     required this.username,
     required this.sessionId,
-    required this.userid, 
+    required this.userid,
     this.meeting,
-    
   }) : super(key: key);
 
   @override
@@ -50,38 +49,21 @@ class MyCupertinoPopupMenu extends StatelessWidget {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title:  Text('Options ${sessionId} / ${userid}'),
+        // title:  Text('Options ${sessionId} / ${userid}'),
         actions: <CupertinoActionSheetAction>[
-          // CupertinoActionSheetAction(
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //       return SafeArea(
-          //         child: Material(
-          //           color: Colors.transparent,
-          //           child: StudentPollPage(
-          //             teacherName: username,
-          //             sessionId: sessionId,
-          //           ),
-          //         ),
-          //       );
-          //     }));
-          //     // Navigator.pop(context);
-          //   },
-          //   child: const Text('Management'),
-          // ),
           CupertinoActionSheetAction(
             onPressed: () {
               // log(sessionId.toString());
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SafeArea( 
+                return SafeArea(
                     child: Material(
                   color: Colors.transparent,
-                  child: ChatUi(sessionId, userid, username,meeting: meeting,
+                  child: ChatUi(
+                    sessionId, userid, username, meeting: meeting,
 
-                      // username
-                      ),
+                    // username
+                  ),
                 ));
               }));
               // Navigator.pop(context);

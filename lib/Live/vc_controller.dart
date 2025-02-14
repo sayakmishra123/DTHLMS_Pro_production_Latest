@@ -11,7 +11,7 @@ import 'breakout_model.dart';
 import 'peer_model.dart';
 
 class VcController extends GetxController {
-  RTCVideoRenderer? localRenderer;
+  RTCVideoRenderer? localRenderer = null;
   RTCVideoRenderer? localScreenShare;
   bool selfHandRaised = false;
   RxBool isLocalVideoPlaying = false.obs;
