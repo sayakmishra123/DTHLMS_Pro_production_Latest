@@ -27,6 +27,7 @@ class GetxLive extends GetxController {
   static String token = "dgfdghsfsfrwerrt";
   RxBool topichas = false.obs;
   RxBool pollhas = false.obs;
+  RxBool isloadChatUrl = false.obs;
   RxList<UserDetails> userDetails = <UserDetails>[].obs;
 
   initiallizeSharePreferrance(token) async {

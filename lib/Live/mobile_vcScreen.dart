@@ -1,10 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-// import 'package:dlpencryptor_live/Mobile/popupmenu.dart';
-// import 'package:dlpencryptor_live/widget/remote_stream_widget.dart';
-// import 'package:dthlms/MOBILE/live/local_sdk/inapi_core_sdk/lib/src/enums/participant_roles.dart';
-// import 'package:dthlms/MOBILE/live/local_sdk/inapi_core_sdk/lib/src/inmeet_implementations.dart';
-// import 'package:dthlms/MOBILE/live/getx.dart';
 
 import 'package:dthlms/ACTIVATION_WIDGET/enebelActivationcode.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
@@ -21,21 +16,6 @@ import 'package:dthlms/youtube/youtubelive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:flutter/widgets.dart';
-// import 'package:flutter_webrtc/flutter_webrtc.dart';
-// import 'package:get/get_state_manager/get_state_manager.dart';
-// import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-// import 'package:get/state_manager.dart';
-// import 'package:inapi_core_sdk/inapi_core_sdk.dart';
-// import 'package:intl/intl.dart';
-// import 'package:dlpencryptor_live/createtopic.dart';
-// import 'package:dlpencryptor_live/fullscreen.dart';
-// import 'package:dlpencryptor_live/getx.dart';
-// import 'package:dlpencryptor_live/vc_controller.dart';
-// import 'package:dlpencryptor_live/widget/chatwidget.dart';
-// import 'package:dlpencryptor_live/widget/teacherpoll.dart';
-// import 'package:dlpencryptor_live/widget/titlebar/title_bar.dart';
-// import 'widget/remote_stream_widget.dart';
 import 'dart:ui';
 
 import 'package:inapi_core_sdk/inapi_core_sdk.dart';
@@ -50,44 +30,8 @@ import 'vc_controller.dart';
 import 'vc_methods.dart';
 import 'widget/remote_stream_widget.dart';
 
-class GlassBox extends StatelessWidget {
-  final child;
-  const GlassBox({super.key, required this.child});
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.all(2),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            alignment: Alignment.bottomCenter,
-            child: child,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-enum Menu { camera, mic, management, chat, video }
-
-enum AnimationStyles { defaultStyle, custom, none }
-
-const List<(AnimationStyles, String)> animationStyleSegments =
-    <(AnimationStyles, String)>[
-  (AnimationStyles.defaultStyle, 'Default'),
-  (AnimationStyles.custom, 'Custom'),
-  (AnimationStyles.none, 'None'),
-];
-
+// ignore: must_be_immutable
 class MobileMeetingPage extends StatefulWidget {
-  // String? sessionId;
-
-  // String userid;
-  // String username;
-  // String packageName;
   MeetingDeatils? meeting;
   String projectId;
   String? sessionId;
@@ -109,34 +53,8 @@ class MobileMeetingPage extends StatefulWidget {
 class _MobileMeetingPageState extends State<MobileMeetingPage> {
   Timer? timer;
   MeetingDeatils? meeting;
-  List img = [
-    'assets/image9.jpg',
-    'assets/image8.jpg',
-    'assets/image7.jpg',
-    'assets/image6.jpg',
-    'assets/image5.jpg',
-    'assets/image4.jpg',
-    'assets/image3.jpg',
-    'assets/image2.jpg',
-    'assets/image9.jpg'
-  ];
 
-// Styles
-  Color deviderColors = const Color.fromARGB(255, 90, 90, 92);
-  Color scaffoldColor = const Color(0xff1B1A1D);
-  Color topTextColor = const Color(0xffDFDEDF);
-  Color topTextClockColor = const Color(0xffB3B6B5);
-  Color timerBoxColor = const Color(0xff2B2D2E);
-  Color searchBoxColor = const Color(0xff27292D);
-  Color searchBoxTextColor = const Color(0xff747677);
-  Color bottomBoxColor = const Color(0xff27292B);
-  Color micOffColor = const Color(0xffD95140);
-
-  TextEditingController c = TextEditingController();
-  String? selectedAudioOutputDevice;
   String? selectedVideoOutputDevice;
-
-  RxBool pollOption = false.obs;
 
   final WebViewController controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -171,14 +89,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
   }
 
   Future<void> playSound() async {
-    // Path to the .opus file in the assets folder
-    final soundPath = 'sound.mp3';
-
-    try {
-      // Load and play the .opus sound from the assets   await _audioPlayer.play(AssetSource(soundPath));
-    } catch (e) {
+    try {} catch (e) {
       writeToFile(e, "mobileVc screen");
-      print(soundPath);
+
       print('Error playing sound: $e');
     }
   }
@@ -212,12 +125,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
       await vcController.inMeetClient
           .join(sessionId: widget.sessionId.toString());
 
-      // log(widget.sessionId.toString());
-      // log(widget.userid.toString());
-      // log(widget.username.toString());
-
-      // await MeetingService.joinMeeting(widget.sessionId.toString(),
-      //     widget.userid.toString(), widget.username);
       print(
           "User ${widget.username} (${widget.userid}) joined the meeting with session ID ${widget.sessionId}.");
     }
@@ -280,46 +187,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
 
   RxString time = ''.obs;
 
-  // Styles
-  Color leftBackgroundColor = const Color(0Xff161B21);
-  Color rightBackgroundColor = const Color(0Xff1F272F);
-  Color greencolor = const Color(0Xff15E8D8);
   Color btnColor = const Color(0Xff2D3237);
-  Color chatConColor = const Color(0XffD9D9D9);
-  Color chatSelectedColor = const Color(0Xff2D3237);
-  Color chatUnSelectedColor = const Color(0XffFFFFFF);
-  Color chatBoxColor = const Color(0XffC9E1FF);
 
-  var rightBorderRadious = const Radius.circular(20);
   RxInt rightBarIndex = 0.obs;
-  RxBool chatMood = true.obs;
-  RxBool topicChecValue = true.obs;
-
-  Widget showDropdown({
-    required BuildContext context,
-    required List<String> items,
-    required String selectedValue,
-    required void Function(String?) onChanged,
-  }) {
-    return DropdownButton<String>(
-      value: selectedValue,
-      icon: const Icon(CupertinoIcons.down_arrow),
-      iconSize: 24,
-      elevation: 16,
-      style: const TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: onChanged,
-      items: items.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
 
   Getx getx = Get.put(Getx());
   AnimationStyle? _animationStyle;
@@ -385,18 +255,8 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
             ));
   }
 
-  // final WebviewController controller = WebviewController();
-
   @override
   Widget build(BuildContext context) {
-    TextStyle rightBarTopTextStyle = const TextStyle(
-        fontFamily: 'ocenwide', color: Colors.white, fontSize: 16);
-
-    final offButtonTheme = IconButton.styleFrom(
-      backgroundColor: Colors.red,
-      foregroundColor: Colors.white,
-    );
-
     return WillPopScope(
       onWillPop: () async {
         return await back();
@@ -422,38 +282,9 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                     child: Column(
                       children: [
                         YoutubeLive(widget.link, widget.username, true),
-                        // YoutubeLive(link: widget.link!),
-
-                        // Container(
-                        //   height: 300,
-                        //   width: MediaQuery.of(context).size.width,
-                        //   padding: const EdgeInsets.only(top: 30),
-                        //   child: YPlayer(
-
-                        //     aspectRatio: 20/9,
-                        //     loadingWidget: CircularProgressIndicator(color: ColorPage.colorbutton,),
-                        //     placeholder:Image.asset("assets/video.png",scale: 10,),
-
-                        //     bottomButtonBarMargin: EdgeInsets.all(8),
-                        //     seekBarMargin: EdgeInsets.all(10),
-
-                        //     // onEnterFullScreen: (){
-                        //     //   getx.isFullscreen.value = true;
-                        //     // },
-                        //     // onExitFullScreen: (){
-                        //     //   getx.isFullscreen.value = false;
-                        //     // },
-                        //     fullscreenBottomButtonBarMargin: EdgeInsets.all(10),
-                        //     fullscreenSeekBarMargin: EdgeInsets.only(bottom: 15),
-                        //     youtubeUrl: widget.link!,
-                        //     color: const Color.fromARGB(255, 54, 168, 244), // New property for customizing controls color
-                        //     // materialProgressColors and cupertinoProgressColors are no longer available
-                        //   ),
-                        // ),
                         SizedBox(
                           height: 30,
                         ),
-
                         Obx(
                           () => SizedBox(
                             width: MediaQuery.of(context).size.width,
@@ -637,22 +468,26 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                     ),
                                                                   ),
                                                                   onPressed:
-                                                                      () {
-                                                                    showDialog(
-                                                                      barrierDismissible:
-                                                                          false,
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (context) =>
-                                                                              CustomLogoutDialog(
-                                                                        title:
-                                                                            "You're close the meeting...\nAre you sure?",
-                                                                        description:
-                                                                            '',
-                                                                        ok: () {},
-                                                                      ),
-                                                                    );
+                                                                      ()async  {
+                                                                        await back();
+                                                                    // showDialog(
+                                                                    //   barrierDismissible:
+                                                                    //       false,
+                                                                    //   context:
+                                                                    //       context,
+                                                                    //   builder:
+                                                                    //       (context) =>
+                                                                    //           CustomLogoutDialog(
+                                                                    //     title:
+                                                                    //         "You're close the meeting...\nAre you sure?",
+                                                                    //     description:
+                                                                    //         '',
+                                                                    //     ok: () {
+                                                                    //       Navigator.pop(
+                                                                    //           context);
+                                                                    //     },
+                                                                    //   ),
+                                                                    // );
                                                                   },
                                                                   icon: Icon(
                                                                     Icons.phone,
@@ -865,7 +700,6 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                                                                               await inMeetClient.enableWebcam();
                                                                             } else {
                                                                               await inMeetClient.disableWebcam();
-                                                                              vcController.localRenderer = null;
                                                                             }
                                                                           } catch (e) {
                                                                             writeToFile(e,
@@ -971,299 +805,8 @@ class _MobileMeetingPageState extends State<MobileMeetingPage> {
                         ],
                       ),
                     );
-                  }
-
-                    // SizedBox(
-                    //   height: 80,
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Row(
-                    //         children: [
-                    //           const SizedBox(width: 20),
-                    //         ],
-                    //       ),
-                    //       Row(
-                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //         children: [
-                    //           if (vcController.audioOutput.isNotEmpty)
-                    //             Container(
-                    //               decoration: BoxDecoration(
-                    //                 color: Colors.blue,
-                    //                 borderRadius: BorderRadius.circular(8),
-                    //               ),
-                    //               padding: const EdgeInsets.symmetric(horizontal: 8),
-                    //               child:
-                    // DropdownButton<String>(
-                    //                 iconEnabledColor: Colors.white,
-                    //                 style: TextStyle(color: Colors.white),
-                    //                 dropdownColor: Colors.black,
-                    //                 value: selectedAudioOutputDevice,
-                    //                 underline:
-                    //                     Container(), // This removes the underline
-                    //                 items: vcController.audioOutput
-                    //                     .map((e) => DropdownMenuItem(
-                    //                           value: e,
-                    //                           child: Text(
-                    //                             e,
-                    //                             style: TextStyle(
-                    //                                 color: Colors.white,
-                    //                                 fontWeight: FontWeight.bold),
-                    //                           ),
-                    //                         ))
-                    //                     .toList(),
-                    //                 onChanged: (value) {
-                    //                   setState(() {
-                    //                     selectedAudioOutputDevice = value;
-                    //                   });
-                    //                   vcController.inMeetClient
-                    //                       .changeAudioOutput(value!);
-                    //                 },
-                    //               ),
-                    //             ),
-                    //           const SizedBox(width: 12),
-                    // if (vcController.audioInput.isNotEmpty ||
-                    //     vcController.audioOutput.isNotEmpty)
-                    //   FloatingActionButton.small(
-                    //     shape: ContinuousRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(12)),
-                    //     heroTag: 'mic',
-                    //     backgroundColor: micOffColor,
-                    //     onPressed: () {
-                    //       try {
-                    //         if (vcController.micStreamStatus ==
-                    //                 ButtonStatus.off &&
-                    //             vcController.audioInput.isNotEmpty) {
-                    //           vcController
-                    //               .changeMicSreamStatus(ButtonStatus.loading);
-                    //           inMeetClient.unmuteMic(
-                    //               vcController.selectedAudioInputDeviceId);
-                    //         } else if (vcController.audioInput.isNotEmpty) {
-                    //           vcController
-                    //               .changeMicSreamStatus(ButtonStatus.loading);
-                    //           inMeetClient.muteMic();
-                    //         }
-                    //       } catch (e) {}
-                    //     },
-                    //     child: Icon(
-                    //       vcController.micStreamStatus == ButtonStatus.on
-                    //           ? Icons.mic_outlined
-                    //           : Icons.mic_off_outlined,
-                    //       color: Colors.white,
-                    //     ),
-                    //   ),
-                    //           const SizedBox(width: 12),
-                    //           if (vcController.videoInputs.isNotEmpty)
-                    //             Container(
-                    //               decoration: BoxDecoration(
-                    //                 color: Colors.blue,
-                    //                 borderRadius: BorderRadius.circular(8),
-                    //               ),
-                    //               padding: const EdgeInsets.symmetric(horizontal: 8),
-                    //               child:
-                    // DropdownButton<String>(
-                    //                 iconEnabledColor: Colors.white,
-                    //                 style: const TextStyle(color: Colors.white),
-                    //                 dropdownColor: Colors.black,
-                    //                 value: selectedVideoOutputDevice,
-                    //                 underline:
-                    //                     Container(), // This removes the underline
-                    //                 items: vcController.videoInputs.map((e) {
-                    //                   return DropdownMenuItem<String>(
-                    //                     value: e,
-                    //                     child: Text(
-                    //                       e,
-                    //                       style: const TextStyle(
-                    //                         color: Colors.white,
-                    //                         fontWeight: FontWeight.bold,
-                    //                       ),
-                    //                     ),
-                    //                   );
-                    //                 }).toList(),
-                    //                 onChanged: (value) {
-                    // setState(() {
-                    //   selectedVideoOutputDevice = value;
-                    // });
-                    // vcController.selectDevice(DeviceType.videoInput,
-                    //     selectedVideoOutputDevice.toString());
-                    //                 },
-                    //               ),
-                    //             ),
-
-                    //           // FloatingActionButton.small(
-                    //           //   shape: ContinuousRectangleBorder(
-                    //           //       borderRadius: BorderRadius.circular(12)),
-                    //           //   heroTag: 'video',
-                    //           //   backgroundColor:
-                    //           //       vcController.cameraStreamStatus == ButtonStatus.off
-                    //           //           ? Colors.red
-                    //           //           : bottomBoxColor,
-                    //           //   onPressed: () async {
-                    //     // try {
-                    //     //   log(vcController.videoInputs.toString());
-                    //     //   vcController
-                    //     //       .changeCameraSreamStatus(ButtonStatus.loading);
-                    //     //   if (vcController.localRenderer == null) {
-                    //     //     await inMeetClient.enableWebCam(
-                    //     //         vcController.selectedVideoInputDeviceId);
-                    //     //   } else {
-                    //     //     await inMeetClient.disableWebcam();
-                    //     //     vcController.localRenderer = null;
-                    //     //   }
-                    //     // } catch (e) {}
-                    //           //   },
-                    //           //   child:
-                    //           // ),
-                    //           const SizedBox(width: 12),
-                    //           if (vcController.screenShareStatus != ButtonStatus.off)
-                    //             FloatingActionButton.small(
-                    //               shape: ContinuousRectangleBorder(
-                    //                   borderRadius: BorderRadius.circular(12)),
-                    //               heroTag: 'screen',
-                    //               backgroundColor: bottomBoxColor,
-                    //               onPressed: vcController.screenShareStatus ==
-                    //                       ButtonStatus.loading
-                    //                   ? null
-                    //                   : () {
-                    //                       try {
-                    //                         vcController.stopScreenShare();
-                    //                       } catch (e) {}
-                    //                     },
-                    //               child: const Icon(Icons.stop_screen_share,
-                    //                   color: Colors.white),
-                    //             )
-                    //           else
-                    //             FloatingActionButton.small(
-                    //               shape: ContinuousRectangleBorder(
-                    //                   borderRadius: BorderRadius.circular(12)),
-                    //               heroTag: 'screen',
-                    //               backgroundColor: bottomBoxColor,
-                    //               onPressed: vcController.screenShareStatus ==
-                    //                       ButtonStatus.loading
-                    //                   ? null
-                    //                   : () {
-                    //                       try {
-                    //                         vcController.screenShare();
-                    //                       } catch (e) {}
-                    //                     },
-                    //               child: const Icon(Icons.screen_share_outlined,
-                    //                   color: Colors.white),
-                    //             ),
-                    //           const SizedBox(width: 12),
-                    //           FloatingActionButton.small(
-                    //             shape: ContinuousRectangleBorder(
-                    //                 borderRadius: BorderRadius.circular(12)),
-                    //             heroTag: 'more',
-                    //             backgroundColor: bottomBoxColor,
-                    //             onPressed: () {},
-                    //             child: const Icon(Icons.more_horiz_rounded,
-                    //                 color: Colors.white),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       Row(
-                    //         children: [
-                    //           Padding(
-                    //             padding: const EdgeInsets.symmetric(horizontal: 20),
-                    //             child: SizedBox(
-                    //               width: 100,
-                    //               height: 45,
-                    //               child: FloatingActionButton(
-                    //                 heroTag: 'End Meeting',
-                    //                 shape: ContinuousRectangleBorder(
-                    //                     borderRadius:
-                    //                         BorderRadiusDirectional.circular(12)),
-                    //                 onPressed: () {
-                    //                   try {
-                    //                     if (vcController.selfRole
-                    //                         .contains(ParticipantRoles.moderator)) {
-                    //                       inMeetClient.endMeetingForAll();
-                    //                       inMeetClient.endBreakoutRooms();
-                    //                       vcController.isBreakoutStarted = false;
-                    //                     } else {
-                    //                       inMeetClient.exitMeeting();
-                    //                     }
-                    //                     Get.delete<VcController>(force: true);
-                    //                     Get.back();
-                    //                   } catch (e) {}
-                    //                 },
-                    //                 backgroundColor: micOffColor,
-                    //                 child: const Text(
-                    //                   'End Meeting',
-                    //                   style: TextStyle(
-                    //                     color: Colors.white,
-                    //                     fontSize: 13,
-                    //                     fontWeight: FontWeight.w400,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           )
-                    //         ],
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    //     ],
-                    //   );
-                    // }),
-
-                    )),
+                  })),
       ),
     );
   }
 }
-
-// class CustomExpansionTile extends StatefulWidget {
-//   final String title;
-//   final Widget child;
-//   final bool initiallyExpanded;
-//
-//   CustomExpansionTile({
-//     required this.title,
-//     required this.child,
-//     this.initiallyExpanded = false,
-//   });
-//
-//   @override
-//   _CustomExpansionTileState createState() => _CustomExpansionTileState();
-// }
-//
-// class _CustomExpansionTileState extends State<CustomExpansionTile> {
-//   bool _isExpanded = false;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _isExpanded = widget.initiallyExpanded;
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(8.0),
-//       child: Container(
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(10),
-//           color: const Color.fromARGB(255, 49, 48, 48),
-//         ),
-//         child: ExpansionTile(
-//           initiallyExpanded: _isExpanded,
-//           shape: const Border.fromBorderSide(BorderSide.none),
-//           title: Text(
-//             widget.title,
-//             style: const TextStyle(color: Colors.white),
-//           ),
-//           children: [
-//             widget.child,
-//           ],
-//           onExpansionChanged: (bool expanded) {
-//             setState(() {
-//               _isExpanded = expanded;
-//             });
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }

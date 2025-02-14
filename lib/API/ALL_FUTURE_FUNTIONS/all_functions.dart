@@ -199,7 +199,7 @@ Future packactivationKey(
         body: jsonEncode(data));
     print(res.body);
 
-    var jsondata=jsonDecode(res.body);
+    var jsondata = jsonDecode(res.body);
     print(res.body);
     if (res.statusCode == 201) {
       deleteAllFolders();
@@ -224,10 +224,22 @@ Future packactivationKey(
     } else if (res.statusCode == 400) {
       Get.back();
 
-      await confirmActivationCode(context, jsondata['errorMessages'].toString().replaceAll("[", "").replaceAll("]", ""), false);
+      await confirmActivationCode(
+          context,
+          jsondata['errorMessages']
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", ""),
+          false);
     } else {
       Get.back();
-      await confirmActivationCode(context, jsondata['errorMessages'].toString().replaceAll("[", "").replaceAll("]", ""), false);
+      await confirmActivationCode(
+          context,
+          jsondata['errorMessages']
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", ""),
+          false);
     }
   } catch (e) {
     writeToFile(e, 'packactivationKey');
@@ -242,7 +254,7 @@ Future<void> getMeetingList(BuildContext context) async {
   Map<String, dynamic> data = {};
   // prnt("calling live methdo");
   try {
-    // Sending the POST request 
+    // Sending the POST request
     var res = await http.post(
       Uri.https(
         ClsUrlApi.mainurl,
@@ -451,7 +463,9 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount,
+            sortedOrder: file.sortedOrder,
+            durationLimitation: file.durationLimitation,
+            viewCount: file.viewCount,
             description: file.description,
             displayName: file.displayName);
         await insertPackageDetailsdata(
@@ -479,9 +493,7 @@ Future getAllFiles(BuildContext context, token, String packageId) async {
                 file.viewCount,
                 file.durationLimitation,
                 file.description,
-                file.displayName
-
-                )
+                file.displayName)
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);
@@ -542,7 +554,11 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
             videoDuration: file.videoDuration,
             DownloadedPath: "0",
             isEncrypted: file.isEncrypted,
-            sortedOrder: file.sortedOrder,durationLimitation: file.durationLimitation,viewCount: file.viewCount,description: file.description,displayName: file.displayName);
+            sortedOrder: file.sortedOrder,
+            durationLimitation: file.durationLimitation,
+            viewCount: file.viewCount,
+            description: file.description,
+            displayName: file.displayName);
         await insertPackageDetailsdata(
                 file.packageId.toString(),
                 file.packageName ?? '',
@@ -564,7 +580,11 @@ Future getAllFreeFiles(BuildContext context, token, String packageId) async {
                   file.fileIdType ?? '',
                 ),
                 file.isEncrypted,
-                file.sortedOrder.toString(),file.viewCount??'',file.durationLimitation??'',file.description,file.displayName)
+                file.sortedOrder.toString(),
+                file.viewCount ?? '',
+                file.durationLimitation ?? '',
+                file.description,
+                file.displayName)
             .whenComplete(() {
           // log('Inserted');
           getx.packageDetailsdata.add(details);
@@ -676,9 +696,8 @@ Future<void> getPackageData(BuildContext context, String token) async {
             package.courseName.toString(),
             package.isFree.toString(),
             package.isDirectPlay.toString(),
-          
             package.isPause,
-              package.isActivateByUser,
+            package.isActivateByUser,
             package.isViewCounter,
             package.isTotal,
             package.pausedUpto,
@@ -698,10 +717,9 @@ Future<void> getPackageData(BuildContext context, String token) async {
   }
 }
 
-onSweetAleartDialog(
-    context, VoidCallback ontap, String title, String subtitle , bool success) async {
+onSweetAleartDialog(context, VoidCallback ontap, String title, String subtitle,
+    bool success) async {
   await ArtSweetAlert.show(
-
       barrierDismissible: false,
       context: context,
       artDialogArgs: ArtDialogArgs(
@@ -713,7 +731,8 @@ onSweetAleartDialog(
           confirmButtonText:
               "                           Ok                            ",
           onConfirm: ontap,
-          type:success? ArtSweetAlertType.success: ArtSweetAlertType.warning));
+          type:
+              success ? ArtSweetAlertType.success : ArtSweetAlertType.warning));
 }
 
 onTokenExpire(
@@ -1199,9 +1218,9 @@ Future<bool> logoutFunction(BuildContext context, token) async {
     } else if (Platform.isWindows) {
       deviceinfo = await ClsDeviceInfo.windowsInfo(context);
     } else if (Platform.isIOS) {
-      deviceinfo = await ClsDeviceInfo.androidInfo(context);
+      deviceinfo = await ClsDeviceInfo.iosInfo();
     } else if (Platform.isMacOS) {
-      deviceinfo = await ClsDeviceInfo.windowsInfo(context);
+      deviceinfo = await ClsDeviceInfo.macOsInfo();
     }
     var responce = await http.delete(
       Uri.https(ClsUrlApi.mainurl, ClsUrlApi.logoutapi),
@@ -2709,14 +2728,12 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
               newPackage.courseName,
               newPackage.isFree.toString(),
               newPackage.isDirectPlay.toString(),
-              
               newPackage.isPause,
               newPackage.isActivateByUser,
               newPackage.isViewCounter,
               newPackage.isTotal,
               newPackage.pausedUpto,
-              newPackage.pausedays
-              );
+              newPackage.pausedays);
 
           // Delete the old package data (if needed)
           deletePartularPackageData(newPackage.packageId.toString(), context);
@@ -2797,7 +2814,6 @@ Future updatePackage(BuildContext context, String token, bool isPackage,
                   newPackage.courseName,
                   newPackage.isFree.toString(),
                   newPackage.isDirectPlay.toString(),
-                  
                   newPackage.isPause,
                   newPackage.isActivateByUser,
                   newPackage.isViewCounter,
@@ -3818,8 +3834,6 @@ Future<String> getAnswerSheetURLforStudent(
   return returnValue;
 }
 
-
-
 appVersionGet() async {
   try {
     pinfo.PackageInfo packageInfo = await pinfo.PackageInfo.fromPlatform();
@@ -3860,17 +3874,14 @@ String formatDateString(String dateString, String type) {
   }
 }
 
-
-
 Future<bool> activePackageByStudent(
   BuildContext context,
   String token,
   String packageId,
-
 ) async {
   loader(context);
-  Map<String, dynamic> data = {"PackageId": packageId,
- 
+  Map<String, dynamic> data = {
+    "PackageId": packageId,
   };
 
   try {
@@ -3883,33 +3894,28 @@ Future<bool> activePackageByStudent(
       body: jsonEncode(data),
     );
     print(res.body);
-      Map<String, dynamic> response = jsonDecode(res.body);
+    Map<String, dynamic> response = jsonDecode(res.body);
     if (res.statusCode == 200) {
-    
-
       var result = jsonDecode(response['result']);
-    await updateTblPackageDataForFirsttimeActivation("1",result[0]['ValidityDate'],packageId).whenComplete((){
-      Get.back();
-    return true;
-
-
-    });
+      await updateTblPackageDataForFirsttimeActivation(
+              "1", result[0]['ValidityDate'], packageId)
+          .whenComplete(() {
+        Get.back();
+        return true;
+      });
 
 // String  expdate=result['ValidityDate'];
 
       // log("${result} ////////////////// get infinite marquee details");
 
-      
-
       // return true;
     } else if (res.statusCode == 401) {
-
       // updateTblPackageDataForFirsttimeActivation("1",result[''],)
       Get.back();
       onTokenExpire(context);
     } else {
-            Get.back();
-        ClsErrorMsg.fnErrorDialog(
+      Get.back();
+      ClsErrorMsg.fnErrorDialog(
           context,
           'Error',
           response['errorMessages']
@@ -3928,169 +3934,73 @@ Future<bool> activePackageByStudent(
   return false;
 }
 
-
-Future<bool> pauseSubscription(
-  BuildContext context,
-  String token,
-  String packageId,
-  String studentPauseDay
-
-) async {
+Future<bool> pauseSubscription(BuildContext context, String token,
+    String packageId, String studentPauseDay) async {
   loader(context);
-  Map<String, dynamic> data = {"PackageId": packageId,
-  'StudentPausedDays':studentPauseDay
- 
+  Map<String, dynamic> data = {
+    "PackageId": packageId,
+    'StudentPausedDays': studentPauseDay
   };
 
-  try {
-    var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(data),
-    );
-    print(res.body);
+  // try {
+  var res = await http.post(
+    Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode(data),
+  );
+  print(res.body);
+  Map<String, dynamic> response = jsonDecode(res.body);
+  if (res.statusCode == 200) {
+    var result = jsonDecode(response['result']);
+    try {
+      var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(data),
+      );
+      print(res.body);
       Map<String, dynamic> response = jsonDecode(res.body);
-    if (res.statusCode == 200) {
-    
+      if (res.statusCode == 200) {
+        await updateTblPackageDataForPauseSubscription(
+            "1", packageId, result[0]['ExpiryDate'], result[0]['PausedUpto']);
 
-      var result = jsonDecode(response['result']);
+        Get.back();
 
+        return true;
 
-
-    await  updateTblPackageDataForPauseSubscription(
-                  "1",
-                  packageId,
-                 result[0]['ExpiryDate'],
-                 result[0]['PausedUpto']
-
-                );
- 
-
-Get.back();
-
-       return true;
-
-      // return true;
-    } else if (res.statusCode == 401) {
-
-      // updateTblPackageDataForFirsttimeActivation("1",result[''],)
-      Get.back();
-      onTokenExpire(context);
+        // return true;
+      } else if (res.statusCode == 401) {
+        // updateTblPackageDataForFirsttimeActivation("1",result[''],)
+        Get.back();
+        onTokenExpire(context);
         return false;
-    } else {
-            Get.back();
+      } else {
+        Get.back();
         ClsErrorMsg.fnErrorDialog(
-          context,
-          'Error',
-          response['errorMessages']
-              .toString()
-              .replaceAll("[", "")
-              .replaceAll("]", ""),
-          res);
-            return false;
+            context,
+            'Error',
+            response['errorMessages']
+                .toString()
+                .replaceAll("[", "")
+                .replaceAll("]", ""),
+            res);
+        return false;
 
-      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
-    }
-  } catch (e) {
-    Get.back();
-    
-    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-    writeToFile(e, 'activePackageByStudent');
+        // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
+      }
+    } catch (e) {
+      Get.back();
+
+      // print("Error: $e ////////// get getAnswerSheetURLforStudent");
+      writeToFile(e, 'activePackageByStudent');
       return false;
-  }
-
-}
-
-
-Future<bool> uploadStudentFeedBackofVideo(
-  BuildContext context,
-  String token,
-  String feedBackList,
-) async {
-  loader(context);
-  Map<String, dynamic> data = {"FeedbackList": feedBackList};
-
-  try {
-    var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.uploadStudentFeedback),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(data),
-    );
-    print(res.body);
-    if (res.statusCode == 200) {
-      Map<String, dynamic> response = jsonDecode(res.body);
-
-      var result = jsonDecode(response['result']);
-
-      // log("${result} ////////////////// get infinite marquee details");
-
-      Get.back();
-
-      return true;
-    } else if (res.statusCode == 401) {
-      Get.back();
-      onTokenExpire(context);
-    } else {
-      Get.back();
-      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
     }
-  } catch (e) {
-    Get.back();
-    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-    writeToFile(e, 'uploadStudentFeedBack');
-  }
-  return false;
-}
-
-
-
-Future<bool> uploadStudentFeedBackOfApp(
-  BuildContext context,
-  String token,
-  String feedback,
-  String star,
-) async {
-  loader(context);
-  Map<String, dynamic> data = {"FeedBack": feedback,
-  'StarCount':star};
-
-  try {
-    var res = await http.post(
-      Uri.https(ClsUrlApi.mainurl, ClsUrlApi.sendStudentFeedBack),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(data),
-    );
-    print(res.body);
-    if (res.statusCode == 200) {
-      Map<String, dynamic> response = jsonDecode(res.body);
-
-      var result = jsonDecode(response['result']);
-
-      // log("${result} ////////////////// get infinite marquee details");
-
-      Get.back();
-
-      return true;
-    } else if (res.statusCode == 401) {
-      Get.back();
-      onTokenExpire(context);
-    } else {
-      Get.back();
-      // print('Error: ${res.body} ////////////////// getAnswerSheetURLforStudent');
-    }
-  } catch (e) {
-    Get.back();
-    // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-    writeToFile(e, 'uploadStudentFeedBackOfApp');
   }
   return false;
 }

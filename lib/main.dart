@@ -41,7 +41,7 @@ void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   // ensureYQPInitialized();
-  Get.put(OnlineAudioPlayerController()); 
+  Get.put(OnlineAudioPlayerController());
 
   function() async {
     open.overrideFor(OperatingSystem.windows, openSQLCipherOnWindows);
@@ -83,7 +83,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   pageRouter router = pageRouter();
-  // late Future<void> userDetailsFuture; 
+  // late Future<void> userDetailsFuture;
 
   @override
   void initState() {
@@ -96,7 +96,7 @@ class _MyAppState extends State<MyApp> {
 
     if (Platform.isWindows && kReleaseMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // setWindowDisplayAffinity();
+        setWindowDisplayAffinity();
       });
       if (getx.isTimerOn.value) {
         Timer.periodic(Duration(seconds: 10), (timer) async {
@@ -209,8 +209,7 @@ class _MyAppState extends State<MyApp> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return 
-            Platform.isAndroid
+            return Platform.isAndroid
                 ? getx.isEmulator.value
                     ? EmulatorOnPage()
                     : getx.isAndroidDeveloperModeEnabled.value
@@ -272,17 +271,21 @@ Future<List> getSimCardsData(BuildContext context) async {
 // }
 
 singleInstance(args) async {
-  await WindowsSingleInstance.ensureSingleInstance(args, "custom_identifier",
-      bringWindowToFront: true, onSecondWindow: (args) {
-    // print(args);
-  });
+  await WindowsSingleInstance.ensureSingleInstance(
+    args,
+    "custom_identifier",
+    bringWindowToFront: true,
+    onSecondWindow: (args) {
+      // print(args);
+    },
+  );
   // print(args);
 }
 
 Future<bool> isEmulator() async {
   final deviceInfo = DeviceInfoPlugin();
 
-if (Platform.isAndroid) {
+  if (Platform.isIOS) {
     final iosInfo = await deviceInfo.iosInfo;
     return iosInfo.isPhysicalDevice == false ||
         iosInfo.model.toLowerCase().contains('simulator') ||
@@ -374,7 +377,7 @@ class _DevelopermodeOnPageState extends State<DevelopermodeOnPage> {
       ],
     ).show();
   }
- 
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
