@@ -3,16 +3,19 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dio/dio.dart';
 import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
-// import 'package:dthlms/API/URL/api_url.dart';
-import 'package:dthlms/API/url/api_url.dart';
+import 'package:dthlms/API/URL/api_url.dart';
+import 'package:dthlms/CUSTOMDIALOG/customdialog.dart';
 import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
+import 'package:dthlms/MOBILE/PACKAGE_DASHBOARD/Package_Video_dashboard.dart';
 import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:dthlms/PC/HOMEPAGE/homepage.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/book_list_page.dart';
 import 'package:dthlms/PC/PACKAGEDETAILS/podcastPage.dart';
 import 'package:dthlms/PC/STUDYMATERIAL/pdfViewer.dart';
+import 'package:dthlms/PC/VIDEO/ClsVideoPlay.dart';
 import 'package:dthlms/PC/VIDEO/videoplayer.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
@@ -20,10 +23,15 @@ import 'package:dthlms/THEORY_EXAM/theorySetList.dart';
 import 'package:dthlms/constants.dart';
 import 'package:dthlms/log.dart';
 import 'package:dthlms/test1.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -397,20 +405,17 @@ class _SlideBarPackageDetailsState extends State<SlideBarPackageDetails> {
           allowedDuration.value =
               allowedDuration.value + int.parse(i['AllowDuration']);
           videoCountData.value = data.length;
-          getx.totalVideocount.value=data.length;
+          getx.totalVideocount.value = data.length;
 
           int seconds = allowedDuration.value;
-          getx.totalAllowDurationinSeconds.value=allowedDuration.value;
+          getx.totalAllowDurationinSeconds.value = allowedDuration.value;
           int minutes = seconds ~/ 60;
           int hours = minutes ~/ 60;
 
-          formattedDuration.value = hours > 0
-              ? "$hours hours ${minutes % 60} minutes"
-              : "$minutes minutes";
-              getx.totalAllowDuration.value=hours > 0
-              ? "$hours hours ${minutes % 60} minutes"
-              : "$minutes minutes";
-
+          formattedDuration.value =
+              hours > 0 ? "$hours hr ${minutes % 60} min" : "$minutes min";
+          getx.totalAllowDuration.value =
+              hours > 0 ? "$hours hr ${minutes % 60} min" : "$minutes min";
         }
         print(videoCountData);
       }
@@ -994,16 +999,38 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
   // Track the last tapped item index
   DateTime lastTapTime = DateTime.now(); // Track the last tap time
   Getx getx = Get.put(Getx());
+
+  RxBool expanded = false.obs;
+  int? selectedListIndex = -1;
+  int selectedIndexOfVideoList = 0;
+  String? _videoFilePath;
+  CancelToken cancelToken = CancelToken();
+  late VideoPlayClass videoPlay;
+  List<double> downloadProgress = List.filled(1000, 0.0);
+  // int selectedIndex = -1;
   TextEditingController searchController = TextEditingController();
   List<dynamic> filteredChapterDetails = [];
   List<dynamic> filteredFileDetails = [];
+
+  late final Dio dio;
+  List<Widget> page = [];
   // List to store filtered items
 
   @override
   void initState() {
+    getx.isVideoPlayer.value = false;
+    videoPlay = VideoPlayClass();
+    dio = Dio();
+    page = [
+      Pdf(),
+      Mcq(),
+      Tags(), // Pass videoPlay instance here
+      AskDoubt()
+    ];
+
     super.initState();
     getListStructure();
-    
+
     filteredChapterDetails = getx.alwaysShowChapterDetailsOfVideo;
     filteredFileDetails =
         getx.alwaysShowChapterfilesOfVideo; // Initialize with full list
@@ -1027,13 +1054,13 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
   Future getListStructure() async {
     print('object541541541541');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    getx.isFolderview.value = prefs.getBool("folderview") ?? false;
+    getx.isFolderview.value = prefs.getBool("folderview") ?? true;
     int startParentId = 0;
     if (getx.selectedPackageId.value > 0) {
-      await getStartParentId(getx.selectedPackageId.value).then((value) {
+      await getStartParentId(getx.selectedPackageId.value).then((value) async {
         print("complete startparent Id");
 
-        getChapterContents(value).then((onValue) {
+        await getChapterContents(value).then((onValue) {
           print("complete chapter content");
           getChapterFiles(
               parentId: value,
@@ -1076,6 +1103,194 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
   // }
   bool isColorBlue = false;
 
+  Future<String> getVideosDirectoryPath() async {
+    final String userHomeDir =
+        Platform.environment['USERPROFILE'] ?? 'C:\\Users\\Default';
+
+    final String videosDirPath = p.join(userHomeDir, 'Videos');
+
+    print('Videos Directory Path: $videosDirPath');
+
+    return videosDirPath;
+  }
+
+  void cancelDownload(CancelToken cancelToken) {
+    cancelToken.cancel("Download canceled by user.");
+    print("Download canceled");
+  }
+
+  void deleteWarning() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: 'Delete Video',
+          description:
+              'Are you sure you want to delete this video? This action is permanent and cannot be undone.',
+          OnCancell: () {
+            Navigator.of(context).pop();
+          },
+          OnConfirm: (String reason) {
+            Navigator.of(context).pop();
+          },
+          btn1: 'Cancel',
+          btn2: 'Delete',
+          linkText: 'Learn more about deleting videos',
+          isTextfeild: false,
+        );
+      },
+    );
+  }
+
+  deleteVideo() {
+    deleteWarning();
+  }
+
+  Future<void> startDownload2(int index, String Link, String title,
+      CancelToken cancelToken // Optional CancelToken
+      ) async {
+    if (Link == "0") {
+      print("Video link is $Link");
+      return;
+    }
+
+    final appDocDir;
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      if (Platform.isAndroid) {
+        final path = await getApplicationDocumentsDirectory();
+        appDocDir = path.path;
+      } else {
+        appDocDir = await getVideosDirectoryPath();
+      }
+
+      getx.defaultPathForDownloadVideo.value =
+          appDocDir + '\\$origin' + '\\Downloaded_videos';
+      prefs.setString("DefaultDownloadpathOfVieo",
+          appDocDir + '\\$origin' + '\\Downloaded_videos');
+      print(getx.userSelectedPathForDownloadVideo.value +
+          " it is user selected path");
+
+      String savePath = getx.userSelectedPathForDownloadVideo.isEmpty
+          ? appDocDir + '\\$origin' + '\\Downloaded_videos' + '\\$title'
+          : getx.userSelectedPathForDownloadVideo.value + '\\$title';
+
+      String tempPath = appDocDir + '\\temp' + '\\$title';
+
+      // Ensure the temporary directory exists
+      await Directory(appDocDir + '\\temp').create(recursive: true);
+
+      // Start downloading the video
+      await dio.download(
+        Link,
+        tempPath,
+        cancelToken: cancelToken,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            double progress = (received / total * 100);
+            setState(() {
+              downloadProgress[index] = progress;
+            });
+          }
+        },
+      );
+
+      // After the download is complete, copy the file to the final location
+      final tempFile = File(tempPath);
+      final finalFile = File(savePath);
+
+      // Ensure the final directory exists
+      await finalFile.parent.create(recursive: true);
+
+      // Copy the file to the final path
+      await tempFile.copy(savePath);
+
+      // Delete the temporary file
+      await tempFile.delete();
+
+      setState(() {
+        _videoFilePath = savePath;
+        getx.playingVideoId.value =
+            getx.alwaysShowChapterfilesOfVideo[index]["FileId"];
+        videoPlay.updateVideoLink(savePath, []);
+        setState(() {});
+        onSweetAleartDialogwithDeny(
+            context,
+            () {
+              Get.back();
+
+              fetchUploadableVideoInfo().then((valueList) async {
+                print(valueList);
+                if (getx.isInternet.value) {
+                  unUploadedVideoInfoInsert(
+                      context, valueList, getx.loginuserdata[0].token, false);
+                }
+                if (await isProcessRunning("dthlmspro_video_player") == false) {
+                  run_Video_Player_exe(
+                      savePath,
+                      getx.loginuserdata[0].token,
+                      getx.playingVideoId.value,
+                      getx.selectedPackageId.value.toString(),
+                      getx.dbPath.value);
+                }
+                if (await isProcessRunning("dthlmspro_video_player") == true) {
+                  Get.showSnackbar(GetSnackBar(
+                    isDismissible: true,
+                    shouldIconPulse: true,
+                    icon: const Icon(
+                      Icons.video_chat,
+                      color: Colors.white,
+                    ),
+                    snackPosition: SnackPosition.TOP,
+                    title: 'Player is already open',
+                    message: 'Please check your taskbar.',
+                    mainButton: TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text(
+                        'Ok',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    duration: const Duration(seconds: 3),
+                  ));
+                }
+              });
+            },
+            "Downloaded",
+            "Do you want to Play the Video?",
+            () {
+              Get.back();
+            });
+      });
+
+      print('$savePath video saved to this location');
+
+      // Insert the downloaded file data into the database
+      await insertDownloadedFileData(
+          getx.alwaysShowChapterfilesOfVideo[index]["PackageId"],
+          getx.alwaysShowChapterfilesOfVideo[index]["FileId"],
+          savePath,
+          'Video',
+          title);
+
+      insertVideoDownloadPath(
+        getx.alwaysShowChapterfilesOfVideo[index]["FileId"],
+        getx.alwaysShowChapterfilesOfVideo[index]["PackageId"],
+        savePath,
+        context,
+      );
+    } catch (e) {
+      writeToFile(e, "startDownload2");
+      if (e is DioException && e.type == DioExceptionType.cancel) {
+        print("Download was canceled");
+      } else {
+        print(e.toString() + " error on download");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -1102,35 +1317,58 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                                   getx.subjectDetails.isNotEmpty
                                       ? getx.subjectDetails[0]["SubjectName"]
                                       : "Subject Name",
-                                  style: FontFamily.font
-                                  ),
+                                  style: FontFamily.font),
                             ),
                             Padding(
-                                  padding: const EdgeInsets.only(left: 20),
-                                   child: Text(
-                                   "total Videos :  ${getx.totalVideocount.value}",
-                                                                   style: FontFamily.font4),
-                                 ),
-
- 
-                                 Padding(
-                                  padding: const EdgeInsets.only(left: 20),
-                                   child: Text(
-                                   "total Duration: ${getx.totalAllowDuration.value}",
-                                                                   style: FontFamily.font4),
-                                 ),
-                                 Padding(
-                                   padding: const EdgeInsets.only(left: 10),
-                                   child: Text(
-                                                                  "Consume Duration: ${breakSecondIntoHourAndMinute(getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
-                                                                   style: FontFamily.font4),
-                                 ),
-                                Padding(
-                                 padding: const EdgeInsets.only(left: 10),
-                                  child: Text(
-                                                                 "Remaining Duration: ${breakSecondIntoHourAndMinute(getx.totalAllowDurationinSeconds.value-getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
-                                  style: FontFamily.font4),
-                                ),
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Text.rich(TextSpan(
+                                  text: 'Total Videos :',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text: "  ${getx.totalVideocount.value}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ])),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Text.rich(TextSpan(
+                                  text: 'Total Duration :',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text: " ${getx.totalAllowDuration.value}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ])),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text.rich(TextSpan(
+                                  text: 'Consume Duration :',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text:
+                                          " ${breakSecondIntoHourAndMinute(getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ])),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text.rich(TextSpan(
+                                  text: 'Remaining Durations :',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text:
+                                          "${breakSecondIntoHourAndMinute(getx.totalAllowDurationinSeconds.value - getLocalConsumeDurationOfPackage(getx.selectedPackageId.toString()))}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ])),
+                            ),
                           ],
                         ),
                       ),
@@ -1140,6 +1378,32 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                           padding: const EdgeInsets.only(right: 20),
                           child: Row(
                             children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  pickVideoFile();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors
+                                      .blueAccent, // Button background color
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        5), // Rounded corners
+                                  ),
+                                  textStyle: TextStyle(
+                                    fontSize: 12, // Font size
+                                    fontWeight: FontWeight.w700, // Font weight
+                                  ),
+                                ),
+                                child: Text(
+                                  "Browse",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
                               Tooltip(
                                 message: "Folder View",
                                 child: IconButton(
@@ -1236,6 +1500,8 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                                               ? Text("Blank")
                                               : InkWell(
                                                   onTap: () {
+                                                    getx.isVideoPlayer.value =
+                                                        false;
                                                     if (i == 0) {
                                                       // nothing
                                                     }
@@ -1500,9 +1766,11 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                             children: [
                               Expanded(
                                 flex: 3,
-                                child: getx.isFolderview.value
-                                    ? buildGridView()
-                                    : buildListView(),
+                                child: getx.isVideoPlayer.value
+                                    ? videoPlayerLeft()
+                                    : getx.isFolderview.value
+                                        ? buildGridView()
+                                        : buildListView(),
                               ),
                             ],
                           ),
@@ -1533,7 +1801,9 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                                   Radius.circular(10),
                                 ),
                               ),
-                              child: buildFileList(),
+                              child: getx.isVideoPlayer.value
+                                  ? videoPlayerRight(expanded.value)
+                                  : buildFileList(),
                             ),
                           ),
                         ),
@@ -1565,6 +1835,11 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                 crossAxisSpacing: 10,
               ),
               itemBuilder: (context, index) {
+                if (filteredChapterDetails.length +
+                        getx.alwaysShowFileDetailsOfpdf.length ==
+                    0) {
+                  getx.isVideoPlayer.value = true;
+                }
                 if (filteredChapterDetails.length > index)
                   return buildGridItem(index, false);
                 else
@@ -1589,10 +1864,11 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                         index - filteredChapterDetails.length]["DocumentPath"],
                     title: getx.alwaysShowFileDetailsOfpdf[
                         index - filteredChapterDetails.length]["FileIdName"],
-                    folderName: getPackagNameById(getx
-                        .alwaysShowFileDetailsOfpdf[
-                            index - filteredChapterDetails.length]["PackageId"]
-                        .toString()),
+                    folderName: getPackagDataFieldValuebyId(
+                        getx.alwaysShowFileDetailsOfpdf[index -
+                                filteredChapterDetails.length]["PackageId"]
+                            .toString(),
+                        "PackageName"),
                     isEncrypted: getx.alwaysShowFileDetailsOfpdf[index -
                                 filteredChapterDetails.length]["IsEncrypted"] ==
                             "1"
@@ -1600,7 +1876,7 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                         : false,
                   ));
 
-          selectedIndex = index;
+          // selectedIndex = index;
         } else {
           insertTblLocalNavigation(
             "ParentId",
@@ -1631,7 +1907,7 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
             writeToFile(e, "buildGridItem");
             print(e.toString() + " ---$index");
           }
-          selectedIndex = index;
+          // selectedIndex = index;
         }
         setState(() {});
       },
@@ -1683,6 +1959,11 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                   getx.alwaysShowFileDetailsOfpdf.length,
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
+                if (filteredChapterDetails.length +
+                        getx.alwaysShowFileDetailsOfpdf.length ==
+                    0) {
+                  getx.isVideoPlayer.value = true;
+                }
                 if (filteredChapterDetails.length > index)
                   return buildListItem(index, false);
                 else
@@ -1721,10 +2002,11 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                           filteredChapterDetails.length]["DocumentPath"],
                       title: getx.alwaysShowFileDetailsOfpdf[
                           index - filteredChapterDetails.length]["FileIdName"],
-                      folderName: getPackagNameById(getx
-                          .alwaysShowFileDetailsOfpdf[index -
-                              filteredChapterDetails.length]["PackageId"]
-                          .toString()),
+                      folderName: getPackagDataFieldValuebyId(
+                          getx.alwaysShowFileDetailsOfpdf[index -
+                                  filteredChapterDetails.length]["PackageId"]
+                              .toString(),
+                          "PackageName"),
                       isEncrypted: getx.alwaysShowFileDetailsOfpdf[
                                       index - filteredChapterDetails.length]
                                   ["IsEncrypted"] ==
@@ -1732,8 +2014,6 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
                           ? true
                           : false,
                     ));
-
-            selectedIndex = index;
           } else {
             insertTblLocalNavigation(
               "ParentId",
@@ -1764,7 +2044,6 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
               writeToFile(e, "buildListItem");
               print(e.toString() + " ---$index");
             }
-            selectedIndex = index;
           }
           setState(() {});
         },
@@ -1801,6 +2080,815 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
     );
   }
 
+  Widget tabbarbutton(String name, int tabIndex, selectedindex) {
+    bool isActive = selectedIndexOfVideoList == tabIndex;
+    Color backgroundColor = isActive ? ColorPage.colorbutton : Colors.white;
+    Color textColor = isActive ? Colors.white : Colors.black;
+
+    return Expanded(
+      child: MouseRegion(
+        onEnter: (_) {
+          setState(() {
+            // hoverIndex = tabIndex;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            // hoverIndex = -1;
+          });
+        },
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              selectedIndexOfVideoList = tabIndex;
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                    width: 0.5, color: Color.fromARGB(255, 150, 145, 145)),
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+              child: Center(
+                child: Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: textColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget videoPlayerRight(bool expanded) {
+    return expanded
+        ? SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 3,
+                        color: Color.fromARGB(255, 143, 141, 141),
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 10),
+                    child:
+                        // videoPlayerRight()
+
+                        page[selectedIndexOfVideoList],
+                  )
+
+                  // child: isDownloadPathExitsOnVideoList()
+                  //     ? videoPlayerRight()
+                  //     : Column(
+                  //         children: [
+                  //           Container(
+                  //               constraints:
+                  //                   BoxConstraints(maxHeight: 500),
+                  //               child: Center(
+                  //                   child: Text(
+                  //                 "No Video Downloaded",
+                  //                 style: FontFamily.style,
+                  //               ))),
+                  //         ],
+                  //       )
+                  ),
+            ),
+          )
+        : Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  logopath,
+                  scale: 1.5,
+                )
+              ],
+            ),
+          );
+  }
+
+  Widget videoPlayerLeft() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: ColorPage.white,
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 3,
+                    color: Color.fromARGB(255, 192, 191, 191),
+                    offset: Offset(0, 0),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            "Video List",
+                            style: FontFamily.font
+                                .copyWith(color: ColorPage.colorbutton),
+                          ),
+                        ),
+                      ],
+                    ),
+                    FutureBuilder(
+                        future: getPlayInfo(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            // print("${snapshot.data!} shubha snapshot data");
+
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              // Removed NeverScrollableScrollPhysics to allow natural scrolling
+                              itemCount:
+                                  getx.alwaysShowChapterfilesOfVideo.length,
+                              itemBuilder: (context, index) {
+                                // int duration = int.parse(
+                                //         getx.alwaysShowChapterfilesOfVideo[
+                                //             index]['AllowDuration']) -
+                                //     int.parse(getLastEndDuration(int.parse(
+                                //         getx.alwaysShowChapterfilesOfVideo[
+                                //             index]['FileId'])));
+                                bool isMatchingVideo = snapshot.data!.any(
+                                    (videoInfo) =>
+                                        videoInfo['VideoId'].toString() ==
+                                        getx.alwaysShowChapterfilesOfVideo[
+                                                index]['FileId']
+                                            .toString());
+
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Column(
+                                    children: [
+                                      ExpansionTile(
+                                          collapsedBackgroundColor: isMatchingVideo
+                                              ? Colors.blue[50]
+                                              : Colors.white,
+                                          enabled: File(getx.userSelectedPathForDownloadVideo.isEmpty ? getx.defaultPathForDownloadVideo.value + '\\' + getx.alwaysShowChapterfilesOfVideo[index]['FileIdName'] : getx.userSelectedPathForDownloadVideo.value + '\\' + getx.alwaysShowChapterfilesOfVideo[index]['FileIdName'])
+                                                          .existsSync() ==
+                                                      false &&
+                                                  !expanded.value &&
+                                                  getVideoPlayModeFromPackageId(getx
+                                                          .selectedPackageId
+                                                          .value
+                                                          .toString()) ==
+                                                      "false"
+                                              ? false
+                                              : true,
+                                          backgroundColor: selectedListIndex == index
+                                              ? ColorPage.white.withOpacity(0.5)
+                                              : Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                          onExpansionChanged: (isExpanded) {
+                                            expanded.value = isExpanded;
+                                            setState(() {
+                                              selectedListIndex =
+                                                  isExpanded ? index : -1;
+                                              if (isExpanded) {
+                                                getx.playingVideoId.value =
+                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                        index]["FileId"];
+                                                getMCQListOfVideo(
+                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                        index]["PackageId"],
+                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                        index]["FileId"]);
+
+                                                getPDFlistOfVideo(
+                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                        index]["PackageId"],
+                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                        index]["FileId"]);
+
+                                                getTaglistOfVideo(
+                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                        index]["PackageId"],
+                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                        index]["FileId"]);
+                                              }
+                                            });
+                                          },
+                                          leading: Image.asset(
+                                            "assets/video2.png",
+                                            scale: 19,
+                                            color: ColorPage.colorbutton,
+                                          ),
+                                          subtitle: getPackagDataFieldValuebyId(
+                                                      getx.selectedPackageId.toString(),
+                                                      "isTotal") !=
+                                                  "0"
+                                              ? Text(
+                                                  'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['VideoDuration'].toString()))}',
+                                                  style: TextStyle(
+                                                    color: ColorPage.grey,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                                )
+                                              : Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['VideoDuration'].toString()))}',
+                                                          style: TextStyle(
+                                                            color:
+                                                                ColorPage.grey,
+                                                            fontSize: 10,
+                                                            // fontWeight: FontWeight.w800,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 10),
+                                                        SizedBox(
+                                                          width: 90,
+                                                          child: Text(
+                                                            'Limit:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['AllowDuration'].toString()))}',
+                                                            style: TextStyle(
+                                                              color: ColorPage
+                                                                  .grey,
+                                                              fontSize: 10,
+                                                              // fontWeight: FontWeight.w800,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'Consume:  ${breakSecondIntoHourAndMinute(getTotalConsumeDurationOfVideo(filteredFileDetails[index]['FileId'].toString(), int.parse(filteredFileDetails[index]['ConsumeDuration'].toString())))}',
+                                                          style: TextStyle(
+                                                            color:
+                                                                ColorPage.grey,
+                                                            fontSize: 10,
+                                                            // fontWeight: FontWeight.w800,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          'Remaining :  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['AllowDuration'].toString()) - getTotalConsumeDurationOfVideo(filteredFileDetails[index]['FileId'].toString(), int.parse(filteredFileDetails[index]['ConsumeDuration'].toString())))}',
+                                                          style: TextStyle(
+                                                            color:
+                                                                ColorPage.grey,
+                                                            fontSize: 10,
+
+                                                            // fontWeight: FontWeight.w800,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                          title: Text(
+                                            getx.alwaysShowChapterfilesOfVideo[
+                                                index]["FileIdName"],
+                                            style: GoogleFonts.inter().copyWith(
+                                              fontWeight: FontWeight.w800,
+                                              overflow: TextOverflow.ellipsis,
+                                              fontSize:
+                                                  selectedListIndex == index
+                                                      ? 20
+                                                      : null,
+                                            ),
+                                          ),
+                                          trailing: SizedBox(
+                                            width: 130,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                File(getx.userSelectedPathForDownloadVideo
+                                                                        .isEmpty
+                                                                    ? getx.defaultPathForDownloadVideo
+                                                                            .value +
+                                                                        '\\' +
+                                                                        getx.alwaysShowChapterfilesOfVideo[index]
+                                                                            [
+                                                                            'FileIdName']
+                                                                    : getx.userSelectedPathForDownloadVideo
+                                                                            .value +
+                                                                        '\\' +
+                                                                        getx.alwaysShowChapterfilesOfVideo[index]
+                                                                            [
+                                                                            'FileIdName'])
+                                                                .existsSync() ==
+                                                            false &&
+                                                        getVideoPlayModeFromPackageId(getx
+                                                                .selectedPackageId
+                                                                .value
+                                                                .toString()) ==
+                                                            "true"
+                                                    ? Tooltip(
+                                                        message: "Play Online",
+                                                        child: IconButton(
+                                                          onPressed: () {
+                                                            getx.playLink
+                                                                    .value =
+                                                                getx.alwaysShowChapterfilesOfVideo[
+                                                                        index][
+                                                                    'DocumentPath'];
+
+                                                            print(getx.alwaysShowChapterfilesOfVideo[
+                                                                        index][
+                                                                    'DocumentPath'] +
+                                                                "////////");
+                                                            print(getx.playLink
+                                                                    .value +
+                                                                "////////////");
+
+                                                            if (getx.isInternet
+                                                                .value) {
+                                                              // List unUploadedeVideoinfo =await   fetchUploadableVideoInfo();
+                                                              fetchUploadableVideoInfo()
+                                                                  .then(
+                                                                      (valueList) async {
+                                                                print(
+                                                                    valueList);
+
+                                                                if (getx
+                                                                    .isInternet
+                                                                    .value) {
+                                                                  await unUploadedVideoInfoInsert(
+                                                                      context,
+                                                                      valueList,
+                                                                      getx
+                                                                          .loginuserdata[
+                                                                              0]
+                                                                          .token,
+                                                                      false);
+                                                                }
+                                                                getx.playingVideoId
+                                                                        .value =
+                                                                    getx.alwaysShowChapterfilesOfVideo[
+                                                                            index]
+                                                                        [
+                                                                        'FileId'];
+                                                                videoPlay.updateVideoLink(
+                                                                    getx.playLink
+                                                                        .value,
+                                                                    []);
+                                                                if (await isProcessRunning(
+                                                                        "dthlmspro_video_player") ==
+                                                                    false) {
+                                                                  run_Video_Player_exe(
+                                                                      getx.playLink
+                                                                          .value,
+                                                                      getx
+                                                                          .loginuserdata[
+                                                                              0]
+                                                                          .token,
+                                                                      getx.playingVideoId
+                                                                          .value,
+                                                                      getx.selectedPackageId
+                                                                          .value
+                                                                          .toString(),
+                                                                      getx.dbPath
+                                                                          .value);
+                                                                }
+                                                                if (await isProcessRunning(
+                                                                        "dthlmspro_video_player") ==
+                                                                    true) {
+                                                                  Get.showSnackbar(
+                                                                      GetSnackBar(
+                                                                    isDismissible:
+                                                                        true,
+                                                                    shouldIconPulse:
+                                                                        true,
+                                                                    icon:
+                                                                        const Icon(
+                                                                      Icons
+                                                                          .video_chat,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    snackPosition:
+                                                                        SnackPosition
+                                                                            .TOP,
+                                                                    title:
+                                                                        'Player is already open',
+                                                                    message:
+                                                                        'Please check your taskbar.',
+                                                                    mainButton:
+                                                                        TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Get.back();
+                                                                      },
+                                                                      child:
+                                                                          const Text(
+                                                                        'Ok',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
+                                                                    ),
+                                                                    duration: const Duration(
+                                                                        seconds:
+                                                                            3),
+                                                                  ));
+                                                                }
+                                                              });
+                                                            } else {
+                                                              onNoInternetConnection(
+                                                                  context, () {
+                                                                Get.back();
+                                                              });
+                                                            }
+                                                          },
+                                                          icon: Icon(
+                                                            Icons
+                                                                .play_circle_fill,
+                                                            color: ColorPage
+                                                                .colorbutton,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : SizedBox(),
+                                                downloadProgress[index] == 0 &&
+                                                        File(getx.userSelectedPathForDownloadVideo
+                                                                        .isEmpty
+                                                                    ? getx.defaultPathForDownloadVideo
+                                                                            .value +
+                                                                        '\\' +
+                                                                        getx.alwaysShowChapterfilesOfVideo[index]
+                                                                            [
+                                                                            'FileIdName']
+                                                                    : getx.userSelectedPathForDownloadVideo
+                                                                            .value +
+                                                                        '\\' +
+                                                                        getx.alwaysShowChapterfilesOfVideo[index]
+                                                                            [
+                                                                            'FileIdName'])
+                                                                .existsSync() ==
+                                                            false
+                                                    ? IconButton(
+                                                        onPressed: () {
+                                                          if (getx.isInternet
+                                                              .value) {
+                                                            cancelToken =
+                                                                CancelToken();
+
+                                                            startDownload2(
+                                                                index,
+                                                                getx.alwaysShowChapterfilesOfVideo[
+                                                                        index][
+                                                                    'DocumentPath'],
+                                                                getx.alwaysShowChapterfilesOfVideo[
+                                                                        index][
+                                                                    'FileIdName'],
+                                                                cancelToken);
+                                                          } else {
+                                                            onNoInternetConnection(
+                                                                context, () {
+                                                              Get.back();
+                                                            });
+                                                          }
+                                                        },
+                                                        icon: Icon(
+                                                          Icons.download,
+                                                          color: ColorPage
+                                                              .colorbutton,
+                                                        ),
+                                                      )
+                                                    : downloadProgress[index] <
+                                                                100 &&
+                                                            downloadProgress[index] >
+                                                                0
+                                                        ? Row(
+                                                            children: [
+                                                              CircularPercentIndicator(
+                                                                radius: 15.0,
+                                                                lineWidth: 4.0,
+                                                                percent:
+                                                                    downloadProgress[
+                                                                            index] /
+                                                                        100,
+                                                                center: Text(
+                                                                  "${downloadProgress[index].toInt()}%",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          10.0),
+                                                                ),
+                                                                progressColor:
+                                                                    ColorPage
+                                                                        .colorbutton,
+                                                              ),
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  cancelDownload(
+                                                                      cancelToken);
+                                                                  Future.delayed(Duration(
+                                                                          seconds:
+                                                                              1))
+                                                                      .then(
+                                                                    (value) {
+                                                                      downloadProgress[
+                                                                          index] = 0;
+                                                                      setState(
+                                                                          () {});
+                                                                    },
+                                                                  );
+                                                                },
+                                                                icon: Icon(
+                                                                  Icons.cancel,
+                                                                  color: Colors
+                                                                      .orange,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : IconButton(
+                                                            onPressed:
+                                                                () async {
+                                                              getx.playLink
+                                                                  .value = getx
+                                                                      .userSelectedPathForDownloadVideo
+                                                                      .isEmpty
+                                                                  ? getx.defaultPathForDownloadVideo
+                                                                          .value +
+                                                                      '\\' +
+                                                                      getx.alwaysShowChapterfilesOfVideo[
+                                                                              index][
+                                                                          'FileIdName']
+                                                                  : getx.userSelectedPathForDownloadVideo
+                                                                          .value +
+                                                                      '\\' +
+                                                                      getx.alwaysShowChapterfilesOfVideo[
+                                                                              index]
+                                                                          ['FileIdName'];
+                                                              if (File(getx
+                                                                          .userSelectedPathForDownloadVideo
+                                                                          .isEmpty
+                                                                      ? getx.defaultPathForDownloadVideo
+                                                                              .value +
+                                                                          '\\' +
+                                                                          getx.alwaysShowChapterfilesOfVideo[index]
+                                                                              [
+                                                                              'FileIdName']
+                                                                      : getx.userSelectedPathForDownloadVideo
+                                                                              .value +
+                                                                          '\\' +
+                                                                          getx.alwaysShowChapterfilesOfVideo[index]
+                                                                              [
+                                                                              'FileIdName'])
+                                                                  .existsSync()) {
+                                                                // List unUploadedeVideoinfo =await   fetchUploadableVideoInfo();
+                                                                fetchUploadableVideoInfo()
+                                                                    .then(
+                                                                        (valueList) async {
+                                                                  print(
+                                                                      valueList);
+
+                                                                  if (getx
+                                                                      .isInternet
+                                                                      .value) {
+                                                                    await unUploadedVideoInfoInsert(
+                                                                        context,
+                                                                        valueList,
+                                                                        getx.loginuserdata[0]
+                                                                            .token,
+                                                                        false);
+                                                                  }
+                                                                  getx.playingVideoId
+                                                                      .value = getx
+                                                                              .alwaysShowChapterfilesOfVideo[
+                                                                          index]
+                                                                      [
+                                                                      'FileId'];
+                                                                  videoPlay.updateVideoLink(
+                                                                      getx.playLink
+                                                                          .value,
+                                                                      []);
+                                                                  if (await isProcessRunning(
+                                                                          "dthlmspro_video_player") ==
+                                                                      false) {
+                                                                    run_Video_Player_exe(
+                                                                        getx.playLink
+                                                                            .value,
+                                                                        getx
+                                                                            .loginuserdata[
+                                                                                0]
+                                                                            .token,
+                                                                        getx.playingVideoId
+                                                                            .value,
+                                                                        getx.selectedPackageId
+                                                                            .value
+                                                                            .toString(),
+                                                                        getx.dbPath
+                                                                            .value);
+                                                                  }
+                                                                  if (await isProcessRunning(
+                                                                          "dthlmspro_video_player") ==
+                                                                      true) {
+                                                                    Get.showSnackbar(
+                                                                        GetSnackBar(
+                                                                      isDismissible:
+                                                                          true,
+                                                                      shouldIconPulse:
+                                                                          true,
+                                                                      icon:
+                                                                          const Icon(
+                                                                        Icons
+                                                                            .video_chat,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                      snackPosition:
+                                                                          SnackPosition
+                                                                              .TOP,
+                                                                      title:
+                                                                          'Player is already open',
+                                                                      message:
+                                                                          'Please check your taskbar.',
+                                                                      mainButton:
+                                                                          TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          Get.back();
+                                                                        },
+                                                                        child:
+                                                                            const Text(
+                                                                          'Ok',
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      ),
+                                                                      duration: const Duration(
+                                                                          seconds:
+                                                                              3),
+                                                                    ));
+                                                                  }
+                                                                });
+                                                              }
+
+                                                              setState(() {});
+                                                            },
+                                                            icon: Icon(
+                                                              Icons.play_circle,
+                                                              color: ColorPage
+                                                                  .colorbutton,
+                                                            ),
+                                                          ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Icon(
+                                                    selectedListIndex == index
+                                                        ? Icons
+                                                            .keyboard_arrow_up
+                                                        : Icons
+                                                            .keyboard_arrow_down_outlined,
+                                                    color:
+                                                        ColorPage.colorbutton,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          // initiallyExpanded: selectedListIndex == index,
+                                          children: selectedListIndex == index
+                                              ? [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      color: Color.fromARGB(
+                                                          255, 243, 243, 243),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 5,
+                                                          horizontal: 10),
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              tabbarbutton(
+                                                                  'PDF',
+                                                                  0,
+                                                                  selectedListIndex ==
+                                                                      index),
+                                                              tabbarbutton(
+                                                                  'MCQ',
+                                                                  1,
+                                                                  selectedListIndex ==
+                                                                      index),
+                                                              tabbarbutton(
+                                                                  'TAG',
+                                                                  2,
+                                                                  selectedListIndex ==
+                                                                      index),
+                                                              tabbarbutton(
+                                                                  'Ask doubt',
+                                                                  3,
+                                                                  selectedListIndex ==
+                                                                      index),
+                                                              IconButton(
+                                                                tooltip:
+                                                                    'Delete this video',
+                                                                onPressed: () {
+                                                                  deleteVideo();
+                                                                },
+                                                                icon: Icon(
+                                                                  FontAwesome
+                                                                      .trash_o,
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          253,
+                                                                          29,
+                                                                          13),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          // page[selectedIndexOfVideoList],
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ]
+                                              : []),
+                                      if (true)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0),
+                                          child: LinearProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.green),
+                                            backgroundColor:
+                                                Colors.green.withOpacity(0.3),
+                                            value: calculateVideoWatchProgress(
+                                                getTotalConsumeDurationOfVideo(
+                                                    filteredFileDetails[index]
+                                                            ['FileId']
+                                                        .toString(),
+                                                    int.parse(filteredFileDetails[
+                                                                index]
+                                                            ['ConsumeDuration']
+                                                        .toString())),
+                                                int.parse(filteredFileDetails[
+                                                        index]['VideoDuration']
+                                                    .toString())), // Progress value
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            return CircularPercentIndicator(radius: 2);
+                          }
+                        }),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget buildFileList() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
@@ -1821,85 +2909,168 @@ class _VideoDashboardVDRightState extends State<VideoDashboardVDRight> {
             child: filteredFileDetails.isNotEmpty
                 ? ListView.builder(
                     shrinkWrap: true,
-                    // physics: NeverScrollableScrollPhysics(),
                     itemCount: filteredFileDetails.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onDoubleTap: () async {
-                          //               if(await isProcessRunning("dthlmspro_video_player")==false){
-                          //    run_Video_Player_exe(filteredFileDetails[index]['DocumentPath']);
-
-                          // }
-
                           print(filteredFileDetails[index]['DocumentPath'] +
                               "  this is video link");
                           Get.to(
-                              transition: Transition.cupertino,
-                              () => VideoPlayer(
-                                    filteredFileDetails[index]['DocumentPath'],
-                                  ));
-
+                            transition: Transition.cupertino,
+                            () => VideoPlayer(
+                              filteredFileDetails[index]['DocumentPath'],
+                            ),
+                          );
                           print("object find");
                         },
                         onTap: () {
                           setState(() {
                             selectedVideoIndex = index;
                           });
-
                           handleTap(index);
                         },
                         child: Card(
                           color: selectedVideoIndex == index
                               ? ColorPage.colorbutton.withOpacity(0.9)
                               : Color.fromARGB(255, 245, 243, 248),
-                          child: ListTile(
-                            leading: Image.asset(
-                              "assets/video2.png",
-                              scale: 19,
-                              color: selectedVideoIndex == index
-                                  ? ColorPage.white.withOpacity(0.85)
-                                  : ColorPage.colorbutton,
-                            ),
-                            subtitle: Text(
-                              'Duration:  ${filteredFileDetails[index]['VideoDuration']}',
-                              style: TextStyle(
-                                color: selectedVideoIndex == index
-                                    ? ColorPage.white.withOpacity(0.9)
-                                    : ColorPage.grey,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            title: Text(
-                              filteredFileDetails[index]['FileIdName'],
-                              style: GoogleFonts.inter().copyWith(
-                                color: selectedVideoIndex == index
-                                    ? ColorPage.white
-                                    : ColorPage.colorblack,
-                                fontWeight: FontWeight.w800,
-                                fontSize:
-                                    selectedvideoListIndex == index ? 20 : null,
-                                // color: selectedListIndex == index
-                                //     ? Colors.amber[900]
-                                //     : Colors.black,
-                              ),
-                            ),
-                            trailing: SizedBox(
-                              child: IconButton(
-                                  onPressed: () {
-                                    Get.to(
-                                        transition: Transition.cupertino,
-                                        () => VideoPlayer(
-                                              filteredFileDetails[index]
-                                                  ['FileIdName'],
-                                            ));
-                                  },
-                                  icon: Icon(
-                                    Icons.play_circle,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Image.asset(
+                                  "assets/video2.png",
+                                  scale: 19,
+                                  color: selectedVideoIndex == index
+                                      ? ColorPage.white.withOpacity(0.85)
+                                      : ColorPage.colorbutton,
+                                ),
+                                subtitle: getPackagDataFieldValuebyId(
+                                            getx.selectedPackageId.toString(),
+                                            "isTotal") !=
+                                        "0"
+                                    ? Text(
+                                        'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['VideoDuration'].toString()))}',
+                                        style: TextStyle(
+                                          color: selectedVideoIndex == index
+                                              ? ColorPage.white.withOpacity(0.9)
+                                              : ColorPage.grey,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      )
+                                    : Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Video duration:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['VideoDuration'].toString()))}',
+                                                style: TextStyle(
+                                                  color: selectedVideoIndex ==
+                                                          index
+                                                      ? ColorPage.white
+                                                          .withOpacity(0.9)
+                                                      : ColorPage.grey,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                              SizedBox(width: 15),
+                                              Text(
+                                                'Total limit:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['AllowDuration'].toString()))}',
+                                                style: TextStyle(
+                                                  color: selectedVideoIndex ==
+                                                          index
+                                                      ? ColorPage.white
+                                                          .withOpacity(0.9)
+                                                      : ColorPage.grey,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Consume:  ${breakSecondIntoHourAndMinute(getTotalConsumeDurationOfVideo(filteredFileDetails[index]['FileId'].toString(), int.parse(filteredFileDetails[index]['ConsumeDuration'].toString())))}',
+                                                style: TextStyle(
+                                                  color: selectedVideoIndex ==
+                                                          index
+                                                      ? ColorPage.white
+                                                          .withOpacity(0.9)
+                                                      : ColorPage.grey,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                              SizedBox(width: 15),
+                                              Text(
+                                                'Remaining limit:  ${breakSecondIntoHourAndMinute(int.parse(filteredFileDetails[index]['AllowDuration'].toString()) - getTotalConsumeDurationOfVideo(filteredFileDetails[index]['FileId'].toString(), int.parse(filteredFileDetails[index]['ConsumeDuration'].toString())))}',
+                                                style: TextStyle(
+                                                  color: selectedVideoIndex ==
+                                                          index
+                                                      ? ColorPage.white
+                                                          .withOpacity(0.9)
+                                                      : ColorPage.grey,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                title: Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  filteredFileDetails[index]['DisplayName'] ??
+                                      "Video Name",
+                                  style: GoogleFonts.inter().copyWith(
                                     color: selectedVideoIndex == index
                                         ? ColorPage.white
-                                        : ColorPage.colorbutton,
-                                  )),
-                            ),
+                                        : ColorPage.colorblack,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: selectedvideoListIndex == index
+                                        ? 20
+                                        : null,
+                                  ),
+                                ),
+                                trailing: SizedBox(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      getx.isVideoPlayer.value = true;
+                                      // Get.to(
+                                      //   transition: Transition.cupertino,
+                                      //   () => VideoPlayer(
+                                      //     filteredFileDetails[index]['FileIdName'],
+                                      //   ),
+                                      // );
+                                    },
+                                    icon: Icon(
+                                      Icons.play_circle,
+                                      color: selectedVideoIndex == index
+                                          ? ColorPage.white
+                                          : ColorPage.colorbutton,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Linear progress bar
+                              if (true)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
+                                  child: LinearProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.green),
+                                    backgroundColor:
+                                        Colors.green.withOpacity(0.3),
+                                    value: calculateVideoWatchProgress(
+                                        getTotalConsumeDurationOfVideo(
+                                            filteredFileDetails[index]['FileId']
+                                                .toString(),
+                                            int.parse(filteredFileDetails[index]
+                                                    ['ConsumeDuration']
+                                                .toString())),
+                                        int.parse(filteredFileDetails[index]
+                                                ['VideoDuration']
+                                            .toString())), // Progress value
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       );
@@ -2298,19 +3469,12 @@ class _LiveDashboardUIState extends State<LiveDashboardUI>
 }
 
 class ExeRun {
-
-  
   static Process? _process;
 
   String exeFilePath = '';
 
   Future<void> runingExelive(MeetingDeatils meetingDeatils) async {
-    String exePath = "exefiles/live/abc.exe"; // Adjust path as needed
-
-    if (exePath.isEmpty) {
-      print("Error: Executable path is empty!");
-      return;
-    }
+    final exePath = "exefiles/live/abc.exe";
 
     // Extracting user details dynamically
     var user = getx.loginuserdata[0];
@@ -2327,10 +3491,12 @@ class ExeRun {
       meetingDeatils.videoId.toString(),
       user.phoneNumber.toString(),
       user.token,
-      "com.dlp.avjpro",
+      origin,
       "https://${ClsUrlApi.mainurl}${ClsUrlApi.insertvideoTimeDetails}",
       meetingDeatils.groupChat ?? "",
-      meetingDeatils.personalChat ?? ""
+      meetingDeatils.personalChat ?? "",
+      meetingDeatils.poolURL ?? "",
+      meetingDeatils.topicURL ?? "",
     ];
 
     try {
@@ -3000,20 +4166,49 @@ onExitPage(context, VoidCallback ontap, VoidCallback onCanceltap) async {
   // ).show();
 }
 
+String breakSecondIntoHourAndMinute(int seconds) {
+  int minutes = seconds ~/ 60;
+  int hours = minutes ~/ 60;
 
+  if (minutes < 1) {
+    return "$seconds s";
+  }
 
-String breakSecondIntoHourAndMinute(int seconds){
-   
-          int minutes = seconds ~/ 60;
-          int hours = minutes ~/ 60;
-
-         return  hours > 0
-              ? "$hours hours ${minutes % 60} minutes"
-              : "$minutes minutes";
-
-
+  return hours > 0 ? "$hours h ${minutes % 60} m " : "$minutes m";
 }
 
+double calculateVideoWatchProgress(int consume, int videoduration) {
+  double consumeDuration = consume.toDouble();
+  double videoDuration = videoduration.toDouble();
 
+  double watchPercentage = (consumeDuration / videoDuration) * 100;
+  if (watchPercentage > 100) {
+    return 1.0;
+  } else {
+    return watchPercentage / 100;
+  }
+}
 
-   
+// int getTotalConsumeDurationOfVideo(int consumeduration, int localConsumeduration){
+//   return consumeduration+localConsumeduration;
+
+// }
+
+Future<void> pickVideoFile() async {
+  // Pick a file with the video type filter
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp4', 'avi', 'mkv', 'mov', 'dthf']);
+
+  // Check if the user picked a file
+  if (result != null) {
+    String? filePath = result.files.single.path;
+    if (filePath != null) {
+      // Print the file path
+      print("Selected Video Path: $filePath");
+    }
+  } else {
+    // If no file was selected
+    print("No file selected");
+  }
+}

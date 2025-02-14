@@ -1320,11 +1320,7 @@ Future<void> getChapterFiles(String fileType, String packageId,
       if (getx.alwaysShowChapterDetailsOfVideo.length == 0 &&
           getx.alwaysShowFileDetailsOfpdf.length == 0 &&
           getx.alwaysShowChapterfilesOfVideo.length != 0) {
-        Platform.isWindows
-            ? Get.to(
-                transition: Transition.cupertino,
-                () => VideoPlayer(isPathExitsOnVideoList()))
-            : null;
+     getx.isVideoPlayer.value=true;
         // : Get.to(() => MobileVideoPlayer( videoLink: getx.alwaysShowChapterfilesOfVideo[0]['DocumentPath'],));
         // : Get.to(() =>);
       }
@@ -3477,17 +3473,18 @@ String getEncryptionKeyFromTblSetting(String keyName) {
   return '';
 }
 
-String getPackagNameById(String packageId) {
+String getPackagDataFieldValuebyId(String packageId,String fieldName) {
   try {
     // Execute the SQL query
     final sql.ResultSet resultSet = _db.select(
-      'SELECT PackageName FROM TblPackageData WHERE PackageId = ?',
+      'SELECT $fieldName FROM TblPackageData WHERE PackageId = ?',
       [packageId],
     );
 
     // Check if a result is returned and fetch the OptionName
     if (resultSet.isNotEmpty) {
-      return resultSet.first['PackageName'] as String;
+   
+      return resultSet.first[fieldName] as String;
     }
   } catch (e) {
     print(e.toString);
@@ -3977,6 +3974,9 @@ String addDaysToExpiryDate(String mainTime, int additionalDays) {
 bool checkVaildationOfPackage(String expDate) {
   DateTime expiryDate = DateTime.parse(expDate);
   DateTime currentDate = DateTime.now();
+  if(expDate=='1900-01-01T00:00:00'){
+    return true;
+  }
 
   return expiryDate.isAfter(currentDate);
 }
@@ -4054,8 +4054,8 @@ List<String>  getVideoIdListOfPackage(String packageId){
 }
 
 
- int getTotalConsumeDurationOfVideo(String videoId){
-
+ int getTotalConsumeDurationOfVideo(String videoId ,int consumeduration){
+ double totalDuration = 0.0;
 try{
     final sql.ResultSet resultSet = _db.select(
         'SELECT * FROM TblvideoPlayInfo WHERE VideoId = ? AND UploadFlag=?',
@@ -4063,7 +4063,7 @@ try{
 
         if(resultSet.isNotEmpty){
   
-        double totalDuration = 0.0;
+       
 
   for (final row in resultSet) {
     double speed = double.parse(row['Speed']??"0");
@@ -4075,15 +4075,17 @@ try{
           int minutes = seconds ~/ 60;
           int hours = minutes ~/ 60;
 
-         return totalDuration.toInt();
+       
 
 }
+  return totalDuration.toInt()+consumeduration;
 
 }catch(e){
   writeToFile(e, getTotalConsumeDurationOfVideo);
+  return 0;
 
 }
-return 0;
+
 }
 
 

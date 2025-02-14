@@ -3,9 +3,11 @@ import 'dart:developer';
 // import 'package:abc/getx.dart';
 // import 'package:abc/widget/models/topic.dart';
 
+import 'package:dthlms/MODEL_CLASS/Meettingdetails.dart';
 import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'mobilegetx.dart';
 import 'models/topic.dart';
@@ -15,7 +17,8 @@ import 'models/topic.dart';
 class StudentPollPage extends StatefulWidget {
   final String teacherName;
   String sessionId;
-  StudentPollPage({required this.teacherName, required this.sessionId});
+  MeetingDeatils? meeting;
+  StudentPollPage({required this.teacherName, required this.sessionId,required this.meeting});
 
   @override
   _StudentPollPageState createState() => _StudentPollPageState();
@@ -168,14 +171,14 @@ class _StudentPollPageState extends State<StudentPollPage> {
       ),
       body: Expanded(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 0),
           child: Column(
             children: [
               Expanded(
-                  flex: 2,
+                  flex: 1,
                   child: SizedBox(
-                      child: Poll(widget.sessionId, widget.teacherName))),
-              Flexible(child: SizedBox(child: Topic(widget.sessionId)))
+                      child: Poll(widget.sessionId, widget.teacherName,widget.meeting))),
+              Flexible(child: SizedBox(child: Topic(widget.sessionId,widget.meeting)))
 
               // CustomExpansionTile(
               //   title: 'Poll',
@@ -466,7 +469,8 @@ class _StudentPollPageState extends State<StudentPollPage> {
 class Poll extends StatefulWidget {
   String sessionId;
   String teacherName;
-  Poll(this.sessionId, this.teacherName, {super.key});
+  MeetingDeatils? meeting;
+  Poll(this.sessionId, this.teacherName, this.meeting ,{super.key});
 
   @override
   State<Poll> createState() => _PollState();
@@ -544,74 +548,7 @@ class _PollState extends State<Poll> {
 
   bool hasVoted = false;
 
-  void _voteForOption(String selectedOptionId) async {
-    // if (_selectedPollId == null) return;
 
-    // final pollDoc =
-    //     await _firestore.collection('polls').doc(_selectedPollId).get();
-    // final pollData = pollDoc.data() as Map<String, dynamic>;
-    // final voters = pollData['voters'] as Map<String, dynamic>? ?? {};
-
-    // // Check if the teacher has already voted for this option
-    // final hasAlreadyVotedForThisOption =
-    //     (voters[selectedOptionId] as List?)?.contains(widget.teacherName) ??
-    //         false;
-
-    // if (hasAlreadyVotedForThisOption) {
-    //   // If the teacher has already voted for this option, remove the vote
-    //   await _firestore.collection('polls').doc(_selectedPollId).update({
-    //     'votes.$selectedOptionId': FieldValue.increment(-1),
-    //     'voters.$selectedOptionId':
-    //         FieldValue.arrayRemove([widget.teacherName]),
-    //   });
-
-    //   setState(() {
-    //     hasVoted = false;
-    //   });
-    // } else {
-    //   // Remove vote from any other option if the teacher has voted elsewhere
-    //   String? previousOptionId;
-    //   voters.forEach((optionId, voterList) {
-    //     if ((voterList as List).contains(widget.teacherName)) {
-    //       previousOptionId = optionId;
-    //     }
-    //   });
-
-    //   if (previousOptionId != null && previousOptionId != selectedOptionId) {
-    //     await _firestore.collection('polls').doc(_selectedPollId).update({
-    //       'votes.$previousOptionId': FieldValue.increment(-1),
-    //       'voters.$previousOptionId':
-    //           FieldValue.arrayRemove([widget.teacherName]),
-    //     });
-    //   }
-
-    //   // Add the new vote for the selected option
-    //   await _firestore.collection('polls').doc(_selectedPollId).update({
-    //     'votes.$selectedOptionId': FieldValue.increment(1),
-    //     'voters.$selectedOptionId': FieldValue.arrayUnion([widget.teacherName]),
-    //   });
-
-    //   setState(() {
-    //     hasVoted = true;
-    //   });
-    // }
-  }
-
-  Future<void> checkIfTeacherVoted() async {
-    // if (_selectedPollId != null) {
-    //   final pollDoc =
-    //       await _firestore.collection('polls').doc(_selectedPollId).get();
-    //   final voters = pollDoc.data()?['voters'] as Map<String, dynamic>?;
-
-    //   if (voters != null) {
-    //     setState(() {
-    //       hasVoted = voters.values.any(
-    //         (voterList) => (voterList as List).contains(widget.teacherName),
-    //       );
-    //     });
-    //   }
-    // }
-  }
 
   double _calculatePercentage(int votes, int totalVotes) {
     if (totalVotes == 0) return 0.0;
@@ -622,71 +559,73 @@ class _PollState extends State<Poll> {
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // checkIfTeacherVoted();
+      initializeWebView();
     });
     super.initState();
   }
 
-  int _currentPollIndex = 0;
-  late bool _isChecked = false;
-  void _onCheckChanged(bool? value) {
-    // setState(() {
-    //   _isChecked = value ?? false;
-    // });
-    // // Update the 'show' field in Firestore
-    // _firestore.collection('polls').doc(_selectedPollId).update({
-    //   'show': _isChecked,
-    // });
-  }
-  void _previousPoll() {
-    setState(() {
-      if (_currentPollIndex > 0) {
-        _currentPollIndex--;
-      }
-    });
+
+  final WebViewController controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {
+          // Update loading bar.
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onHttpError: (HttpResponseError error) {},
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (request.url.startsWith('https://www.youtube.com/')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ),
+    )
+    ..loadRequest(Uri.parse('https://www.youtube.com/'));
+  Future<void> initializeWebView() async {
+    try {
+      log(widget.meeting!.poolURL!);
+      controller.loadRequest(Uri.parse(
+          widget.meeting!.poolURL!)); // Assuming widget.personchat is a URL
+      getx.isloadChatUrl.value = true;
+    } catch (e) {
+      debugPrint('Error initializing WebView: $e');
+    }
   }
 
-  void _nextPoll() {
-    // setState(() {
-    //   if (_currentPollIndex < polls.length - 1) {
-    //     _currentPollIndex++;
-    //   }
-    // });
-  }
 
   // List<DocumentSnapshot> polls = [];
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 10,
-        ),
+
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              icon: Icon(
-                Icons.arrow_left,
-                color: _currentPollIndex > 0 ? Colors.white : Colors.grey,
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                'Poll',
+                style: rightBarTopTextStyle.copyWith(
+                    fontSize: 20, color: Colors.white),
               ),
-              onPressed: _currentPollIndex > 0 ? _previousPoll : null,
             ),
-            Text(
-              'Poll',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.arrow_right,
-            //     color: _currentPollIndex < polls.length - 1
-            //         ? Colors.white
-            //         : Colors.grey,
-            //   ),
-            //   onPressed:
-            //   _currentPollIndex < polls.length - 1 ? _nextPoll : null,
-            // ),
           ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Expanded(
+          child: Obx(
+                () => Center(
+              child: getx.isloadChatUrl.value
+                  ? WebViewWidget(controller: controller)
+                  : CircularProgressIndicator(),
+            ),
+          ),
         ),
         // Expanded(
         //   child: StreamBuilder<QuerySnapshot>(
@@ -915,167 +854,217 @@ class _PollState extends State<Poll> {
     );
   }
 
-  Widget _buildPollContent(
-      String pollId, String pollQuestion, List<PollOption> pollOptions) {
-    return Column(
-      children: [
-        // Display the poll question
-        Row(
-          children: [
-            // Checkbox(
-            //   value: _isChecked,
-            //   onChanged: _onCheckChanged,
-            //   activeColor: Colors.green,
-            // ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                pollQuestion,
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ),
-          ],
-        ),
-        // Display the poll options
-        Expanded(
-          child: ListView.builder(
-            itemCount: pollOptions.length,
-            itemBuilder: (context, index) {
-              final option = pollOptions[index];
-
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    height: 40,
-                    child: LinearProgressIndicator(
-                      value: option.percentage,
-                      backgroundColor: Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
-                      color: greencolor.withOpacity(0.7),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    height: 40,
-                    decoration: ShapeDecoration(
-                      color: const Color(0x00D9D9D9),
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                            width: 1, color: Color(0xFF15E8D8)),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  Obx(() => InkWell(
-                        onTap: () {
-                          // log(option.id);
-                          _voteForOption(option.id);
-                        },
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 5),
-                            IconButton(
-                              onPressed: () {
-                                // log(option.id);
-                                _voteForOption(option.id);
-                              },
-                              icon: Icon(
-                                pollOption.value
-                                    ? Icons.check_circle
-                                    : Icons.circle_outlined,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                option.title,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w200,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            Text(
-                              '${option.votes}',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(width: 20),
-                          ],
-                        ),
-                      )),
-                ],
-              );
-            },
-          ),
-        ),
-      ],
-    );
+  // Widget _buildPollContent(
+  //     String pollId, String pollQuestion, List<PollOption> pollOptions) {
+  //   return Column(
+  //     children: [
+  //       // Display the poll question
+  //       Row(
+  //         children: [
+  //           // Checkbox(
+  //           //   value: _isChecked,
+  //           //   onChanged: _onCheckChanged,
+  //           //   activeColor: Colors.green,
+  //           // ),
+  //           Padding(
+  //             padding: const EdgeInsets.all(8.0),
+  //             child: Text(
+  //               pollQuestion,
+  //               style: TextStyle(color: Colors.white, fontSize: 18),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       // Display the poll options
+  //       Expanded(
+  //         child: ListView.builder(
+  //           itemCount: pollOptions.length,
+  //           itemBuilder: (context, index) {
+  //             final option = pollOptions[index];
+  //
+  //             return Stack(
+  //               alignment: Alignment.center,
+  //               children: [
+  //                 SizedBox(
+  //                   height: 40,
+  //                   child: LinearProgressIndicator(
+  //                     value: option.percentage,
+  //                     backgroundColor: Colors.transparent,
+  //                     borderRadius: BorderRadius.circular(10),
+  //                     color: greencolor.withOpacity(0.7),
+  //                   ),
+  //                 ),
+  //                 Container(
+  //                   margin: const EdgeInsets.symmetric(vertical: 10),
+  //                   height: 40,
+  //                   decoration: ShapeDecoration(
+  //                     color: const Color(0x00D9D9D9),
+  //                     shape: RoundedRectangleBorder(
+  //                       side: const BorderSide(
+  //                           width: 1, color: Color(0xFF15E8D8)),
+  //                       borderRadius: BorderRadius.circular(10),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Obx(() => InkWell(
+  //                       onTap: () {
+  //                         // log(option.id);
+  //                         _voteForOption(option.id);
+  //                       },
+  //                       child: Row(
+  //                         children: [
+  //                           const SizedBox(width: 5),
+  //                           IconButton(
+  //                             onPressed: () {
+  //                               // log(option.id);
+  //                               _voteForOption(option.id);
+  //                             },
+  //                             icon: Icon(
+  //                               pollOption.value
+  //                                   ? Icons.check_circle
+  //                                   : Icons.circle_outlined,
+  //                               color: Colors.white,
+  //                             ),
+  //                           ),
+  //                           const SizedBox(width: 5),
+  //                           Expanded(
+  //                             child: Text(
+  //                               option.title,
+  //                               style: TextStyle(
+  //                                   fontSize: 14,
+  //                                   fontWeight: FontWeight.w200,
+  //                                   color: Colors.white),
+  //                             ),
+  //                           ),
+  //                           Text(
+  //                             '${option.votes}',
+  //                             style: TextStyle(color: Colors.white),
+  //                           ),
+  //                           const SizedBox(width: 20),
+  //                         ],
+  //                       ),
+  //                     )),
+  //               ],
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );
   }
+
+
+class Topic extends StatefulWidget {
+  String sessionId;
+
+  MeetingDeatils? meeting;
+  Topic(this.sessionId,this.meeting, {super.key});
+
+  @override
+  State<Topic> createState() => _TopicState();
 }
 
-class Topic extends StatelessWidget {
-  String sessionId;
-  Topic(this.sessionId, {super.key});
-
+class _TopicState extends State<Topic> {
   Color deviderColors = const Color.fromARGB(255, 90, 90, 92);
+
   Color scaffoldColor = const Color(0xff1B1A1D);
+
   Color topTextColor = const Color(0xffDFDEDF);
+
   Color topTextClockColor = const Color(0xffB3B6B5);
+
   Color timerBoxColor = const Color(0xff2B2D2E);
+
   Color searchBoxColor = const Color(0xff27292D);
+
   Color searchBoxTextColor = const Color(0xff747677);
+
   Color bottomBoxColor = const Color(0xff27292B);
+
   Color micOffColor = const Color(0xffD95140);
 
   // Styles
   Color leftBackgroundColor = const Color(0Xff161B21);
+
   Color rightBackgroundColor = const Color(0Xff1F272F);
+
   Color greencolor = const Color(0Xff15E8D8);
+
   Color btnColor = const Color(0Xff2D3237);
+
   Color chatConColor = const Color(0XffD9D9D9);
+
   Color chatSelectedColor = const Color(0Xff2D3237);
+
   Color chatUnSelectedColor = const Color(0XffFFFFFF);
+
   Color chatBoxColor = const Color(0XffC9E1FF);
 
   var rightBorderRadious = const Radius.circular(20);
+
   RxInt rightBarIndex = 0.obs;
+
   RxBool chatMood = true.obs;
+
   RxBool topicChecValue = true.obs;
 
   TextEditingController c = TextEditingController();
+
   String? selectedAudioOutputDevice;
+
   String? selectedVideoOutputDevice;
+
   TextStyle rightBarTopTextStyle = const TextStyle(
       fontFamily: 'ocenwide', color: Colors.white, fontSize: 16);
 
   // final offButtonTheme = IconButton.styleFrom(
-  //   backgroundColor: Colors.red,
-  //   foregroundColor: Colors.white,
-  // );
   AnimationStyle? _animationStyle;
+
   RxBool pollOption = false.obs;
-  // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // void _navigateToCreateTopic(context) async {
-  //   final newTopic = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) =>
-  //           CreateTopic(sessionId: sessionId), // Pass sessionId
-  //     ),
-  //   );
+  Future<void> initializeWebView(url) async {
+    try {
+      // log(widget.meeting!.groupChat!);
+      controller.loadRequest(Uri.parse(
+          url)); // Assuming widget.personchat is a URL
+      getx.isloadChatUrl.value = true;
+    } catch (e) {
+      debugPrint('Error initializing WebView: $e');
+    }
+  }
 
-  //   if (newTopic != null) {
-  //     await _firestore.collection('topics').add(newTopic.toMap());
-  //   }
-  // }
+  final WebViewController controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {
+          // Update loading bar.
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onHttpError: (HttpResponseError error) {},
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (request.url.startsWith('https://www.youtube.com/')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ),
+    )
+    ..loadRequest(Uri.parse('https://www.youtube.com/'));
+
+  @override
+  void initState() {
+    super.initState();
+    initializeWebView(widget.meeting!.topicURL.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+
         Row(
           children: [
             Padding(
@@ -1091,65 +1080,17 @@ class Topic extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        // StreamBuilder<QuerySnapshot>(
-        //     stream: _firestore
-        //         .collection('topics')
-        //         .where('sessionId', isEqualTo: sessionId) // Filter by sessionId
-        //         .snapshots(),
-        //     builder: (context, snapshot) {
-        //       // if (snapshot.connectionState == ConnectionState.waiting) {
-        //       //   return const Center(child: CircularProgressIndicator());
-        //       // }
+        Expanded(
+          child: Obx(
+                () => Center(
+              child: getx.isloadChatUrl.value
+                  ? WebViewWidget(controller: controller)
+                  : CircularProgressIndicator(),
+            ),
+          ),
+        ),
 
-        //       if (snapshot.hasError) {
-        //         return const Center(
-        //             child: Expanded(child: Text('Error loading topics')));
-        //       }
 
-        //       final topics = snapshot.data?.docs
-        //           .map((doc) => TopicModel.fromDocument(doc))
-        //           .toList() ??
-        //           [];
-        //       if (topics.isEmpty) {
-        //         WidgetsBinding.instance.addPostFrameCallback(
-        //               (timeStamp) {
-        //             getx.topichas.value = true;
-        //           },
-        //         );
-
-        //         return SizedBox();
-        //       }
-        //       print(topics[0].show);
-        //       return Expanded(
-        //         child: ListView.builder(
-        //             itemCount: topics
-        //                 .length, // Increased itemCount by 1 to include the "12 votes total" text at the end
-        //             itemBuilder: (context, index) {
-        //               return Padding(
-        //                   padding: const EdgeInsets.only(bottom: 20),
-        //                   child: ListTile(leading:  Checkbox(
-        //                     fillColor: const WidgetStatePropertyAll(
-        //                         Colors.transparent),
-        //                     side: const BorderSide(
-        //                         width: 2, color: Colors.white),
-        //                     shape: ContinuousRectangleBorder(
-        //                         borderRadius: BorderRadius.circular(10)),
-        //                     value: topics[index].show,
-        //                     onChanged: (value) {},
-        //                   ),title:   Text(
-        //                     topics[index].name,
-        //                     style: TextStyle(decoration: topics[index].show == true
-        //                         ? TextDecoration.lineThrough
-        //                         : null,
-        //                       fontSize: 14,
-        //                       fontWeight: FontWeight.w200,color:topics[index].show == true?Colors.green:Colors.white)
-
-        //                   ),)
-
-        //                   );
-        //             }),
-        //       );
-        //     }),
       ],
     );
   }

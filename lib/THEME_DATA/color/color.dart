@@ -155,7 +155,7 @@ class ColorPage {
   ];
   //used in DrawerWidget
 
-  static const grey = Color.fromRGBO(158, 158, 158, 1);
+  static const grey = Color.fromRGBO(130, 129, 129, 1);
   //used in
   //MyClassVideoContent
   //StudyMaterialPdf

@@ -1112,11 +1112,11 @@ class _MobilePackageVideoDashboardState
                                 filteredChapterDetails.length]["DocumentPath"],
                             title: filteredPdfDetails[index -
                                 filteredChapterDetails.length]["FileIdName"],
-                            folderName: getPackagNameById(
+                            folderName: getPackagDataFieldValuebyId(
                               filteredPdfDetails[
                                           index - filteredChapterDetails.length]
                                       ["PackageId"]
-                                  .toString(),
+                                  .toString(),"PackageName"
                             ),
                             isEncrypted: filteredPdfDetails[index -
                                             filteredChapterDetails.length]

@@ -228,8 +228,8 @@ class _HoverListItemState extends State<HoverListItem> {
                         () => ShowChapterPDFMobile(
                           pdfUrl: widget.bookurl['DocumentPath'],
                           title: widget.bookurl['FileIdName'],
-                          folderName: getPackagNameById(
-                            getx.selectedPackageId.toString(),
+                          folderName: getPackagDataFieldValuebyId(
+                            getx.selectedPackageId.toString(),"PackageName"
                           ),
                           isEncrypted: widget.bookurl["IsEncrypted"] == "true" ||
                               widget.bookurl["IsEncrypted"] == "1",
@@ -243,8 +243,8 @@ class _HoverListItemState extends State<HoverListItem> {
                             return ShowChapterPDF(
                               pdfUrl: widget.bookurl['DocumentPath'],
                               title: widget.bookurl['FileIdName'],
-                              folderName: getPackagNameById(
-                                getx.selectedPackageId.toString(),
+                              folderName: getPackagDataFieldValuebyId(
+                                getx.selectedPackageId.toString(),"PackageName"
                               ),
                               isEncrypted: widget.bookurl["IsEncrypted"] == "true" ||
                                   widget.bookurl["IsEncrypted"] == "1",
@@ -291,8 +291,8 @@ class _HoverListItemState extends State<HoverListItem> {
   Future<void> _deleteFile() async {
     final filePath = getDownloadedPathOfPDF(
       widget.bookurl['FileIdName'],
-      getPackagNameById(
-        getx.selectedPackageId.toString(),
+      getPackagDataFieldValuebyId(
+        getx.selectedPackageId.toString(),"PackageName"
       ),
     );
 

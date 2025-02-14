@@ -1541,7 +1541,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   "ScheduledOn": item['ScheduledOn'],
                   "DocumentPath": item['DocumentPath'],
                   "DownloadedPath": item['DownloadedPath'],
-                  "SessionId": item['SessionId']
+                  "SessionId": item['SessionId'],
+                  'DisplayName':item['DisplayName']
                 }
               ],
               startTime: DateTime.parse(item['ScheduleOn']),
@@ -1555,7 +1556,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           : item['FileIdType'] == 'Test'
                               ? ColorPage.testSeries
                               : ColorPage.history,
-              subject: item['FileIdName'],
+              subject: item['DisplayName'],
               notes: item['FileIdName'],
               location: item['FileIdType'],
             );
@@ -1579,7 +1580,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     "ScheduledOn": item['ScheduledOn'],
                     "DocumentPath": item['DocumentPath'],
                     "DownloadedPath": item['DownloadedPath'],
-                    "SessionId": item['SessionId']
+                    "SessionId": item['SessionId'],
+                    'DisplayName':item['DisplayName']
                   }
                 ],
                 startTime: DateTime.parse(item['ScheduleOn']),
@@ -1593,7 +1595,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                             : item['FileIdType'] == 'Test'
                                 ? ColorPage.testSeries
                                 : ColorPage.history,
-                subject: item['FileIdName'],
+                subject: item['DisplayName'],
                 notes: item['FileIdName'],
                 location: item['FileIdType'],
               );

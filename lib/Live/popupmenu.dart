@@ -47,29 +47,63 @@ class MyCupertinoPopupMenu extends StatelessWidget {
 
   void _showCupertinoMenu(BuildContext context) {
     showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        // title:  Text('Options ${sessionId} / ${userid}'),
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              // log(sessionId.toString());
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SafeArea(
-                    child: Material(
-                  color: Colors.transparent,
-                  child: ChatUi(
-                    sessionId, userid, username, meeting: meeting,
+          context: context,
+    builder: (BuildContext context) => CupertinoActionSheet(
+    // title:  Text('Options ${sessionId} / ${userid}'),
+    actions: <CupertinoActionSheetAction>[
+    CupertinoActionSheetAction(
+    onPressed: () {
+    // log(sessionId.toString());
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return SafeArea(
+    child: Material(
+    color: Colors.transparent,
+    child: ChatUi(
+    sessionId, userid, username, meeting: meeting,
 
-                    // username
-                  ),
+    // username
+    ),
+    ));
+    }));
+    // Navigator.pop(context);
+    },
+    child: const Text('Chat'),
+    ),
+
+
+
+      CupertinoActionSheetAction(
+        onPressed: () {
+          // log(sessionId.toString());
+          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return SafeArea(
+                child: Material(
+                  color: Colors.transparent,
+                  child: StudentPollPage(sessionId:sessionId, teacherName:'',meeting:meeting),
+                  // child: ChatUi(
+                  //   sessionId, userid, username, meeting: meeting,
+                  //
+                  //   // username
+                  // ),
                 ));
-              }));
-              // Navigator.pop(context);
-            },
-            child: const Text('Chat'),
-          ),
+          }));
+          // Navigator.pop(context);
+        },
+        child: const Text('Management'),
+      ),
+
+
+
+
+
+
+
+
+
+
+
           // CupertinoActionSheetAction(
           //   onPressed: () {
           //     Navigator.pop(context);
