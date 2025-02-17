@@ -132,6 +132,8 @@ dependencies:
   # flutter_bloc: ^8.1.6
   crypto: ^3.0.3
 
+  
+
   pdfx: 2.6.0
   pdf:
   syncfusion_flutter_pdf:
@@ -168,6 +170,7 @@ dependencies:
   qr_flutter: ^4.1.0
   flutter_animation_progress_bar: ^2.3.1
   sleek_circular_slider: ^2.0.1
+  no_screenshot: ^0.3.1
   
 
   

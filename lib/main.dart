@@ -34,7 +34,7 @@ import 'package:sqlcipher_library_windows/sqlcipher_library_windows.dart';
 import 'package:sqlite3/open.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-// import 'package:no_screenshot/no_screenshot.dart';
+import 'package:no_screenshot/no_screenshot.dart';
 import 'notification_model.dart';
 
 void main(List<String> args) async {
@@ -57,7 +57,7 @@ void main(List<String> args) async {
         },
       );
     } else if (Platform.isAndroid) {
-      // disableScreenshot();
+      disableScreenshot();
       // await InAppWebViewController.setWebContentsDebuggingEnabled(true);
       initializeNotifications();
     }
@@ -161,7 +161,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     // checkIfEmulator(context);
-    // checkDeveloperMode();
+    checkDeveloperMode();
   }
 
   ClsSimInfo ob = ClsSimInfo();
@@ -325,15 +325,15 @@ void _showEmulatorDialog(BuildContext context) {
   );
 }
 
-// final _noScreenshot = NoScreenshot.instance;
-// void disableScreenshot() async {
-//   try {
-//     bool result = await _noScreenshot.screenshotOff();
-//     debugPrint('Screenshot Off: $result');
-//   } catch (e) {
-//     debugPrint('Error: $e');
-//   }
-// }
+final _noScreenshot = NoScreenshot.instance;
+void disableScreenshot() async {
+  try {
+    bool result = await _noScreenshot.screenshotOff();
+    debugPrint('Screenshot Off: $result');
+  } catch (e) {
+    debugPrint('Error: $e');
+  }
+}
 
 class DevelopermodeOnPage extends StatefulWidget {
   @override
