@@ -93,6 +93,7 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
   @override
   void initState() {
     initializeData();
+    callData();
     globalContext = context;
     super.initState();
   }
@@ -111,6 +112,8 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     await getMCQSetList();
     await getPodcast();
     getMeetingList(context);
+    
+
   }
 
   RxBool hasData = false.obs;
@@ -270,19 +273,17 @@ class _Mobile_Package_contentState extends State<Mobile_Package_content> {
     print("caling mcqlist");
 
     if (getx.isInternet.value) {
+       getx.mcqdataList.value = await getMcqDataForTest(
+          context, getx.loginuserdata[0].token, packageid);
+      getx.theoryExamvalue.value = await gettheoryExamDataForTest2(
+          context, getx.loginuserdata[0].token, packageid);
       updatePackage(context, getx.loginuserdata[0].token, false, packageid);
     } else {
       getx.mcqdataList.value = true;
       getx.theoryExamvalue.value = true;
     }
 
-    // if (getx.isInternet.value) {
-    //   getx.mcqdataList.value = await getMcqDataForTest(
-    //       context, getx.loginuserdata[0].token, packageid);
-    //   getx.theoryExamvalue.value = await gettheoryExamDataForTest2(
-    //       context, getx.loginuserdata[0].token, packageid);
-    //   // getx.theoryexamList.value=await fetchTheorySetList(packageid);
-    // }
+  
     // Get.back();
   }
 

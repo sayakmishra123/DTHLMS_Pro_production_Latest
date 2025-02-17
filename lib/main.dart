@@ -161,7 +161,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     // checkIfEmulator(context);
-    checkDeveloperMode();
+    // checkDeveloperMode();
   }
 
   ClsSimInfo ob = ClsSimInfo();

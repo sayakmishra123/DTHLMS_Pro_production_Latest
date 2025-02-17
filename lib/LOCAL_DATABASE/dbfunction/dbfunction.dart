@@ -4175,6 +4175,26 @@ try{
 }
 
 
+String getValuefromTblSettingByfeilName(String feildName) {
+  try {
+    // Execute the SQL query
+    final sql.ResultSet resultSet = _db.select(
+      'SELECT Value FROM TblSetting WHERE FieldName = ?',
+      [feildName],
+    );
+
+    // Check if a result is returned and fetch the OptionName
+    if (resultSet.isNotEmpty) {
+      print(resultSet.first['Value'] + "shubha this is freschise id");
+      return resultSet.first['Value'];
+    }
+  } catch (e) {
+    writeToFile(e, "getFranchiseNameFromTblSetting");
+  }
+  return '';
+}
+
+
 
 
 

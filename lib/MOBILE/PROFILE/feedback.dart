@@ -1,7 +1,10 @@
+import 'package:dthlms/API/ALL_FUTURE_FUNTIONS/all_functions.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
 import 'package:dthlms/THEME_DATA/font/font_family.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class FeedBackMobile extends StatefulWidget {
   const FeedBackMobile({super.key});
@@ -39,6 +42,10 @@ class FeedbackBox extends StatefulWidget {
 }
 
 class _FeedbackBoxState extends State<FeedbackBox> {
+
+  TextEditingController feedBackController = TextEditingController();
+
+  double starCount = 5.0;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -102,7 +109,7 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                     children: [
                       Expanded(
                         child: RatingBar.builder(
-                          initialRating: 5,
+                          initialRating: starCount,
                           minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,
@@ -113,6 +120,7 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                             color: Colors.amber,
                           ),
                           onRatingUpdate: (rating) {
+                            starCount=rating;
                             print(rating);
                           },
                         ),
@@ -134,7 +142,7 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                   SizedBox(height: 5),
 
                   // Current Password
-                  FeedbackTextField(),
+                 feedBackTextFeild(feedBackController),
                   SizedBox(height: 50),
 
                   Row(
@@ -145,7 +153,26 @@ class _FeedbackBoxState extends State<FeedbackBox> {
                               borderRadius: BorderRadius.circular(25)),
                           height: 60,
                           color: ColorPage.mainBlue,
-                          onPressed: () {},
+                          onPressed: ()async {
+                            
+                       await sendStudentFeedbackforApp(  context,getx.loginuserdata[0].token,starCount.toString(),feedBackController.text).then((value){
+
+                        if(value){
+                          onSweetAleartDialog(context, (){
+                            Get.back();
+
+                          }, "Successfully Submitted", "Thanks for your review", true);
+                        }
+                      
+
+                       });
+
+
+
+
+
+
+                          },
                           child: Text(
                             'Submit feedback',
                             style: FontFamily.style.copyWith(
@@ -162,6 +189,48 @@ class _FeedbackBoxState extends State<FeedbackBox> {
             ),
           );
         },
+      ),
+    );
+  }
+
+
+  Widget feedBackTextFeild( TextEditingController textformfeild){
+    return Padding(
+      padding: const EdgeInsets.all(16.0), // Adjust padding as needed
+      child: TextFormField(
+        
+        controller: textformfeild,
+        
+       // Initial text as per the image
+        maxLines: 4, // Adjust the number of lines as needed
+        decoration: InputDecoration(
+          hintText: "My feedBack!!",
+          // labelText: 'Additional feedback',
+          alignLabelWithHint: true, // Align label with the hint text
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderSide: BorderSide(
+              color: Colors.grey, // Outline border color
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderSide: BorderSide(
+              color:
+                  Colors.grey.withOpacity(0.5), // Grey color for enabled border
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderSide: BorderSide(
+              color: ColorPage.mainBlue, // Blue color when focused
+              width: 2.0, // Border width when focused
+            ),
+          ),
+        ),
+        style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey[800]), // Text style inside the field
       ),
     );
   }

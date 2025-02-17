@@ -205,7 +205,7 @@ class _DashBoardMobileState extends State<DashBoardMobile> {
   void initState() {
     getHomePageBannerImage(context, getx.loginuserdata[0].token);
     if (getx.isAndroidDeveloperModeEnabled.value) {
-      _showDeveloperDialog(context);
+      // _showDeveloperDialog(context);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (getx.isInternet.value) {

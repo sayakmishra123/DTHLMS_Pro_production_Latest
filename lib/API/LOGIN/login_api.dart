@@ -137,6 +137,7 @@ Future loginApi(
       getVideowatchHistory(context, jsondata['result']['token']);
       getMCQhistoryResult(context, jsondata['result']['token']);
       getEncryptionKey(jsondata['result']['token'], context);
+      getPrivacyPolicyRefundPolicyTermsAndConndition(context,getx.loginuserdata[0].token);
 
       deleteSessionDetails();
       insertTblSession(

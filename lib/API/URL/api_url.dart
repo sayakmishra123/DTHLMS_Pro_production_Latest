@@ -1,6 +1,6 @@
 class ClsUrlApi {
   // static const mainurl =
-  //     String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
+      // String.fromEnvironment('base_url', defaultValue: 'dthclass.com');
 
   static const mainurl = "apipro20240709.dthlms.com";
 
@@ -106,5 +106,6 @@ class ClsUrlApi {
   static const pausePackageByStudent =
       "/api/AuthDataGet/ExecuteJson/spAppApi/61";
 
-  static const sendStudentFeedBack = "/api/AuthDataGet/ExecuteJson/spAppApi/62";
+  static const sendStudentFeedBack = "/api/AuthDataGet/ExecuteJson/spAppApi/63";
+   static const getPrivacyPolicyRefundPolicyTermsAndConndition = "/api/AuthDataGet/ExecuteJson/spAppApi/62";
 }

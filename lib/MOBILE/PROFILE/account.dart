@@ -5,6 +5,7 @@ import 'package:dthlms/GETXCONTROLLER/getxController.dart';
 import 'package:dthlms/LOCAL_DATABASE/dbfunction/dbfunction.dart';
 import 'package:dthlms/MOBILE/PROFILE/contact_us.dart';
 import 'package:dthlms/MOBILE/PROFILE/devicehistorymobile.dart';
+import 'package:dthlms/MOBILE/PROFILE/feedback.dart';
 import 'package:dthlms/PC/PROFILE/userProfilePage.dart';
 import 'package:dthlms/THEME_DATA/FontSize/FontSize.dart';
 import 'package:dthlms/THEME_DATA/color/color.dart';
@@ -300,7 +301,8 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     icon: Icons.feedback,
                     title: 'Feedback',
                     onTap: () {
-                      Get.toNamed('/Feedbackmobile');
+                      Get.to(
+                          transition: Transition.cupertino, () => FeedBackMobile());
                     },
                   ),
                   MenuItem(
@@ -314,12 +316,20 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                   MenuItem(
                     icon: Icons.privacy_tip,
                     title: 'Privacy Policy',
-                    onTap: () {},
+                    onTap: () { 
+
+                      Get.to(
+                          transition: Transition.cupertino, () => PrivacyPollicyMobile());
+                     },
                   ),
                   MenuItem(
                     icon: FontAwesome.undo,
                     title: 'Refund Policy',
-                    onTap: () {},
+                    onTap: () {
+
+                      Get.to(
+                          transition: Transition.cupertino, () => RefundPollicyMobile());
+                    },
                   ),
                 ],
               ),

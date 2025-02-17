@@ -3997,29 +3997,18 @@ Future<bool> pauseSubscription(BuildContext context, String token,
 
 
 Future<bool> sendStudentFeedbackforApp(BuildContext context, String token,
-    String packageId, String studentPauseDay) async {
+    String star, String feedback) async {
   loader(context);
   Map<String, dynamic> data = {
-    "PackageId": packageId,
-    'StudentPausedDays': studentPauseDay
+    "Rating": star,
+    'Feedback': feedback
   };
 
-  // try {
-  var res = await http.post(
-    Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
-    headers: <String, String>{
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-    body: jsonEncode(data),
-  );
-  print(res.body);
-  Map<String, dynamic> response = jsonDecode(res.body);
-  if (res.statusCode == 200) {
-    var result = jsonDecode(response['result']);
+
+   
     try {
       var res = await http.post(
-        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.pausePackageByStudent),
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.sendStudentFeedBack),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -4029,8 +4018,8 @@ Future<bool> sendStudentFeedbackforApp(BuildContext context, String token,
       print(res.body);
       Map<String, dynamic> response = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        await updateTblPackageDataForPauseSubscription(
-            "1", packageId, result[0]['ExpiryDate'], result[0]['PausedUpto']);
+         var result = jsonDecode(response['result']);
+
 
         Get.back();
 
@@ -4038,7 +4027,7 @@ Future<bool> sendStudentFeedbackforApp(BuildContext context, String token,
 
         // return true;
       } else if (res.statusCode == 401) {
-        // updateTblPackageDataForFirsttimeActivation("1",result[''],)
+      
         Get.back();
         onTokenExpire(context);
         return false;
@@ -4058,11 +4047,85 @@ Future<bool> sendStudentFeedbackforApp(BuildContext context, String token,
       }
     } catch (e) {
       Get.back();
+      onSweetAleartDialog(context,(){Get.back();},"Something went wrong","",false);
 
       // print("Error: $e ////////// get getAnswerSheetURLforStudent");
-      writeToFile(e, 'activePackageByStudent');
+      writeToFile(e, 'sendStudentFeedbackforApp');
       return false;
     }
   }
-  return false;
-}
+
+
+
+Future<bool> getPrivacyPolicyRefundPolicyTermsAndConndition(BuildContext context, String token,
+    ) async {
+  // loader(context);
+  Map<String, dynamic> data = {
+  
+  };
+
+
+   
+    try {
+      var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getPrivacyPolicyRefundPolicyTermsAndConndition),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(data),
+      );
+      print(res.body);
+      Map<String, dynamic> response = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+         var result = jsonDecode(response['result']);
+
+          // Loop through the result and insert each item
+      for (var item in result) {
+        String serviceTypeName = item['ServicesTypeName'];
+        String internalServiceValue = item['InternalServiceValue'];
+
+        // Call your insert function here with the extracted values
+        // bool insertSuccess = 
+        await insertTblSetting(serviceTypeName, internalServiceValue);
+
+        // if (!insertSuccess) {
+        //   // Handle error if insert fails
+        //   print('Failed to insert: $serviceTypeName');
+        //   return false;
+        // }
+      }
+
+
+        // Get.back();
+
+        return true;
+
+        // return true;
+      } else if (res.statusCode == 401) {
+      
+        // Get.back();
+        // onTokenExpire(context);
+        return false;
+      } else {
+        // Get.back();
+        ClsErrorMsg.fnErrorDialog(
+            context,
+            'Error',
+            response['errorMessages']
+                .toString()
+                .replaceAll("[", "")
+                .replaceAll("]", ""),
+            res);
+        return false;
+
+      
+      }
+    } catch (e) {
+      // Get.back();
+
+     
+      writeToFile(e, 'getPrivacyPolicyRefundPolicyTermsAndConndition');
+      return false;
+    }
+  }
