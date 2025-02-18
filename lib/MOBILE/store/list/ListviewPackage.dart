@@ -125,6 +125,10 @@ class _ListviewPackageState extends State<ListviewPackage> {
                   _buildHorizontalPackageList(
                       packages[i], packages[i].premiumPackageListInfo),
 
+
+
+                    
+
                 // // Vertical Banner Section
                 if (packages[i].imageType == 'Vertical Package')
                   _buildVerticalPackageList(

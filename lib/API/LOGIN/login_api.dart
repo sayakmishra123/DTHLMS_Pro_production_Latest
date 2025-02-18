@@ -137,8 +137,8 @@ Future loginApi(
       getVideowatchHistory(context, jsondata['result']['token']);
       getMCQhistoryResult(context, jsondata['result']['token']);
       getEncryptionKey(jsondata['result']['token'], context);
-      getPrivacyPolicyRefundPolicyTermsAndConndition(context,getx.loginuserdata[0].token);
-
+      getPrivacyPolicyRefundPolicyTermsAndConndition(context,jsondata['result']['token']);
+ getStudentFAQ(jsondata['result']['token'],context);
       deleteSessionDetails();
       insertTblSession(
         loginemail,

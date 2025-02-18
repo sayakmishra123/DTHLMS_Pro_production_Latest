@@ -973,6 +973,8 @@ class _DashBoardRightState extends State<DashBoardRight> {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                        getPrivacyPolicyRefundPolicyTermsAndConndition(context,getx.loginuserdata[0].token);
+ getStudentFAQ(getx.loginuserdata[0].token,context);
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => const ProfilePage());
@@ -999,6 +1001,8 @@ class _DashBoardRightState extends State<DashBoardRight> {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                          getPrivacyPolicyRefundPolicyTermsAndConndition(context,getx.loginuserdata[0].token);
+ getStudentFAQ(getx.loginuserdata[0].token,context);
                                       Get.to(
                                           transition: Transition.cupertino,
                                           () => const ProfilePage());

@@ -1619,7 +1619,7 @@ class _PrivacyPollicyWidgetState extends State<PrivacyPollicyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    gcontext=context;
+    // gcontext=context;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Obx(()=>
@@ -2048,38 +2048,155 @@ class FAQWidget extends StatefulWidget {
 }
 
 class _FAQWidgetState extends State<FAQWidget> {
+  RxList<Map<String, dynamic>> faq = <Map<String, dynamic>>[].obs;
 
-  
-  RxString faq="".obs;
+  @override
+  void initState() {
+    super.initState();
+    fetchFAQs();
+  }
 
-  
+  // Example function to populate the faq list
+  Future fetchFAQs() async {
+    faq.value = await selectTblStudentFAQ();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 15),
-        child: Obx(()=>
-                   SingleChildScrollView(
-         child: Container(
-              constraints: BoxConstraints(maxWidth: 700),
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: ColorPage.white,
-              ),
-            
-              child:   faq.value!=""?HtmlWidget(faq.value):
-               Center(
-                child: Text("No FAQ found"),
-              ),
-              // child: FeedbackBox(),
+    return Platform.isAndroid
+        ? Container(
+            margin: EdgeInsets.symmetric(vertical: 15),
+            child: Obx(() => SingleChildScrollView(
+                  child: Container(
+                    constraints: BoxConstraints(maxWidth: 700),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: ColorPage.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: faq.isNotEmpty
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: faq.length,
+                            itemBuilder: (context, index) {
+                              var item = faq[index];
+                              return Card(
+                                margin: EdgeInsets.symmetric(vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 3,
+                                child: ExpansionTile(
+                                  leading: Icon(
+                                    Icons.help_outline, // Add an icon
+                                    color: ColorPage.bluegrey800, // Icon color
+                                  ),
+                                  title: Text(
+                                    item['FaqQuestions'],
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: HtmlWidget(
+                                        item['FaqAnswer'],
+                                        textStyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.black87,
+                                          height: 1.5, // Line height for readability
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )
+                        : Center(child: Text("No FAQ found")),
+                  ),
+                )),
+          )
+        : Expanded(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 15),
+              child: Obx(() => SingleChildScrollView(
+                    child: Container(
+                      constraints: BoxConstraints(maxWidth: 700),
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        color: ColorPage.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: faq.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: faq.length,
+                              itemBuilder: (context, index) {
+                                var item = faq[index];
+                                return Card(
+                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  elevation: 3,
+                                  child: ExpansionTile(
+                                    leading: Icon(
+                                      Icons.help_outline, // Add an icon
+                                      color: ColorPage.bluegrey800, // Icon color
+                                    ),
+                                    title: Text(
+                                      item['FaqQuestions'],
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: HtmlWidget(
+                                          item['FaqAnswer'],
+                                          textStyle: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.black87,
+                                            height: 1.5, // Line height for readability
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            )
+                          : Center(child: Text("No FAQ found")),
+                    ),
+                  )),
             ),
-                   ),
-        ),
-      ),
-    );
+          );
   }
 }
+
 
 
 
@@ -2104,7 +2221,27 @@ class _RefundPolicyState extends State<RefundPolicy> {
   }
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Platform.isAndroid?Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        child: Obx(()=>
+                   SingleChildScrollView(
+         child: Container(
+              constraints: BoxConstraints(maxWidth: 700),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: ColorPage.white,
+              ),
+            
+              child:   refundPolicy.value!=""?HtmlWidget(refundPolicy.value):
+               Center(
+                child: Text("No data found"),
+              ),
+              // child: FeedbackBox(),
+            ),
+                   ),
+        ),
+      ): Expanded(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Obx(()=>
@@ -2153,7 +2290,27 @@ class _TermAndConditionWidgetState extends State<TermAndConditionWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return  Platform.isAndroid?Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        child: Obx(()=>
+                   SingleChildScrollView(
+         child: Container(
+              constraints: BoxConstraints(maxWidth: 700),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: ColorPage.white,
+              ),
+            
+              child:   termAndCondition.value!=""?HtmlWidget(termAndCondition.value):
+               Center(
+                child: Text("No data found"),
+              ),
+              // child: FeedbackBox(),
+            ),
+                   ),
+        ),
+      ): Expanded(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Obx(()=>

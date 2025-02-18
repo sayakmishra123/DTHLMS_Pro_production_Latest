@@ -4129,3 +4129,75 @@ Future<bool> getPrivacyPolicyRefundPolicyTermsAndConndition(BuildContext context
       return false;
     }
   }
+
+
+
+
+
+  Future<bool> getStudentFAQ( String token, BuildContext context
+    ) async {
+  // loader(context);
+  Map<String, dynamic> data = {
+  
+  };
+
+
+   
+    try {
+      var res = await http.post(
+        Uri.https(ClsUrlApi.mainurl, ClsUrlApi.getFAQOfStudent),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(data),
+      );
+      print(res.body);
+      Map<String, dynamic> response = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+        List<dynamic> result = jsonDecode(response['result']);
+
+      // Loop through the result and insert each FAQ one by one
+      for (var item in result) {
+        String faqId = item['FaqId'].toString();
+        String faqTopicId = item['FaqTopicId'].toString();
+        String faqQuestions = item['FaqQuestions'];
+        String faqAnswer = item['FaqAnswer'];
+
+        // Call your insert function here with the extracted values
+        await insertTblStudentFAQ(faqId, faqTopicId, faqQuestions, faqAnswer);
+      }
+
+
+        // Get.back();
+
+        return true;
+
+        // return true;
+      } else if (res.statusCode == 401) {
+      
+        // Get.back();
+        onTokenExpire(context);
+        return false;
+      } else {
+        // Get.back();
+        ClsErrorMsg.fnErrorDialog(
+            context,
+            'Error',
+            response['errorMessages']
+                .toString()
+                .replaceAll("[", "")
+                .replaceAll("]", ""),
+            res);
+        return false;
+
+      
+      }
+    } catch (e) {
+      // Get.back();
+
+     
+      writeToFile(e, 'getStudentFAQ');
+      return false;
+    }
+  }

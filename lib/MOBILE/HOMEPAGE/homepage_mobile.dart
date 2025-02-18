@@ -2428,22 +2428,22 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
                       size: 15,
                       color: Colors.grey,
                     )),
-                drawerItem(
-                    title: "Help Chat",
-                    onTap: () {
-                      Get.to(() => ChatPage(
-                            // meeting!.sessionId.toString(),
-                            getx.loginuserdata[0].nameId,
-                            "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
-                          ));
-                    },
-                    leading:
-                        const Icon(Icons.chat, color: ColorPage.colorblack),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 15,
-                      color: Colors.grey,
-                    )),
+                // drawerItem(
+                //     title: "Help Chat",
+                //     onTap: () {
+                //       Get.to(() => ChatPage(
+                //             // meeting!.sessionId.toString(),
+                //             getx.loginuserdata[0].nameId,
+                //             "${getx.loginuserdata[0].firstName} ${getx.loginuserdata[0].lastName}",
+                //           ));
+                //     },
+                //     leading:
+                //         const Icon(Icons.chat, color: ColorPage.colorblack),
+                //     trailing: const Icon(
+                //       Icons.arrow_forward_ios_rounded,
+                //       size: 15,
+                //       color: Colors.grey,
+                //     )),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Material(

@@ -108,4 +108,6 @@ class ClsUrlApi {
 
   static const sendStudentFeedBack = "/api/AuthDataGet/ExecuteJson/spAppApi/63";
    static const getPrivacyPolicyRefundPolicyTermsAndConndition = "/api/AuthDataGet/ExecuteJson/spAppApi/62";
+      static const getFAQOfStudent = "/api/AuthDataGet/ExecuteJson/sptblFaq/7";
+
 }

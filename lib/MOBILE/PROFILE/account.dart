@@ -292,9 +292,10 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                 children: [
                   MenuItem(
                     icon: Icons.help_outline,
-                    title: "Need help? Let's chat",
+                    title: "FAQ's",
                     onTap: () {
-                      Get.toNamed('/Needhelppage');
+                      Get.to(
+                          transition: Transition.cupertino, () => FAQWidgetMobile());
                     },
                   ),
                   MenuItem(

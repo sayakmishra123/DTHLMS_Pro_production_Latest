@@ -58,6 +58,7 @@ void testSQLCipherOnWindows() async {
   createTblSetting();
   createTblStudentFeedback();
   createTblPackageData();
+  createtblStudentFAQ();
 
   createtblSectionFilesDetails();
 
@@ -412,6 +413,21 @@ void createtblSectionFilesDetails() {
   print('tblSectionFilesDetails');
 }
 
+
+void createtblStudentFAQ() {
+  // Create a table and insert some data
+  _db.execute('''
+          CREATE TABLE IF NOT EXISTS TblStudentFAQ(
+            FaqId TEXT PRIMARY KEY,
+            FaqTopicId TEXT,
+            FaqQuestions TEXT,
+            FaqAnswer TEXT
+          )
+          ''');
+  // log()
+  print('create TblStudentFAQ');
+}
+
 void createTblSetting() {
   // Create a table and insert some data
   _db.execute('''
@@ -439,16 +455,29 @@ Future<void> insertTblSetting(
   String value,
 ) async {
   try {
-    _db.execute('''
-       INSERT INTO TblSetting (fieldName, value) 
-      VALUES ('$fieldName', '$value');
-    ''');
-    print("dtails insert on Navigation table $fieldName");
+    // Check if the fieldName already exists
+    var result = await _db.select(
+      'SELECT * FROM TblSetting WHERE fieldName = ?',
+      [fieldName],
+    );
+
+    if (result.isEmpty) {
+      // If result is empty, fieldName doesn't exist, so insert the new record
+       _db.execute('''
+        INSERT INTO TblSetting (fieldName, value) 
+        VALUES (?, ?);
+      ''', [fieldName, value]);
+      print("Details inserted into TblSetting table: $fieldName");
+    } else {
+      // If fieldName already exists, skip insert
+      print("Field '$fieldName' already exists in TblSetting. No insertion.");
+    }
   } catch (e) {
     writeToFile(e, 'insertTblSetting');
-    print("error while insert in tbl settings:--" + e.toString());
+    print("Error while inserting into TblSetting: $e");
   }
 }
+
 
 // Future<Map<String, dynamic>> fetchTblSettingKey() async {
 //   final sql.ResultSet resultSet =
@@ -3900,7 +3929,8 @@ Future<void> insertPremiumPackages(List<PremiumPackage> packages) async {
 Future<List<PackageInfo>> fetchAllData() async {
   // final db = await database;
 
-  // Fetch all packages
+try{
+    // Fetch all packages
   final packageResults = _db.select('SELECT * FROM packages');
   List<PackageInfo> packageList = packageResults.map((row) {
     print(row['imageType']);
@@ -3932,6 +3962,11 @@ Future<List<PackageInfo>> fetchAllData() async {
   }
 
   return packageList;
+
+}catch(e){
+  writeToFile(e, "fetchAllData");
+  return [];
+}
 }
 
 Future<void> updateTblPackageDataForPauseSubscription(
@@ -3982,7 +4017,7 @@ bool checkVaildationOfPackage(String expDate) {
   return expiryDate.isAfter(currentDate);
 }
 
-bool checkIsPackageActiveByUser(String packageId) {
+bool    checkIsPackageActiveByUser(String packageId) {
   // Execute the SQL query
   try {
     final sql.ResultSet resultSet = _db.select(
@@ -4196,6 +4231,42 @@ String getValuefromTblSettingByfeilName(String feildName) {
 
 
 
+
+Future<void> insertTblStudentFAQ(
+  String faqId,
+  String faqTopicId,
+  String faqQuestions,
+  String faqAnswer
+) async {
+  try {
+    // Prepare the SQL query with ? placeholders
+     _db.execute('''
+      INSERT INTO TblStudentFAQ(FaqId, FaqTopicId, FaqQuestions, FaqAnswer)
+      VALUES (?, ?, ?, ?);
+    ''', [faqId, faqTopicId, faqQuestions, faqAnswer]);
+
+    print("Details inserted into TblStudentFAQ table with FaqId: $faqId");
+  } catch (e) {
+    writeToFile(e, "insertTblStudentFAQ");
+  }
+}
+
+
+Future<List<Map<String, dynamic>>> selectTblStudentFAQ() async {
+  try {
+    // Query the TblStudentFAQ table using the select method with placeholders
+    List<Map<String, dynamic>> result = await _db.select(
+      'SELECT * FROM TblStudentFAQ', // The SQL query
+      [], // No parameters (if you want to filter, you can add conditions here)
+    );
+    
+    // Return the result as a list of JSON objects
+    return result;
+  } catch (e) {
+    writeToFile(e, "selectTblStudentFAQ");
+    return []; // Return an empty list in case of error
+  }
+}
 
 
 
