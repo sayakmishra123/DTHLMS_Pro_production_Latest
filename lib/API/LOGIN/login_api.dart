@@ -125,6 +125,7 @@ Future loginApi(
       getx.calenderEvents.clear();
 
       deleteAllFolders();
+      deleteStudentFaq();
       deleteAllPackage();
       deleteVideoComponents();
 

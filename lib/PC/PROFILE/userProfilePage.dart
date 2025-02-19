@@ -1620,7 +1620,7 @@ class _PrivacyPollicyWidgetState extends State<PrivacyPollicyWidget> {
   @override
   Widget build(BuildContext context) {
     // gcontext=context;
-    return Container(
+    return  Platform.isAndroid?Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Obx(()=>
                  SingleChildScrollView(
@@ -1639,6 +1639,28 @@ class _PrivacyPollicyWidgetState extends State<PrivacyPollicyWidget> {
             // child: FeedbackBox(),
           ),
                  ),
+      ),
+    ):Expanded(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        child: Obx(()=>
+                   SingleChildScrollView(
+         child: Container(
+              constraints: BoxConstraints(maxWidth: 700),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: ColorPage.white,
+              ),
+            
+              child:   privacyPolicy.value!=""?HtmlWidget(privacyPolicy.value):
+               Center(
+                child: Text("No Privacy Policy found"),
+              ),
+              // child: FeedbackBox(),
+            ),
+                   ),
+        ),
       ),
     );
   }
@@ -2191,7 +2213,7 @@ class _FAQWidgetState extends State<FAQWidget> {
                             )
                           : Center(child: Text("No FAQ found")),
                     ),
-                  )),
+                  ),), 
             ),
           );
   }

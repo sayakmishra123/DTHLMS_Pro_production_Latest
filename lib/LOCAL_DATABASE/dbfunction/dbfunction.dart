@@ -469,14 +469,22 @@ Future<void> insertTblSetting(
       ''', [fieldName, value]);
       print("Details inserted into TblSetting table: $fieldName");
     } else {
-      // If fieldName already exists, skip insert
-      print("Field '$fieldName' already exists in TblSetting. No insertion.");
+      // If fieldName already exists, delete the existing record and then insert the new one
+     _db.execute('''
+        DELETE FROM TblSetting WHERE fieldName = ?;
+      ''', [fieldName]);
+       _db.execute('''
+        INSERT INTO TblSetting (fieldName, value) 
+        VALUES (?, ?);
+      ''', [fieldName, value]);
+      print("Field '$fieldName' already exists. Row deleted and new details inserted.");
     }
   } catch (e) {
     writeToFile(e, 'insertTblSetting');
     print("Error while inserting into TblSetting: $e");
   }
 }
+
 
 
 // Future<Map<String, dynamic>> fetchTblSettingKey() async {
@@ -1155,6 +1163,12 @@ void deleteAllPackage() {
 
 void deleteAllFolders() {
   _db.execute('DELETE FROM TblAllFolderDetails');
+
+  print("Package deleted");
+}
+
+void deleteStudentFaq() {
+  _db.execute('DELETE FROM TblStudentFAQ');
 
   print("Package deleted");
 }
